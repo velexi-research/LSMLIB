@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "lsm_boundary_conditions1d.h"
 #include "lsm_spatial_derivatives1d.h"
