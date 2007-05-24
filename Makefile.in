@@ -43,7 +43,7 @@ lsm_toolbox:
 	# remove test code
 	@SED@ -e '/test/d' objs_file.tmp > objs_file_no_test.tmp 
 	@MV@ -f objs_file_no_test.tmp objs_file.tmp
-	for FILE in `cat objs_file.tmp`; do @AR@ -ru $(BUILD_DIR)/lib/liblsm_toolbox.a $$FILE; done
+	cat objs_file.tmp | @XARGS@ @AR@ -ru $(BUILD_DIR)/lib/liblsm_toolbox.a 
 	@RANLIB@ lib/liblsm_toolbox.a
 	@RM@ objs_file.tmp 
 
@@ -53,7 +53,7 @@ lsm_serial:
 	# remove test code
 	@SED@ -e '/test/d' objs_file.tmp > objs_file_no_test.tmp 
 	@MV@ -f objs_file_no_test.tmp objs_file.tmp
-	for FILE in `cat objs_file.tmp`; do @AR@ -ru $(BUILD_DIR)/lib/liblsm_serial.a $$FILE; done
+	cat objs_file.tmp | @XARGS@ @AR@ -ru $(BUILD_DIR)/lib/liblsm_serial.a 
 	@RANLIB@ lib/liblsm_serial.a
 	@RM@ objs_file.tmp 
 
@@ -63,7 +63,7 @@ lsm_parallel:
 	# remove test code
 	@SED@ -e '/test/d' objs_file.tmp > objs_file_no_test.tmp 
 	@MV@ -f objs_file_no_test.tmp objs_file.tmp
-	for FILE in `cat objs_file.tmp`; do @AR@ -ru $(BUILD_DIR)/lib/liblsm_parallel.a $$FILE; done
+	cat objs_file.tmp | @XARGS@ @AR@ -ru $(BUILD_DIR)/lib/liblsm_parallel.a 
 	@RANLIB@ lib/liblsm_parallel.a
 	@RM@ objs_file.tmp 
 
