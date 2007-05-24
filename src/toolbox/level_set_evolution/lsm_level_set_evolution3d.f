@@ -2,8 +2,8 @@ c***********************************************************************
 c
 c  File:        lsm_level_set_evolution3d.f
 c  Copyright:   (c) 2005-2006 Kevin T. Chu
-c  Revision:    $Revision: 1.5 $
-c  Modified:    $Date: 2006/10/28 05:09:39 $
+c  Revision:    $Revision: 1.6 $
+c  Modified:    $Date: 2007/05/06 23:47:29 $
 c  Description: F77 subroutines for 3D level set evolution equation
 c
 c***********************************************************************
@@ -410,6 +410,7 @@ c     } end loop over grid
 c } end subroutine
 c***********************************************************************
 
+
 c***********************************************************************
 c
 c  lsm3dAddConstCurvTermToLSERHS() adds the contribution of a curvature 
@@ -422,8 +423,8 @@ c  kappa (mean curvature) will be computed from second order derivatives
 c
 c  Arguments:
 c    lse_rhs (in/out):  right-hand of level set equation
-c    phi_* (in):        derivatives (the 1st and 2nd order)   
-c    b (in):            scalar curvature term component 
+c    phi_*      (in):   derivatives (the 1st and 2nd order)   
+c    b     (in):        scalar curvature term component 
 c    *_gb (in):         index range for ghostbox
 c    *_fb (in):         index range for fillbox
 c

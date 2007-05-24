@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "lsm_utilities3d.h"
+#include "lsm_geometry3d.h"
 
 int main(void)
 {

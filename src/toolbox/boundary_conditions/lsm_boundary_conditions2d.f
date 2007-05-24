@@ -2,8 +2,8 @@ c***********************************************************************
 c
 c  File:        lsm_boundary_conditions2d.f
 c  Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.4 $
-c  Modified:    $Date: 2006/10/14 17:16:12 $
+c  Revision:    $Revision: 1.6 $
+c  Modified:    $Date: 2007/05/06 21:08:05 $
 c  Description: F77 routines for applying boundary conditions in 2D
 c
 c***********************************************************************
@@ -159,7 +159,8 @@ c { begin subroutine
       double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
 c     local variables       
-      integer i,j
+      integer i,j, zero
+      parameter (zero = 0)
       double precision s, abs_diff, dist, slope
       double precision one
       parameter (one = 1.0d0)
@@ -169,7 +170,7 @@ c     { extrapolate data in x-direction at lower end
 
 c       { begin j loop
         do j = jlo_gb, jhi_gb
-          s = sign(one,phi(ilo_fb+1,j))
+          s = sign(one,phi(ilo_fb,j))
           abs_diff = abs(phi(ilo_fb,j) - phi(ilo_fb+1,j))
           slope = s*abs_diff
           do i = ilo_gb, ilo_fb-1
@@ -186,7 +187,7 @@ c     { extrapolate data in x-direction at upper end
 
 c       { begin j loop
         do j = jlo_gb, jhi_gb
-          s = sign(one,phi(ihi_fb-1,j))
+          s = sign(one,phi(ihi_fb,j))
           abs_diff = abs(phi(ihi_fb,j) - phi(ihi_fb-1,j))
           slope = s*abs_diff
           do i = ihi_fb+1, ihi_gb
@@ -203,7 +204,7 @@ c     { extrapolate data in y-direction at lower end
 
 c       { begin i loop
         do i = ilo_gb, ihi_gb
-          s = sign(one,phi(i,jlo_fb+1))
+          s = sign(one,phi(i,jlo_fb))
           abs_diff = abs(phi(i,jlo_fb) - phi(i,jlo_fb+1))
           slope = s*abs_diff
           do j = jlo_gb, jlo_fb-1
@@ -220,7 +221,7 @@ c     { extrapolate data in y-direction at upper end
 
 c       { begin i loop
         do i = ilo_gb, ihi_gb
-          s = sign(one,phi(i,jhi_fb-1))
+          s = sign(one,phi(i,jhi_fb))
           abs_diff = abs(phi(i,jhi_fb) - phi(i,jhi_fb-1))
           slope = s*abs_diff
           do j = jhi_fb+1, jhi_gb

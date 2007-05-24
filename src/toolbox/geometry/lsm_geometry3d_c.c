@@ -1,8 +1,8 @@
 /*
  * File:        lsm_geometry3d_c.c
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Revision:    $Revision: 1.7 $
- * Modified:    $Date: 2006/05/22 19:30:02 $
+ * Revision:    $Revision: 1.10 $
+ * Modified:    $Date: 2007/04/20 16:39:27 $
  * Description: Implementation of 3D C geometry functions for level set method 
  */
 
@@ -14,11 +14,11 @@
 #include <stdio.h>
 
 /* MACROS */
-#define  LSM_GEOMETRY_3D_ABS(x)       ( ((x) > 0) ? (x) : -(x) )
-#define  LSM_GEOMETRY_3D_TOL          (1.0e-8)
+#define  LSM_GEOM_3D_ABS(x)       ( ((x) > 0) ? (x) : -(x) )
+#define  LSM_GEOM_3D_ZERO_TOL     (1.0e-12)
 
 /*
- * LSM_GEOMETRY_3D_CROSS() computes the cross-product of two vectors.
+ * LSM_GEOM_3D_CROSS() computes the cross-product of two vectors.
  *
  * Arguments:
  *   cross_* (out):  components of cross-product
@@ -29,7 +29,7 @@
  *  (1) cross_* MUST be valid l-values.
  *
  */
-#define  LSM_GEOMETRY_3D_CROSS( cross_x, cross_y, cross_z,               \
+#define  LSM_GEOM_3D_CROSS( cross_x, cross_y, cross_z,                   \
                                 v1_x, v1_y, v1_z,                        \
                                 v2_x, v2_y, v2_z)                        \
 {                                                                        \
@@ -39,7 +39,7 @@
 }
 
 /*
- * LSM_GEOMETRY_3D_SAME_SIDE() determines if the two points are on the same
+ * LSM_GEOM_3D_SAME_SIDE() determines if the two points are on the same
  * side of a line.
  *
  * Arguments:
@@ -50,10 +50,10 @@
  *   edge_* (in):   components of direction of line
  *
  * NOTES:
- *  (1) result * MUST be a valid l-value.
+ *  (1) result MUST be a valid l-value.
  *
  */
-#define  LSM_GEOMETRY_3D_SAME_SIDE( result,                              \
+#define  LSM_GEOM_3D_SAME_SIDE( result,                                  \
                                     p1_x, p1_y, p1_z,                    \
                                     p2_x, p2_y, p2_z,                    \
                                     p_ref_x, p_ref_y, p_ref_z,           \
@@ -71,6 +71,8 @@
   double norm_p1_minus_p_ref_sq;                                         \
   double norm_p2_minus_p_ref_sq;                                         \
                                                                          \
+  double edge_len_sq;                                                    \
+                                                                         \
   norm_p1_minus_p_ref_sq = p1_minus_p_ref_x*p1_minus_p_ref_x             \
                          + p1_minus_p_ref_y*p1_minus_p_ref_y             \
                          + p1_minus_p_ref_z*p1_minus_p_ref_z;            \
@@ -79,26 +81,45 @@
                          + p2_minus_p_ref_y*p2_minus_p_ref_y             \
                          + p2_minus_p_ref_z*p2_minus_p_ref_z;            \
                                                                          \
-  if (    (norm_p1_minus_p_ref_sq > LSM_GEOMETRY_3D_TOL)                 \
-       && (norm_p2_minus_p_ref_sq > LSM_GEOMETRY_3D_TOL) ) {             \
+  edge_len_sq = edge_x*edge_x + edge_y*edge_y + edge_z*edge_z;           \
                                                                          \
-    LSM_GEOMETRY_3D_CROSS(cross1_x, cross1_y, cross1_z,                  \
+  if (    (norm_p1_minus_p_ref_sq > LSM_GEOM_3D_ZERO_TOL)                \
+       && (norm_p2_minus_p_ref_sq > LSM_GEOM_3D_ZERO_TOL) ) {            \
+                                                                         \
+    double norm_cross_1_sq, norm_cross_2_sq;                             \
+                                                                         \
+    LSM_GEOM_3D_CROSS(cross1_x, cross1_y, cross1_z,                      \
       p1_minus_p_ref_x, p1_minus_p_ref_y, p1_minus_p_ref_z,              \
       (edge_x), (edge_y), (edge_z) );                                    \
                                                                          \
-    LSM_GEOMETRY_3D_CROSS(cross2_x, cross2_y, cross2_z,                  \
+    LSM_GEOM_3D_CROSS(cross2_x, cross2_y, cross2_z,                      \
       p2_minus_p_ref_x, p2_minus_p_ref_y, p2_minus_p_ref_z,              \
       (edge_x), (edge_y), (edge_z) );                                    \
                                                                          \
-    if ( cross1_x*cross2_x + cross1_y*cross2_y + cross1_z*cross2_z <     \
-         -LSM_GEOMETRY_3D_TOL)                                           \
-      (result) = 0;                                                      \
-    else                                                                 \
-      (result) = 1;                                                      \
+    norm_cross_1_sq = cross1_x*cross1_x + cross1_y*cross1_y              \
+                    + cross1_z*cross1_z;                                 \
+    norm_cross_2_sq = cross2_x*cross2_x + cross2_y*cross2_y              \
+                    + cross2_z*cross2_z;                                 \
+                                                                         \
+    if (  (norm_cross_1_sq >                                             \
+           LSM_GEOM_3D_ZERO_TOL*edge_len_sq*norm_p1_minus_p_ref_sq)      \
+       && (norm_cross_2_sq >                                             \
+          LSM_GEOM_3D_ZERO_TOL*edge_len_sq*norm_p2_minus_p_ref_sq) ) {   \
+                                                                         \
+      if ( (cross1_x*cross2_x + cross1_y*cross2_y + cross1_z*cross2_z)   \
+           < 0) {                                                        \
+        (result) = 0;                                                    \
+      } else {                                                           \
+        (result) = 1;                                                    \
+      }                                                                  \
+    } else {                                                             \
+        (result) = 1;                                                    \
+    }                                                                    \
   } else {                                                               \
       (result) = 1;                                                      \
   }                                                                      \
 }
+
 
 /* LSM3D_findLineInTetrahedron() */
 int LSM3D_findLineInTetrahedron(
@@ -350,11 +371,11 @@ int LSM3D_findLineInTetrahedron(
   printf("line_dir : = %f %f %f\n", line_dir_x, line_dir_y, line_dir_z);
 */
 
-  if (    (LSM_GEOMETRY_3D_ABS(alpha_1) < LSM_GEOMETRY_3D_TOL) 
-       && (LSM_GEOMETRY_3D_ABS(beta_1) < LSM_GEOMETRY_3D_TOL) ) { 
+  if (    (LSM_GEOM_3D_ABS(alpha_1) < LSM_GEOM_3D_ZERO_TOL) 
+       && (LSM_GEOM_3D_ABS(beta_1) < LSM_GEOM_3D_ZERO_TOL) ) { 
     /* case: if line exists, it is parallel to x-axis     */
 
-    if ( LSM_GEOMETRY_3D_ABS(line_dir_x) < LSM_GEOMETRY_3D_TOL ) { 
+    if ( LSM_GEOM_3D_ABS(line_dir_x) < LSM_GEOM_3D_ZERO_TOL ) { 
 
       /* {phi = 0} and {psi = 0} planes do not intersect!   */
       /* this shouldn't happen!  return error!              */
@@ -362,8 +383,8 @@ int LSM3D_findLineInTetrahedron(
 
     } else {  /* case: line exists and is parallel to x-axis */
 
-      double abs_alpha_2 = LSM_GEOMETRY_3D_ABS(alpha_2);
-      double abs_beta_2 = LSM_GEOMETRY_3D_ABS(beta_2);
+      double abs_alpha_2 = LSM_GEOM_3D_ABS(alpha_2);
+      double abs_beta_2 = LSM_GEOM_3D_ABS(beta_2);
 
       x_on_line = 0.0;  /* arbitrarily take x_on_line to be 0.0 */
 
@@ -398,8 +419,8 @@ int LSM3D_findLineInTetrahedron(
 
   } else {     /* case: line not parallel to x-axis */
 
-    double abs_alpha_1 = LSM_GEOMETRY_3D_ABS(alpha_1);
-    double abs_beta_1 = LSM_GEOMETRY_3D_ABS(beta_1);
+    double abs_alpha_1 = LSM_GEOM_3D_ABS(alpha_1);
+    double abs_beta_1 = LSM_GEOM_3D_ABS(beta_1);
 
     /* solve for a point on the {phi = 0, psi = 0} line and its     */
     /* direction using Gaussian elimination with partial pivoting   */
@@ -413,10 +434,10 @@ int LSM3D_findLineInTetrahedron(
       beta_3 -= elimination_factor*alpha_3;
       beta_0 -= elimination_factor*alpha_0;
 
-      if ( LSM_GEOMETRY_3D_ABS(beta_2) < LSM_GEOMETRY_3D_TOL ) { 
+      if ( LSM_GEOM_3D_ABS(beta_2) < LSM_GEOM_3D_ZERO_TOL ) { 
         /* case: line perpendicular to z-axis */
 
-        if ( LSM_GEOMETRY_3D_ABS(beta_3) < LSM_GEOMETRY_3D_TOL ) { 
+        if ( LSM_GEOM_3D_ABS(beta_3) < LSM_GEOM_3D_ZERO_TOL ) { 
 
           /* {phi = 0} and {psi = 0} planes do not intersect!   */
           /* this shouldn't happen!  return error!              */
@@ -447,10 +468,10 @@ int LSM3D_findLineInTetrahedron(
       alpha_3 -= elimination_factor*beta_3;
       alpha_0 -= elimination_factor*beta_0;
 
-      if ( LSM_GEOMETRY_3D_ABS(alpha_2) < LSM_GEOMETRY_3D_TOL ) { 
+      if ( LSM_GEOM_3D_ABS(alpha_2) < LSM_GEOM_3D_ZERO_TOL ) { 
         /* case: line perpendicular to z-axis */
 
-        if ( LSM_GEOMETRY_3D_ABS(alpha_3) < LSM_GEOMETRY_3D_TOL ) { 
+        if ( LSM_GEOM_3D_ABS(alpha_3) < LSM_GEOM_3D_ZERO_TOL ) { 
 
           /* {phi = 0} and {psi = 0} planes do not intersect!   */
           /* this shouldn't happen!  return error!              */
@@ -501,7 +522,7 @@ int LSM3D_findLineInTetrahedron(
   vector_in_plane_2_x = x3[0] - x1[0];
   vector_in_plane_2_y = x3[1] - x1[1];
   vector_in_plane_2_z = x3[2] - x1[2];
-  LSM_GEOMETRY_3D_CROSS(normal_x, normal_y, normal_z,
+  LSM_GEOM_3D_CROSS(normal_x, normal_y, normal_z,
     vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z,
     vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z);
 
@@ -511,7 +532,7 @@ int LSM3D_findLineInTetrahedron(
   normal_dot_line = normal_x*line_dir_x + normal_y*line_dir_y 
                   + normal_z*line_dir_z;
 
-  if ( LSM_GEOMETRY_3D_ABS(normal_dot_line) > LSM_GEOMETRY_3D_TOL ) { 
+  if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
     double intersect_coef = -(plane_constant + normal_x*x_on_line 
@@ -527,7 +548,7 @@ int LSM3D_findLineInTetrahedron(
 
     /* check edge defined by x1 and x2 */
     int on_same_side_1 = 0;
-    LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_1,
+    LSM_GEOM_3D_SAME_SIDE(on_same_side_1,
       x_intersect, y_intersect, z_intersect,
       x3[0], x3[1], x3[2],
       x1[0], x1[1], x1[2],
@@ -536,8 +557,8 @@ int LSM3D_findLineInTetrahedron(
     if (on_same_side_1) {
 
       /* check edge defined by x1 and x3 */
-    int on_same_side_2 = 0;
-      LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_2,
+      int on_same_side_2 = 0;
+      LSM_GEOM_3D_SAME_SIDE(on_same_side_2,
         x_intersect, y_intersect, z_intersect,
         x2[0], x2[1], x2[2],
         x1[0], x1[1], x1[2],
@@ -550,7 +571,7 @@ int LSM3D_findLineInTetrahedron(
         vector_in_plane_3_x = x3[0] - x2[0];
         vector_in_plane_3_y = x3[1] - x2[1];
         vector_in_plane_3_z = x3[2] - x2[2];
-        LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_3,
+        LSM_GEOM_3D_SAME_SIDE(on_same_side_3,
           x_intersect, y_intersect, z_intersect,
           x1[0], x1[1], x1[2],
           x2[0], x2[1], x2[2],
@@ -599,7 +620,7 @@ int LSM3D_findLineInTetrahedron(
   vector_in_plane_2_x = x4[0] - x1[0];
   vector_in_plane_2_y = x4[1] - x1[1];
   vector_in_plane_2_z = x4[2] - x1[2];
-  LSM_GEOMETRY_3D_CROSS(normal_x, normal_y, normal_z,
+  LSM_GEOM_3D_CROSS(normal_x, normal_y, normal_z,
     vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z,
     vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z);
 
@@ -609,7 +630,7 @@ int LSM3D_findLineInTetrahedron(
   normal_dot_line = normal_x*line_dir_x + normal_y*line_dir_y 
                   + normal_z*line_dir_z;
 
-  if ( LSM_GEOMETRY_3D_ABS(normal_dot_line) > LSM_GEOMETRY_3D_TOL ) { 
+  if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
     double intersect_coef = -(plane_constant + normal_x*x_on_line 
@@ -625,7 +646,7 @@ int LSM3D_findLineInTetrahedron(
 
     /* check edge defined by x1 and x2 */
     int on_same_side_1 = 0;
-    LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_1,
+    LSM_GEOM_3D_SAME_SIDE(on_same_side_1,
       x_intersect, y_intersect, z_intersect,
       x4[0], x4[1], x4[2],
       x1[0], x1[1], x1[2],
@@ -634,8 +655,8 @@ int LSM3D_findLineInTetrahedron(
     if (on_same_side_1) {
 
       /* check edge defined by x1 and x4 */
-    int on_same_side_2 = 0;
-      LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_2,
+      int on_same_side_2 = 0;
+      LSM_GEOM_3D_SAME_SIDE(on_same_side_2,
         x_intersect, y_intersect, z_intersect,
         x2[0], x2[1], x2[2],
         x1[0], x1[1], x1[2],
@@ -648,7 +669,7 @@ int LSM3D_findLineInTetrahedron(
         vector_in_plane_3_x = x4[0] - x2[0];
         vector_in_plane_3_y = x4[1] - x2[1];
         vector_in_plane_3_z = x4[2] - x2[2];
-        LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_3,
+        LSM_GEOM_3D_SAME_SIDE(on_same_side_3,
           x_intersect, y_intersect, z_intersect,
           x1[0], x1[1], x1[2],
           x2[0], x2[1], x2[2],
@@ -697,7 +718,7 @@ int LSM3D_findLineInTetrahedron(
   vector_in_plane_2_x = x4[0] - x1[0];
   vector_in_plane_2_y = x4[1] - x1[1];
   vector_in_plane_2_z = x4[2] - x1[2];
-  LSM_GEOMETRY_3D_CROSS(normal_x, normal_y, normal_z,
+  LSM_GEOM_3D_CROSS(normal_x, normal_y, normal_z,
     vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z,
     vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z);
 
@@ -707,7 +728,7 @@ int LSM3D_findLineInTetrahedron(
   normal_dot_line = normal_x*line_dir_x + normal_y*line_dir_y 
                   + normal_z*line_dir_z;
 
-  if ( LSM_GEOMETRY_3D_ABS(normal_dot_line) > LSM_GEOMETRY_3D_TOL ) { 
+  if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
     double intersect_coef = -(plane_constant + normal_x*x_on_line 
@@ -723,7 +744,7 @@ int LSM3D_findLineInTetrahedron(
 
     /* check edge defined by x1 and x3 */
     int on_same_side_1 = 0;
-    LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_1,
+    LSM_GEOM_3D_SAME_SIDE(on_same_side_1,
       x_intersect, y_intersect, z_intersect,
       x4[0], x4[1], x4[2],
       x1[0], x1[1], x1[2],
@@ -732,8 +753,8 @@ int LSM3D_findLineInTetrahedron(
     if (on_same_side_1) {
 
       /* check edge defined by x1 and x4 */
-    int on_same_side_2 = 0;
-      LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_2,
+      int on_same_side_2 = 0;
+      LSM_GEOM_3D_SAME_SIDE(on_same_side_2,
         x_intersect, y_intersect, z_intersect,
         x3[0], x3[1], x3[2],
         x1[0], x1[1], x1[2],
@@ -746,7 +767,7 @@ int LSM3D_findLineInTetrahedron(
         vector_in_plane_3_x = x4[0] - x3[0];
         vector_in_plane_3_y = x4[1] - x3[1];
         vector_in_plane_3_z = x4[2] - x3[2];
-        LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_3,
+        LSM_GEOM_3D_SAME_SIDE(on_same_side_3,
           x_intersect, y_intersect, z_intersect,
           x1[0], x1[1], x1[2],
           x3[0], x3[1], x3[2],
@@ -795,7 +816,7 @@ int LSM3D_findLineInTetrahedron(
   vector_in_plane_2_x = x4[0] - x2[0];
   vector_in_plane_2_y = x4[1] - x2[1];
   vector_in_plane_2_z = x4[2] - x2[2];
-  LSM_GEOMETRY_3D_CROSS(normal_x, normal_y, normal_z,
+  LSM_GEOM_3D_CROSS(normal_x, normal_y, normal_z,
     vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z,
     vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z);
 
@@ -805,7 +826,7 @@ int LSM3D_findLineInTetrahedron(
   normal_dot_line = normal_x*line_dir_x + normal_y*line_dir_y 
                   + normal_z*line_dir_z;
 
-  if ( LSM_GEOMETRY_3D_ABS(normal_dot_line) > LSM_GEOMETRY_3D_TOL ) { 
+  if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
     double intersect_coef = -(plane_constant + normal_x*x_on_line 
@@ -821,7 +842,7 @@ int LSM3D_findLineInTetrahedron(
 
     /* check edge defined by x2 and x3 */
     int on_same_side_1 = 0;
-    LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_1,
+    LSM_GEOM_3D_SAME_SIDE(on_same_side_1,
       x_intersect, y_intersect, z_intersect,
       x4[0], x4[1], x4[2],
       x2[0], x2[1], x2[2],
@@ -830,8 +851,8 @@ int LSM3D_findLineInTetrahedron(
     if (on_same_side_1) {
 
       /* check edge defined by x2 and x4 */
-    int on_same_side_2 = 0;
-      LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_2,
+      int on_same_side_2 = 0;
+      LSM_GEOM_3D_SAME_SIDE(on_same_side_2,
         x_intersect, y_intersect, z_intersect,
         x3[0], x3[1], x3[2],
         x2[0], x2[1], x2[2],
@@ -844,7 +865,7 @@ int LSM3D_findLineInTetrahedron(
         vector_in_plane_3_x = x4[0] - x3[0];
         vector_in_plane_3_y = x4[1] - x3[1];
         vector_in_plane_3_z = x4[2] - x3[2];
-        LSM_GEOMETRY_3D_SAME_SIDE(on_same_side_3,
+        LSM_GEOM_3D_SAME_SIDE(on_same_side_3,
           x_intersect, y_intersect, z_intersect,
           x2[0], x2[1], x2[2],
           x3[0], x3[1], x3[2],

@@ -1,8 +1,8 @@
 /*
  * File:        lsm_grid.c
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/09/18 20:38:08 $
+ * Revision:    $Revision: 1.6 $
+ * Modified:    $Date: 2007/05/06 21:07:47 $
  * Description: Implementation file for grid data structures that support 
  *              serial LSMLIB calculations
  */
@@ -42,229 +42,6 @@ Grid *allocateGrid(void)
 static int lsmlib_num_ghostcells[] = {2,3,5,4};
 
 
-/*======== Helper Functions for setting Grid index space limits  ========*/
-
-/*
- * setIndexSpaceLimitsCentral() sets the upper and lower limits of the 
- * specified Grid for computing spatial derivatives using central 
- * differencing. 
- *
- * Arguments:
- *  - grid (in/out):  Grid data structure containing grid configuration
- *
- * Return value:      none     
- *
- * NOTES: 
- * - grid is assumed to be allocated by the user.
- *
- * - setIndexSpaceLimitsCentral() only sets the relevant data fields within 
- *   grid (i.e. it does not set ALL of the data fields of grid).
- *
- * - setIndexSpaceLimitsCentral() handles both 2D and 3D cases.  For 2D
- *   problems, the third dimension bounds might be set to 
- *   negative numbers, but these values should never be used.
- *
- */
-void  setIndexSpaceLimitsCentral(Grid *grid)
-{
- /* max bounding grid ('ghost grid') in each dimension */
-  grid->ilo_gb = 0;   grid->ihi_gb = (grid->grid_dims_ghostbox)[0]-1;
-  grid->jlo_gb = 0;   grid->jhi_gb = (grid->grid_dims_ghostbox)[1]-1;
-  grid->klo_gb = 0;   grid->khi_gb = (grid->grid_dims_ghostbox)[2]-1;
-  
-  /* 1st order derivatives (central differencing) fill grid */
-  grid->ilo_D1_fb = 1;   grid->ihi_D1_fb = (grid->grid_dims_ghostbox)[0]-2;
-  grid->jlo_D1_fb = 1;   grid->jhi_D1_fb = (grid->grid_dims_ghostbox)[1]-2;
-  grid->klo_D1_fb = 1;   grid->khi_D1_fb = (grid->grid_dims_ghostbox)[2]-2;
-  
-  /* 2nd order  derivatives (central differencing) fill grid */
-  grid->ilo_D2_fb = 2;   grid->ihi_D2_fb = (grid->grid_dims_ghostbox)[0]-3;
-  grid->jlo_D2_fb = 2;   grid->jhi_D2_fb = (grid->grid_dims_ghostbox)[1]-3;
-  grid->klo_D2_fb = 2;   grid->khi_D2_fb = (grid->grid_dims_ghostbox)[2]-3;
-  
-  /* 3rd order  derivatives (central differencing) fill grid */
-  grid->ilo_D3_fb = 3;   grid->ihi_D3_fb = (grid->grid_dims_ghostbox)[0]-4;
-  grid->jlo_D3_fb = 3;   grid->jhi_D3_fb = (grid->grid_dims_ghostbox)[1]-4;
-  grid->klo_D3_fb = 3;   grid->khi_D3_fb = (grid->grid_dims_ghostbox)[2]-4;
-}  
-
-
-/*
- * setIndexSpaceLimitsENO1() sets the upper and lower limits of the 
- * specified Grid for computing spatial derivatives using the HJ ENO1 
- * scheme.
- *
- * Arguments:
- *  - grid (in/out):  Grid data structure containing grid configuration
- *
- * Return value:      none     
- *
- * NOTES: 
- * - grid is assumed to be allocated by the user.
- *
- * - setIndexSpaceLimitsENO1() handles both 2D and 3D cases.  For 2D
- *   problems, the third dimension bounds might be set to negative 
- *   numbers, but these values should never be used.
- *
- */   
-void setIndexSpaceLimitsENO1(Grid *grid)
-{
-  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
-  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
-  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
-  
-  setIndexSpaceLimitsCentral(grid);
-  
-  /* upwind derivatives by HJ ENO2 */
-  ilo_plus_fb  = grid->ilo_D1_fb;     ihi_plus_fb  = grid->ihi_D1_fb-1;
-  jlo_plus_fb  = grid->jlo_D1_fb;     jhi_plus_fb  = grid->jhi_D1_fb-1;
-  klo_plus_fb  = grid->klo_D1_fb;     khi_plus_fb  = grid->khi_D1_fb-1;
-  
-  /* TO DO - RECHECK */
-  ilo_minus_fb = grid->ilo_D1_fb;   ihi_minus_fb = grid->ihi_D1_fb;
-  jlo_minus_fb = grid->jlo_D1_fb;   jhi_minus_fb = grid->jhi_D1_fb;
-  klo_minus_fb = grid->klo_D1_fb;   khi_minus_fb = grid->khi_D1_fb;
-  
-  /* the common fill grid for phi_plus and phi_minus */  
-  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
-  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
-  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
-}
-
-
-/*
- * setIndexSpaceLimitsENO2() sets the upper and lower limits of the 
- * specified Grid for computing spatial derivatives using the HJ ENO2 
- * scheme.
- *
- * Arguments:
- *  - grid (in/out):  Grid data structure containing grid configuration
- *
- * Return value:      none     
- *
- * NOTES: 
- * - grid is assumed to be allocated by the user.
- *
- * - setIndexSpaceLimitsENO2() handles both 2D and 3D cases.  For 2D
- *   problems, the third dimension bounds might be set to negative 
- *   numbers, but these values should never be used.
- *
- */   
-void setIndexSpaceLimitsENO2(Grid *grid)
-{
-  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
-  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
-  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
-  
-  setIndexSpaceLimitsCentral(grid);
-  
-  /* upwind derivatives by HJ ENO 2nd order */
-  ilo_plus_fb  = grid->ilo_D2_fb;     ihi_plus_fb  = grid->ihi_D2_fb-1;
-  jlo_plus_fb  = grid->jlo_D2_fb;     jhi_plus_fb  = grid->jhi_D2_fb-1;
-  klo_plus_fb  = grid->klo_D2_fb;     khi_plus_fb  = grid->khi_D2_fb-1;
-  
-  ilo_minus_fb = grid->ilo_D2_fb+1;   ihi_minus_fb = grid->ihi_D2_fb;
-  jlo_minus_fb = grid->jlo_D2_fb+1;   jhi_minus_fb = grid->jhi_D2_fb;
-  klo_minus_fb = grid->klo_D2_fb+1;   khi_minus_fb = grid->khi_D2_fb;
-  
-  /* the common fill grid for phi_plus and phi_minus */  
-  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
-  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
-  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
-}
-
-
-/*  
- * setIndexSpaceLimitsENO3() sets the upper and lower limits of the 
- * specified Grid for computing spatial derivatives using the HJ ENO3 
- * scheme.
- *
- * Arguments:
- *  - grid (in/out):  Grid data structure containing grid configuration
- *
- * Return value:      none     
- *
- * NOTES: 
- * - grid is assumed to be allocated by the user.
- *
- * - setIndexSpaceLimitsENO3() only sets the relevant data fields within grid
- *   (i.e. it does not set ALL of the data fields of grid).
- *
- * - setIndexSpaceLimitsENO3() handles both 2D and 3D cases.  For 2D
- *   problems, the third dimension bounds might be set to 
- *   negative numbers, but these values should never be used.
- *
- */   
-void setIndexSpaceLimitsENO3(Grid *grid)
-{
-  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
-  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
-  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
-  
-  setIndexSpaceLimitsCentral(grid);
-  
-  /* upwind derivatives by HJ ENO3 */
-  ilo_plus_fb  = grid->ilo_D3_fb;     ihi_plus_fb  = grid->ihi_D3_fb-2;
-  jlo_plus_fb  = grid->jlo_D3_fb;     jhi_plus_fb  = grid->jhi_D3_fb-2;
-  klo_plus_fb  = grid->klo_D3_fb;     khi_plus_fb  = grid->khi_D3_fb-2;
-  
-  ilo_minus_fb = grid->ilo_D3_fb+1;   ihi_minus_fb = grid->ihi_D3_fb;
-  jlo_minus_fb = grid->jlo_D3_fb+1;   jhi_minus_fb = grid->jhi_D3_fb;
-  klo_minus_fb = grid->klo_D3_fb+1;   khi_minus_fb = grid->khi_D3_fb;
-  
-  /* the common fill grid for phi_plus and phi_minus */  
-  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
-  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
-  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
-}
-
-
-/*
- * setIndexSpaceLimitsWENO5() sets the upper and lower limits of the 
- * specified Grid for computing spatial derivatives using the HJ WENO5 
- * scheme.
- *
- * Arguments:
- *  - grid (in/out):  Grid data structure containing grid configuration
- *
- * Return value:      none     
- *
- * NOTES: 
- * - grid is assumed to be allocated by the user.
- *
- * - setIndexSpaceLimitsWENO5() only sets the relevant data fields within grid
- *   (i.e. it does not set ALL of the data fields of grid).
- *
- * - setIndexSpaceLimitsWENO5() handles both 2D and 3D cases.  For 2D
- *   problems, the third dimension bounds might be set to 
- *   negative numbers, but these values should never be used.
- *
- */   
-void setIndexSpaceLimitsWENO5(Grid *grid)
-{
-  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
-  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
-  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
-  
-  setIndexSpaceLimitsCentral(grid);
-  
-  /* upwind derivatives for HJ WENO 5th order */
-  ilo_plus_fb  = grid->ilo_D1_fb;     ihi_plus_fb  = grid->ihi_D1_fb-3;
-  jlo_plus_fb  = grid->jlo_D1_fb;     jhi_plus_fb  = grid->jhi_D1_fb-3;
-  klo_plus_fb  = grid->klo_D1_fb;     khi_plus_fb  = grid->khi_D1_fb-3;
-  
-  ilo_minus_fb = grid->ilo_D1_fb+2;   ihi_minus_fb = grid->ihi_D1_fb;
-  jlo_minus_fb = grid->jlo_D1_fb+2;   jhi_minus_fb = grid->jhi_D1_fb;
-  klo_minus_fb = grid->klo_D1_fb+2;   khi_minus_fb = grid->khi_D1_fb;
-  
-  /* the common fill grid for phi_plus and phi_minus */  
-  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
-  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
-  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
-}
-
-
-/*============= Function definitions for Grid management ==============*/
 
 Grid *createGridSetDx(
       int    num_dims,
@@ -446,6 +223,16 @@ Grid *copyGrid(Grid *grid)
    new_grid->klo_D3_fb = grid->klo_D3_fb;
    new_grid->khi_D3_fb = grid->khi_D3_fb;
    
+   new_grid->num_nb_levels = grid->num_nb_levels;
+   new_grid->mark_gb = grid->mark_gb;
+   new_grid->mark_D1 = grid->mark_D1;
+   new_grid->mark_D2 = grid->mark_D2;
+   new_grid->mark_D3 = grid->mark_D3;
+   new_grid->mark_fb = grid->mark_fb;
+   
+   new_grid->beta = grid->beta;
+   new_grid->gamma = grid->gamma;
+   
    return new_grid;
 }
 
@@ -560,7 +347,19 @@ void printGrid(Grid *grid, FILE *fp)
             grid->ilo_D3_fb, grid->ihi_D3_fb,
             grid->jlo_D3_fb, grid->jhi_D3_fb,
 	    grid->klo_D3_fb, grid->khi_D3_fb);	    	       	    	    	    
-  }	    	    
+  }
+  
+  fprintf(fp,
+          "Number of narrow band levels (local method) %d\n",
+	  grid->num_nb_levels);
+  fprintf(fp,
+          "Boundary layer marks (local method) gb %u D1 %u D2 %u D3 %u fb %u\n",
+	  grid->mark_gb,
+	  grid->mark_D1,grid->mark_D2,
+	  grid->mark_D3,grid->mark_fb);
+  fprintf(fp,
+          "Narrow band width (local method) beta(inner) %g gamma(outer) %g\n",
+	  grid->beta, grid->gamma);	     	    
 }
 
 
@@ -697,7 +496,19 @@ Grid *readGridFromAsciiFile(char *file_name)
             &(grid->ilo_D3_fb), &(grid->ihi_D3_fb),
             &(grid->jlo_D3_fb), &(grid->jhi_D3_fb),
 	    &(grid->klo_D3_fb), &(grid->khi_D3_fb));	    	       	    	    	    
-  }	    	    
+  }
+  
+  fscanf(fp,
+          "Number of narrow band levels (local method) %d\n",
+	  &(grid->num_nb_levels));
+  fscanf(fp,
+          "Boundary layer marks (local method) gb %u D1 %u D2 %u D3 %u fb %u\n",
+	  &(grid->mark_gb),
+	  &(grid->mark_D1),&(grid->mark_D2),
+	  &(grid->mark_D3),&(grid->mark_fb)); 
+  fscanf(fp,
+          "Narrow band width (local method) beta(inner) %g gamma(outer) %g\n",
+	  grid->beta, grid->gamma);	  		    	    
 
   fclose(fp);
 
@@ -765,6 +576,16 @@ void writeGridToBinaryFile(Grid *grid, char *file_name)
   fwrite(&(grid->klo_D3_fb), sizeof(int), 1, fp);
   fwrite(&(grid->khi_D3_fb), sizeof(int), 1, fp);
   
+  fwrite(&(grid->num_nb_levels), sizeof(int), 1, fp);
+  fwrite(&(grid->mark_gb), sizeof(unsigned char), 1, fp);
+  fwrite(&(grid->mark_D1), sizeof(unsigned char), 1, fp);
+  fwrite(&(grid->mark_D2), sizeof(unsigned char), 1, fp);
+  fwrite(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
+  fwrite(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
+  
+  fwrite(&(grid->beta),   sizeof(double), 1, fp);
+  fwrite(&(grid->gamma),  sizeof(double), 1, fp);
+  
   fclose(fp);
 }
  
@@ -787,7 +608,7 @@ Grid *readGridFromBinaryFile(char *file_name)
   fread(grid->grid_dims_ghostbox, sizeof(int), 3, fp); 
   fread(grid->dx, sizeof(double), 3, fp);
   fread(&(grid->num_gridpts), sizeof(int), 1, fp);
-  
+
   fread(&(grid->ilo_gb), sizeof(int), 1, fp);
   fread(&(grid->ihi_gb), sizeof(int), 1, fp);
   fread(&(grid->jlo_gb), sizeof(int), 1, fp);
@@ -823,15 +644,265 @@ Grid *readGridFromBinaryFile(char *file_name)
   fread(&(grid->klo_D3_fb), sizeof(int), 1, fp);
   fread(&(grid->khi_D3_fb), sizeof(int), 1, fp);
 
+  fread(&(grid->num_nb_levels), sizeof(int), 1, fp);
+  fread(&(grid->mark_gb), sizeof(unsigned char), 1, fp);
+  fread(&(grid->mark_D1), sizeof(unsigned char), 1, fp);
+  fread(&(grid->mark_D2), sizeof(unsigned char), 1, fp);
+  fread(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
+  fread(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
+  
+  fread(&(grid->beta),   sizeof(double), 1, fp);
+  fread(&(grid->gamma),  sizeof(double), 1, fp);
+  
   fclose(fp);
   
   return grid;
 }
 
 
+/*======== Helper Functions for setting Grid index space limits  ========*/
+
+
+/*
+ * setIndexSpaceLimitsCentral() sets the upper and lower limits of the specified Grid 
+ * for computing spatial derivatives using central differencing. 
+ *
+ * Arguments:
+ *  - grid (in/out):  Grid data structure containing grid configuration
+ *
+ * Return value:  none     
+ *
+ * NOTES: 
+ *  - grid is assumed to be allocated by the user.
+ *
+ *  - setIndexSpaceLimitsCentral() only sets the relevant data fields within 
+ *    grid (i.e. it does not set ALL of the data fields of grid).
+ *
+ *  - setIndexSpaceLimitsCentral() handles both 2D and 3D cases.  For 2D
+ *    problems, the third dimension bounds might be set to 
+ *    negative numbers, but these values should never be used.
+ *
+ */
+void  setIndexSpaceLimitsCentral(Grid *grid)
+{
+ /* max bounding grid ('ghost grid') in each dimension */
+  grid->ilo_gb = 0;   grid->ihi_gb = (grid->grid_dims_ghostbox)[0]-1;
+  grid->jlo_gb = 0;   grid->jhi_gb = (grid->grid_dims_ghostbox)[1]-1;
+  grid->klo_gb = 0;   grid->khi_gb = (grid->grid_dims_ghostbox)[2]-1;
+  
+  /* 1st order derivatives (central differencing) fill grid */
+  grid->ilo_D1_fb = 1;   grid->ihi_D1_fb = (grid->grid_dims_ghostbox)[0]-2;
+  grid->jlo_D1_fb = 1;   grid->jhi_D1_fb = (grid->grid_dims_ghostbox)[1]-2;
+  grid->klo_D1_fb = 1;   grid->khi_D1_fb = (grid->grid_dims_ghostbox)[2]-2;
+  
+  /* 2nd order  derivatives (central differencing) fill grid */
+  grid->ilo_D2_fb = 2;   grid->ihi_D2_fb = (grid->grid_dims_ghostbox)[0]-3;
+  grid->jlo_D2_fb = 2;   grid->jhi_D2_fb = (grid->grid_dims_ghostbox)[1]-3;
+  grid->klo_D2_fb = 2;   grid->khi_D2_fb = (grid->grid_dims_ghostbox)[2]-3;
+  
+  /* 3rd order  derivatives (central differencing) fill grid */
+  grid->ilo_D3_fb = 3;   grid->ihi_D3_fb = (grid->grid_dims_ghostbox)[0]-4;
+  grid->jlo_D3_fb = 3;   grid->jhi_D3_fb = (grid->grid_dims_ghostbox)[1]-4;
+  grid->klo_D3_fb = 3;   grid->khi_D3_fb = (grid->grid_dims_ghostbox)[2]-4;
+}  
+
+
+
+/*
+ * setIndexSpaceLimitsENO1() sets the upper and lower limits of the specified Grid 
+ * for computing spatial derivatives using the HJ ENO1 scheme.
+ *
+ * Arguments:
+ *  - grid (in/out):  Grid data structure containing grid configuration
+ *
+ * Return value:  none     
+ *
+ * NOTES: 
+ *  - grid is assumed to be allocated by the user.
+ *
+ *
+ *  - setIndexSpaceLimitsENO1() handles both 2D and 3D cases.  For 2D
+ *    problems, the third dimension bounds might be set to 
+ *    negative numbers, but these values should never be used.
+ *
+ */   
+void setIndexSpaceLimitsENO1(Grid *grid)
+{
+  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
+  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
+  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
+  
+  setIndexSpaceLimitsCentral(grid);
+  
+  /* upwind derivatives by HJ ENO2 */
+  ilo_plus_fb  = grid->ilo_D1_fb;     ihi_plus_fb  = grid->ihi_D1_fb-1;
+  jlo_plus_fb  = grid->jlo_D1_fb;     jhi_plus_fb  = grid->jhi_D1_fb-1;
+  klo_plus_fb  = grid->klo_D1_fb;     khi_plus_fb  = grid->khi_D1_fb-1;
+  
+  /* TO DO - RECHECK */
+  ilo_minus_fb = grid->ilo_D1_fb;   ihi_minus_fb = grid->ihi_D1_fb;
+  jlo_minus_fb = grid->jlo_D1_fb;   jhi_minus_fb = grid->jhi_D1_fb;
+  klo_minus_fb = grid->klo_D1_fb;   khi_minus_fb = grid->khi_D1_fb;
+  
+  /* the common fill grid for phi_plus and phi_minus */  
+  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
+  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
+  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
+}
+
+/*
+ * setIndexSpaceLimitsENO2() sets the upper and lower limits of the specified Grid 
+ * for computing spatial derivatives using the HJ ENO2 scheme.
+ *
+ * Arguments:
+ *  - grid (in/out):  Grid data structure containing grid configuration
+ *
+ * Return value:  none     
+ *
+ * NOTES: 
+ *  - grid is assumed to be allocated by the user.
+ *
+ *  - setIndexSpaceLimitsENO2() handles both 2D and 3D cases.  For 2D
+ *    problems, the third dimension bounds might be set to 
+ *    negative numbers, but these values should never be used.
+ *
+ */   
+
+void setIndexSpaceLimitsENO2(Grid *grid)
+{
+  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
+  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
+  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
+  
+  setIndexSpaceLimitsCentral(grid);
+  
+  /* upwind derivatives by HJ ENO 2nd order */
+  ilo_plus_fb  = grid->ilo_D2_fb;     ihi_plus_fb  = grid->ihi_D2_fb-1;
+  jlo_plus_fb  = grid->jlo_D2_fb;     jhi_plus_fb  = grid->jhi_D2_fb-1;
+  klo_plus_fb  = grid->klo_D2_fb;     khi_plus_fb  = grid->khi_D2_fb-1;
+  
+  ilo_minus_fb = grid->ilo_D2_fb+1;   ihi_minus_fb = grid->ihi_D2_fb;
+  jlo_minus_fb = grid->jlo_D2_fb+1;   jhi_minus_fb = grid->jhi_D2_fb;
+  klo_minus_fb = grid->klo_D2_fb+1;   khi_minus_fb = grid->khi_D2_fb;
+  
+  /* the common fill grid for phi_plus and phi_minus */  
+  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
+  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
+  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
+}
+
+
+/*  
+ * setIndexSpaceLimitsENO3() sets the upper and lower limits of the specified Grid 
+ * for computing spatial derivatives using the HJ ENO3 scheme.
+ *
+ * Arguments:
+*  - grid (in/out):  Grid data structure containing grid configuration
+ *
+ * Return value:  none     
+ *
+ * NOTES: 
+ *  - grid is assumed to be allocated by the user.
+ *
+ *  - setIndexSpaceLimitsENO3() only sets the relevant data fields within grid
+ *    (i.e. it does not set ALL of the data fields of grid).
+ *
+ *  - setIndexSpaceLimitsENO3() handles both 2D and 3D cases.  For 2D
+ *    problems, the third dimension bounds might be set to 
+ *    negative numbers, but these values should never be used.
+ *
+ */   
+void setIndexSpaceLimitsENO3(Grid *grid)
+{
+  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
+  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
+  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
+  
+  setIndexSpaceLimitsCentral(grid);
+  
+  /* upwind derivatives by HJ ENO3 */
+  ilo_plus_fb  = grid->ilo_D3_fb;     ihi_plus_fb  = grid->ihi_D3_fb-2;
+  jlo_plus_fb  = grid->jlo_D3_fb;     jhi_plus_fb  = grid->jhi_D3_fb-2;
+  klo_plus_fb  = grid->klo_D3_fb;     khi_plus_fb  = grid->khi_D3_fb-2;
+  
+  ilo_minus_fb = grid->ilo_D3_fb+1;   ihi_minus_fb = grid->ihi_D3_fb;
+  jlo_minus_fb = grid->jlo_D3_fb+1;   jhi_minus_fb = grid->jhi_D3_fb;
+  klo_minus_fb = grid->klo_D3_fb+1;   khi_minus_fb = grid->khi_D3_fb;
+  
+  /* the common fill grid for phi_plus and phi_minus */  
+  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
+  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
+  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
+}
+
+
+/*
+ * setIndexSpaceLimitsWENO5() sets the upper and lower limits of the specified Grid 
+ * for computing spatial derivatives using the HJ WENO5 scheme.
+ *
+ * Arguments:
+ *  - grid (in/out):  Grid data structure containing grid configuration
+ *
+ * Return value:  none     
+ *
+ * NOTES: 
+ *  - grid is assumed to be allocated by the user.
+ *
+ *  - setIndexSpaceLimitsWENO5() only sets the relevant data fields within grid
+ *    (i.e. it does not set ALL of the data fields of grid).
+ *
+ *  - setIndexSpaceLimitsWENO5() handles both 2D and 3D cases.  For 2D
+ *    problems, the third dimension bounds might be set to 
+ *    negative numbers, but these values should never be used.
+ *
+ */   
+void setIndexSpaceLimitsWENO5(Grid *grid)
+{
+  int ilo_plus_fb, ihi_plus_fb, ilo_minus_fb, ihi_minus_fb;
+  int jlo_plus_fb, jhi_plus_fb, jlo_minus_fb, jhi_minus_fb;
+  int klo_plus_fb, khi_plus_fb, klo_minus_fb, khi_minus_fb;
+  
+  setIndexSpaceLimitsCentral(grid);
+  
+  /* upwind derivatives for HJ WENO 5th order */
+  ilo_plus_fb  = grid->ilo_D1_fb;     ihi_plus_fb  = grid->ihi_D1_fb-3;
+  jlo_plus_fb  = grid->jlo_D1_fb;     jhi_plus_fb  = grid->jhi_D1_fb-3;
+  klo_plus_fb  = grid->klo_D1_fb;     khi_plus_fb  = grid->khi_D1_fb-3;
+  
+  ilo_minus_fb = grid->ilo_D1_fb+2;   ihi_minus_fb = grid->ihi_D1_fb;
+  jlo_minus_fb = grid->jlo_D1_fb+2;   jhi_minus_fb = grid->jhi_D1_fb;
+  klo_minus_fb = grid->klo_D1_fb+2;   khi_minus_fb = grid->khi_D1_fb;
+  
+  /* the common fill grid for phi_plus and phi_minus */  
+  grid->ilo_fb = ilo_minus_fb;   grid->ihi_fb = ihi_plus_fb;
+  grid->jlo_fb = jlo_minus_fb;   grid->jhi_fb = jhi_plus_fb;
+  grid->klo_fb = klo_minus_fb;   grid->khi_fb = khi_plus_fb;
+}
+
+
+
 void setIndexSpaceLimits(LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy, 
-  Grid *grid)
+   Grid *grid)
 {  
+   grid->mark_gb = 120;
+   grid->mark_D1 = grid->mark_gb - 1;
+   grid->mark_D2 = grid->mark_gb - 2;
+   grid->mark_D3 = grid->mark_gb - 3;
+
+   grid->num_nb_levels = lsmlib_num_ghostcells[accuracy];
+   grid->mark_fb = grid->mark_gb - grid->num_nb_levels;
+   
+   if( accuracy > MEDIUM)
+   {
+      grid->beta  = 3*grid->dx[0];
+      grid->gamma = 6*grid->dx[0];       
+   }
+   else
+   {
+      grid->beta  = 2*grid->dx[0];
+      grid->gamma = 4*grid->dx[0];  
+   }
+   
    switch( accuracy )
    {
      case LOW: { /* low accuracy */
@@ -859,5 +930,4 @@ void setIndexSpaceLimits(LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy,
      }
   }
 }
-
 

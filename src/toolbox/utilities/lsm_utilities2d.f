@@ -2,8 +2,8 @@ c***********************************************************************
 c
 c  File:        lsm_utilities2d.f
 c  Copyright:   (c) 2005-2006 Kevin T. Chu
-c  Revision:    $Revision: 1.19 $
-c  Modified:    $Date: 2006/10/28 04:54:36 $
+c  Revision:    $Revision: 1.20 $
+c  Modified:    $Date: 2007/03/10 05:15:21 $
 c  Description: F77 routines for 2D level set method utility subroutines
 c
 c***********************************************************************
@@ -1649,7 +1649,7 @@ c       loop over included cells {
           do i=ilo_ib,ihi_ib
 
 c           only include cell in integral if it has a positive control volume
-            if (control_vol(i,j) .gt. 0.d0) then
+            if (control_vol(i,j) .lt. 0.d0) then
 
               phi_cur = phi(i,j)
   

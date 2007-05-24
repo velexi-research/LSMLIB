@@ -1,8 +1,8 @@
 /*
  * File:        LevelSetFunctionIntegrator.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Revision:    $Revision: 1.24 $
- * Modified:    $Date: 2006/10/15 02:22:28 $
+ * Revision:    $Revision: 1.26 $
+ * Modified:    $Date: 2007/03/25 07:09:05 $
  * Description: Header file for level set method integrator class
  */
  
@@ -1103,7 +1103,7 @@ public:
     const IntVector<DIM>& ratio);
 
   /*!
-   * preprocessRefine() does no special user-defined spatial 
+   * postprocessRefine() does no special user-defined spatial 
    * interpolation. 
    * 
    * Arguments: 
@@ -1242,7 +1242,6 @@ protected:
    *                         which the RHS is being computed
    *                         (default = 0)
    *   
-   *
    * Return value:           none
    *
    * NOTES:

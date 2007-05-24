@@ -1,8 +1,8 @@
 /*
  * File:        lsm_FMM_eikonal_3d.c
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/08/13 13:30:52 $
+ * Revision:    $Revision: 1.5 $
+ * Modified:    $Date: 2007/05/24 12:01:11 $
  * Description: Implementation of 3D Fast Marching Method for Eikonal equation
  */
  
@@ -303,6 +303,7 @@ double FMM_updateGridPoint_Eikonal3d_Order1(
     offset[dir] = -1;
     neighbor[0] = grid_idx[0] + offset[0];
     neighbor[1] = grid_idx[1] + offset[1];
+    neighbor[2] = grid_idx[2] + offset[2];
     if (!LSM_FMM_3D_IDX_OUT_OF_BOUNDS(neighbor[0],neighbor[1],neighbor[2],
                                       grid_dims)) {
       idx_neighbor = LSM_FMM_3D_IDX(neighbor[0],neighbor[1],neighbor[2]);

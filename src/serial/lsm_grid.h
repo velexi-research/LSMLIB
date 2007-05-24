@@ -1,8 +1,8 @@
 /*
  * File:        lsm_grid.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/09/18 20:38:08 $
+ * Revision:    $Revision: 1.5 $
+ * Modified:    $Date: 2007/05/06 21:07:47 $
  * Description: Header file for grid data structures that support serial
  *              LSMLIB calculations
  */
@@ -78,7 +78,17 @@ typedef struct _Grid {
   int ilo_D1_fb, ihi_D1_fb, jlo_D1_fb, jhi_D1_fb, klo_D1_fb, khi_D1_fb;
   int ilo_D2_fb, ihi_D2_fb, jlo_D2_fb, jhi_D2_fb, klo_D2_fb, khi_D2_fb;
   int ilo_D3_fb, ihi_D3_fb, jlo_D3_fb, jhi_D3_fb, klo_D3_fb, khi_D3_fb;
-
+  
+  /* number of narrow band levels if local method is used */
+  int  num_nb_levels;
+  
+  /* marks used for boundary layers in local method */
+  unsigned char mark_gb, mark_D1, mark_D2, mark_D3, mark_fb;
+  
+  /* inner and outer narrow band widths (local method) */
+  double beta, gamma;
+  
+  
  } Grid;
  
  
@@ -140,20 +150,20 @@ Grid *createGridSetDx(int num_dims, double dx,
  * are specified by the user.
  *
  * Arguments:
- *  - num_dims (in):   desired spatial dimension for problem (2 or 3)
- *  - grid_dims (in):  array of integers representing the desired
- *                     dimensions for computational grid (without 
- *                     ghostcells)
- *  - x_lo (in):       physical/geometric coordinates of the lower
- *                     corner of the interior of the computational 
- *                     domain (i.e. without ghostcells)
- *  - x_hi (in):       physical/geometric coordinates of the upper
- *                     corner of the interior of the computational 
- *                     domain (i.e. without ghostcells)
- *  - accuracy (in):   desired accuracy ("LOW","MEDIUM","HIGH" or
- *                     "VERY_HIGH")
+ *  - num_dims (in):        desired spatial dimension for problem (2 or 3)
+ *  - grid_dims (in):       array of integers representing the desired
+ *                          dimensions for computational grid (without 
+ *                          ghostcells)
+ *  - x_lo (in):            physical/geometric coordinates of the lower
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - x_hi (in):            physical/geometric coordinates of the upper
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - accuracy (in):        desired accuracy ("LOW","MEDIUM","HIGH" or
+ *                         "VERY_HIGH")
  *
- * Return value:       pointer to the newly created Grid structure
+ * Return value:            pointer to the newly created Grid structure
  *
  * NOTES: 
  * - The size of the grid_dims, x_lo, and x_hi arrays should be
@@ -164,9 +174,8 @@ Grid *createGridSetGridDims(int num_dims, int *grid_dims,
                             double *x_lo, double *x_hi,
                             LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 
-
 /*! 
- * copyGrid() copies existing Grid structure into a new one. 
+ * copyGrid() copies existing Grid structure into a new one.
  *
  * Arguments
  *  - grid (in):  pointer to Grid structure to be copied
@@ -174,11 +183,10 @@ Grid *createGridSetGridDims(int num_dims, int *grid_dims,
  * Return value:  pointer to the newly created Grid structure
  *
  * NOTES:
- * - Memory for the new structure allocated within the function.
+ * - Memory for the new structure is allocated within the function.
  *
  */
 Grid *copyGrid(Grid *grid);
-
 
 /*!
  * destroyGrid() frees memory used by the specified Grid. 
@@ -299,8 +307,8 @@ Grid *readGridFromBinaryFile(char *file_name);
  *                    "VERY_HIGH")
  *  - grid (in/out):  Grid data structure containing grid configuration
  *
- * Return value:      none 
- * 
+ * Return value:      none
+ *
  * NOTES:
  * - Grid elements other than index space limits assumed pre-set
  * 
@@ -308,7 +316,7 @@ Grid *readGridFromBinaryFile(char *file_name);
 void setIndexSpaceLimits(LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy, 
    Grid *grid);
 
- 
+
 /*! @} */
 
 #ifdef __cplusplus

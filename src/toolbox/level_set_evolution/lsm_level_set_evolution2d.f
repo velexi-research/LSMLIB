@@ -2,8 +2,8 @@ c***********************************************************************
 c
 c  File:        lsm_level_set_evolution2d.f
 c  Copyright:   (c) 2005-2006 Kevin T. Chu
-c  Revision:    $Revision: 1.4 $
-c  Modified:    $Date: 2006/10/28 05:09:39 $
+c  Revision:    $Revision: 1.5 $
+c  Modified:    $Date: 2007/05/06 23:47:28 $
 c  Description: F77 subroutines for 2D level set evolution equation
 c
 c***********************************************************************
@@ -225,6 +225,7 @@ c     } end loop over grid
 c } end subroutine
 c***********************************************************************
 
+
 c***********************************************************************
 c
 c  lsm2dAddConstNormalVelTermToLSERHS() adds the contribution of a normal 
@@ -327,20 +328,22 @@ c     } end loop over grid
 c } end subroutine
 c***********************************************************************
 
+
 c***********************************************************************
 c
 c  lsm2dAddConstCurvTermToLSERHS() adds the contribution of a curvature 
 c  term to the right-hand side of the level set equation when it is 
 c  written in the form:
 c
-c    phi_t = -b*kappa*|grad(phi)| + ...
+c    phi_t = b*kappa*|grad(phi)| + ...
 c  
-c  kappa (mean curvature) will be computed from second order derivatives
+c  kappa (mean curvature, div ( grad*(phi) / |grad(phi)| ) will be computed 
+c  from second order derivatives.
 c
 c  Arguments:
 c    lse_rhs (in/out):  right-hand of level set equation
-c    phi_* (in):        derivatives (the 1st and 2nd order)   
-c    b (in):            scalar curvature term component 
+c    phi_*      (in):   derivatives (the 1st and 2nd order)   
+c    b     (in):        scalar curvature term component 
 c    *_gb (in):         index range for ghostbox
 c    *_fb (in):         index range for fillbox
 c

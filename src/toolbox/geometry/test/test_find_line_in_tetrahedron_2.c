@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "lsm_utilities3d.h"
+#include "lsm_geometry3d.h"
 
 /* Helper Function Declarations */
 void checkCase(

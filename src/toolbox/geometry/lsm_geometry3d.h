@@ -1,8 +1,8 @@
 /*
  * File:        lsm_geometry3d.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Revision:    $Revision: 1.14 $
- * Modified:    $Date: 2006/11/01 00:25:18 $
+ * Revision:    $Revision: 1.16 $
+ * Modified:    $Date: 2007/04/20 16:39:27 $
  * Description: Header file for 3D Fortran 77 level set method geometry
  *              subroutines
  */
@@ -484,7 +484,8 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
  *  - negative integer:     indicates point of failure within the function
  * 
  * NOTES:
- *  - (endpt2 - endpt1) is in the direction [ grad(phi) cross grad(psi) ]
+ *  - If endpt1 and endpt2 are distinct, then (endpt2 - endpt1) points in 
+ *    the direction [ grad(phi) cross grad(psi) ].
  *
  *  - It is the user's responsibility to ensure that there is sufficient
  *    memory allocated for the endpoints of the \f$ \{ \phi=0,\psi=0 \} \f$
@@ -493,11 +494,10 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
  *  - It is the user's responsibility to ensure that x1, x2, x3, and x4
  *    are arrays of size at least 3.
  *
- *  - If the \f$ \{ \phi=0,\psi=0 \} \f$ line lies in the plane of one of the
- *    faces of the tetrahedron, it is NOT counted as a single-point
- *    intersection and is NOT recorded.  However, the resulting computed
- *    endpoints are still correct (due to intersections of the line with
- *    adjacent faces).
+ *  - If the \f$ \{ \phi=0,\psi=0 \} \f$ line lies in the plane of one 
+ *    of the faces of the tetrahedron, only the intersections of the 
+ *    line with with the three other faces of the tetrahedron are 
+ *    recorded.  
  *
  */
 int LSM3D_findLineInTetrahedron(

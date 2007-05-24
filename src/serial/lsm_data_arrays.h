@@ -1,8 +1,8 @@
 /*
  * File:        lsm_data_arrays.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/11/03 23:15:52 $
+ * Revision:    $Revision: 1.6 $
+ * Modified:    $Date: 2007/05/06 21:07:46 $
  * Description: Header file for LSM_DataArrays data structure and functions
  *              that support serial LSMLIB calculations
  */
@@ -69,13 +69,21 @@ typedef struct _LSM_DataArrays
   unsigned char *narrow_band;
   int    num_index_pts;
   int    *index_x, *index_y, *index_z;
-  int    n_lo[6], n_hi[6]; //more?
+  int    n_lo[10], n_hi[10]; //10 levels should be more than enough
   
   /* array for outer narrow band points storage */
   int  *index_outer_pts;
   int  num_alloc_index_outer_pts;
   int  nlo_outer_plus, nhi_outer_plus;
   int  nlo_outer_minus, nhi_outer_minus;
+
+  /* special narrow band type of storage for solid voxels */
+  unsigned char *solid_narrow_band;
+  int    solid_num_index_pts;
+  int    *solid_index_x, *solid_index_y, *solid_index_z;
+  int    solid_n_lo[10], solid_n_hi[10];
+  
+  double *solid_normal_x, *solid_normal_y, *solid_normal_z;
 
 }  LSM_DataArrays;
 

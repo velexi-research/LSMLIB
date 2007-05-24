@@ -341,8 +341,7 @@ c { begin subroutine
       integer index_y(nlo_index:nhi_index)
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
-      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
-     &                      jlo_nb_gb:jhi_nb_gb)
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb)
       integer*1 mark_fb  
       integer i,j,l
       double precision norm_grad_phi_sq

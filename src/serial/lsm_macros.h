@@ -1,13 +1,15 @@
 /*
  * File:        lsm_macros.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/11/03 23:22:14 $
+ * Revision:    $Revision: 1.5 $
+ * Modified:    $Date: 2007/05/07 00:15:59 $
  * Description: Header file with helpful macros for manipulating data arrays
  */
 
 #ifndef included_lsm_macros_h
 #define included_lsm_macros_h
+
+#include <float.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -192,6 +194,35 @@ extern "C" {
 
 
 /*!
+ * EXAMINE_ARRAY() checks for NaN, inf values in an array and prints out
+ * min and max values for the array. Can be used for debugging purposes.
+ * 
+ * Arguments:
+ *  - name (in):  character string to be printed as array name
+ *  - data (in):  data array to be examined
+ *  - grid (in):  pointer to Grid 
+ *
+ */
+#define EXAMINE_ARRAY(name,data,g)                                         \
+{                                                                          \
+  int idx;                                                                 \
+  double min = DBL_MAX, max = -DBL_MAX;                                    \
+  double abs_min = DBL_MAX, abs_val;                                       \
+  for(idx=0; idx < g->num_gridpts; idx++)                                  \
+  {                                                                        \
+    if (isnan(data[idx])) printf("\nNaN at position %d",idx);              \
+    if (isinf(data[idx])) printf("\ninf at position %d",idx);              \
+    if( data[idx] < min) min = data[idx];                                  \
+    if( data[idx] > max) max = data[idx];                                  \
+    abs_val = fabs(data[idx]);                                             \
+    if( abs_val < abs_min && abs_val > DBL_EPSILON) abs_min = abs_val;     \
+  }                                                                        \
+  printf("\n%s min %g max %g min(|array|) %g",name,min,max,abs_min);       \
+  fflush(stdout);                                                          \
+}
+
+
+/*!
  * PRINT_ARRAY_2D() prints a 2d array as a matrix of values. Can be used 
  * for debugging purposes.
  * 
@@ -213,6 +244,8 @@ extern "C" {
     printf("\n");                                                          \
   }                                                                        \
 }
+
+
 
 
 #ifdef __cplusplus

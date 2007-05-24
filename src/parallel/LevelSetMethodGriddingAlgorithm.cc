@@ -1,8 +1,8 @@
 /*
  * File:        LevelSetMethodGriddingAlgorithm.cc
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/01/31 20:49:36 $
+ * Revision:    $Revision: 1.6 $
+ * Modified:    $Date: 2007/03/24 01:28:10 $
  * Description: Implementation of the level set method grid management class
  */
 
@@ -84,7 +84,7 @@ StandardTagAndInitialize<DIM>(object_name,
   // TagAndInitializeStrategy.  
   // NOTE: "this" is passed to the SAMRAI::mesh::GriddingAlgorithm as an 
   // unmanaged smart-pointer to avoid having two distinct smart-pointers 
-  // reference the same SAMRAI::mesh::GriddingAlgorithm<DIM>*.
+  // reference the same SAMRAI::mesh::TagAndInitializeStrategy<DIM>*.
   d_gridding_alg = new SAMRAI::mesh::GriddingAlgorithm<DIM>(
     "LevelSetMethodGriddingAlgorithm", 
     input_db, 

@@ -2,8 +2,8 @@ c***********************************************************************
 c
 c  File:        lsm_boundary_conditions3d.f
 c  Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.4 $
-c  Modified:    $Date: 2006/10/14 17:16:12 $
+c  Revision:    $Revision: 1.6 $
+c  Modified:    $Date: 2007/05/06 21:08:05 $
 c  Description: F77 routines for applying boundary conditions in 3D
 c
 c***********************************************************************
@@ -214,7 +214,7 @@ c     { extrapolate data in x-direction at lower end
 c       { begin k,j loop
         do k = klo_gb, khi_gb
           do j = jlo_gb, jhi_gb
-            s = sign(one,phi(ilo_fb+1,j,k))
+            s = sign(one,phi(ilo_fb,j,k))
             abs_diff = abs(phi(ilo_fb,j,k) - phi(ilo_fb+1,j,k))
             slope = s*abs_diff
             do i = ilo_gb, ilo_fb-1
@@ -233,7 +233,7 @@ c     { extrapolate data in x-direction at upper end
 c       { begin k,j loop
         do k = klo_gb, khi_gb
           do j = jlo_gb, jhi_gb
-            s = sign(one,phi(ihi_fb-1,j,k))
+            s = sign(one,phi(ihi_fb,j,k))
             abs_diff = abs(phi(ihi_fb,j,k) - phi(ihi_fb-1,j,k))
             slope = s*abs_diff
             do i = ihi_fb+1, ihi_gb
@@ -252,7 +252,7 @@ c     { extrapolate data in y-direction at lower end
 c       { begin i,k loop
         do i = ilo_gb, ihi_gb
           do k = klo_gb, khi_gb
-            s = sign(one,phi(i,jlo_fb+1,k))
+            s = sign(one,phi(i,jlo_fb,k))
             abs_diff = abs(phi(i,jlo_fb,k) - phi(i,jlo_fb+1,k))
             slope = s*abs_diff
             do j = jlo_gb, jlo_fb-1
@@ -271,7 +271,7 @@ c     { extrapolate data in y-direction at upper end
 c       { begin i,k loop
         do i = ilo_gb, ihi_gb
           do k = klo_gb, khi_gb
-            s = sign(one,phi(i,jhi_fb-1,k))
+            s = sign(one,phi(i,jhi_fb,k))
             abs_diff = abs(phi(i,jhi_fb,k) - phi(i,jhi_fb-1,k))
             slope = s*abs_diff
             do j = jhi_fb+1, jhi_gb
@@ -290,7 +290,7 @@ c     { extrapolate data in z-direction at lower end
 c       { begin i,j loop
         do i = ilo_gb, ihi_gb
           do j = jlo_gb, jhi_gb
-            s = sign(one,phi(i,j,klo_fb+1))
+            s = sign(one,phi(i,j,klo_fb))
             abs_diff = abs(phi(i,j,klo_fb) - phi(i,j,klo_fb+1))
             slope = s*abs_diff
             do k = klo_gb, klo_fb-1
@@ -309,7 +309,7 @@ c     { extrapolate data in z-direction at upper end
 c       { begin i,j loop
         do i = ilo_gb, ihi_gb
           do j = jlo_gb, jhi_gb
-            s = sign(one,phi(i,j,khi_fb-1))
+            s = sign(one,phi(i,j,khi_fb))
             abs_diff = abs(phi(i,j,khi_fb) - phi(i,j,khi_fb-1))
             slope = s*abs_diff
             do k = khi_fb+1, khi_gb
@@ -366,31 +366,31 @@ c     local variables
  
       if (bdry_location_idx .eq. 0) then
 c     { copy data in x-direction at lower end
- 
-c       { begin i,j loop
-        do i = ilo_gb, ihi_gb
-          do j = jlo_gb, jhi_gb
-            do k = klo_gb, klo_fb-1
-              phi(i,j,k) = phi(i,j,klo_fb)
+
+c       { begin j,k loop
+        do j = jlo_gb, jhi_gb
+          do k = klo_gb, khi_gb
+            do i = ilo_gb, ilo_fb-1
+              phi(i,j,k) = phi(ilo_fb,j,k)
             enddo
           enddo
         enddo 
-c       } end i,j loop
+c       } end j,k loop
 
 c     } end copy data in x-direction at lower end
 
       elseif (bdry_location_idx .eq. 1) then
 c     { copy data in x-direction at upper end
 
-c       { begin i,j loop
-        do i = ilo_gb, ihi_gb
-          do j = jlo_gb, jhi_gb
-            do k = khi_fb+1, khi_gb
-              phi(i,j,k) = phi(i,j,khi_fb)
+c       { begin j,k loop
+        do j = jlo_gb, jhi_gb
+          do k = klo_gb, khi_gb
+            do i = ihi_fb+1, ihi_gb
+              phi(i,j,k) = phi(ihi_fb,j,k)
             enddo 
           enddo
         enddo 
-c       } end i,j loop
+c       } end j,k loop
 
 c     } end copy data in x-direction at upper end
 
@@ -427,30 +427,30 @@ c     } end copy data in y-direction at upper end
       elseif (bdry_location_idx .eq. 4) then
 c     { copy data in z-direction at lower end
 
-c       { begin j,k loop
-        do j = jlo_gb, jhi_gb
-          do k = klo_gb, khi_gb
-            do i = ilo_gb, ilo_fb-1
-              phi(i,j,k) = phi(ilo_fb,j,k)
+c       { begin i,j loop
+        do i = ilo_gb, ihi_gb
+          do j = jlo_gb, jhi_gb
+            do k = klo_gb, klo_fb-1
+              phi(i,j,k) = phi(i,j,klo_fb)
             enddo
           enddo
         enddo 
-c       } end j,k loop
+c       } end i,j loop
 
 c     } end copy data in z-direction at lower end
 
       elseif (bdry_location_idx .eq. 5) then
 c     { copy data in z-direction at upper end
 
-c       { begin j,k loop
-        do j = jlo_gb, jhi_gb
-          do k = klo_gb, khi_gb
-            do i = ihi_fb+1, ihi_gb
-              phi(i,j,k) = phi(ihi_fb,j,k)
+c       { begin i,j loop
+        do i = ilo_gb, ihi_gb
+          do j = jlo_gb, jhi_gb
+            do k = khi_fb+1, khi_gb
+              phi(i,j,k) = phi(i,j,khi_fb)
             enddo 
           enddo
         enddo 
-c       } end j,k loop
+c       } end i,j loop
 
 c     } copy data in z-direction at upper end
 
