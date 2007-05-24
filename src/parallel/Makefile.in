@@ -1,0 +1,76 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.8 $
+## Modified:    $Date: 2006/10/04 20:03:04 $
+## Description:	makefile for Parallel LSMLIB classes
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+
+# configuration for SAMRAI library
+include @samrai_inc@/../config/Makefile.config
+
+# NOTE:  LSMLIB's Makefile.config MUST be included last because it
+#        redefines the pattern rules for compiling source code
+include $(BUILD_DIR)/config/Makefile.config
+CPPFLAGS_EXTRA = -I$(LSMLIB_INCLUDE)
+
+# Set MAKE
+@SET_MAKE@
+
+CXX_OBJS = LevelSetMethodAlgorithm.o                    \
+           LevelSetMethodGriddingAlgorithm.o            \
+           LevelSetFunctionIntegrator.o                 \
+           LevelSetMethodToolbox.o                      \
+           FieldExtensionAlgorithm.o                    \
+           ReinitializationAlgorithm.o                  \
+           OrthogonalizationAlgorithm.o                 \
+           BoundaryConditionModule.o
+
+SUBDIRS = fortran                                       \
+          templates
+
+all:  includes library
+
+includes:   
+	@CP@ $(SRC_DIR)/LSMLIB_DefaultParameters.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.inline $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.inline $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodPatchStrategy.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodPatchStrategy.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodToolbox.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodToolbox.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodVelocityFieldStrategy.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/LevelSetMethodVelocityFieldStrategy.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/FieldExtensionAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/FieldExtensionAlgorithm.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/ReinitializationAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/ReinitializationAlgorithm.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/OrthogonalizationAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/OrthogonalizationAlgorithm.cc $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/BoundaryConditionModule.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/BoundaryConditionModule.cc $(BUILD_DIR)/include/
+	(cd fortran; @MAKE@ $@) || exit 1
+
+library:        $(CXX_OBJS) 
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+include Makefile.depend
+
+clean:
+	@RM@ *.o
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+

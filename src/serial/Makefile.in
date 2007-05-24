@@ -1,0 +1,39 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.9 $
+## Modified:    $Date: 2006/10/01 17:47:18 $
+## Description: makefile for Serial LSMLIB functions
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+all:  includes library
+
+includes:  
+	@CP@ $(SRC_DIR)/lsm_boundary_conditions.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_fast_marching_method.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_data_arrays.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_grid.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_initialization2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_initialization3d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_macros.h $(BUILD_DIR)/include/
+
+library:  lsm_FMM_field_extension2d.o    \
+          lsm_FMM_field_extension3d.o    \
+          lsm_FMM_eikonal2d.o            \
+          lsm_FMM_eikonal3d.o            \
+          lsm_boundary_conditions.o      \
+          lsm_data_arrays.o              \
+          lsm_grid.o                     \
+          lsm_initialization2d.o         \
+          lsm_initialization3d.o         \
+
+clean:
+	@RM@ *.o 
+
+include Makefile.depend
+

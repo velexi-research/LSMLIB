@@ -1,0 +1,124 @@
+/*
+ * File:        sample_input_file.dox
+ * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Revision:    $Revision: 1.3 $
+ * Modified:    $Date: 2006/01/24 21:45:38 $
+ * Description: sample input file for user's guide
+ */
+
+
+/*! 
+  @page sample_input_file Sample Input File
+
+<pre>
+Main {
+  // Base name for output files.
+  base_name = "TESTLSM_2D"
+  // Whether to log all nodes in a parallel run.
+  log_all_nodes = TRUE
+
+  restart_interval = 25
+
+  // visualization parameters
+  viz_write_interval = 5
+  use_chombovis = FALSE
+  use_visit = TRUE
+  visit_number_procs_per_file = 1
+
+  // set to 0 to have no limit on maximum number of time steps
+  max_num_time_steps = 0
+
+}
+
+CartesianGeometry {
+  //  Specify lower/upper corners of the computational domain and a
+  //  set of non-overlapping boxes defining domain interior.  If union 
+  //  of boxes is not a parallelpiped, lower/upper corner data corresponds 
+  //  to min/max corner indices over all boxes given.
+  //  x_lo  -- (double array) lower corner of computational domain [REQD]
+  //  x_up  -- (double array) upper corner of computational domain [REQD]
+  //  domain_boxes  -- (box array) set of boxes that define interior of 
+  //                   hysical domain. [REQD]
+  //  periodic_dimension -- (int array) coordinate directions in which 
+  //                        domain is periodic.  Zero indicates not
+  //                        periodic, non-zero value indicates periodicity.
+  //                        [0]
+  domain_boxes = [(0,0), (199,199)]
+  x_lo         = -1, -1
+  x_up         = 1, 1
+
+  periodic_dimension = 1, 1
+}
+
+
+LevelSetMethodAlgorithm{ 
+
+  LevelSetFunctionIntegrator {
+    start_time  = 0.0
+    end_time    = 1.0
+  
+    cfl_number               = 0.5
+    spatial_derivative_type  = "ENO"
+    spatial_derivative_order = 3
+    tvd_runge_kutta_order    = 1
+  
+    reinitialization_interval  = 10
+    reinitialization_stop_tol = 1e-3
+    reinitialization_max_iters = 20
+    reinitialization_stop_dist = 0.2
+    orthogonalization_interval = 0
+  
+    use_AMR = FALSE
+    refinement_cutoff_value = 0.25
+    tag_buffer= 2,2,2,2,2,2
+
+    verbose_mode = TRUE
+
+  } // end of LevelSetMethodIntegrator database
+  
+  
+  LevelSetMethodGriddingAlgorithm {
+    max_levels = 1 
+
+    ratio_to_coarser {
+      level_1            = 2, 2
+    }
+
+    largest_patch_size {
+      level_0 = 50,50
+      // all finer levels will use same values as level_0...
+    }
+
+    tagging_method = "GRADIENT_DETECTOR"
+
+    // NOTE: All fine levels MUST be at least two grid cells away 
+    // from the physical boundary due to the ghost cell requirements 
+    // of the advection velocity calculation
+    //  tagging_method = "REFINE_BOXES"
+    RefineBoxes {
+    //    level_0 = [(10,10), (16,16)] , [(0,0),(9,15)]
+    //etc.
+    }
+
+    LoadBalancer {
+      // the default load balancer input parameters are usually sufficient
+    }
+
+  } // end LevelSetMethodGriddingAlgorithm database
+
+} // end of LevelSetMethodAlgorithm database
+
+
+TestLSM_2d_VelocityFieldModule {
+  velocity_field = 3
+  min_dt = 0.1
+}
+
+TestLSM_2d_PatchModule {
+  initial_level_set = 0
+  center = 0.5, 0.0
+  radius = 0.2
+}
+
+</pre>
+*/

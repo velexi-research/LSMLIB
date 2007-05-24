@@ -1,0 +1,24 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.2 $
+## Modified:    $Date: 2006/11/03 23:14:57 $
+## Description: makefile for localization subroutines
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+all:  includes library
+
+includes:  
+	@CP@ $(SRC_DIR)/lsm_localization2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_localization3d.h $(BUILD_DIR)/include/
+
+library: lsm_localization2d.o lsm_localization3d.o
+
+clean:
+	@RM@ *.o 
+

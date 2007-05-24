@@ -1,0 +1,210 @@
+/*
+ * File:        LevelSetFunctionIntegrator.inline
+ * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Revision:    $Revision: 1.7 $
+ * Modified:    $Date: 2006/10/15 02:22:29 $
+ * Description: Inline file for level set method integrator class
+ */
+ 
+#ifndef included_LevelSetFunctionIntegrator_inline
+#define included_LevelSetFunctionIntegrator_inline
+
+#ifdef LSMLIB_DEBUG_NO_INLINE
+#define inline
+#endif
+
+
+/******************************************************************
+ *
+ * Inline methods for LevelSetFunctionIntegrator class
+ *
+ ******************************************************************/
+
+namespace LSMLIB {
+
+template<int DIM> inline
+int LevelSetFunctionIntegrator<DIM>::getPhiPatchDataHandle() const
+{
+  return d_phi_handles[0];
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getPsiPatchDataHandle() const
+{
+  return d_psi_handles[0];
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getControlVolumePatchDataHandle() const
+{
+  return d_control_volume_handle;
+}
+
+
+template<int DIM> inline 
+double LevelSetFunctionIntegrator<DIM>::getStartTime() const
+{
+  return d_start_time;
+}
+
+
+template<int DIM> inline 
+double LevelSetFunctionIntegrator<DIM>::getEndTime() const
+{
+  return d_end_time;
+}
+
+
+template<int DIM> inline 
+double LevelSetFunctionIntegrator<DIM>::getCurrentTime() const
+{
+  return d_current_time;
+}
+
+
+template<int DIM> inline 
+bool LevelSetFunctionIntegrator<DIM>::endTimeReached() const
+{
+  return (d_current_time >= d_end_time);
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::numIntegrationStepsTaken() const
+{
+  return d_num_integration_steps_taken;
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getSpatialDerivativeType() const
+{
+  return (int) d_spatial_derivative_type;
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getSpatialDerivativeOrder() const
+{
+  return d_spatial_derivative_order;
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getTVDRungeKuttaOrder() const
+{
+  return d_tvd_runge_kutta_order;
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getReinitializationInterval() const
+{
+  return d_reinitialization_interval;
+}
+
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::setReinitializationInterval(
+  const int interval) 
+{
+  d_reinitialization_interval = interval;
+  d_use_reinitialization = (d_reinitialization_interval != 0);
+}
+
+
+template<int DIM> inline 
+int LevelSetFunctionIntegrator<DIM>::getOrthogonalizationInterval() const
+{
+  return d_orthogonalization_interval;
+}
+
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::setOrthogonalizationInterval(
+  const int interval) 
+{
+  d_orthogonalization_interval = interval;
+  d_use_orthogonalization = ( (d_orthogonalization_interval != 0) &&
+                              (d_codimension == 2) );
+}
+
+
+template<int DIM> inline
+IntVector<DIM> LevelSetFunctionIntegrator<DIM>::getRefineOpStencilWidth() const
+{
+  return(IntVector<DIM>(0));
+}
+
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::preprocessRefine(
+  Patch<DIM>& fine,
+  const Patch<DIM>& coarse,
+  const Box<DIM>& fine_box,
+  const IntVector<DIM>& ratio)
+{
+  (void)fine;
+  (void)coarse;
+  (void)fine_box;
+  (void)ratio;
+}
+
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::postprocessRefine(
+  Patch<DIM>& fine,
+  const Patch<DIM>& coarse,
+  const Box<DIM>& fine_box,
+  const IntVector<DIM>& ratio)
+{
+  (void)fine;
+  (void)coarse;
+  (void)fine_box;
+  (void)ratio;
+}
+
+
+template<int DIM> inline 
+IntVector<DIM> LevelSetFunctionIntegrator<DIM>::getCoarsenOpStencilWidth() const
+{
+  return(IntVector<DIM>(0));
+}
+  
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::preprocessCoarsen(
+  Patch<DIM>& coarse,
+  const Patch<DIM>& fine,
+  const Box<DIM>& coarse_box,
+  const IntVector<DIM>& ratio)
+{
+  (void)coarse;
+  (void)fine;
+  (void)coarse_box;
+  (void)ratio;
+}
+
+
+template<int DIM> inline 
+void LevelSetFunctionIntegrator<DIM>::postprocessCoarsen(
+  Patch<DIM>& coarse,
+  const Patch<DIM>& fine,
+  const Box<DIM>& coarse_box,
+  const IntVector<DIM>& ratio)
+{
+  (void)coarse;
+  (void)fine;
+  (void)coarse_box;
+  (void)ratio;
+}
+
+} // end LSMLIB namespace
+
+#ifdef LSMLIB_DEBUG_NO_INLINE
+#undef inline
+#endif
+
+#endif

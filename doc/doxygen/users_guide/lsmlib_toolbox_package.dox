@@ -1,0 +1,119 @@
+
+/*!
+  @page users_guide_lsmlib_toolbox_package LSMLIB Toolbox Package
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref users_guide_lsmlib_matlab_toolbox "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+&nbsp;
+</td>
+</tr>
+</table>
+</center>
+
+<hr>
+The core functionality of LSMLIB is contained in the LSMLIB Toolbox Package.  
+It provides routines for:
+
+  - calculation of high-order ENO/WENO spatial derivatives;
+  - TVD Runge-Kutta time integration;
+  - computing geometry quantities;
+  - integrating over regions defined by implicit functions;
+  - computation of the distance function and extension fields
+    using the fast marching method;
+  - computing the right-hand side of specific level set method partial
+    differential equations; and
+  - general utility functions (e.g. computing a stable time step 
+    size using a CFL based criterion and computing the max norm 
+    of the difference of two field variables).
+
+These routines form the basic numerical kernels and algorithmic components 
+required for typical level set method calculations.  Usage of these routines 
+is straight-forward for the application developer who is familiar with
+the general level set method algorithm.  However, the typical user will
+find it more convenient to use the higher level functionality provided
+by the @ref users_guide_serial_lsmlib_package "Serial LSMLIB Package", 
+@ref users_guide_parallel_lsmlib_package "Parallel LSMLIB Package", or
+@ref users_guide_lsmlib_matlab_toolbox "LSMLIB MATLAB Toolbox".
+
+While all of these routines (with the exception of the fast marching 
+method routines) are implemented in Fortran 77 for performance reasons,
+C-interfaces are provided.  The function signatures are provided in 
+the following header and Fortran files:
+
+<h4> C header files </h4>
+  - @ref lsm_calculus_toolbox.h
+  - @ref lsm_fast_marching_method.h
+  - @ref lsm_field_extension1d.h, @ref lsm_field_extension2d.h, 
+    @ref lsm_field_extension3d.h
+  - @ref lsm_geometry1d.h, @ref lsm_geometry2d.h, @ref lsm_geometry3d.h
+  - @ref lsm_level_set_evolution1d.h, @ref lsm_level_set_evolution2d.h,
+    @ref lsm_level_set_evolution3d.h
+  - @ref lsm_reinitialization1d.h, @ref lsm_reinitialization2d.h,
+    @ref lsm_reinitialization3d.h
+  - @ref lsm_spatial_derivatives1d.h, @ref lsm_spatial_derivatives2d.h,
+    @ref lsm_spatial_derivatives3d.h
+  - @ref lsm_tvd_runge_kutta1d.h, @ref lsm_tvd_runge_kutta2d.h, 
+    @ref lsm_tvd_runge_kutta3d.h
+  - @ref lsm_utilities1d.h, @ref lsm_utilities2d.h, @ref lsm_utilities3d.h
+
+<h4> Fortran 77 source files </h4>
+  - lsm_calculus_toolbox.f
+  - lsm_field_extension1d.f, lsm_field_extension2d.f, lsm_field_extension3d.f
+  - lsm_geometry1d.f, lsm_geometry2d.f, lsm_geometry3d.f
+  - lsm_level_set_evolution1d.f, lsm_level_set_evolution2d.f,
+    lsm_level_set_evolution3d.f
+  - lsm_reinitialization1d.f, lsm_reinitialization2d.f,
+    lsm_reinitialization3d.f
+  - lsm_spatial_derivatives1d.f, lsm_spatial_derivatives2d.f,
+    lsm_spatial_derivatives3d.f
+  - lsm_tvd_runge_kutta1d.f, lsm_tvd_runge_kutta2d.f, lsm_tvd_runge_kutta3d.f
+  - lsm_utilities1d.f, lsm_utilities2d.f, lsm_utilities3d.f
+
+The purpose of the core level set method functions is relatively 
+self-explanatory.  For a detailed description of the function
+arguments, see the function comments contained in the C header files
+or the Fortran77 files (contained in the appropriate subdirectory of the 
+toolbox directory).
+
+<hr>
+\section toolbox_notes NOTES 
+
+  - Depending on the software development platform, it may be 
+    necessary to redefine the C-macros that link the C/C++ 
+    function name to the fortran object code name.
+
+  - ALL toolbox routines assume that field data are stored in 
+    Fortran order (i.e. column-major order).
+
+  - The fast marching method package is designed to be somewhat
+    extensible to higher dimensions and higher-order numerical
+    schemes.  However, this feature is experimental and the 
+    package is currently limited to dimensions <= 3.
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref users_guide_lsmlib_matlab_toolbox "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+&nbsp;
+</td>
+</tr>
+</table>
+</center>
+
+*/

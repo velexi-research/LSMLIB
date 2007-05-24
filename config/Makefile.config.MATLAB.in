@@ -1,0 +1,19 @@
+##
+## File:        Makefile.config.MATLAB.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.4 $
+## Modified:    $Date: 2006/06/25 02:09:14 $
+## Description: Makefile.config for building MATLAB MEX interface
+##
+
+# MATLAB MEX-file configuration
+MATLAB_DIR          = @matlab_dir@
+MEX                 = $(MATLAB_DIR)/bin/mex
+MEX_FLAGS           = @mex_flags@
+MATLAB_INSTALL_DIR  = @matlab_install_dir@
+
+# Pattern Rules for generating MEX files
+%.@mex_extension@: %.c
+	$(MEX) $(MEX_FLAGS) $^
+
+

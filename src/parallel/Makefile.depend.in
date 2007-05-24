@@ -1,0 +1,89 @@
+##
+## File:	Makefile.depend.in
+## Copyright:	(c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.4 $
+## Modified:    $Date: 2006/10/16 20:55:04 $
+## Description: file dependencies for parallel level set method classes
+##
+
+
+BoundaryConditionModule.o:                                           \
+	$(SAMRAI)/include/SAMRAI_config.h                            \
+	BoundaryConditionModule.h                                    \
+	BoundaryConditionModule.cc
+
+LevelSetMethodAlgorithm.o:                                           \
+	$(SAMRAI)/include/SAMRAI_config.h                            \
+	LevelSetMethodAlgorithm.h                                    \
+	LevelSetMethodAlgorithm.inline                               \
+	LevelSetMethodAlgorithm.cc                                   \
+	LevelSetMethodGriddingAlgorithm.h                            \
+	LevelSetMethodGriddingStrategy.h                             \
+	LevelSetFunctionIntegrator.h                                 \
+	LevelSetFunctionIntegrator.inline                            \
+	LevelSetFunctionIntegratorStrategy.h                         \
+	LevelSetMethodPatchStrategy.h                                \
+	LevelSetMethodToolbox.h                                      \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetFunctionIntegrator.o:                                        \
+	$(SAMRAI)/include/SAMRAI_config.h                            \
+	LevelSetFunctionIntegrator.h                                 \
+	LevelSetFunctionIntegrator.inline                            \
+	LevelSetFunctionIntegrator.cc                                \
+	LevelSetFunctionIntegratorStrategy.h                         \
+	LSMLIB_DefaultParameters.h                                   \
+	BoundaryConditionModule.h                                    \
+	LevelSetMethodPatchStrategy.h                                \
+	LevelSetMethodToolbox.h                                      \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetFunctionIntegratorStrategy.o:                                \
+	LevelSetFunctionIntegratorStrategy.h                         \
+	LevelSetFunctionIntegratorStrategy.cc 
+
+LevelSetMethodGriddingAlgorithm.o:                                   \
+	$(SAMRAI)/include/SAMRAI_config.h                            \
+	LevelSetMethodGriddingAlgorithm.h                            \
+	LevelSetMethodGriddingAlgorithm.cc                           \
+	LevelSetMethodGriddingAlgorithm.h                            \
+	LevelSetFunctionIntegratorStrategy.h                         \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodGriddingStrategy.o:                                    \
+	LevelSetMethodGriddingStrategy.h                             \
+	LevelSetMethodGriddingStrategy.cc 
+
+LevelSetMethodToolbox.o:                                             \
+	LevelSetMethodToolbox.h                                      \
+	LevelSetMethodToolbox.cc
+
+LevelSetMethodPatchStrategy.o:                                       \
+	LevelSetMethodPatchStrategy.h                                \
+	LevelSetMethodPatchStrategy.cc                               \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodVelocityFieldStrategy.o:                               \
+	LevelSetMethodVelocityFieldStrategy.h                        \
+	LevelSetMethodVelocityFieldStrategy.cc
+
+FieldExtensionAlgorithm.o:                                           \
+	$(SAMRAI)/include/SAMRAI_config.h                            \
+	FieldExtensionAlgorithm.h                                    \
+	FieldExtensionAlgorithm.cc                                   \
+	LSMLIB_DefaultParameters.h                                   \
+	LSMLIB_DefaultParameters.h                                   \
+	LevelSetMethodToolbox.h
+
+OrthogonalizationAlgorithm.o:                                        \
+	OrthogonalizationAlgorithm.h                                 \
+	OrthogonalizationAlgorithm.cc                                \
+	LSMLIB_DefaultParameters.h                                   \
+	LevelSetMethodToolbox.h
+
+ReinitializationAlgorithm.o:                                         \
+	ReinitializationAlgorithm.h                                  \
+	ReinitializationAlgorithm.cc                                 \
+	LSMLIB_DefaultParameters.h                                   \
+	LevelSetMethodToolbox.h
+

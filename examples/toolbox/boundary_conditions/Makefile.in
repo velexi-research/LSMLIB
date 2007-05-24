@@ -1,0 +1,72 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.2 $
+## Modified:    $Date: 2006/12/04 13:53:58 $
+## Description: makefile for boundary condition example/test code
+##
+
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+LIB_DIRS     = -L$(LSMLIB_LIB_DIR)
+
+PROGS        =                                      \
+               neumann_bc_ENO1_1d                   \
+               neumann_bc_ENO2_1d                   \
+               neumann_bc_ENO3_1d                   \
+               neumann_bc_WENO5_1d                  \
+               neumann_bc_ENO1_2d                   \
+               neumann_bc_ENO2_2d                   \
+               neumann_bc_ENO3_2d                   \
+               neumann_bc_WENO5_2d                  \
+               neumann_bc_ENO1_3d                   \
+               neumann_bc_ENO2_3d                   \
+               neumann_bc_ENO3_3d                   \
+               neumann_bc_WENO5_3d                  \
+
+all:  $(PROGS)
+
+neumann_bc_ENO1_1d:  neumann_bc_ENO1_1d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO2_1d:  neumann_bc_ENO2_1d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO3_1d:  neumann_bc_ENO3_1d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_WENO5_1d:  neumann_bc_WENO5_1d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO2_2d:  neumann_bc_ENO2_2d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO3_2d:  neumann_bc_ENO3_2d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_WENO5_2d:  neumann_bc_WENO5_2d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO1_2d:  neumann_bc_ENO1_2d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO2_3d:  neumann_bc_ENO2_3d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO1_3d:  neumann_bc_ENO1_3d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_ENO3_3d:  neumann_bc_ENO3_3d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+neumann_bc_WENO5_3d:  neumann_bc_WENO5_3d.o
+	@CC@ @CFLAGS@ $(LIB_DIRS) -o $@ $^ $(LSMLIB_LIBS)
+
+clean:
+	@RM@ *.o 
+	@RM@ *.dat
+	@RM@ $(PROGS)
+		
+spotless:  clean
+	@RM@ *.log

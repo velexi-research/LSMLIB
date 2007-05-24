@@ -1,0 +1,40 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.4 $
+## Modified:    $Date: 2006/11/03 23:14:54 $
+## Description: makefile for toolbox package (does NOT build library archive)
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+# Set MAKE
+@SET_MAKE@
+
+SUBDIRS = boundary_conditions       \
+          fast_marching_method      \
+          field_extension           \
+          geometry                  \
+          level_set_evolution       \
+          localization              \
+          reinitialization          \
+          spatial_derivatives       \
+          time_integration          \
+          utilities 
+
+
+all:  includes library
+
+includes: 
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+library: 
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+clean:
+	$(RM) *.o
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+

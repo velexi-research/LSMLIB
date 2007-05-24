@@ -1,0 +1,26 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.2 $
+## Modified:    $Date: 2006/07/07 12:02:43 $
+## Description: makefile for SAMRAI Fortran 77 utility subroutines
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+# Set MAKE
+@SET_MAKE@
+
+all:  includes library
+
+includes:  
+	@CP@ $(SRC_DIR)/lsm_samrai_f77_utilities.h $(BUILD_DIR)/include/
+
+library:  lsm_samrai_f77_utilities.o
+
+clean:
+		@RM@ *.o 
+

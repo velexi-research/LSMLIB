@@ -1,0 +1,15 @@
+##
+## File:        Makefile.depend.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.1 $
+## Modified:    $Date: 2006/07/07 12:02:50 $
+## Description: file dependencies for fast marching method functions
+##
+
+FMM_Heap.o:                                          \
+            FMM_Heap.h                               \
+            FMM_Heap.c
+
+FMM_Core.o:                                          \
+            FMM_Core.h                               \
+            FMM_Core.c

@@ -1,0 +1,36 @@
+##
+## File:        Makefile.config.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.5 $
+## Modified:    $Date: 2006/12/04 13:24:35 $
+## Description: configuration file for level set method library Makefiles
+##
+
+
+# include and lib directories
+LSMLIB_INCLUDE = $(BUILD_DIR)/include
+LSMLIB_LIB_DIR = $(BUILD_DIR)/lib @LIB_DIR_EXTRA@
+LSMLIB_LIBS    = @LSMLIB_PARALLEL@ -llsm_serial -llsm_toolbox @LIBS_EXTRA@ -lm
+
+
+# Pattern Rules
+%.o: %.c
+	@CC@ -c @CFLAGS@ -I$(LSMLIB_INCLUDE) $(CFLAGS) $(CPPFLAGS) $(CFLAGS_EXTRA) -o $@ $<
+
+%.o: %.c %.h
+	@CC@ -c @CFLAGS@ -I$(LSMLIB_INCLUDE) $(CFLAGS) $(CPPFLAGS) $(CFLAGS_EXTRA) -o $@ $<
+
+%.o: %.f
+	@F77@ -c @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -o $@ $<
+
+%.o: %.cc
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.cc %.h
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.C
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.C %.h
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<

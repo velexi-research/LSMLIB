@@ -1,0 +1,511 @@
+##
+## File:	Makefile.depend.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:	$Revision: 1.4 $
+## Modified:	$Date: 2006/10/16 20:55:05 $
+## Description: file dependencies for parallel level set method classes
+##
+
+# 1d templates
+BoundaryConditionModule-1d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     BoundaryConditionModule.NDIM.cc                        \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+FieldExtensionAlgorithm-1d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     FieldExtensionAlgorithm.NDIM.cc                        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+LevelSetFunctionIntegrator-1d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetFunctionIntegrator.NDIM.cc                     \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../BoundaryConditionModule.h                           \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h   
+
+LevelSetFunctionIntegratorStrategy-1d.o:                    \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+LevelSetMethodAlgorithm-1d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodAlgorithm.NDIM.cc                        \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodGriddingAlgorithm-1d.o:                       \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodGriddingAlgorithm.NDIM.cc                \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc                  \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodVelocityFieldStrategy.h          
+
+LevelSetMethodGriddingStrategy-1d.o:                        \
+     LevelSetMethodGriddingStrategy.NDIM.cc                 \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+LevelSetMethodPatchStrategy-1d.o:                           \
+     LevelSetMethodPatchStrategy.NDIM.cc                    \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodPatchStrategy.cc
+
+LevelSetMethodToolbox-1d.o:                                 \
+     LevelSetMethodToolbox.NDIM.cc                          \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodToolbox.cc
+
+LevelSetMethodVelocityFieldStrategy-1d.o:                   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+OrthogonalizationAlgorithm-1d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     OrthogonalizationAlgorithm.NDIM.cc                     \
+     ../OrthogonalizationAlgorithm.h                        \
+     ../OrthogonalizationAlgorithm.cc
+
+ReinitializationAlgorithm-1d.o:                             \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ReinitializationAlgorithm.NDIM.cc                      \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__BoundaryConditionModule-1d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__BoundaryConditionModule.NDIM.cc               \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+Pointer__FieldExtensionAlgorithm-1d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__FieldExtensionAlgorithm.NDIM.cc               \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Pointer__LevelSetFunctionIntegrator-1d.o:                   \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetFunctionIntegrator.NDIM.cc            \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h            
+
+Pointer__LevelSetFunctionIntegratorStrategy-1d.o:           \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+Pointer__LevelSetMethodAlgorithm-1d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodAlgorithm.NDIM.cc               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+Pointer__LevelSetMethodGriddingAlgorithm-1d.o:              \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodGriddingAlgorithm.NDIM.cc       \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc
+
+Pointer__LevelSetMethodGriddingStrategy-1d.o:               \
+     Pointer__LevelSetMethodGriddingStrategy.NDIM.cc        \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+Pointer__LevelSetMethodVelocityFieldStrategy-1d.o:          \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+Pointer__ReinitializationAlgorithm-1d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__ReinitializationAlgorithm.NDIM.cc             \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__OrthogonalizationAlgorithm-1d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__OrthogonalizationAlgorithm.NDIM.cc             \
+     ../OrthogonalizationAlgorithm.h                         \
+     ../OrthogonalizationAlgorithm.cc
+
+Array__Pointer__FieldExtensionAlgorithm-1d.o:               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Array__Pointer__FieldExtensionAlgorithm.NDIM.cc        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Array__Pointer__LevelSetMethodVelocityFieldStrategy-1d.o:   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+
+# 2d templates
+BoundaryConditionModule-2d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     BoundaryConditionModule.NDIM.cc                        \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+FieldExtensionAlgorithm-2d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     FieldExtensionAlgorithm.NDIM.cc                        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+LevelSetFunctionIntegrator-2d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetFunctionIntegrator.NDIM.cc                     \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../BoundaryConditionModule.h                           \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h   
+
+LevelSetFunctionIntegratorStrategy-2d.o:                    \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+LevelSetMethodAlgorithm-2d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodAlgorithm.NDIM.cc                        \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodGriddingAlgorithm-2d.o:                       \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodGriddingAlgorithm.NDIM.cc                \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc                  \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodVelocityFieldStrategy.h          
+
+LevelSetMethodGriddingStrategy-2d.o:                        \
+     LevelSetMethodGriddingStrategy.NDIM.cc                 \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+LevelSetMethodPatchStrategy-2d.o:                           \
+     LevelSetMethodPatchStrategy.NDIM.cc                    \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodPatchStrategy.cc
+
+LevelSetMethodToolbox-2d.o:                                 \
+     LevelSetMethodToolbox.NDIM.cc                          \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodToolbox.cc
+
+LevelSetMethodVelocityFieldStrategy-2d.o:                   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+OrthogonalizationAlgorithm-2d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     OrthogonalizationAlgorithm.NDIM.cc                     \
+     ../OrthogonalizationAlgorithm.h                        \
+     ../OrthogonalizationAlgorithm.cc
+
+ReinitializationAlgorithm-2d.o:                             \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ReinitializationAlgorithm.NDIM.cc                      \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__BoundaryConditionModule-2d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__BoundaryConditionModule.NDIM.cc               \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+Pointer__FieldExtensionAlgorithm-2d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__FieldExtensionAlgorithm.NDIM.cc               \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Pointer__LevelSetFunctionIntegrator-2d.o:                   \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetFunctionIntegrator.NDIM.cc            \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h            
+
+Pointer__LevelSetFunctionIntegratorStrategy-2d.o:           \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+Pointer__LevelSetMethodAlgorithm-2d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodAlgorithm.NDIM.cc               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+Pointer__LevelSetMethodGriddingAlgorithm-2d.o:              \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodGriddingAlgorithm.NDIM.cc       \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc
+
+Pointer__LevelSetMethodGriddingStrategy-2d.o:               \
+     Pointer__LevelSetMethodGriddingStrategy.NDIM.cc        \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+Pointer__LevelSetMethodVelocityFieldStrategy-2d.o:          \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+Pointer__ReinitializationAlgorithm-2d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__ReinitializationAlgorithm.NDIM.cc             \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__OrthogonalizationAlgorithm-2d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__OrthogonalizationAlgorithm.NDIM.cc             \
+     ../OrthogonalizationAlgorithm.h                         \
+     ../OrthogonalizationAlgorithm.cc
+
+Array__Pointer__FieldExtensionAlgorithm-2d.o:               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Array__Pointer__FieldExtensionAlgorithm.NDIM.cc        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Array__Pointer__LevelSetMethodVelocityFieldStrategy-2d.o:   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+
+# 3d templates
+BoundaryConditionModule-3d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     BoundaryConditionModule.NDIM.cc                        \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+FieldExtensionAlgorithm-3d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     FieldExtensionAlgorithm.NDIM.cc                        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+LevelSetFunctionIntegrator-3d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetFunctionIntegrator.NDIM.cc                     \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../BoundaryConditionModule.h                           \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h   
+
+LevelSetFunctionIntegratorStrategy-3d.o:                    \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+LevelSetMethodAlgorithm-3d.o:                               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodAlgorithm.NDIM.cc                        \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodGriddingAlgorithm-3d.o:                       \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     LevelSetMethodGriddingAlgorithm.NDIM.cc                \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc                  \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodVelocityFieldStrategy.h          
+
+LevelSetMethodGriddingStrategy-3d.o:                        \
+     LevelSetMethodGriddingStrategy.NDIM.cc                 \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+LevelSetMethodPatchStrategy-3d.o:                           \
+     LevelSetMethodPatchStrategy.NDIM.cc                    \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodPatchStrategy.cc
+
+LevelSetMethodToolbox-3d.o:                                 \
+     LevelSetMethodToolbox.NDIM.cc                          \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodToolbox.cc
+
+LevelSetMethodVelocityFieldStrategy-3d.o:                   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+OrthogonalizationAlgorithm-3d.o:                            \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     OrthogonalizationAlgorithm.NDIM.cc                     \
+     ../OrthogonalizationAlgorithm.h                        \
+     ../OrthogonalizationAlgorithm.cc
+
+ReinitializationAlgorithm-3d.o:                             \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ReinitializationAlgorithm.NDIM.cc                      \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__BoundaryConditionModule-3d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__BoundaryConditionModule.NDIM.cc               \
+     ../BoundaryConditionModule.h                           \
+     ../BoundaryConditionModule.cc
+
+Pointer__FieldExtensionAlgorithm-3d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__FieldExtensionAlgorithm.NDIM.cc               \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Pointer__LevelSetFunctionIntegrator-3d.o:                   \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetFunctionIntegrator.NDIM.cc            \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegrator.inline                   \
+     ../LevelSetFunctionIntegrator.cc                       \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h            
+
+Pointer__LevelSetFunctionIntegratorStrategy-3d.o:           \
+     LevelSetFunctionIntegratorStrategy.NDIM.cc             \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetFunctionIntegratorStrategy.cc
+
+Pointer__LevelSetMethodAlgorithm-3d.o:                      \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodAlgorithm.NDIM.cc               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     ../LevelSetMethodAlgorithm.h                           \
+     ../LevelSetMethodAlgorithm.inline                      \
+     ../LevelSetMethodAlgorithm.cc                          \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetFunctionIntegrator.h                        \
+     ../LevelSetFunctionIntegratorStrategy.h                \
+     ../LevelSetMethodPatchStrategy.h                       \
+     ../LevelSetMethodToolbox.h                             \
+     ../LevelSetMethodVelocityFieldStrategy.h
+
+Pointer__LevelSetMethodGriddingAlgorithm-3d.o:              \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__LevelSetMethodGriddingAlgorithm.NDIM.cc       \
+     ../LevelSetMethodGriddingAlgorithm.h                   \
+     ../LevelSetMethodGriddingAlgorithm.cc
+
+Pointer__LevelSetMethodGriddingStrategy-3d.o:               \
+     Pointer__LevelSetMethodGriddingStrategy.NDIM.cc        \
+     ../LevelSetMethodGriddingStrategy.h                    \
+     ../LevelSetMethodGriddingStrategy.cc
+
+Pointer__LevelSetMethodVelocityFieldStrategy-3d.o:          \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+
+Pointer__ReinitializationAlgorithm-3d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__ReinitializationAlgorithm.NDIM.cc             \
+     ../ReinitializationAlgorithm.h                         \
+     ../ReinitializationAlgorithm.cc
+
+Pointer__OrthogonalizationAlgorithm-3d.o:                    \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Pointer__OrthogonalizationAlgorithm.NDIM.cc             \
+     ../OrthogonalizationAlgorithm.h                         \
+     ../OrthogonalizationAlgorithm.cc
+
+Array__Pointer__FieldExtensionAlgorithm-3d.o:               \
+     $(SAMRAI)/include/SAMRAI_config.h                      \
+     Array__Pointer__FieldExtensionAlgorithm.NDIM.cc        \
+     ../FieldExtensionAlgorithm.h                           \
+     ../FieldExtensionAlgorithm.cc
+
+Array__Pointer__LevelSetMethodVelocityFieldStrategy-3d.o:   \
+     LevelSetMethodVelocityFieldStrategy.NDIM.cc            \
+     ../LevelSetMethodVelocityFieldStrategy.h               \
+     ../LevelSetMethodVelocityFieldStrategy.cc
+

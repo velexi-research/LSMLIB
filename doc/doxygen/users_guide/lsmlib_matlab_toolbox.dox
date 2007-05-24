@@ -1,0 +1,277 @@
+
+/*!
+  @page users_guide_lsmlib_matlab_toolbox LSMLIB MATLAB Toolbox
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref users_guide_parallel_lsmlib_package "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+@ref users_guide_lsmlib_toolbox_package "Next" 
+</td>
+</tr>
+</table>
+</center>
+
+
+<hr>
+\section matlab_introduction Introduction
+The LSMLIB MATLAB Toolbox provides a MATLAB interface for several of the 
+basic components of the level set method algorithm.  The package is 
+composed of a mixture of MATLAB functions and MEX-file wrappers to functions 
+contained in the LSMLIB Toolbox Toolbox.  Specifically, the LSMLIB MATLAB 
+Toolbox currently provides routines for:
+
+- time evolution of level set functions;
+- calculation of high-order ENO/WENO spatial derivatives;
+- TVD Runge-Kutta time integration; 
+- reinitialization of level set functions;
+- computation of the distance function and extension fields
+  using fast marching methods; and
+- solution of Eikonal equations using fast marching methods.
+
+
+<hr>
+\section matlab_usage Usage
+The LSMLIB MATLAB Toolbox is designed to support rapid prototyping and 
+development of moderate resolution level set method calculations.  
+It is easy to carry out level set method calculations in MATLAB using
+the LSMLIB MATLAB Toolbox.  
+
+For calculations involving the time evolution of the level set function,
+the following is a typical structure for the program:
+
+  -# Initialize the level set function.
+  -# Integrate the level set functions in time by:
+     -# Filling ghostcells for the level set function and other field
+        variables in the calculation.
+     -# Compute the velocity field used to advance the level set function.
+        The \ref matlab_spatial_derivative "high-order spatial derivatives"
+        provided by the LSMLIB MATLAB Toolbox can be helpful for this stage 
+        of the computation.
+     -# Advance the level set function in time using one of the
+        \ref matlab_time_evolution "time advance functions". 
+  -# Plot results using MATLAB's built in graphics functionality.
+
+For calculations using fast marching methods:
+
+  -# Initialize the level set function (and auxilliary fields, if
+     present).
+  -# Compute the distance function (and extension fields, if desired)
+     using the \ref matlab_fmm "fast marching method" functions provided
+     by the LSMLIB MATLAB Toolbox. 
+
+Example level set method simulations implemented using the LSMLIB MATLAB
+Toolbox are provided in the examples/matlab directory.  
+
+
+<hr>
+\section matlab_time_evolution Time Evolution of Level Set Functions 
+
+MATLAB functions are provided for evolving the level set functions
+in time using user-supplied velocity fields.
+
+<center>
+<table>
+<tr align="center" valign="middle">
+<th>1st-order</th>
+<th>2nd-order</th>
+<th>3rd-order</th>
+</tr>
+<tr align="center" valign="middle">
+<td>advancePhiTVDRK1</td>
+<td>advancePhiTVDRK2_Stage1</td>
+<td>advancePhiTVDRK3_Stage1</td>
+</tr>
+<tr align="center" valign="middle">
+<td></td>
+<td>advancePhiTVDRK2_Stage2</td>
+<td>advancePhiTVDRK3_Stage2</td>
+</tr>
+<tr align="center" valign="middle">
+<td></td>
+<td></td>
+<td>advancePhiTVDRK3_Stage3</td>
+</tr>
+</table>
+</center>
+
+In addition, the COMPUTE_NORMAL_VELOCITY_TERM_FOR_LSE_RHS_2D() and
+COMPUTE_NORMAL_VELOCITY_TERM_FOR_LSE_RHS_3D() functions are available
+if there is any need to explicitly compute the right-hand side of the
+level set evolution equation when a velocity in the normal direction
+is supplied.
+
+For usage information, see the MATLAB help for these functions. 
+
+
+<hr>
+\section matlab_spatial_derivative High-order Spatial Derivatives 
+
+MATLAB functions are provided for computing spatial derivatives using the 
+following high-order spatial discretizations: HJ-ENO1, HJ-ENO2, HJ-ENO3, and 
+HJ-WENO5.  These functions are made available via MEX wrappers for the 
+numerical kernels in the @ref package_lsm_toolbox "Toolbox" package.   
+
+<center>
+<table>
+<tr align="center" valign="middle">
+<th>1D</th>
+<th>2D</th>
+<th>3D</th>
+</tr>
+<tr align="center" valign="middle">
+<td>UPWIND_HJ_ENO1_1D</td>
+<td>UPWIND_HJ_ENO1_2D</td>
+<td>UPWIND_HJ_ENO1_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>UPWIND_HJ_ENO2_1D</td>
+<td>UPWIND_HJ_ENO2_2D</td>
+<td>UPWIND_HJ_ENO2_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>UPWIND_HJ_ENO3_1D</td>
+<td>UPWIND_HJ_ENO3_2D</td>
+<td>UPWIND_HJ_ENO3_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>UPWIND_HJ_WENO5_1D</td>
+<td>UPWIND_HJ_WENO5_2D</td>
+<td>UPWIND_HJ_WENO5_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>HJ_ENO1_1D</td>
+<td>HJ_ENO1_2D</td>
+<td>HJ_ENO1_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>HJ_ENO2_1D</td>
+<td>HJ_ENO2_2D</td>
+<td>HJ_ENO2_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>HJ_ENO3_1D</td>
+<td>HJ_ENO3_2D</td>
+<td>HJ_ENO3_3D</td>
+</tr>
+<tr align="center" valign="middle">
+<td>HJ_WENO5_1D</td>
+<td>HJ_WENO5_2D</td>
+<td>HJ_WENO5_3D</td>
+</tr>
+</table>
+</center>
+
+For usage information, see the MATLAB help for these functions. 
+
+
+<hr>
+\section matlab_tvdrk Total Variation Diminishing Runge-Kutta Time Integration 
+
+MATLAB functions are provided for advancing the level set functions
+in time using first-, second-, or third-order TVD Runge-Kutta schemes.
+
+<center>
+<table>
+<tr align="center" valign="middle">
+<th>1st-order</th>
+<th>2nd-order</th>
+<th>3rd-order</th>
+</tr>
+<tr align="center" valign="middle">
+<td>TVD_RK1_STEP</td>
+<td>TVD_RK2_STAGE1</td>
+<td>TVD_RK3_STAGE1</td>
+</tr>
+<tr align="center" valign="middle">
+<td></td>
+<td>TVD_RK2_STAGE2</td>
+<td>TVD_RK3_STAGE2</td>
+</tr>
+<tr align="center" valign="middle">
+<td></td>
+<td></td>
+<td>TVD_RK3_STAGE3</td>
+</tr>
+</table>
+</center>
+
+For usage information, see the MATLAB help for these functions. 
+
+
+<hr>
+\section matlab_reinitialization Reinitialization 
+  
+MATLAB functions are provided for reinitialization of level set functions
+to be signed distance functions.
+  
+<center>
+<table>
+<tr align="center" valign="middle">
+<th>2D</th>
+<th>3D
+</tr>
+<tr align="center" valign="middle">
+<td>reinitializeLevelSetFunction</td>
+<td>reinitializeLevelSetFunction</td>
+</tr>
+</table>
+</center>
+
+For usage information, see the MATLAB help for these functions. 
+
+
+<hr>
+\section matlab_fmm Fast Marching Method 
+
+MATLAB functions are provided for computing distance functions and 
+extending field variables off of the zero level set using first-order 
+accurate fast marching methods.  These functions are made available via
+MEX wrappers for the numerical kernels in the 
+@ref package_lsm_toolbox "Toolbox" package.   
+
+<center>
+<table>
+<tr align="center" valign="middle">
+<th>2D</th>
+<th>3D</th>
+</tr>
+<tr align="center" valign="middle">
+<td>computeDistanceFunction2d</td>
+<td>computeDistanceFunction3d</td>
+</tr>
+<tr align="center" valign="middle">
+<td>computeExtensionFields2d</td>
+<td>computeExtensionFields3d</td>
+</tr>
+</table>
+</center>
+
+For usage information, see the MATLAB help for these functions. 
+
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref users_guide_parallel_lsmlib_package "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+@ref users_guide_lsmlib_toolbox_package "Next" 
+</td>
+</tr>
+</table>
+</center>
+
+*/

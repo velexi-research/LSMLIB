@@ -1,0 +1,35 @@
+
+TO_DO LIST
+----------
+
+* (2005/10/03) (DONE 2005/10/10) Clean up documentation of MEX-code. 
+* (2005/10/03) (DONE 2005/10/09) Add reinitialization/orthogonalization. 
+* (2005/10/03) (DONE 2005/10/09) Add 3D fast marching method calculations. 
+* (2005/10/03) Add second-order fast marching method calculations.
+* (2005/10/03) Add standard boundary conditions for level set evolution 
+  equation
+  - (DONE) periodic
+  - (DONE) anti-periodic
+  - neumann
+  - extrapolation
+* (2005/10/03) (DONE 2005/12/14) Add extension of fields off of the surface 
+  and computation of distance function using PDE based formulation.
+* (2005/10/11) Add verbose mode for LevelSetMethodAlgorithm, 
+  LevelSetMethodGriddingAlgorithm, and LevelSetMethodIntegrator
+  - (DONE 2005/10/12) output of reinitialization/orthogonalization statistics 
+* (2005/10/17) (DONE 2005/10/20) Add support for motion under normal 
+  velocity ... needs Godunov selection of convection term
+* (2005/10/20) Fix computation of level set equation RHS when advection and
+  normal velocity motion occur.
+* (2005/10/22) (DONE 2006/03/11) Use autoconf to configure build. 
+* (2005/10/28) Add const qualifier to methods that do not change the state
+  of the object.
+* (2005/12/05) (DONE) Add central discretization for grad(phi).
+* (2005) (DONE 2006/01/01) Add support for vector level set method 
+  calculations
+* (2006/03/18) Add second derivative operators.
+* (2006/05/29) Add higher-level algorithmic functionality to serial
+  LSMLIB package
+* (2006/05/29) Write a more complete user's guide.
+* (2006/12/03) Unify interface for time evolution and fast marching method
+  components of serial LSMLIB package.

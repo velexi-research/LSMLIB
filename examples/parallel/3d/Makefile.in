@@ -1,0 +1,31 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.4 $
+## Modified:    $Date: 2006/07/07 15:30:44 $
+## Description:	makefile for parallel level set method test programs
+##
+
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+# Set MAKE
+@SET_MAKE@
+
+# configuration for SAMRAI library
+include @samrai_inc@/../config/Makefile.config
+
+SUBDIRS = advection field_extension orthogonalization toolbox
+
+all:
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+clean:
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+cleanrun:
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+
+spotless:	clean cleanrun
+	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
+

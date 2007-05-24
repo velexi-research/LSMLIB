@@ -1,0 +1,27 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.4 $
+## Modified:    $Date: 2006/07/07 12:02:36 $
+## Description: makefile for installing MATLAB scripts for TVD-RK time 
+##              integration
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+LSMLIB_BUILD_DIR = @top_builddir@
+include $(LSMLIB_BUILD_DIR)/config/Makefile.config
+
+# include MATLAB configuration
+include $(LSMLIB_BUILD_DIR)/config/Makefile.config.MATLAB
+
+library:  
+	if [ ! -d "$(LSMLIB_BUILD_DIR)/lib/matlab" ]; then mkdir $(LSMLIB_BUILD_DIR)/lib/matlab; fi
+	@CP@ *.m $(LSMLIB_BUILD_DIR)/lib/matlab
+	if [ -d "$(MATLAB_INSTALL_DIR)/LSMLIB" ]; then @CP@ *.m $(MATLAB_INSTALL_DIR)/LSMLIB/; fi
+
+matlab:
+
+clean:
+		@RM@ *.@mex_extension@
+		@RM@ *.o 
+

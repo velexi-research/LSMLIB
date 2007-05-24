@@ -1,0 +1,27 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.1 $
+## Modified:    $Date: 2006/09/30 18:13:49 $
+## Description: makefile for boundary condition subroutines
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+all:  includes library
+
+includes:  
+	@CP@ $(SRC_DIR)/lsm_boundary_conditions1d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_boundary_conditions2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_boundary_conditions3d.h $(BUILD_DIR)/include/
+
+library:  lsm_boundary_conditions1d.o    \
+          lsm_boundary_conditions2d.o    \
+          lsm_boundary_conditions3d.o
+
+clean:
+	@RM@ *.o 
+

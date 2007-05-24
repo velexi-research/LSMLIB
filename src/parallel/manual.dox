@@ -1,0 +1,101 @@
+/*
+  File:        manual.dox
+  Package:     LSMLIB Doxygen manual
+  Copyright:   (c) 2005-2006 Kevin T. Chu
+  Revision:    $Revision: 1.8 $
+  Modified:    $Date: 2006/11/01 15:17:57 $
+  Description: Generation of LSMLIB Doxygen source code manual
+*/
+
+namespace LSMLIB {
+
+/*!
+  @page package_lsm_parallel Parallel LSMLIB Package
+
+  The Parallel LSMLIB Package provides support for carrying out 
+  level set method calculations on distributed memory, parallel computing 
+  architectures (such as Beowulf clusters).  
+
+  The parallel computing capabilities of the package are provided by the
+  <a href="http://www.llnl.gov/CASC/SAMRAI">Structured Adaptive Mesh
+  Refinement Application Infrastructure (SAMRAI)</a> developed and
+  maintained in the Center for Applied Scientific Computing (CASC) at
+  Lawrence Livermore National Laboratory (LLNL).  The decision to leverage
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> for the Level Set
+  Method Library was made because
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> was specifically
+  designed to address several key issues:
+
+  - manage parallelism,
+  - handle structured, adaptive mesh refinement, and
+  - provide restart capabilities.
+
+  A major design goal of <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a>
+  was to provide support for each of these features in a scalable manner.
+  Furthermore, the API for
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> was designed to shield
+  the application developer from the tedious bookkeeping and memory management
+  involved in writing code for parallel, structured adaptive mesh refinement
+  applications.  The underlying philosophy of
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> is that an application
+  developer should be able to migrate to a high-performance, parallel program
+  with adaptive mesh capabilities with minimal effort once a satisfactory
+  numerical algorithm has been developed for calculations on a single, simple
+  rectangular mesh.  We have taken advantage of these features to make LSMLIB
+  a high-performance, scalable, parallel (and eventually adaptive) level set 
+  method library.
+
+  <hr>
+  <h1> Parallel LSMLIB Classes </h1>
+  The Parallel Level Set Method Package contains several C++ classes.  
+  These are designed to provide the user with access to high-level 
+  algorithmic components and shield them from low-level programming 
+  details of parallel computations.
+
+  For typical level set method computations, users need only be concerned 
+  with the following five classes:
+
+  - LSMLIB::LevelSetMethodAlgorithm
+  - LSMLIB::LevelSetMethodToolbox
+  - LSMLIB::FieldExtensionAlgorithm
+  - LSMLIB::LevelSetMethodPatchStrategy
+  - LSMLIB::LevelSetMethodVelocityFieldStrategy
+
+  The LevelSetMethodAlgorithm class supplies high-level algorithmic 
+  components/stages required for typical level set method calculations.  
+  The LevelSetMethodToolbox class supplies several utility functions that 
+  are common to many level set method simulations but that are not required 
+  for level set method calculations or that may have more general uses.  
+  The FieldExtensionAlgorithm class provides functionality for extending 
+  values of arbitrary field variables (such as the velocity field) off of 
+  the zero level set.  Finally, the LevelSetMethodPatchStrategy and the 
+  LevelSetMethodVelocityFieldStrategy are abstract base classes that 
+  define interfaces which the user <em>must</em> implement in order 
+  to carry out a level set method calculation using LSMLIB.  These 
+  user-defined classes provide application specific routines for
+  initializing the level set function and computing the velocity field.
+
+  The remaining eight LSMLIB classes support the functionality provided 
+  by these five classes.  The typical user will not need to be concerned
+  with them, but for particularly challenging problems, there may be 
+  occasion when it will be necessary to use them directly.
+
+  - LSMLIB::LevelSetMethodGriddingStrategy
+  - LSMLIB::LevelSetMethodGriddingAlgorithm
+  - LSMLIB::LevelSetFunctionIntegratorStrategy
+  - LSMLIB::LevelSetFunctionIntegrator
+  - LSMLIB::ReinitializationAlgorithm
+  - LSMLIB::OrthogonalizationAlgorithm
+  - LSMLIB::BoundaryConditionModule
+
+
+  <hr>
+  <h1> Visualization </h1>
+  Results of level set method calculations may be visualized using 
+  the SAMRAI::appu::VisItDataWriter class to write
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> data to 
+  <a href="http://www.llnl.gov/visit/">VisIt</a> data file format
+
+*/
+
+}

@@ -1,0 +1,33 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.1 $
+## Modified:    $Date: 2006/08/12 19:44:20 $
+## Description: makefile for building MATLAB MEX-files for reinitialization
+##
+
+SRC_DIR = @srcdir@
+VPATH = @srcdir@
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+# include MATLAB configuration
+include $(BUILD_DIR)/config/Makefile.config.MATLAB
+
+
+library: mex
+	if [ ! -d "$(BUILD_DIR)/lib/matlab" ]; then mkdir $(BUILD_DIR)/lib/matlab; fi
+	@CP@ *.m $(BUILD_DIR)/lib/matlab
+	@CP@ *.@mex_extension@ $(BUILD_DIR)/lib/matlab
+	if [ -d "$(MATLAB_INSTALL_DIR)/LSMLIB" ]; then @CP@ *.m $(MATLAB_INSTALL_DIR)/LSMLIB/; fi
+	if [ -d "$(MATLAB_INSTALL_DIR)/LSMLIB" ]; then @CP@ *.@mex_extension@ $(MATLAB_INSTALL_DIR)/LSMLIB/; fi
+
+mex:  matlab
+
+matlab:  COMPUTE_REINIT_EQN_RHS_2D.@mex_extension@   \
+         COMPUTE_REINIT_EQN_RHS_3D.@mex_extension@   \
+
+clean:
+		@RM@ *.@mex_extension@
+		@RM@ *.o 
+

@@ -1,0 +1,92 @@
+
+/*!
+  @page users_guide_overview Overview
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref lsmlib_users_guide "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+@ref users_guide_serial_lsmlib_package "Next" 
+</td>
+</tr>
+</table>
+</center>
+
+<hr>
+LSMLIB (Level Set Method Library) provides support for the serial and 
+parallel simulation of implicit surface and curve dynamics in two- and 
+three-dimensions (support for nodes in one-dimension is also provided).
+It contains an implementation of many of the standard level set method
+algorithms and numerical kernels described in "Level Set Methods and
+Dynamics Implicit Surfaces" by S. Osher and R. Fedkiw and "Level Set
+Methods and Fast Marching Methods" by J.A. Sethian.
+
+LSMLIB has been designed to be modular and easy to use.  There are several 
+points of entry depending on the particular needs of the specific 
+application.  The library is divided into four packages:  
+
+  - @ref users_guide_lsmlib_toolbox_package "LSMLIB Toolbox Package":   
+    core algorithms and numerical kernels for the level set method
+    calculations
+  - @ref users_guide_serial_lsmlib_package "Serial LSMLIB Package":    
+    high-level C data structures and algorithmic components for level
+    set method computations on a single processor
+  - @ref users_guide_parallel_lsmlib_package "Parallel LSMLIB Package":  
+    C++ classes that encapsulate high-level algorithmic components of 
+    parallel level set method computations
+  - @ref users_guide_lsmlib_matlab_toolbox "LSMLIB MATLAB Toolbox":    
+    MATLAB interface for several components of the level set method algorithm
+    
+For single processor calculations, the 
+@ref users_guide_serial_lsmlib_package "Serial LSMLIB Package" and
+@ref users_guide_lsmlib_toolbox_package "LSMLIB Toolbox Package"
+supply the basic components needed by any typical level set method 
+calculation (free of any dependencies on external software libraries).  
+For large scale calculations, the 
+@ref users_guide_parallel_lsmlib_package "Parallel LSMLIB Package"
+(which is based on the 
+<a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> software library 
+developed at Lawrence Livermore National Laboratory) provides support for 
+parallel (and eventually AMR) level set calculations.  Finally, LSMLIB
+also provides a MATLAB interface for some components of level set method 
+calculations, which may be useful for rapid prototyping and/or educational 
+purposes.
+
+In the remainder of the LSMLIB User's Guide, we will discuss the usage of 
+each LSMLIB package.  It is assumed that the reader is familiar with the basic 
+ideas behind level set method calculations.  Users who are not as familiar 
+with the level set method should first consult a level set method reference.  
+Two good introductory boosk on the level set method are:
+
+  - "Level set methods and dynamic implicit surfaces" by S. Osher 
+    and R. Fedkiw
+
+  - "Level set methods and fast marching methods: evolving interfaces
+     in computational geometry, fluid mechanics, computer vision, and
+     material science" by J. A. Sethian.
+
+<hr>
+<center>
+<table border="0">
+<tr>
+<td width="15%" align="left">
+@ref lsmlib_users_guide "Previous" 
+</td>
+<td width="70%" align="center">
+@ref lsmlib_users_guide "Table of Contents"
+</td>
+<td width="15%" align="right">
+@ref users_guide_serial_lsmlib_package "Next" 
+</td>
+</tr>
+</table>
+</center>
+
+*/

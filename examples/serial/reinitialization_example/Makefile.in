@@ -1,0 +1,30 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2006 Masa Prodanovic
+## Revision:    $Revision: 1.5 $
+## Modified:    $Date: 2006/12/04 13:25:27 $
+## Description: makefile for reinitialization example
+##
+
+BUILD_DIR = @top_builddir@
+include $(BUILD_DIR)/config/Makefile.config
+
+INCLUDE      = -I$(LSMLIB_INCLUDE) -I.
+LIB_DIRS     = -L$(LSMLIB_LIB_DIR) -L.
+
+# uncomment if gdb debugging flags are desired
+#CFLAGS_EXTRA = -g
+#FFLAGS_EXTRA = -g
+
+PROGS = lsm_reinitialize
+OBJLIST = lsm_options.o lsm_reinitialization_medium2d.o lsm_reinitialize.o
+
+all:  $(PROGS)
+
+lsm_reinitialize: $(OBJLIST)
+	@CC@ @CFLAGS@ $(CFLAGS_EXTRA) $(LIB_DIRS) $(INCLUDE) $(OBJLIST) \
+	$(LSMLIB_LIBS) -o $@
+
+clean:
+	rm -f *.o
+	rm -f $(PROGS)

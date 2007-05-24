@@ -1,0 +1,60 @@
+##
+## File:        Makefile.in
+## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Revision:    $Revision: 1.9 $
+## Modified:    $Date: 2006/12/06 00:21:09 $
+## Description:	makefile for parallel level set method test programs
+##
+
+BUILD_DIR = @top_builddir@
+
+# configuration for SAMRAI library
+include @samrai_inc@/../config/Makefile.config
+
+# NOTE:  LSMLIB's Makefile.config MUST be included last because it
+#        redefines the pattern rules for compiling source code
+include $(BUILD_DIR)/config/Makefile.config
+
+# Set MAKE
+@SET_MAKE@
+
+CPPFLAGS_EXTRA = -I$(FORTRAN)
+
+all: TestLSM_2d_main
+
+TestLSM_2d_main:                                         \
+		TestLSM_2d_main.o                        \
+		TestLSM_2d_VelocityFieldModule.o         \
+		TestLSM_2d_PatchModule.o                 \
+                testlsm_2d_patchmodule_fort.o            \
+                testlsm_2d_normalvelocityfield_fort.o
+	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
+        $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
+        $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
+        $(LDLIBS) -o TestLSM_2d_main
+     
+clean:
+		@RM@ TestLSM_2d_main
+		@RM@ *.o core 
+		@RM@ PI*
+
+cleanrun:
+		@RM@ PI*
+		@RM@ *.log
+		@RM@ *.log.*
+		@RM@ -r *.visit
+		@RM@ -r *.restart
+
+spotless:	clean cleanrun
+
+include Makefile.depend
+
+FORTRAN = fortran
+
+testlsm_2d_patchmodule_fort.o: $(FORTRAN)/testlsm_2d_patchmodule_fort.f
+	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
+
+testlsm_2d_normalvelocityfield_fort.o:                \
+  $(FORTRAN)/testlsm_2d_normalvelocityfield_fort.f
+	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
+
