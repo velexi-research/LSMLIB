@@ -14,9 +14,6 @@ c
 c  lsm1dComputeUnitNormal() computes the unit normal vector to the 
 c  interface from grad(phi).
 c
-c  This expression avoids division by zero in computing the unit
-c  normal vector.
-c
 c  Arguments:
 c    normal (out):  unit normal vector
 c    phi_* (in):    components of grad(phi) 
@@ -30,8 +27,7 @@ c***********************************************************************
      &  ilo_normal_gb, ihi_normal_gb,
      &  phi_x,
      &  ilo_grad_phi_gb, ihi_grad_phi_gb,
-     &  ilo_fb, ihi_fb,
-     &  dx)
+     &  ilo_fb, ihi_fb)
 c***********************************************************************
 c { begin subroutine
       implicit none
@@ -44,7 +40,6 @@ c     _fb refers to fill-box for normal data
       integer ilo_fb, ihi_fb
       double precision normal(ilo_normal_gb:ihi_normal_gb)
       double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      double precision dx
       integer i
       double precision abs_phi_x_cur
       double precision half

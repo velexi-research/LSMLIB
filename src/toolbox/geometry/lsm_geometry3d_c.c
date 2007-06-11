@@ -10,9 +10,6 @@
 #include <float.h>
 #include "lsm_geometry3d.h"
 
-/* KTC - DEBUGGING */
-#include <stdio.h>
-
 /* MACROS */
 #define  LSM_GEOM_3D_ABS(x)       ( ((x) > 0) ? (x) : -(x) )
 #define  LSM_GEOM_3D_ZERO_TOL     (1.0e-12)

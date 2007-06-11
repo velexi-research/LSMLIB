@@ -14,9 +14,6 @@ c
 c  lsm3dComputeUnitNormal() computes the unit normal vector to the 
 c  interface from grad(phi). 
 c
-c  This expression avoids division by zero in computing the unit
-c  normal vector.
-c
 c  Arguments:
 c    normal_* (out):   components of unit normal vector
 c    phi_* (in):       components of grad(phi) 
@@ -36,8 +33,7 @@ c***********************************************************************
      &  klo_grad_phi_gb, khi_grad_phi_gb,
      &  ilo_fb, ihi_fb,
      &  jlo_fb, jhi_fb,
-     &  klo_fb, khi_fb,
-     &  dx, dy, dz)
+     &  klo_fb, khi_fb)
 c***********************************************************************
 c { begin subroutine
       implicit none
@@ -72,18 +68,12 @@ c     _fb refers to fill-box for normal data
       double precision phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision dx, dy, dz
       double precision norm_grad_phi, inv_norm_grad_phi
-      double precision dx_sq
       integer i,j,k
       double precision half
       parameter (half=0.5d0)
       double precision zero_tol
       parameter (zero_tol=1.0d0-13)
-
-c     set value of dx_sq to be square of max{dx,dy,dz}
-      dx_sq = max(dx,dy,dz)
-      dx_sq = dx_sq*dx_sq
 
 c     { begin loop over grid
       do k=klo_fb,khi_fb
@@ -124,9 +114,6 @@ c  vector (sgn(phi)*normal) to the interface from grad(phi) using
 c  the following smoothed sgn function 
 c
 c    sgn(phi) = phi/sqrt( phi^2 + |grad(phi)|^2 * dx^2 )
-c
-c  This expression avoids division by zero in computing the unit
-c  normal vector.
 c
 c  Arguments:
 c    normal_* (out):     components of unit normal vector

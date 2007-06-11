@@ -14,9 +14,6 @@ c
 c  lsm2dComputeUnitNormal() computes the unit normal vector to the 
 c  interface from grad(phi). 
 c
-c  This expression avoids division by zero in computing the unit
-c  normal vector.
-c
 c  Arguments:
 c    normal_* (out):  components of unit normal vector
 c    phi_* (in):      components of grad(phi) 
@@ -33,8 +30,7 @@ c***********************************************************************
      &  ilo_grad_phi_gb, ihi_grad_phi_gb,
      &  jlo_grad_phi_gb, jhi_grad_phi_gb,
      &  ilo_fb, ihi_fb,
-     &  jlo_fb, jhi_fb,
-     &  dx, dy)
+     &  jlo_fb, jhi_fb)
 c***********************************************************************
 c { begin subroutine
       implicit none
@@ -56,7 +52,6 @@ c     _fb refers to fill-box for normal data
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
       double precision phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
-      double precision dx, dy
       double precision norm_grad_phi, inv_norm_grad_phi
       integer i,j
       double precision half
@@ -98,9 +93,6 @@ c  vector (sgn(phi)*normal) to the interface from grad(phi) using
 c  the following smoothed sgn function 
 c
 c    sgn(phi) = phi/sqrt( phi^2 + |grad(phi)|^2 * dx^2 )
-c
-c  This expression avoids division by zero in computing the unit
-c  normal vector.
 c
 c  Arguments:
 c    normal_* (out):     components of unit normal vector
@@ -443,7 +435,7 @@ c       loop over included cells {
         do j=jlo_ib,jhi_ib
           do i=ilo_ib,ihi_ib
              
-	     phi_cur = phi(i,j)
+             phi_cur = phi(i,j)
   
              if (abs(phi_cur) .lt. epsilon) then
                 delta = 0.5d0*one_over_epsilon
@@ -455,7 +447,7 @@ c       loop over included cells {
 
                 perimeter = perimeter + delta*norm_grad_phi*dA
              endif
-	      
+
          enddo
         enddo
 c       } end loop over grid

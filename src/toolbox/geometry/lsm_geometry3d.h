@@ -48,26 +48,19 @@ extern "C" {
 
 /*!
  * LSM3D_COMPUTE_UNIT_NORMAL() computes the unit normal vector to the
- * interface from \f$ \nabla \phi \f$ using the slightly modified 
- * expression for the norm:
- *
- * \f[
- *
- *   norm = \sqrt{ |\nabla \phi|^2 + dx^2 }
- *
- * \f]
- *
- * This expression avoids division by zero in computing the unit
- * normal vector.
+ * interface from \f$ \nabla \phi \f$.
  *
  * Arguments:
  *  - normal (out):  unit normal vector
  *  - phi_* (in):    components of \f$ \nabla \phi \f$
- *  - dx (in):       grid spacing
  *  - *_gb (in):     index range for ghostbox
  *  - *_fb (in):     index range for fillbox
  *
  * Return value:     none
+ *
+ * NOTES:
+ * - When \f$ | \nabla \phi | \f$ is close to zero, the unit normal is
+ *   arbitrarily set to be (1.0, 0.0, 0.0).
  *
  */
 void LSM3D_COMPUTE_UNIT_NORMAL(
@@ -94,10 +87,7 @@ void LSM3D_COMPUTE_UNIT_NORMAL(
   const int *jlo_fb, 
   const int *jhi_fb,
   const int *klo_fb, 
-  const int *khi_fb,
-  const double *dx,
-  const double *dy,
-  const double *dz);
+  const int *khi_fb);
 
 
 /*!
@@ -111,17 +101,6 @@ void LSM3D_COMPUTE_UNIT_NORMAL(
  *   
  * \f]
  *
- * and the following slightly modified expression for the norm
- *
- * \f[
- *
- *   norm = \sqrt{ |\nabla \phi|^2 + dx^2}
- *    
- * \f]
- *
- * This expression avoids division by zero in computing the unit
- * normal vector.
- *   
  * Arguments:
  *  - normal_* (out):     components of unit normal vector
  *  - phi_* (in):         components of \f$ \nabla \phi \f$
@@ -131,6 +110,10 @@ void LSM3D_COMPUTE_UNIT_NORMAL(
  *  - *_fb (in):          index range for fillbox
  *
  * Return value:          none
+ *
+ * NOTES:
+ * - When \f$ | \nabla \phi | \f$ is close to zero, the unit normal is
+ *   arbitrarily set to be (1.0, 0.0, 0.0).
  *
  */
 void LSM3D_COMPUTE_SIGNED_UNIT_NORMAL(
