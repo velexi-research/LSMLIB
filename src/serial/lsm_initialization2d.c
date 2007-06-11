@@ -156,15 +156,15 @@ void createIntersectionOfRectangles(
   int *inside_flag,
   Grid *grid)
 {   
-  double point_x[6], point_y[6];
-  double normal_x[6], normal_y[6];
+  double point_x[4], point_y[4];
+  double normal_x[4], normal_y[4];
   int i, l, num_planes;
      
   double  *phi1 = (double *)malloc(grid->num_gridpts*sizeof(double)); 
         
   for(l = 0; l < num_rectangles; l++) {
     /* Each rectangle is the intersection of 4 half spaces */
-    for(i = 0; i < 3; i++) {
+    for(i = 0; i < 2; i++) {
       point_x[i] = corner_x[l];
       point_y[i] = corner_y[l];
     
@@ -175,15 +175,15 @@ void createIntersectionOfRectangles(
       else        normal_y[i] = 0;
     }
        
-    for(i = 3; i < 6; i++)
+    for(i = 2; i < 4; i++)
     {
       point_x[i] = corner_x[l] + side_length_x[l];
       point_y[i] = corner_y[l] + side_length_y[l];
     
-      if (i == 3) normal_x[i] = 1;
+      if (i == 2) normal_x[i] = 1;
       else        normal_x[i] = 0;
     
-      if (i == 4) normal_y[i] = 1;
+      if (i == 3) normal_y[i] = 1;
       else        normal_y[i] = 0;
     }
       
@@ -203,3 +203,4 @@ void createIntersectionOfRectangles(
     
   free(phi1);
 }
+
