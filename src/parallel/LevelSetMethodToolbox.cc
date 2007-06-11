@@ -3626,8 +3626,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
           &fillbox_lower[1],
           &fillbox_upper[1],
           &fillbox_lower[2],
-          &fillbox_upper[2],
-          &dx[0], &dx[1], &dx[2]);
+          &fillbox_upper[2]);
 
       } else if ( DIM == 2 ) {
 
@@ -3709,8 +3708,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
           &fillbox_lower[0],
           &fillbox_upper[0],
           &fillbox_lower[1],
-          &fillbox_upper[1],
-          &dx[0], &dx[1]);
+          &fillbox_upper[1]);
 
       } else if ( DIM == 1 ) {
 
@@ -3768,8 +3766,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
           &grad_phi_ghostbox_lower[0],
           &grad_phi_ghostbox_upper[0],
           &fillbox_lower[0],
-          &fillbox_upper[0],
-          &dx[0]);
+          &fillbox_upper[0]);
 
       } else {  // Unsupported dimension
 
@@ -4781,7 +4778,6 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
-      const double* dx = patch_geom->getDx();
   
       Box<DIM> fillbox = normal_vector_data->getBox();
       const IntVector<DIM> fillbox_lower = fillbox.lower();
@@ -4828,8 +4824,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
           &fillbox_lower[1],
           &fillbox_upper[1],
           &fillbox_lower[2],
-          &fillbox_upper[2],
-          &dx[0], &dx[1], &dx[2]);
+          &fillbox_upper[2]);
 
       } else if ( DIM == 2 ) {
 
@@ -4847,8 +4842,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
           &fillbox_lower[0],
           &fillbox_upper[0],
           &fillbox_lower[1],
-          &fillbox_upper[1],
-          &dx[0], &dx[1]);
+          &fillbox_upper[1]);
 
       } else if ( DIM == 1 ) {
 
@@ -4860,8 +4854,7 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
           &grad_phi_ghostbox_lower[0],
           &grad_phi_ghostbox_upper[0],
           &fillbox_lower[0],
-          &fillbox_upper[0],
-          &dx[0]);
+          &fillbox_upper[0]);
 
       } else {  // Unsupported dimension
 
