@@ -95,7 +95,7 @@ case $mpi_type in
     mpi_dir=$with_openmpi
     mpi_include_dirs="$with_openmpi/include $with_openmpi/include/openmpi/ompi"
     mpi_lib_dir=$with_openmpi/lib
-    mpi_libs="-lmpi_f90 -lmpi_cxx -lmpi -lorte -lopal"
+    mpi_libs="-lmpi_f90 -lmpi_cxx -lmpi"
     ;;
   ibmmpi)
     AC_PROGRAM_PATH(MPICC,mpcc)
