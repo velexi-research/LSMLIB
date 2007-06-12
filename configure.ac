@@ -16,8 +16,11 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 case $target in
-  *darwin*)
-    AC_SUBST([arch],darwin)
+  *ppc*darwin*)
+    AC_SUBST([arch],ppc-darwin)
+  ;;
+  *86*darwin*)
+    AC_SUBST([arch],intel-darwin)
   ;;
   *linux*)
     AC_SUBST([arch],linux)
@@ -144,8 +147,11 @@ AC_SUBST(mex_flags)
 # set mex-file suffix if library configured with MATLAB
 AS_IF([! test -z "$matlab_dir"],
       [case $arch in
-         darwin)
+         ppc-darwin)
            AC_SUBST([mex_extension],mexmac)
+         ;;
+         intel-darwin)
+           AC_SUBST([mex_extension],mexmaci)
          ;;
          linux)
            AC_SUBST([mex_extension],mexglx)

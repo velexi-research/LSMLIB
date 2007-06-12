@@ -1930,8 +1930,12 @@ test -n "$target_alias" &&
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
 case $target in
-  *darwin*)
-    arch=darwin
+  *ppc*darwin*)
+    arch=ppc-darwin
+
+  ;;
+  *86*darwin*)
+    arch=intel-darwin
 
   ;;
   *linux*)
@@ -5568,8 +5572,12 @@ fi
 # set mex-file suffix if library configured with MATLAB
 if ! test -z "$matlab_dir"; then
   case $arch in
-         darwin)
+         ppc-darwin)
            mex_extension=mexmac
+
+         ;;
+         intel-darwin)
+           mex_extension=mexmaci
 
          ;;
          linux)
@@ -7038,7 +7046,7 @@ if test -z "$CXX"; then
 fi
 
 if test -z "$F77"; then
-  F77=g77
+  F77=gfortran
 fi
 
 
@@ -7079,6 +7087,9 @@ esac
 
 case "$F77" in
   g77)
+    FFLAGS="-fPIC $FFLAGS"
+  ;;
+  gfortran)
     FFLAGS="-fPIC $FFLAGS"
   ;;
   xlf)
@@ -7137,6 +7148,9 @@ echo "$as_me: WARNING: unrecognized C++ compiler...trying '-O' compiler flag..."
 
     case "$F77" in
       g77)
+        FFLAGS="-O3 $FFLAGS"
+      ;;
+      gfortran)
         FFLAGS="-O3 $FFLAGS"
       ;;
       xlf)
@@ -7198,6 +7212,9 @@ echo "$as_me: WARNING: unrecognized C++ compiler...trying '-g' compiler flag..."
       g77)
         FFLAGS="-g -Wall $FFLAGS"
       ;;
+      gfortran)
+        FFLAGS="-g -Wall $FFLAGS"
+      ;;
       xlf)
         FFLAGS="-g $FFLAGS"
       ;;
@@ -7255,6 +7272,9 @@ echo "$as_me: WARNING: unrecognized C++ compiler...trying '-pg' compiler flag...
 
     case "$F77" in
       g77)
+        FFLAGS="-pg $FFLAGS"
+      ;;
+      gfortran)
         FFLAGS="-pg $FFLAGS"
       ;;
       xlf)
