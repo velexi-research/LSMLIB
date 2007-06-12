@@ -10,7 +10,7 @@
 #
 # check for mpi library
 #
-AC_DEFUN(CHECK_MPI,[
+AC_DEFUN([CHECK_MPI],[
 
 PACKAGE_NAME_LOCAL_VAR="$1"
 

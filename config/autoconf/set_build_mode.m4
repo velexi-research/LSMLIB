@@ -10,7 +10,7 @@
 #
 # set the build mode
 #
-AC_DEFUN(SET_BUILD_MODE,[
+AC_DEFUN([SET_BUILD_MODE],[
 
 AC_MSG_CHECKING([build mode])
 
@@ -51,7 +51,7 @@ AS_IF([test $enable_profile = yes],
 # Set default compilers to avoid errors
 AS_IF([test -z "$CC"], [CC=gcc])
 AS_IF([test -z "$CXX"], [CXX=g++])
-AS_IF([test -z "$F77"], [F77=g77])
+AS_IF([test -z "$F77"], [F77=gfortran])
 
 # set compiler flags to build position-independent code
 case "$CC" in
@@ -90,6 +90,9 @@ esac
 
 case "$F77" in
   g77)
+    FFLAGS="-fPIC $FFLAGS"
+  ;;
+  gfortran)
     FFLAGS="-fPIC $FFLAGS"
   ;;
   xlf)
@@ -148,6 +151,9 @@ case $build_mode in
       g77)
         FFLAGS="-O3 $FFLAGS"
       ;;
+      gfortran)
+        FFLAGS="-O3 $FFLAGS"
+      ;;
       xlf)
         FFLAGS="-O $FFLAGS"
       ;;
@@ -204,6 +210,9 @@ case $build_mode in
       g77)
         FFLAGS="-g -Wall $FFLAGS"
       ;;
+      gfortran)
+        FFLAGS="-g -Wall $FFLAGS"
+      ;;
       xlf)
         FFLAGS="-g $FFLAGS"
       ;;
@@ -258,6 +267,9 @@ case $build_mode in
 
     case "$F77" in
       g77)
+        FFLAGS="-pg $FFLAGS"
+      ;;
+      gfortran)
         FFLAGS="-pg $FFLAGS"
       ;;
       xlf)
