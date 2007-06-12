@@ -16,7 +16,6 @@ c***********************************************************************
      &  vel_n,
      &  ilo_vel_gb, ihi_vel_gb, jlo_vel_gb, jhi_vel_gb,
      &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
-     &  dx,
      &  x_lower,
      &  speed,
      &  omega,
@@ -28,15 +27,11 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision vel_n(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb)
-      integer bdry_loc
       integer i,j
-      double precision dx(0:1)
       double precision x_lower(0:1)
       double precision time
       double precision speed
       double precision omega
-      double precision x,y
-      double precision r
       double precision speed_n
 
       speed_n = speed*cos(omega*time)
@@ -67,7 +62,6 @@ c***********************************************************************
      &  ilo_phi_gb, ihi_phi_gb, jlo_phi_gb, jhi_phi_gb,
      &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
      &  dx, dy,
-     &  x_lower, y_lower,
      &  speed)
 c***********************************************************************
       implicit none
@@ -79,13 +73,9 @@ c***********************************************************************
      &                       jlo_vel_gb:jhi_vel_gb)
       double precision phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb)
-      integer bdry_loc
       integer i,j
       double precision dx, dy
-      double precision x_lower, y_lower
       double precision speed
-      double precision x,y
-      double precision r
       double precision kappa
       double precision phi_x
       double precision phi_y

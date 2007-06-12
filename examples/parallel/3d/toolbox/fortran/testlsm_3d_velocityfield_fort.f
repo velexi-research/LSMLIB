@@ -8,7 +8,7 @@ c  Description: F77 velocity field routines for 3d LSM test problem
 c
 c***********************************************************************
 c***********************************************************************
-c  Uniform velocity in x-direction with magnitude 1:  U = (1,0)
+c  Uniform velocity in x-direction with magnitude 1:  U = (1,0,0)
 c***********************************************************************
       subroutine uniformvelx(
      &  u,v,w,
@@ -28,7 +28,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision zero,one
       parameter (zero=0.0)
@@ -41,6 +40,7 @@ c     loop over box {
   
             u(i,j,k) = one
             v(i,j,k) = zero
+            w(i,j,k) = zero
 
           enddo
         enddo
@@ -51,7 +51,7 @@ c     } end loop over box
       end
 c***********************************************************************
 c***********************************************************************
-c  Uniform velocity in y-direction with magnitude 1:  U = (0,1)
+c  Uniform velocity in y-direction with magnitude 1:  U = (0,1,0)
 c***********************************************************************
       subroutine uniformvely(
      &  u,v,w,
@@ -71,7 +71,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision zero,one
       parameter (zero=0.0)
@@ -84,6 +83,7 @@ c     loop over box {
   
             u(i,j,k) = zero
             v(i,j,k) = one
+            w(i,j,k) = zero
 
           enddo
         enddo
@@ -94,8 +94,8 @@ c     } end loop over box
       end
 c***********************************************************************
 c***********************************************************************
-c  Uniform velocity in (1,1)-direction with magnitude sqrt(2):  
-c    U = (1,1)
+c  Uniform velocity in (1,1,0)-direction with magnitude sqrt(2):  
+c    U = (1,1,0)
 c***********************************************************************
       subroutine uniformvelxy(
      &  u,v,w,
@@ -115,10 +115,10 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
-      double precision one
-      parameter (one=1.0)
+      double precision zero,one
+      parameter (one=1.0d0)
+      parameter (zero=0.0d0)
 
 c     loop over box {
       do k=klo_fb,khi_fb
@@ -127,6 +127,7 @@ c     loop over box {
   
             u(i,j,k) = one
             v(i,j,k) = one
+            w(i,j,k) = zero
 
           enddo
         enddo
@@ -138,7 +139,7 @@ c     } end loop over box
 c***********************************************************************
 c***********************************************************************
 c Pure rotation velocity field with angular velocity 1: 
-c   U = (-y,x)
+c   U = (-y,x,0)
 c***********************************************************************
       subroutine rotatingvel(
      &  u,v,w,
@@ -160,7 +161,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision dx(0:2)
       double precision x_lower(0:2)
@@ -176,6 +176,7 @@ c     loop over box {
             z = x_lower(2) + dx(2)*(0.5+k-klo_gb)
             u(i,j,k) = -y
             v(i,j,k) = x
+            w(i,j,k) = 0.0d0
 
           enddo
         enddo
@@ -212,7 +213,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision dx(0:2)
       double precision x_lower(0:2)
@@ -234,9 +234,11 @@ c     loop over box {
             if (r .ne. 0) then
               u(i,j,k) = speed*cos(omega*time)*x/r
               v(i,j,k) = speed*cos(omega*time)*y/r
+              w(i,j,k) = speed*cos(omega*time)*y/r
             else
               u(i,j,k) = 0.0
               v(i,j,k) = 0.0
+              w(i,j,k) = 0.0
             endif
 
           enddo

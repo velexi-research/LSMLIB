@@ -28,7 +28,6 @@ void COMPUTE_OSCILLATING_EXPANSION_VELOCITY (
   const int* ihi_fb, 
   const int* jlo_fb, 
   const int* jhi_fb,
-  const double* dx,
   const double* x_lower,
   const double* speed,
   const double* omega,
@@ -51,8 +50,6 @@ void COMPUTE_MEAN_CURVATURE_VELOCITY (
   const int* jhi_fb,
   const double* dx,
   const double* dy,
-  const double* x_lower,
-  const double* y_lower,
   const double* speed);
 
 #endif

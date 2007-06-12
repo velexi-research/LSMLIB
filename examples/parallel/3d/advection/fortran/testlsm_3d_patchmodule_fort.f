@@ -27,7 +27,6 @@ c     _fb refers to fill box
      &                           jlo_gb:jhi_gb,
      &                           klo_gb:khi_gb)
       double precision x_lower(0:2)
-      double precision x_upper(0:2)
       double precision dx(0:2)
       double precision x,y,z
       integer i,j,k

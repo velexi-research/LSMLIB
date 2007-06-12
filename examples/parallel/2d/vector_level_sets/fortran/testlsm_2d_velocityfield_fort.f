@@ -21,7 +21,6 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       double precision v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
-      integer bdry_loc
       integer i,j
       double precision zero,one
       parameter (zero=0.0)
@@ -55,7 +54,6 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       double precision v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
-      integer bdry_loc
       integer i,j
       double precision zero,one
       parameter (zero=0.0)
@@ -90,7 +88,6 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       double precision v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
-      integer bdry_loc
       integer i,j
       double precision one
       parameter (one=1.0)
@@ -126,7 +123,6 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       double precision v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
-      integer bdry_loc
       integer i,j
       double precision dx(0:1)
       double precision x_lower(0:1)
@@ -168,7 +164,6 @@ c***********************************************************************
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       double precision u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       double precision v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
-      integer bdry_loc
       integer i,j
       double precision dx(0:1)
       double precision x_lower(0:1)

@@ -28,7 +28,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision zero,one
       parameter (zero=0.0)
@@ -72,7 +71,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision zero,one
       parameter (zero=0.0)
@@ -117,7 +115,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision one
       parameter (one=1.0)
@@ -163,7 +160,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision dx(0:2)
       double precision x_lower(0:2)
@@ -216,7 +212,6 @@ c***********************************************************************
       double precision w(ilo_gb:ihi_gb,
      &                   jlo_gb:jhi_gb,
      &                   klo_gb:khi_gb)
-      integer bdry_loc
       integer i,j,k
       double precision dx(0:2)
       double precision x_lower(0:2)

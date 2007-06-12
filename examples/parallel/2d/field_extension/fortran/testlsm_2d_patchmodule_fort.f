@@ -26,7 +26,6 @@ c     _fb refers to fill box
       double precision level_set(ilo_gb:ihi_gb,
      &                           jlo_gb:jhi_gb)
       double precision x_lower(0:1)
-      double precision x_upper(0:1)
       double precision dx(0:1)
       double precision x,y
       integer i,j

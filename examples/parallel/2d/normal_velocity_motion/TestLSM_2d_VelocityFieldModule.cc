@@ -219,7 +219,6 @@ void TestLSM_2d_VelocityFieldModule::computeVelocityFieldOnLevel(
           &normal_vel_upper[0],
           &normal_vel_lower[1],
           &normal_vel_upper[1],
-          dx,
           x_lower,
           &d_speed,
           &d_omega,
@@ -248,8 +247,6 @@ void TestLSM_2d_VelocityFieldModule::computeVelocityFieldOnLevel(
           &normal_vel_upper[1],
           &dx[0],
           &dx[1],
-          &x_lower[0],
-          &x_lower[1],
           &speed);
         break;
       }
