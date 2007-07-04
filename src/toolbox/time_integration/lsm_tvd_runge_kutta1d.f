@@ -110,7 +110,7 @@ c     use lsm1dRK1Step() to compute first stage
      &                  rhs,
      &                  ilo_rhs_gb, ihi_rhs_gb,
      &                  ilo_fb, ihi_fb, 
-     &  		dt)
+     &                  dt)
 
       return
       end
@@ -220,7 +220,7 @@ c     use lsm1dRK1Step() to compute first stage
      &                  rhs, 
      &                  ilo_rhs_gb, ihi_rhs_gb,
      &                  ilo_fb, ihi_fb,
-     &  		dt)
+     &                  dt)
 
       return
       end

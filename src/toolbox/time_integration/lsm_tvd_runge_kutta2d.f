@@ -133,7 +133,7 @@ c     use lsm2dRK1Step() to compute first stage
      &                  ilo_rhs_gb, ihi_rhs_gb,
      &                  jlo_rhs_gb, jhi_rhs_gb,
      &                  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
-     &  		dt)
+     &                  dt)
 
       return
       end
@@ -269,7 +269,7 @@ c     use lsm2dRK1Step() to compute first stage
      &                  ilo_rhs_gb, ihi_rhs_gb,
      &                  jlo_rhs_gb, jhi_rhs_gb,
      &                  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
-     &  		dt)
+     &                  dt)
 
       return
       end
