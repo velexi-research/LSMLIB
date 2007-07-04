@@ -837,7 +837,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
   // advance TVD RK2 stage counter
   rk_stage = 1;
 
-  // fill scratch space for secont stage of time advance
+  // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -924,7 +924,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
   // advance TVD RK3 stage counter
   rk_stage = 1;
 
-  // fill scratch space for secont stage of time advance
+  // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -957,7 +957,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
   // advance TVD RK3 stage counter
   rk_stage = 2;
 
-  // fill scratch space for secont stage of time advance
+  // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
