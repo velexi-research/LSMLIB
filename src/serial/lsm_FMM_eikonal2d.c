@@ -203,7 +203,6 @@ void FMM_initializeFront_Eikonal2d(
 {
   /* FMM Field Data variables */
   double *phi   = fmm_field_data->phi;
-  double *speed = fmm_field_data->speed;
    
   /* grid variables */
   int grid_idx[LSM_FMM_2D_NDIM];
