@@ -1441,11 +1441,11 @@ void FieldExtensionAlgorithm<DIM>::initializeCommunicationObjects()
     d_extension_field_fill_bdry_sched[k].setNull();
 
     // register data transfer to fill boundary data before time advance
-      d_extension_field_fill_bdry_alg[k]->registerRefine(
-        d_extension_field_scr_handles[k],
-        d_extension_field_scr_handles[k],
-        d_extension_field_scr_handles[k],
-        refine_op);
+    d_extension_field_fill_bdry_alg[k]->registerRefine(
+      d_extension_field_scr_handles[k],
+      d_extension_field_scr_handles[k],
+      d_extension_field_scr_handles[k],
+      refine_op);
 
   } // end loop over TVD-Runge-Kutta stages
 
