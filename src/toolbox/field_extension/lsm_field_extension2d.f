@@ -82,7 +82,7 @@ c     _fb refers to fill-box
       double precision signed_normal_y(
      &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
      &                   jlo_signed_normal_gb:jhi_signed_normal_gb)
-      double precision dx, dy, dz
+      double precision dx, dy
       integer i,j
       double precision zero
       parameter (zero=0.0d0)
