@@ -107,7 +107,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   /* Check for that grid dimensions are the same */
   if ( (grid_dims_phi[0] != grid_dims_speed[0]) ||
        (grid_dims_phi[1] != grid_dims_speed[1]) ||
-       (grid_dims_phi[1] != grid_dims_speed[2]) ) {
+       (grid_dims_phi[2] != grid_dims_speed[2]) ) {
     mexErrMsgTxt("The dimensions for phi and speed should be the same.");
   }
 
