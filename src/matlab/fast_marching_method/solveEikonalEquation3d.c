@@ -150,7 +150,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                  mask,
                  spatial_derivative_order,
                  (int*) grid_dims_phi,
-                 dX);
+                 dX_matlab_order);
 
   if (error_code) {
     mexErrMsgTxt("solveEikonalEquation3d failed...");
