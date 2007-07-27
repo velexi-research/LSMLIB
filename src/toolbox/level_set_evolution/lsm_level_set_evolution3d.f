@@ -245,32 +245,33 @@ c     { begin loop over grid
           do i=ilo_fb,ihi_fb
 
             vel_n_cur = vel_n(i,j,k)
-
-c           { begin Godunov selection of grad_phi
-
-            if (vel_n_cur .gt. 0.d0) then
-              norm_grad_phi_sq = max(max(phi_x_minus(i,j,k),0.d0)**2,
-     &                               min(phi_x_plus(i,j,k),0.d0)**2 )
-     &                         + max(max(phi_y_minus(i,j,k),0.d0)**2,
-     &                               min(phi_y_plus(i,j,k),0.d0)**2 )
-     &                         + max(max(phi_z_minus(i,j,k),0.d0)**2,
-     &                               min(phi_z_plus(i,j,k),0.d0)**2 )
-            else
-              norm_grad_phi_sq = max(min(phi_x_minus(i,j,k),0.d0)**2,
-     &                               max(phi_x_plus(i,j,k),0.d0)**2 )
-     &                         + max(min(phi_y_minus(i,j,k),0.d0)**2,
-     &                               max(phi_y_plus(i,j,k),0.d0)**2 )
-     &                         + max(min(phi_z_minus(i,j,k),0.d0)**2,
-     &                               max(phi_z_plus(i,j,k),0.d0)**2 )
-            endif
-
-c           } end Godunov selection of grad_phi
-
-
-c           compute contribution to lse_rhs(i,j,k) 
             if (abs(vel_n_cur) .ge. tol) then
+
+c             { begin Godunov selection of grad_phi
+
+              if (vel_n_cur .gt. 0.d0) then
+                norm_grad_phi_sq = max(max(phi_x_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_x_plus(i,j,k),0.d0)**2 )
+     &                           + max(max(phi_y_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_y_plus(i,j,k),0.d0)**2 )
+     &                           + max(max(phi_z_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_z_plus(i,j,k),0.d0)**2 )
+              else
+                norm_grad_phi_sq = max(min(phi_x_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_x_plus(i,j,k),0.d0)**2 )
+     &                           + max(min(phi_y_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_y_plus(i,j,k),0.d0)**2 )
+     &                           + max(min(phi_z_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_z_plus(i,j,k),0.d0)**2 )
+              endif
+
+c             } end Godunov selection of grad_phi
+
+
+c             compute contribution to lse_rhs(i,j,k) 
               lse_rhs(i,j,k) = lse_rhs(i,j,k) 
      &                       - vel_n_cur*sqrt(norm_grad_phi_sq)
+
             endif
       
           enddo 
@@ -368,42 +369,45 @@ c { begin subroutine
       double precision tol
       parameter (tol=1.d-13)
 
-c     { begin loop over grid
-      do k=klo_fb,khi_fb
-        do j=jlo_fb,jhi_fb
-          do i=ilo_fb,ihi_fb
+      if (abs(vel_n) .ge. tol) then
 
-c           { begin Godunov selection of grad_phi
+c       { begin loop over grid
+        do k=klo_fb,khi_fb
+          do j=jlo_fb,jhi_fb
+            do i=ilo_fb,ihi_fb
 
-            if (vel_n .gt. 0.d0) then
-              norm_grad_phi_sq = max(max(phi_x_minus(i,j,k),0.d0)**2,
-     &                               min(phi_x_plus(i,j,k),0.d0)**2 )
-     &                         + max(max(phi_y_minus(i,j,k),0.d0)**2,
-     &                               min(phi_y_plus(i,j,k),0.d0)**2 )
-     &                         + max(max(phi_z_minus(i,j,k),0.d0)**2,
-     &                               min(phi_z_plus(i,j,k),0.d0)**2 )
-            else
-              norm_grad_phi_sq = max(min(phi_x_minus(i,j,k),0.d0)**2,
-     &                               max(phi_x_plus(i,j,k),0.d0)**2 )
-     &                         + max(min(phi_y_minus(i,j,k),0.d0)**2,
-     &                               max(phi_y_plus(i,j,k),0.d0)**2 )
-     &                         + max(min(phi_z_minus(i,j,k),0.d0)**2,
-     &                               max(phi_z_plus(i,j,k),0.d0)**2 )
-            endif
+c             { begin Godunov selection of grad_phi
 
-c           } end Godunov selection of grad_phi
+              if (vel_n .gt. 0.d0) then
+                norm_grad_phi_sq = max(max(phi_x_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_x_plus(i,j,k),0.d0)**2 )
+     &                           + max(max(phi_y_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_y_plus(i,j,k),0.d0)**2 )
+     &                           + max(max(phi_z_minus(i,j,k),0.d0)**2,
+     &                                 min(phi_z_plus(i,j,k),0.d0)**2 )
+              else
+                norm_grad_phi_sq = max(min(phi_x_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_x_plus(i,j,k),0.d0)**2 )
+     &                           + max(min(phi_y_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_y_plus(i,j,k),0.d0)**2 )
+     &                           + max(min(phi_z_minus(i,j,k),0.d0)**2,
+     &                                 max(phi_z_plus(i,j,k),0.d0)**2 )
+              endif
+
+c             } end Godunov selection of grad_phi
 
 
-c           compute contribution to lse_rhs(i,j,k) 
-            if (abs(vel_n) .ge. tol) then
+c             compute contribution to lse_rhs(i,j,k) 
               lse_rhs(i,j,k) = lse_rhs(i,j,k) 
      &                     - vel_n*sqrt(norm_grad_phi_sq)
-            endif
+
       
+            enddo 
           enddo 
         enddo 
-      enddo 
 c     } end loop over grid
+
+      endif
 
       return
       end
@@ -504,31 +508,31 @@ c     { begin loop over grid
       do k=klo_fb, khi_fb
         do j=jlo_fb,jhi_fb
           do i=ilo_fb,ihi_fb
-	  
-c           compute squared magnitude of gradient
-	    grad_mag2 = phi_x(i,j,k) * phi_x(i,j,k) + 
-     &	                phi_y(i,j,k) * phi_y(i,j,k) +
-     &                  phi_z(i,j,k) * phi_z(i,j,k)
-	    if(grad_mag2 .lt. tol) then
-	      curv = 0.d0
-	    else
-	      curv = phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	         +   phi_yy(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	         - 2*phi_xy(i,j,k)*phi_x(i,j,k)*phi_y(i,j,k)
-     &           +   phi_xx(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	         +   phi_zz(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	         - 2*phi_xz(i,j,k)*phi_x(i,j,k)*phi_z(i,j,k)
-     &           +   phi_yy(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	         +   phi_zz(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	         - 2*phi_yz(i,j,k)*phi_y(i,j,k)*phi_z(i,j,k)
-	      curv = curv / grad_mag2 
-	    endif
 
-	    lse_rhs(i,j,k) = lse_rhs(i,j,k) + b*curv
+c           compute squared magnitude of gradient
+            grad_mag2 = phi_x(i,j,k) * phi_x(i,j,k)
+     &                + phi_y(i,j,k) * phi_y(i,j,k)
+     &                + phi_z(i,j,k) * phi_z(i,j,k)
+            if (grad_mag2 .lt. tol) then
+              curv = 0.d0
+            else
+              curv = phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)  
+     &             +   phi_yy(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)  
+     &             - 2*phi_xy(i,j,k)*phi_x(i,j,k)*phi_y(i,j,k)
+     &             +   phi_xx(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)  
+     &             +   phi_zz(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)  
+     &             - 2*phi_xz(i,j,k)*phi_x(i,j,k)*phi_z(i,j,k)
+     &             +   phi_yy(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)  
+     &             +   phi_zz(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)  
+     &             - 2*phi_yz(i,j,k)*phi_y(i,j,k)*phi_z(i,j,k)
+              curv = curv / grad_mag2 
+            endif
+
+            lse_rhs(i,j,k) = lse_rhs(i,j,k) + b*curv
       
           enddo 
         enddo
-      enddo 	
+      enddo 
 c     } end loop over grid
 
       return

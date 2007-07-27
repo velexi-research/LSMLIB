@@ -192,28 +192,29 @@ c     { begin loop over grid
         do i=ilo_fb,ihi_fb
 
           vel_n_cur = vel_n(i,j)
-
-c         { begin Godunov selection of grad_phi
-
-          if (vel_n_cur .gt. 0.d0) then
-            norm_grad_phi_sq = max(max(phi_x_minus(i,j),0.d0)**2,
-     &                             min(phi_x_plus(i,j),0.d0)**2 )
-     &                       + max(max(phi_y_minus(i,j),0.d0)**2,
-     &                             min(phi_y_plus(i,j),0.d0)**2 )
-          else
-            norm_grad_phi_sq = max(min(phi_x_minus(i,j),0.d0)**2,
-     &                             max(phi_x_plus(i,j),0.d0)**2 )
-     &                       + max(min(phi_y_minus(i,j),0.d0)**2,
-     &                             max(phi_y_plus(i,j),0.d0)**2 )
-          endif
-
-c         } end Godunov selection of grad_phi
-
-
-c         compute contribution to lse_rhs(i,j) 
           if (abs(vel_n_cur) .ge. tol) then
+
+c           { begin Godunov selection of grad_phi
+
+            if (vel_n_cur .gt. 0.d0) then
+              norm_grad_phi_sq = max(max(phi_x_minus(i,j),0.d0)**2,
+     &                               min(phi_x_plus(i,j),0.d0)**2 )
+     &                         + max(max(phi_y_minus(i,j),0.d0)**2,
+     &                               min(phi_y_plus(i,j),0.d0)**2 )
+            else
+              norm_grad_phi_sq = max(min(phi_x_minus(i,j),0.d0)**2,
+     &                               max(phi_x_plus(i,j),0.d0)**2 )
+     &                         + max(min(phi_y_minus(i,j),0.d0)**2,
+     &                               max(phi_y_plus(i,j),0.d0)**2 )
+            endif
+
+c           } end Godunov selection of grad_phi
+
+
+c           compute contribution to lse_rhs(i,j) 
             lse_rhs(i,j) = lse_rhs(i,j) 
      &                   - vel_n_cur*sqrt(norm_grad_phi_sq)
+
           endif
      
         enddo 
@@ -291,37 +292,40 @@ c { begin subroutine
       double precision tol
       parameter (tol=1.d-13)
 
-c     { begin loop over grid
-      do j=jlo_fb,jhi_fb
-        do i=ilo_fb,ihi_fb
+      if (abs(vel_n) .ge. tol) then
+
+c       { begin loop over grid
+        do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
 
 
-c         { begin Godunov selection of grad_phi
+c           { begin Godunov selection of grad_phi
 
-          if (vel_n .gt. 0.d0) then
-            norm_grad_phi_sq = max(max(phi_x_minus(i,j),0.d0)**2,
-     &                             min(phi_x_plus(i,j),0.d0)**2 )
-     &                       + max(max(phi_y_minus(i,j),0.d0)**2,
-     &                             min(phi_y_plus(i,j),0.d0)**2 )
-          else
-            norm_grad_phi_sq = max(min(phi_x_minus(i,j),0.d0)**2,
-     &                             max(phi_x_plus(i,j),0.d0)**2 )
-     &                       + max(min(phi_y_minus(i,j),0.d0)**2,
-     &                             max(phi_y_plus(i,j),0.d0)**2 )
-          endif
+            if (vel_n .gt. 0.d0) then
+              norm_grad_phi_sq = max(max(phi_x_minus(i,j),0.d0)**2,
+     &                               min(phi_x_plus(i,j),0.d0)**2 )
+     &                         + max(max(phi_y_minus(i,j),0.d0)**2,
+     &                               min(phi_y_plus(i,j),0.d0)**2 )
+            else
+              norm_grad_phi_sq = max(min(phi_x_minus(i,j),0.d0)**2,
+     &                               max(phi_x_plus(i,j),0.d0)**2 )
+     &                         + max(min(phi_y_minus(i,j),0.d0)**2,
+     &                               max(phi_y_plus(i,j),0.d0)**2 )
+            endif
 
-c         } end Godunov selection of grad_phi
+c           } end Godunov selection of grad_phi
 
 
-c         compute contribution to lse_rhs(i,j) 
-          if (abs(vel_n) .ge. tol) then
-            lse_rhs(i,j) = lse_rhs(i,j) 
-     &                   - vel_n*sqrt(norm_grad_phi_sq)
-          endif
-     
+c           compute contribution to lse_rhs(i,j) 
+              lse_rhs(i,j) = lse_rhs(i,j) 
+     &                     - vel_n*sqrt(norm_grad_phi_sq)
+
+          enddo 
         enddo 
-      enddo 
-c     } end loop over grid
+c       } end loop over grid
+
+      endif
+     
 
       return
       end

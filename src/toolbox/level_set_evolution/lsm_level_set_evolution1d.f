@@ -148,22 +148,23 @@ c     { begin loop over grid
       do i=ilo_fb,ihi_fb
 
         vel_n_cur = vel_n(i)
-
-c       { begin Godunov selection of grad_phi
-
-        if (vel_n_cur .gt. 0.d0) then
-          phi_x_sq_cur = max(max(phi_x_minus(i),0.d0)**2,
-     &                       min(phi_x_plus(i),0.d0)**2 )
-        else
-          phi_x_sq_cur = max(min(phi_x_minus(i),0.d0)**2,
-     &                       max(phi_x_plus(i),0.d0)**2 )
-        endif
-c       } end Godunov selection of grad_phi
-
-
-c       compute contribution to lse_rhs(i) 
         if (abs(vel_n_cur) .ge. tol) then
+
+c         { begin Godunov selection of grad_phi
+
+          if (vel_n_cur .gt. 0.d0) then
+            phi_x_sq_cur = max(max(phi_x_minus(i),0.d0)**2,
+     &                         min(phi_x_plus(i),0.d0)**2 )
+          else
+            phi_x_sq_cur = max(min(phi_x_minus(i),0.d0)**2,
+     &                         max(phi_x_plus(i),0.d0)**2 )
+          endif
+c         } end Godunov selection of grad_phi
+
+
+c         compute contribution to lse_rhs(i) 
           lse_rhs(i) = lse_rhs(i) - vel_n_cur*sqrt(phi_x_sq_cur)
+
         endif
       
       enddo 
