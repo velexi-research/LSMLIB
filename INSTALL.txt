@@ -51,7 +51,15 @@ Installation Procedure
         --with-matlab-install-dir=<director where LSMLIB MATLAB files 
                                    are to be installed>
         --without-matlab
-      
+    
+      * Installation options
+        --prefix=<directory in which to install LSMLIB>
+ 
+      * Optimization options
+        --enable-opt
+        --enable-debug
+        --enable-profile
+ 
       * Compiler choices should be set via environment variables.
         CC:   C compiler
         CXX:  C++ compiler
