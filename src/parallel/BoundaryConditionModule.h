@@ -14,7 +14,8 @@
  * \brief 
  * The BoundaryConditionModule provides support for several common
  * boundary conditions for level set functions:  homogeneous Neumann,
- * extrapolation, and anti-periodic boundary conditions.
+ * extrapolation, and anti-periodic boundary conditions.  See the 
+ * NOTES section for how to set periodic boundary conditions.
  *
  * In more detail, these boundary conditions are:
  * 
@@ -57,6 +58,11 @@
  *
  * <h3> NOTES: </h3>
  *
+ * - To impose PERIODIC boundary conditions in a coordinate direction,
+ *   set that coordinate direction to be a periodic direction for the 
+ *   CartesianGridGeometry object (may be set in the input file) and
+ *   set the boundary condition type to NONE. 
+ * 
  * - In order for anti-periodic boundary conditions to be used in a 
  *   coordinate direction, the GridGeometry associated with the 
  *   PatchHierarchy MUST be set to be periodic in that coordinate 
@@ -107,6 +113,12 @@ public:
    * Enumerated type for types of boundary conditions provided by
    * the BoundaryConditionModule class.
    *
+   * NOTES:
+   * - To impose PERIODIC boundary conditions in a coordinate direction,
+   *   set that coordinate direction to be a periodic direction for the 
+   *   CartesianGridGeometry object (may be set in the input file) and
+   *   set the boundary condition type to NONE. 
+   * 
    */
   typedef enum {
     NONE                        = 0,
