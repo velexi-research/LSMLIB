@@ -6520,12 +6520,10 @@ void LevelSetMethodToolbox<DIM>::computeControlVolumes(
         patch->getPatchGeometry();
       const double* dx = patch_geometry->getDx();
       double cell_vol = dx[0];
-#if DIM > 1
-      cell_vol *= dx[1];
-#endif
-#if DIM > 2
-      cell_vol *= dx[2];
-#endif
+      for (int i = 1; i<DIM; i++) {
+        cell_vol *= dx[i];
+      } 
+
       Pointer< CellData<DIM,double> > cv_data =
         patch->getPatchData(control_volume_handle);
       if ( !cv_data ) {
