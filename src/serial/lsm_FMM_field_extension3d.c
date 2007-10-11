@@ -181,9 +181,6 @@ int computeExtensionFields3d(
     updateGridPoint);
   if (!fmm_core_data) return LSM_FMM_3D_ERR_FMM_DATA_CREATION_ERROR;
 
-  /* initialize grid points around the front */ 
-  FMM_Core_initializeFront(fmm_core_data); 
-
   /* mark grid points outside of domain */
   for (k = 0; k < grid_dims[2]; k++) {
     for (j = 0; j < grid_dims[1]; j++) {
@@ -197,7 +194,10 @@ int computeExtensionFields3d(
         }
       }
     }
-  }
+  } /* end loop over grid to mark points outside of domain */
+
+  /* initialize grid points around the front */ 
+  FMM_Core_initializeFront(fmm_core_data); 
 
   /* update remaining grid points */
   while (FMM_Core_moreGridPointsToUpdate(fmm_core_data)) {

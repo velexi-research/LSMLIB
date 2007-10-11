@@ -152,9 +152,6 @@ int solveEikonalEquation2d(
     updateGridPoint);
   if (!fmm_core_data) return LSM_FMM_2D_ERR_FMM_DATA_CREATION_ERROR;
 
-  /* initialize grid points around the front */ 
-  FMM_Core_initializeFront(fmm_core_data); 
-
   /* mark grid points outside of domain */
   for (j = 0; j < grid_dims[1]; j++) {
     for (i = 0; i < grid_dims[0]; i++) {
@@ -180,7 +177,10 @@ int solveEikonalEquation2d(
       }
 
     }
-  } 
+  } /* end loop over grid to mark points outside of domain */ 
+
+  /* initialize grid points around the front */ 
+  FMM_Core_initializeFront(fmm_core_data); 
 
   /* update remaining grid points */
   while (FMM_Core_moreGridPointsToUpdate(fmm_core_data)) {
@@ -252,7 +252,7 @@ double FMM_updateGridPoint_Eikonal2d_Order1(
 
   /* FMM Field Data variables */
   double *phi   = fmm_field_data->phi; 
-  double *speed = fmm_field_data->speed; 
+  double *speed; 
 
   /* variables used in phi update */
   PointStatus  neighbor_status;
