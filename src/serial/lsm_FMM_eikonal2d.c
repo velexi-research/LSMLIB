@@ -252,7 +252,7 @@ double FMM_updateGridPoint_Eikonal2d_Order1(
 
   /* FMM Field Data variables */
   double *phi   = fmm_field_data->phi; 
-  double *speed; 
+  double *speed = fmm_field_data->speed;
 
   /* variables used in phi update */
   PointStatus  neighbor_status;
