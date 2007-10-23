@@ -16,7 +16,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 case $target in
-  *ppc*darwin*)
+  *powerpc*darwin* | *ppc*darwin*)
     AC_SUBST([arch],ppc-darwin)
   ;;
   *86*darwin*)
