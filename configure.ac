@@ -7,7 +7,7 @@
 # INITIALIZATION
 #===========================================================================
 AC_PREREQ(2.57)
-AC_INIT([LSMLIB], 0.8.0, [ktchu@princeton.edu])
+AC_INIT([LSMLIB], 1.0.0, [ktchu@princeton.edu])
 AC_REVISION($Revision: 1.31 $)
 AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.h])
 AC_CONFIG_HEADER([config/LSMLIB_config.h])
@@ -325,11 +325,12 @@ make includes
 #==========================================================================
 if test "$srcdir" != "."; then
   echo "Copying MATLAB scripts to build directory..."
-  cp -r $srcdir/src/matlab/* src/matlab/
-  configure_input_files=`find src/matlab -name "*.in"`
-  for file in $configure_input_files; do rm -f $file; done
-  cvs_directories=`find src/matlab -name "CVS"`
-  for dir in $cvs_directories; do rm -rf $dir; done
+
+  MATLAB_SRC_DIRS="fast_marching_method level_set_evolution 
+                   reinitialization spatial_derivatives time_integration"
+  for dir in ${MATLAB_SRC_DIRS}; do
+    cp -f $srcdir/src/matlab/$dir/*.m src/matlab/$dir
+  done
 fi
 
 #==========================================================================
@@ -340,8 +341,8 @@ if test "$srcdir" != "."; then
   cp -r $srcdir/examples/* examples/
   configure_input_files=`find examples -name "*.in"`
   for file in $configure_input_files; do rm -f $file; done
-  cvs_directories=`find examples -name "CVS"`
-  for dir in $cvs_directories; do rm -rf $dir; done
+  svn_directories=`find examples -name ".svn"`
+  for dir in $svn_directories; do rm -rf $dir; done
 fi
 
 #==========================================================================
