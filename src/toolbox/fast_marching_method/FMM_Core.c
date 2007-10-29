@@ -96,10 +96,11 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   int *ptr;                        /* integer pointer loop variable */
 
   /* check that num_dimension is supported */
-  if ( (num_dims < 2) || (num_dims > FMM_CORE_MAX_NDIM) ) {
+  if ( num_dims > FMM_CORE_MAX_NDIM ) {
     fprintf(stderr,
     "ERROR: Invalid number of dimensions.  Only NDIM < %d supported.\n",
     FMM_CORE_MAX_NDIM);
+    exit(-1);
   } 
 
   /* allocate memory for FMM_CoreData */
