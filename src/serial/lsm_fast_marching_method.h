@@ -76,6 +76,9 @@ extern "C" {
  *
  *
  * NOTES:
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.
+ *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
@@ -124,6 +127,9 @@ int computeExtensionFields2d(
  *
  *
  * NOTES:
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.
+ *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -173,6 +179,9 @@ int computeDistanceFunction2d(
  *
  * 
  * NOTES:
+ *  - It is assumed that the phi, speed, and mask data arrays are all of 
+ *    the same size.
+ *
  *  - For grid points that are masked out or have speed equal to zero, phi 
  *    is set to DBL_MAX.
  *
@@ -226,6 +235,9 @@ int solveEikonalEquation2d(
  *
  *
  * NOTES:
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.
+ *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
@@ -274,6 +286,9 @@ int computeExtensionFields3d(
  *
  *
  * NOTES:
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.
+ *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -323,6 +338,9 @@ int computeDistanceFunction3d(
  *
  *
  * NOTES:
+ *  - It is assumed that the phi, speed, and mask data arrays are all of 
+ *    the same size.
+ *
  *  - For grid points that are masked out or have speed equal to zero, phi 
  *    is set to DBL_MAX.
  *
