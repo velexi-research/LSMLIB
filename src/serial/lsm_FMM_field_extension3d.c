@@ -97,7 +97,7 @@ int computeExtensionFields3d(
   double *mask,
   double **source_fields,
   int num_extension_fields,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx)
 {
@@ -119,11 +119,11 @@ int computeExtensionFields3d(
    * detection/initialization functions based on the
    * specified spatial derivative order
    ******************************************************/
-  if (spatial_derivative_order == 1) {
+  if (spatial_discretization_order == 1) {
     initializeFront = 
       &FMM_initializeFront_FieldExtension3d_Order1;
     updateGridPoint = &FMM_updateGridPoint_FieldExtension3d_Order1;
-  } else if (spatial_derivative_order == 2) {
+  } else if (spatial_discretization_order == 2) {
 /*  KTC - ADD LATER
     initializeFront = 
       &FMM_initializeFront_FieldExtension3d_Order2;
@@ -220,7 +220,7 @@ int computeDistanceFunction3d(
   double *distance_function,
   double *phi,
   double *mask,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx)
 {
@@ -231,7 +231,7 @@ int computeDistanceFunction3d(
            mask,
            0, /*  NULL source fields pointer */
            0, /*  zero extension fields to compute */
-           spatial_derivative_order,
+           spatial_discretization_order,
            grid_dims,
            dx);
 }

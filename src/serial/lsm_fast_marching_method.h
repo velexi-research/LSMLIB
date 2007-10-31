@@ -35,7 +35,7 @@ extern "C" {
  *
  * - Error Codes:  0 - successful computation,
  *                 1 - FMM_Data creation error,
- *                 2 - invalid spatial derivative order
+ *                 2 - invalid spatial discretization order
  *
  * - While @ref lsm_fast_marching_method.h only provides functions 
  *   for 2D and 3D FMM calculations, LSMLIB is capable of supporting higher 
@@ -55,24 +55,24 @@ extern "C" {
  * function, phi, and the specified source fields.  
  *
  * Arguments:
- *  - distance_function (out):        updated distance function
- *  - extension_fields (out):         extension fields
- *  - phi (in):                       original level set function
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.  
- *  - source_fields(in):              source fields used to compute extension 
- *                                    fields
- *  - num_extension_fields (in):      number of extension fields to compute
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - distance_function (out):            updated distance function
+ *  - extension_fields (out):             extension fields
+ *  - phi (in):                           original level set function
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.  
+ *  - source_fields(in):                  source fields used to compute 
+ *                                        extension fields
+ *  - num_extension_fields (in):          number of extension fields to compute
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
@@ -101,7 +101,7 @@ int computeExtensionFields2d(
   double *mark,
   double **source_fields,
   int num_extension_fields,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
@@ -110,20 +110,20 @@ int computeExtensionFields2d(
  * a distance function from the original level set function, phi.
  *
  * Arguments:
- *  - distance_function (out):        updated distance function
- *  - phi (in):                       original level set function
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - distance_function (out):            updated distance function
+ *  - phi (in):                           original level set function
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
@@ -146,7 +146,7 @@ int computeDistanceFunction2d(
   double *distance_function,
   double *phi,
   double *mark,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
@@ -160,22 +160,22 @@ int computeDistanceFunction2d(
  * and speed function. 
  *
  * Arguments:
- *  - phi (in):                       pointer to solution to Eikonal equation;
- *                                    phi must be initialized as specified in
- *                                    the NOTES below. 
- *  - speed (in):                     pointer to speed field
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - phi (in):                           pointer to solution to Eikonal 
+ *                                        equation phi must be initialized as 
+ *                                        specified in the NOTES below. 
+ *  - speed (in):                         pointer to speed field
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  * 
  * NOTES:
@@ -204,7 +204,7 @@ int solveEikonalEquation2d(
   double *phi,
   double *speed,
   double *mask,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
@@ -214,24 +214,24 @@ int solveEikonalEquation2d(
  * function, phi, and the specified source fields.  
  *
  * Arguments:
- *  - distance_function (out):        updated distance function
- *  - extension_fields (out):         extension fields
- *  - phi (in):                       original level set function
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.
- *  - source_fields(in):              source fields used to compute extension 
- *                                    fields
- *  - num_extension_fields (in):      number of extension fields to compute
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - distance_function (out):            updated distance function
+ *  - extension_fields (out):             extension fields
+ *  - phi (in):                           original level set function
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.
+ *  - source_fields(in):                  source fields used to compute 
+ *                                        extension fields
+ *  - num_extension_fields (in):          number of extension fields to compute
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
@@ -260,7 +260,7 @@ int computeExtensionFields3d(
   double *mask,
   double **source_fields,
   int num_extension_fields,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
@@ -269,20 +269,20 @@ int computeExtensionFields3d(
  * a distance function from the original level set function, phi.
  *
  * Arguments:
- *  - distance_function (out):        updated distance function
- *  - phi (in):                       original level set function
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - distance_function (out):            updated distance function
+ *  - phi (in):                           original level set function
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
@@ -305,7 +305,7 @@ int computeDistanceFunction3d(
   double *distance_function,
   double *phi,
   double *mask,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
@@ -319,22 +319,22 @@ int computeDistanceFunction3d(
  * and speed function. 
  *
  * Arguments:
- *  - phi (in/out):                   pointer to solution to Eikonal equation;
- *                                    phi must be initialized as specified in
- *                                    the NOTES below. 
- *  - speed (in):                     pointer to speed field
- *  - mask (in):                      mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a 
- *                                    negative value.
- *  - spatial_derivative_order (in):  order of finite differences used 
- *                                    to compute spatial derivatives
- *  - grid_dims (in):                 array of index space extents for all 
- *                                    fields 
- *  - dx (in):                        array of grid cell sizes in each 
- *                                    coordinate direction
+ *  - phi (in/out):                       pointer to solution to Eikonal 
+ *                                        equation phi must be initialized as
+ *                                        specified in the NOTES below. 
+ *  - speed (in):                         pointer to speed field
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a 
+ *                                        negative value.
+ *  - spatial_discretization_order (in):  order of finite differences used 
+ *                                        to compute spatial derivatives
+ *  - grid_dims (in):                     array of index space extents for all 
+ *                                        fields 
+ *  - dx (in):                            array of grid cell sizes in each 
+ *                                        coordinate direction
  *
- * Return value:                      error code (see NOTES for translation)
+ * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
@@ -363,7 +363,7 @@ int solveEikonalEquation3d(
   double *phi,
   double *speed,
   double *mask,
-  int spatial_derivative_order,
+  int spatial_discretization_order,
   int *grid_dims,
   double *dx);
 
