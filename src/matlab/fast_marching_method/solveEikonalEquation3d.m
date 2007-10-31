@@ -7,29 +7,29 @@
 % in three-dimensions using the Fast Marching Method.
 % 
 % Usage: phi = solveEikonalEquation3d(boundary_data, speed, dX, ...
-%                                     mask, spatial_derivative_order)
+%                                     mask, spatial_discretization_order)
 %
 % Arguments:
-% - boundary_data:             data array containing boundary data and
-%                                domain information.  The value at grid 
-%                                points adjacent to the boundary of the 
-%                                domain should be set to the desired 
-%                                positive values; the value at all other 
-%                                grid points should be negative.
-% - speed:                     speed function in Eikonal equation
-% - dX:                        array containing the grid spacing
-%                                in each coordinate direction
-% - mask:                      mask for domain of problem;
-%                                grid points outside of the domain
-%                                of the problem should be set to a
-%                                negative value
-%                                (default = [])
-% - spatial_derivative_order:  order of discretization for 
-%                                spatial derivatives
-%                                (default = 5)
+% - boundary_data:                 data array containing boundary data and
+%                                    domain information.  The value at grid 
+%                                    points adjacent to the boundary of the 
+%                                    domain should be set to the desired 
+%                                    positive values; the value at all other 
+%                                    grid points should be negative.
+% - speed:                         speed function in Eikonal equation
+% - dX:                            array containing the grid spacing
+%                                    in each coordinate direction
+% - mask:                          mask for domain of problem;
+%                                    grid points outside of the domain
+%                                    of the problem should be set to a
+%                                    negative value
+%                                    (default = [])
+% - spatial_discretization_order:  order of discretization for 
+%                                    spatial derivatives
+%                                    (default = 2)
 %
 % Return value:
-% - phi:                       solution to Eikonal equation
+% - phi:                           solution to Eikonal equation
 %
 % NOTES:
 % - It is the user's responsibility to set the boundary data for phi.

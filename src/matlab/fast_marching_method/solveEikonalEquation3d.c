@@ -16,29 +16,29 @@
  * in two-dimensions using the Fast Marching Method.
  *
  * Usage: phi = solveEikonalEquation3d(boundary_data, speed, dX, ...
- *                                     mask, spatial_derivative_order)
+ *                                     mask, spatial_discretization_order)
  *
  * Arguments:
- * - boundary_data:             data array containing boundary data and
- *                                domain information.  The value at grid
- *                                points adjacent to the boundary of the
- *                                domain should be set to the desired
- *                                positive values; the value at all other
- *                                grid points should be negative.
- * - speed:                     speed function in Eikonal equation
- * - dX:                        array containing the grid spacing
- *                                in each coordinate direction
- * - mask:                      mask for domain of problem;
- *                                grid points outside of the domain
- *                                of the problem should be set to a
- *                                negative value
- *                                (default = [])
- * - spatial_derivative_order:  order of discretization for 
- *                                spatial derivatives
- *                                (default = 5)
+ * - boundary_data:                 data array containing boundary data and
+ *                                    domain information.  The value at grid
+ *                                    points adjacent to the boundary of the
+ *                                    domain should be set to the desired
+ *                                    positive values; the value at all other
+ *                                    grid points should be negative.
+ * - speed:                         speed function in Eikonal equation
+ * - dX:                            array containing the grid spacing
+ *                                    in each coordinate direction
+ * - mask:                          mask for domain of problem;
+ *                                    grid points outside of the domain
+ *                                    of the problem should be set to a
+ *                                    negative value
+ *                                    (default = [])
+ * - spatial_discretization_order:  order of discretization for 
+ *                                    spatial derivatives
+ *                                    (default = 2)
  *
  * Return value:
- * - phi:                       solution to Eikonal equation
+ * - phi:                           solution to Eikonal equation
  *
  * NOTES:
  * - It is the user's responsibility to set the boundary_data for phi. 
@@ -87,7 +87,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   double dX_matlab_order[3]; 
 
   /* numerical parameters */
-  int spatial_derivative_order;
+  int spatial_discretization_order;
 
   /* auxilliary variables */
   int i;
@@ -120,10 +120,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
   /* Get spatial derivative order */
   if (nrhs < 5) {
-    spatial_derivative_order = 1;  /* KTC - change this to 2 after */
-                                   /* implementing second-order algorithm */
+    spatial_discretization_order = 2;
   } else {
-    spatial_derivative_order = mxGetPr(SPATIAL_DERIVATIVE_ORDER)[0];
+    spatial_discretization_order = mxGetPr(SPATIAL_DERIVATIVE_ORDER)[0];
   }
   
   /* Assign pointers for boundary_data and speed data */
@@ -148,7 +147,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                  phi,
                  speed,
                  mask,
-                 spatial_derivative_order,
+                 spatial_discretization_order,
                  (int*) grid_dims_phi,
                  dX_matlab_order);
 
