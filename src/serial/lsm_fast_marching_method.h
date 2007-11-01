@@ -167,6 +167,14 @@ int computeDistanceFunction2d(
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
  *
+ * In order to achieve second-order accuracy in the L-infinity norm,
+ * the "boundary values" of phi MUST be specified in a layer of grid 
+ * cells at least two deep near the mathematical/physical domain 
+ * boundary.  Otherwise, the values of the solution near the boundary 
+ * will only be first-order accurate.  Second-order convergence in the
+ * L2 norm is achieved using the second-order scheme even if 
+ * only one layer of boundary values is specified.
+ *
  *
  * Arguments:
  *  - phi (in):                           pointer to solution to Eikonal 
@@ -333,6 +341,14 @@ int computeDistanceFunction3d(
  * is strictly non-negative.  For problems where interior values are 
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
+ *
+ * In order to achieve second-order accuracy in the L-infinity norm,
+ * the "boundary values" of phi MUST be specified in a layer of grid 
+ * cells at least two deep near the mathematical/physical domain 
+ * boundary.  Otherwise, the values of the solution near the boundary 
+ * will only be first-order accurate.  Second-order convergence in the
+ * L2 norm is achieved using the second-order scheme even if 
+ * only one layer of boundary values is specified.
  *
  *
  * Arguments:

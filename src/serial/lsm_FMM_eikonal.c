@@ -403,11 +403,11 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
     }
 
     /*
-     * accumulate coefficients for phi if either of the neighbors are "KNOWN"
+     * accumulate coefficients for phi if any of the neighbors are "KNOWN"
      */
     if (phi_upwind < DBL_MAX) {
       /* accumulate coefs for phi */ 
-      inv_dx_sq = 1/dx[dir]/dx[dir];
+      inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq; 
       phi_A += inv_dx_sq;
       phi_B += inv_dx_sq*phi_upwind;
       phi_C += inv_dx_sq*phi_upwind*phi_upwind;
@@ -419,13 +419,27 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   phi_B *= -2.0;
   phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
 
+  /* check that phi_A is nonzero */
+  if (LSM_FMM_ABS(phi_A) == 0) {
+    fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
+    fprintf(stderr,"       phi set to 'infinity'.\n");
+    return DBL_MAX;
+  }
+
   /* compute phi by solving quadratic equation */
-  discriminant = phi_B*phi_B - 4*phi_A*phi_C;
+  discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
   phi_updated = DBL_MAX;
   if (discriminant >= 0) {
-    phi_updated = (-phi_B + sqrt(discriminant))/2/phi_A;
+    phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
   } else {
     fprintf(stderr,"ERROR: phi update - discriminant negative!!!\n");
+    fprintf(stderr,"       phi set to 'infinity'.\n");
+    fprintf(stderr,"       discriminant = %g,", discriminant);
+    fprintf(stderr," grid_idx = (");
+    for (l = 0; l < FMM_NDIM-1; l++) { 
+      fprintf(stderr,"%d,", grid_idx[l]);
+    }
+    fprintf(stderr,"%d)\n",grid_idx[l]);
   }
 
   /* set phi at current grid point */
@@ -465,6 +479,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   double phi_C = 0;
   double discriminant;
   double phi_updated;
+  double max_dx;
 
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
@@ -513,7 +528,8 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
           LSM_FMM_IDX(idx_neighbor2, neighbor2, grid_dims);
           neighbor_status = (PointStatus) gridpoint_status[idx_neighbor2];
           if ( (KNOWN == neighbor_status) &&
-               (LSM_FMM_ABS(phi[idx_neighbor2]) < LSM_FMM_ABS(phi_upwind1)) ) {
+               (  LSM_FMM_ABS(phi[idx_neighbor2]) 
+               <= LSM_FMM_ABS(phi_upwind1)) ) {
             phi_upwind2 = phi[idx_neighbor2];
             second_order_switch = 1;
           }
@@ -554,7 +570,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
             neighbor_status = (PointStatus) gridpoint_status[idx_neighbor2];
             if ( (KNOWN == neighbor_status) &&
                  (  LSM_FMM_ABS(phi[idx_neighbor2]) 
-                  < LSM_FMM_ABS(phi_upwind1)) ) {
+                 <= LSM_FMM_ABS(phi_upwind1)) ) {
               phi_upwind2 = phi[idx_neighbor2];
               second_order_switch = 1;
             }
@@ -565,27 +581,26 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
     }
 
     /*
-     * accumulate coefficients for phi if either of the neighbors are "KNOWN"
+     * accumulate coefficients for phi if any of the neighbors are "KNOWN"
      */
     if (phi_upwind1 < DBL_MAX) {
       /* temporary variables */
-      double one_plus_switch_over_two = 1.0+second_order_switch/2.0;
+      double one_plus_switch_over_two = 1.0+0.5*second_order_switch;
       double phi_upwind_contrib;
 
       /* set phi_upwind_contrib to be first- or second-order */
       /* contribution based on value of second_order_switch  */
       if (second_order_switch == 1) {
-        phi_upwind_contrib = phi_upwind1+second_order_switch*phi_upwind1
-                           - second_order_switch/2.0*phi_upwind2;
+        phi_upwind_contrib = phi_upwind1*(1+second_order_switch)
+                           - 0.5*second_order_switch*phi_upwind2;
       } else {
         phi_upwind_contrib = phi_upwind1;
       }
 
       /* accumulate coefs for phi */ 
-      inv_dx_sq = 1/dx[dir]/dx[dir];
+      inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq; 
       phi_A += inv_dx_sq*one_plus_switch_over_two*one_plus_switch_over_two;
-      phi_B += inv_dx_sq*one_plus_switch_over_two
-                        *phi_upwind_contrib;
+      phi_B += inv_dx_sq*one_plus_switch_over_two*phi_upwind_contrib;
       phi_C += inv_dx_sq*phi_upwind_contrib*phi_upwind_contrib;
     }
 
@@ -595,14 +610,31 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   phi_B *= -2.0;
   phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
 
+  /* check that phi_A is nonzero */
+  if (LSM_FMM_ABS(phi_A) == 0) {
+    fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
+    fprintf(stderr,"       phi set to 'infinity'.\n");
+    return DBL_MAX;
+  }
+
   /* compute phi by solving quadratic equation */
-  discriminant = phi_B*phi_B - 4*phi_A*phi_C;
+  discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
   phi_updated = DBL_MAX;
+  max_dx = dx[0];
+  for (dir = 1; dir < FMM_NDIM; dir++) {
+    max_dx = (max_dx > dx[dir]) ? max_dx : dx[dir];
+  }
   if (discriminant >= 0) {
-    phi_updated = (-phi_B + sqrt(discriminant))/2/phi_A;
+    phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
+  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) {
+      phi_updated = -0.5*phi_B/phi_A;
+      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
+      fprintf(stderr,"         phi updated with O(dx) error.\n");
   } else {
     fprintf(stderr,"ERROR: phi update - discriminant negative!!!\n");
-    fprintf(stderr,"       grid_idx = (");
+    fprintf(stderr,"       phi set to 'infinity'.\n");
+    fprintf(stderr,"       discriminant = %g,", discriminant);
+    fprintf(stderr," grid_idx = (");
     for (l = 0; l < FMM_NDIM-1; l++) { 
       fprintf(stderr,"%d,", grid_idx[l]);
     }
