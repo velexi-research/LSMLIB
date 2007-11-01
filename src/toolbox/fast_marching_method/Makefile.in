@@ -17,6 +17,7 @@ includes:
 	@CP@ $(SRC_DIR)/FMM_Core.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/FMM_Heap.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/FMM_Callback_API.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/FMM_Macros.h $(BUILD_DIR)/include/
 
 library:  FMM_Heap.o       \
           FMM_Core.o

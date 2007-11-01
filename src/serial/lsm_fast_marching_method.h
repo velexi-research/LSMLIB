@@ -76,16 +76,15 @@ extern "C" {
  *
  *
  * NOTES:
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.
- *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
  *  - It is assumed that the user has allocated the memory for the
  *    distance function, extension fields, phi, and source fields.
  *
- *  - All data fields are assumed to have the same index space extents.
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.  That is, all data fields are assumed to have 
+ *    the same index space extents.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
@@ -127,9 +126,6 @@ int computeExtensionFields2d(
  *
  *
  * NOTES:
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.
- *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -139,7 +135,9 @@ int computeExtensionFields2d(
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
  *
- *  - All data fields are assumed to have the same index space extents.
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.  That is, all data fields are assumed to have 
+ *    the same index space extents.
  *
  */
 int computeDistanceFunction2d(
@@ -156,8 +154,19 @@ int computeDistanceFunction2d(
  *
  *   |grad(phi)| = 1/speed(x,y)
  *
- * in two space dimensions with the specified boundary data 
- * and speed function. 
+ * in two space dimensions with the specified boundary data and
+ * speed function.  
+ *
+ * This function assumes that the solution phi is assumed to be 
+ * strictly non-negative with values in the interior of the domain 
+ * greater than the values on the boundaries.  For problems where 
+ * phi takes on negative values with interior values greater than 
+ * boundary values, this function can be used to solve for 
+ * psi = phi + C, where C is a constant offset that ensures that psi 
+ * is strictly non-negative.  For problems where interior values are 
+ * less than boundary values, this function can be used to solve for
+ * psi = -phi.
+ *
  *
  * Arguments:
  *  - phi (in):                           pointer to solution to Eikonal 
@@ -179,25 +188,24 @@ int computeDistanceFunction2d(
  *
  * 
  * NOTES:
- *  - It is assumed that the phi, speed, and mask data arrays are all of 
- *    the same size.
- *
- *  - For grid points that are masked out or have speed equal to zero, phi 
- *    is set to DBL_MAX.
- *
- *  - Both phi and the speed function is assumed to be strictly non-negative.
- *
  *  - phi MUST be initialized so that the values for phi at grid points on 
  *    or adjacent to the boundary of the domain for the Eikonal equation 
  *    are correctly set.  All other grid points should be set to have
  *    negative values for phi.
  *
+ *  - For grid points that are masked out or have speed equal to zero, phi 
+ *    is set to DBL_MAX.
+ *
+ *  - It is assumed that the phi, speed, and mask data arrays are all of 
+ *    the same size.  That is, all data fields are assumed to have the 
+ *    same index space extents.
+ *
+ *  - Both phi and the speed function MUST be strictly non-negative.
+ *
  *  - It is the user's responsibility to set the speed function.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
- *
- *  - All data fields are assumed to have the same index space extents.
  *
  */
 int solveEikonalEquation2d(
@@ -235,16 +243,15 @@ int solveEikonalEquation2d(
  *
  *
  * NOTES:
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.
- *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
  *  - It is assumed that the user has allocated the memory for the
  *    distance function, extension fields, phi, and source fields.
  *
- *  - All data fields are assumed to have the same index space extents.
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.  That is, all data fields are assumed to have 
+ *    the same index space extents.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
@@ -286,9 +293,6 @@ int computeExtensionFields3d(
  *
  *
  * NOTES:
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.
- *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -298,7 +302,9 @@ int computeExtensionFields3d(
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
  *
- *  - All data fields are assumed to have the same index space extents.
+ *  - It is assumed that the phi and mask data arrays are both of 
+ *    the same size.  That is, all data fields are assumed to have 
+ *    the same index space extents.
  *
  */
 int computeDistanceFunction3d(
@@ -317,6 +323,17 @@ int computeDistanceFunction3d(
  *
  * in three space dimensions with the specified boundary data 
  * and speed function. 
+ *
+ * This function assumes that the solution phi is assumed to be 
+ * strictly non-negative with values in the interior of the domain 
+ * greater than the values on the boundaries.  For problems where 
+ * phi takes on negative values with interior values greater than 
+ * boundary values, this function can be used to solve for 
+ * psi = phi + C, where C is a constant offset that ensures that psi 
+ * is strictly non-negative.  For problems where interior values are 
+ * less than boundary values, this function can be used to solve for
+ * psi = -phi.
+ *
  *
  * Arguments:
  *  - phi (in/out):                       pointer to solution to Eikonal 
@@ -338,25 +355,24 @@ int computeDistanceFunction3d(
  *
  *
  * NOTES:
- *  - It is assumed that the phi, speed, and mask data arrays are all of 
- *    the same size.
- *
- *  - For grid points that are masked out or have speed equal to zero, phi 
- *    is set to DBL_MAX.
- *
- *  - Both phi and the speed function is assumed to be strictly non-negative.
- *
  *  - phi MUST be initialized so that the values for phi at grid points on 
  *    or adjacent to the boundary of the domain for the Eikonal equation 
  *    are correctly set.  All other grid points should be set to have
  *    negative values for phi.
  *
+ *  - For grid points that are masked out or have speed equal to zero, phi 
+ *    is set to DBL_MAX.
+ *
+ *  - It is assumed that the phi, speed, and mask data arrays are all of 
+ *    the same size.  That is, all data fields are assumed to have the 
+ *    same index space extents.
+ *
+ *  - Both phi and the speed function MUST be strictly non-negative.
+ *
  *  - It is the user's responsibility to set the speed function.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
- *
- *  - All data fields are assumed to have the same index space extents.
  *
  */
 int solveEikonalEquation3d(

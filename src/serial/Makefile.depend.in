@@ -1,16 +1,44 @@
 ##
 ## File:        Makefile.depend.in
-## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Copyright:   (c) 2005-2008 Kevin T. Chu
 ## Revision:    $Revision: 1.1 $
 ## Modified:    $Date: 2006/07/07 12:02:46 $
-## Description: file dependencies for fast marching method functions
+## Description: file dependencies for serial package
 ##
 
-FMM_2d.o:                                            \
-            lsm_fast_marching_method.h               \
-            FMM_2d.c
+lsm_grid.o:                                                       \
+	lsm_grid.h                                                \
+	lsm_grid.c
 
-FMM_3d.o:                                            \
-	    lsm_fast_marching_method.h               \
-	    FMM_3d.c
+lsm_boundary_conditions.o:                                        \
+	lsm_grid.h                                                \
+	lsm_boundary_conditions.h                                 \
+	lsm_boundary_conditions.c
 
+lsm_initialization2d.o:                                           \
+	lsm_grid.h                                                \
+	lsm_initialization2d.h                                    \
+	lsm_initialization2d.c
+
+lsm_initialization3d.o:                                           \
+	lsm_grid.h                                                \
+	lsm_initialization3d.h                                    \
+	lsm_initialization3d.c
+
+lsm_FMM_eikonal2d.o:                                              \
+	lsm_fast_marching_method.h                                \
+	lsm_FMM_eikonal2d.c                                       \
+	lsm_FMM_eikonal.c
+
+lsm_FMM_eikonal3d.o:                                              \
+	lsm_fast_marching_method.h                                \
+	lsm_FMM_eikonal3d.c                                       \
+	lsm_FMM_eikonal.c
+
+lsm_FMM_field_extension2d.o:                                      \
+	lsm_fast_marching_method.h                                \
+	lsm_FMM_field_extension2d.c                               \
+
+lsm_FMM_field_extension3d.o:                                      \
+	lsm_fast_marching_method.h                                \
+	lsm_FMM_field_extension3d.c                               \
