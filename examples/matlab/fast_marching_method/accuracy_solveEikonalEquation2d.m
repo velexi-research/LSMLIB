@@ -130,7 +130,7 @@ pbaspect([1 1 1]);
 colorbar;
 hold on;
 err_second_order_idx = find(errs1_second_order(i) == abs(phi-phi_exact));
-plot(X(err_second_order_idx),Y(err_second_order_idx),'mo');
+plot(X(err_second_order_idx),Y(err_second_order_idx),'go');
 %plot(X(idx_interior),Y(idx_interior),'rx');
 %plot(X(idx_bdry),Y(idx_bdry),'c+');
 
@@ -242,7 +242,7 @@ pbaspect([1 1 1]);
 colorbar;
 hold on;
 err_second_order_idx = find(errs2_second_order(i) == abs(phi-phi_exact));
-plot(X(err_second_order_idx),Y(err_second_order_idx),'mo');
+plot(X(err_second_order_idx),Y(err_second_order_idx),'go');
 %plot(X(idx_interior),Y(idx_interior),'rx');
 %plot(X(idx_bdry),Y(idx_bdry),'c+');
 
