@@ -97,8 +97,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   
   /* Get spatial derivative order */
   if (nrhs < 4) {
-    spatial_discretization_order = 1;  /* KTC - change this to 2 after */
-                                   /* implementing second-order algorithm */
+    spatial_discretization_order = 2; 
   } else {
     spatial_discretization_order = mxGetPr(SPATIAL_DERIVATIVE_ORDER)[0];
   }
