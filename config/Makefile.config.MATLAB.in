@@ -13,7 +13,9 @@ MEX_FLAGS           = @mex_flags@
 MATLAB_INSTALL_DIR  = @matlab_install_dir@
 
 # Pattern Rules for generating MEX files
-%.@mex_extension@: %.c
+%.@mex_extension@: %.c                                 \
+                   $(BUILD_DIR)/lib/liblsm_serial.a    \
+                   $(BUILD_DIR)/lib/liblsm_toolbox.a
 	$(MEX) $(MEX_FLAGS) $^
 
 
