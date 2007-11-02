@@ -21,6 +21,8 @@ includes:
 	@CP@ $(SRC_DIR)/lsm_initialization2d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_initialization3d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_macros.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_FMM_eikonal.c $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_FMM_field_extension.c $(BUILD_DIR)/include/
 
 library:  lsm_FMM_field_extension2d.o    \
           lsm_FMM_field_extension3d.o    \
