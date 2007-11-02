@@ -6042,7 +6042,7 @@ case $build_mode in
   optimize)
     case "$CC" in
       gcc)
-        CFLAGS="-O3 $CFLAGS"
+        CFLAGS="-O3 -funroll-loops $CFLAGS"
       ;;
       xlc)
         CFLAGS="-O $CFLAGS"
@@ -6061,7 +6061,7 @@ echo "$as_me: WARNING: unrecognized C compiler...trying '-O' compiler flag..." >
 
     case "$CXX" in
       g++)
-        CXXFLAGS="-O3 $CXXFLAGS"
+        CXXFLAGS="-O3 -funroll-loops $CXXFLAGS"
       ;;
       xlC)
         CXXFLAGS="-O $CXXFLAGS"
@@ -6083,7 +6083,7 @@ echo "$as_me: WARNING: unrecognized C++ compiler...trying '-O' compiler flag..."
         FFLAGS="-O3 $FFLAGS"
       ;;
       gfortran)
-        FFLAGS="-O3 $FFLAGS"
+        FFLAGS="-O3 -funroll-loops $FFLAGS"
       ;;
       xlf)
         FFLAGS="-O $FFLAGS"
