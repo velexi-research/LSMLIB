@@ -38,7 +38,9 @@ lsm_FMM_eikonal3d.o:                                              \
 lsm_FMM_field_extension2d.o:                                      \
 	lsm_fast_marching_method.h                                \
 	lsm_FMM_field_extension2d.c                               \
+	lsm_FMM_field_extension.c
 
 lsm_FMM_field_extension3d.o:                                      \
 	lsm_fast_marching_method.h                                \
 	lsm_FMM_field_extension3d.c                               \
+	lsm_FMM_field_extension.c

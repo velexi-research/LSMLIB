@@ -171,8 +171,8 @@ int computeDistanceFunction2d(
  * the "boundary values" of phi MUST be specified in a layer of grid 
  * cells at least two deep near the mathematical/physical domain 
  * boundary.  Otherwise, the values of the solution near the boundary 
- * will only be first-order accurate.  Second-order convergence in the
- * L2 norm is achieved using the second-order scheme even if 
+ * will only be first-order accurate.  Close to second-order convergence 
+ * in the L2 norm is achieved using the second-order scheme even if 
  * only one layer of boundary values is specified.
  *
  *
@@ -346,8 +346,8 @@ int computeDistanceFunction3d(
  * the "boundary values" of phi MUST be specified in a layer of grid 
  * cells at least two deep near the mathematical/physical domain 
  * boundary.  Otherwise, the values of the solution near the boundary 
- * will only be first-order accurate.  Second-order convergence in the
- * L2 norm is achieved using the second-order scheme even if 
+ * will only be first-order accurate.  Close to second-order convergence 
+ * in the L2 norm is achieved using the second-order scheme even if 
  * only one layer of boundary values is specified.
  *
  *

@@ -10,18 +10,15 @@
  *
  * \brief
  * @ref lsm_FMM_eikonal.c provides "generic" implementations of 
- *      first- and second-order accurate grid points updates within
- *      the context of the Fast Marching Method algorithm.  The 
- *      code is "templated" on the number of dimensions through
- *      the use of macro definitions that MUST be provided by
- *      the user.  The user is also responsible for providing
- *      several macros for grid index calculations that depend
- *      on the dimension of the problem.
+ *      first- and second-order accurate Fast Marching Method schemes
+ *      for solving the Eikonal equation.  The code is "templated" on 
+ *      the number of dimensions through the use of macro definitions 
+ *      that MUST be provided by the user.  
  *
  *
  * <h3> Usage: </h3>
  *
- * -# Provide the following macros:
+ * -# Define the following macros:
  *    -# FMM_NDIM:  the number of spatial dimensions.
  *    -# FMM_EIKONAL_SOLVE_EIKONAL_EQUATION:  desired name of function 
  *       that solves the Eikonal equation.
@@ -77,7 +74,7 @@
 #endif FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2 
 
 
-/*===================== lsm_FMM Data Structures ====================*/
+/*================== lsm_FMM_eikonal Data Structures ================*/
 struct FMM_FieldData {
   double *phi;                 /* solution to Eikonal equation */
   double *speed;               /* speed function               */
@@ -101,7 +98,7 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
 /* 
  * FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1() implements the callback 
  * function required by FMM_Core::FMM_Core_updateNeighbors() to
- * update the soluttion at a grid point.  It computes and returns 
+ * update the solution at a grid point.  It computes and returns 
  * the updated phi value of the specified grid point using values of 
  * neighbors that have status "KNOWN" and a first-order accurate 
  * discretization of the gradient operator.
@@ -117,7 +114,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
 /* 
  * FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2() implements the callback  
  * function required by FMM_Core::FMM_Core_updateNeighbors() to 
- * update the soluttion at a grid point.  It computes and returns 
+ * update the solution at a grid point.  It computes and returns 
  * the updated phi value of the specified grid point using values of 
  * neighbors that have status "KNOWN" and a second-order accurate 
  * discretization of the gradient operator when a sufficient number 
@@ -266,9 +263,6 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
   /* FMM Field Data variables */
   double *phi   = fmm_field_data->phi;
 
-  /* grid variables */
-  int grid_idx[FMM_NDIM];
-
   /* auxilliary variables */
   int num_gridpoints;
   int i,idx;         /* loop variables */
@@ -289,6 +283,7 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
   for (idx = 0; idx < num_gridpoints; idx++) {
 
     /* temporary variables */
+    int grid_idx[FMM_NDIM];
     int idx_remainder = idx;
 
     /* compute grid_idx */
@@ -415,16 +410,16 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
 
   } /* loop over coordinate directions */
 
-  /* complete computation of phi_B and phi_C */
-  phi_B *= -2.0;
-  phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
-
   /* check that phi_A is nonzero */
   if (LSM_FMM_ABS(phi_A) == 0) {
     fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
     fprintf(stderr,"       phi set to 'infinity'.\n");
     return DBL_MAX;
   }
+
+  /* complete computation of phi_B and phi_C */
+  phi_B *= -2.0;
+  phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
 
   /* compute phi by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
@@ -591,8 +586,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
       /* set phi_upwind_contrib to be first- or second-order */
       /* contribution based on value of second_order_switch  */
       if (second_order_switch == 1) {
-        phi_upwind_contrib = phi_upwind1*(1+second_order_switch)
-                           - 0.5*second_order_switch*phi_upwind2;
+        phi_upwind_contrib = 2.0*phi_upwind1 - 0.5*phi_upwind2;
       } else {
         phi_upwind_contrib = phi_upwind1;
       }
@@ -606,16 +600,16 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
 
   } /* loop over coordinate directions */
 
-  /* complete computation of phi_B and phi_C */
-  phi_B *= -2.0;
-  phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
-
   /* check that phi_A is nonzero */
   if (LSM_FMM_ABS(phi_A) == 0) {
     fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
     fprintf(stderr,"       phi set to 'infinity'.\n");
     return DBL_MAX;
   }
+
+  /* complete computation of phi_B and phi_C */
+  phi_B *= -2.0;
+  phi_C -= 1/speed[idx_cur_gridpoint]/speed[idx_cur_gridpoint];
 
   /* compute phi by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
