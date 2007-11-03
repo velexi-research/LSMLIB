@@ -108,7 +108,6 @@ text(100,0.05,order_str);
 xlabel('N');
 ylabel('L_\infty Error');
 
-% plot results
 figure(2); clf;
 P_second_order = polyfit(log(grid_sizes),log(errs1_second_order),1);
 order_second_order = -P_second_order(1);
@@ -225,7 +224,6 @@ text(100,0.05,order_str);
 xlabel('N');
 ylabel('L_\infty Error');
 
-% plot results
 figure(5); clf;
 P_second_order = polyfit(log(grid_sizes),log(errs2_second_order),1);
 order_second_order = -P_second_order(1);
@@ -334,7 +332,6 @@ text(100,0.05,order_str);
 xlabel('N');
 ylabel('L_\infty Error');
 
-% plot results
 figure(8); clf;
 P_L2 = polyfit(log(grid_sizes),log(errs3_L2_norm),1);
 order_L2 = -P_L2(1);
