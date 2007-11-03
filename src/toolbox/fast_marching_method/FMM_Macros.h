@@ -23,7 +23,7 @@
 #define LSM_FMM_TRUE                   (1)
 #define LSM_FMM_FALSE                  (0)
 #define LSM_FMM_DEFAULT_UPDATE_VALUE   (-1)
-#define LSM_FMM_ZERO_TOL               (1e-8)
+#define LSM_FMM_ZERO_TOL               (1e-10)
 
 
 /*========================== Error Codes ============================*/

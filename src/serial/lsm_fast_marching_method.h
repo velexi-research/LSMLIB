@@ -76,6 +76,24 @@ extern "C" {
  *
  *
  * NOTES:
+ *  - When the second-order spatial discretization is requested, only
+ *    the distance function is computed using the second-order scheme.
+ *    The extension fields are computed using a first-order 
+ *    discretization of the gradient for the extension field and a 
+ *    second-order accurate discretization of the gradient for the 
+ *    distance function.  We use a first-order discretization when
+ *    computing extension fields because the second-order 
+ *    discretization is "unstable" and leads to amplification of the
+ *    errors introduced when initializing the extension fields in 
+ *    the region around the zero level set.
+ *
+ *  - The distance function computed when using a second-order spatial 
+ *    discretization are approximately second-order accurate in the 
+ *    L2 norm but are only first-order accurate in the L-infinity norm.  
+ *    The reason for this behavior is that the current implementation 
+ *    uses only a first-order accurate scheme for initializing the grid 
+ *    points around the zero-level set.
+ *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
@@ -126,6 +144,13 @@ int computeExtensionFields2d(
  *
  *
  * NOTES:
+ *  - The distance function computed when using a second-order spatial 
+ *    discretization are approximately second-order accurate in the 
+ *    L2 norm but are only first-order accurate in the L-infinity norm.  
+ *    The reason for this behavior is that the current implementation 
+ *    uses only a first-order accurate scheme for initializing the grid 
+ *    points around the zero-level set.
+ *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -167,14 +192,6 @@ int computeDistanceFunction2d(
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
  *
- * In order to achieve second-order accuracy in the L-infinity norm,
- * the "boundary values" of phi MUST be specified in a layer of grid 
- * cells at least two deep near the mathematical/physical domain 
- * boundary.  Otherwise, the values of the solution near the boundary 
- * will only be first-order accurate.  Close to second-order convergence 
- * in the L2 norm is achieved using the second-order scheme even if 
- * only one layer of boundary values is specified.
- *
  *
  * Arguments:
  *  - phi (in):                           pointer to solution to Eikonal 
@@ -196,6 +213,15 @@ int computeDistanceFunction2d(
  *
  * 
  * NOTES:
+ *  - When using the second-order spatial discretization, the solution
+ *    phi is second-order accurate in the L-infinity norm only if the 
+ *    "boundary values" of phi are specified in a layer of grid cells at 
+ *    least two deep near the mathematical/physical domain boundary.  
+ *    Otherwise, the values of the solution near the boundary will only 
+ *    be first-order accurate.  Close to second-order convergence in the 
+ *    L2 norm is achieved using the second-order scheme even if only one 
+ *    layer of boundary values is specified.
+ *
  *  - phi MUST be initialized so that the values for phi at grid points on 
  *    or adjacent to the boundary of the domain for the Eikonal equation 
  *    are correctly set.  All other grid points should be set to have
@@ -251,6 +277,24 @@ int solveEikonalEquation2d(
  *
  *
  * NOTES:
+ *  - When the second-order spatial discretization is requested, only
+ *    the distance function is computed using the second-order scheme.
+ *    The extension fields are computed using a first-order 
+ *    discretization of the gradient for the extension field and a 
+ *    second-order accurate discretization of the gradient for the 
+ *    distance function.  We use a first-order discretization when
+ *    computing extension fields because the second-order 
+ *    discretization is "unstable" and leads to amplification of the
+ *    errors introduced when initializing the extension fields in 
+ *    the region around the zero level set.
+ *
+ * -  The distance function computed when using a second-order spatial 
+ *    discretization are approximately second-order accurate in the 
+ *    L2 norm but are only first-order accurate in the L-infinity norm.  
+ *    The reason for this behavior is that the current implementation 
+ *    uses only a first-order accurate scheme for initializing the grid 
+ *    points around the zero-level set.
+ *
  *  - For grid points that are masked out, the distance function and
  *    extension fields are set to 0.
  *
@@ -301,6 +345,13 @@ int computeExtensionFields3d(
  *
  *
  * NOTES:
+ *  - The distance function computed when using a second-order spatial 
+ *    discretization are approximately second-order accurate in the 
+ *    L2 norm but are only first-order accurate in the L-infinity norm.  
+ *    The reason for this behavior is that the current implementation 
+ *    uses only a first-order accurate scheme for initializing the grid 
+ *    points around the zero-level set.
+ *
  *  - For grid points that are masked out, the distance function is
  *    set to 0.
  *
@@ -342,14 +393,6 @@ int computeDistanceFunction3d(
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
  *
- * In order to achieve second-order accuracy in the L-infinity norm,
- * the "boundary values" of phi MUST be specified in a layer of grid 
- * cells at least two deep near the mathematical/physical domain 
- * boundary.  Otherwise, the values of the solution near the boundary 
- * will only be first-order accurate.  Close to second-order convergence 
- * in the L2 norm is achieved using the second-order scheme even if 
- * only one layer of boundary values is specified.
- *
  *
  * Arguments:
  *  - phi (in/out):                       pointer to solution to Eikonal 
@@ -371,6 +414,15 @@ int computeDistanceFunction3d(
  *
  *
  * NOTES:
+ *  - When using the second-order spatial discretization, the solution
+ *    phi is second-order accurate in the L-infinity norm only if the 
+ *    "boundary values" of phi are specified in a layer of grid cells at 
+ *    least two deep near the mathematical/physical domain boundary.  
+ *    Otherwise, the values of the solution near the boundary will only 
+ *    be first-order accurate.  Close to second-order convergence in the 
+ *    L2 norm is achieved using the second-order scheme even if only one 
+ *    layer of boundary values is specified.
+ *
  *  - phi MUST be initialized so that the values for phi at grid points on 
  *    or adjacent to the boundary of the domain for the Eikonal equation 
  *    are correctly set.  All other grid points should be set to have
