@@ -103,6 +103,14 @@ struct FMM_FieldData {
   double **source_fields;      /* source fields to extend off of zero */
                                /* level set (input)                   */
   double **extension_fields;   /* computed extension field (output)   */
+
+  /* data arrays used for initializing and updating extension fields */
+  double *extension_fields_numerator;
+  double *extension_fields_denominator;
+  double *extension_fields_cur; 
+  double *extension_fields_sum_div_dist_sq; 
+  double *extension_fields_minus;
+  double *extension_fields_plus;
 };
 
 
@@ -253,7 +261,31 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
   fmm_field_data->num_extension_fields = num_extension_fields;
   fmm_field_data->source_fields = source_fields;
   fmm_field_data->extension_fields = extension_fields;
-   
+  
+  /* allocate memory for extension field calculations */
+  if (num_extension_fields > 0) {
+    fmm_field_data->extension_fields_cur = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+    fmm_field_data->extension_fields_sum_div_dist_sq = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+    fmm_field_data->extension_fields_minus = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+    fmm_field_data->extension_fields_plus = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+    fmm_field_data->extension_fields_numerator = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+    fmm_field_data->extension_fields_denominator = 
+      (double*) malloc(num_extension_fields*sizeof(double));
+  } else {
+    fmm_field_data->extension_fields_cur = 0;
+    fmm_field_data->extension_fields_sum_div_dist_sq = 0;
+    fmm_field_data->extension_fields_minus = 0;
+    fmm_field_data->extension_fields_plus = 0;
+    fmm_field_data->extension_fields_numerator = 0;
+    fmm_field_data->extension_fields_denominator = 0;
+  }
+
+
   /********************************************
    * initialize phi and extension fields
    ********************************************/
@@ -319,6 +351,14 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
 
   /* clean up memory */
   FMM_Core_destroyFMM_CoreData(fmm_core_data);
+  if (num_extension_fields > 0) {
+    free(fmm_field_data->extension_fields_cur);
+    free(fmm_field_data->extension_fields_sum_div_dist_sq);
+    free(fmm_field_data->extension_fields_minus);
+    free(fmm_field_data->extension_fields_plus);
+    free(fmm_field_data->extension_fields_numerator);
+    free(fmm_field_data->extension_fields_denominator);
+  }
   free(fmm_field_data);
 
   return LSM_FMM_ERR_SUCCESS;
@@ -384,10 +424,11 @@ void FMM_INITIALIZE_FRONT_ORDER1(
   double dist_inv_sq_dir; 
 
   /* variables for extension field calculations */
-  double *extension_fields_cur;
-  double *extension_fields_sum_div_dist_sq;
-  double *extension_fields_minus;
-  double *extension_fields_plus;
+  double *extension_fields_cur = fmm_field_data->extension_fields_cur;
+  double *extension_fields_sum_div_dist_sq = 
+    fmm_field_data->extension_fields_sum_div_dist_sq;
+  double *extension_fields_minus = fmm_field_data->extension_fields_minus;
+  double *extension_fields_plus = fmm_field_data->extension_fields_plus;
 
   /* auxilliary variables */
   int num_gridpoints;       /* number of grid points */ 
@@ -403,15 +444,6 @@ void FMM_INITIALIZE_FRONT_ORDER1(
   /* unused function parameters */
   (void) num_dims;
 
-
-  /* allocate memory for extension field calculations */
-  extension_fields_cur = (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_sum_div_dist_sq = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_minus = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_plus = 
-    (double*) malloc(num_extension_fields*sizeof(double));
 
   /*
    * loop through cells in grid to find those that border the
@@ -612,11 +644,6 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
   }  /* end loop over grid */
 
-  /* clean up memory */
-  free(extension_fields_cur); 
-  free(extension_fields_sum_div_dist_sq); 
-  free(extension_fields_minus);
-  free(extension_fields_plus);
 }
 
 
@@ -654,10 +681,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
   double dist_inv_sq_dir; 
 
   /* variables for extension field calculations */
-  double *extension_fields_cur;
-  double *extension_fields_sum_div_dist_sq;
-  double *extension_fields_minus;
-  double *extension_fields_plus;
+  double *extension_fields_cur = fmm_field_data->extension_fields_cur;
+  double *extension_fields_sum_div_dist_sq = 
+    fmm_field_data->extension_fields_sum_div_dist_sq;
+  double *extension_fields_minus = fmm_field_data->extension_fields_minus;
+  double *extension_fields_plus = fmm_field_data->extension_fields_plus;
 
   /* auxilliary variables */
   int num_gridpoints;       /* number of grid points */ 
@@ -673,15 +701,6 @@ void FMM_INITIALIZE_FRONT_ORDER2(
   /* unused function parameters */
   (void) num_dims;
 
-
-  /* allocate memory for extension field calculations */
-  extension_fields_cur = (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_sum_div_dist_sq = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_minus = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_plus = 
-    (double*) malloc(num_extension_fields*sizeof(double));
 
   /*
    * loop through cells in grid to find those that border the
@@ -921,11 +940,6 @@ void FMM_INITIALIZE_FRONT_ORDER2(
 
   }  /* end loop over grid */
 
-  /* clean up memory */
-  free(extension_fields_cur); 
-  free(extension_fields_sum_div_dist_sq); 
-  free(extension_fields_minus);
-  free(extension_fields_plus);
 }
 
 
@@ -945,8 +959,10 @@ double FMM_UPDATE_GRID_POINT_ORDER1(
   double **extension_fields = fmm_field_data->extension_fields; 
 
   /* variables for extension field calculations */
-  double *extension_fields_numerator;
-  double *extension_fields_denominator;
+  double *extension_fields_numerator = 
+    fmm_field_data->extension_fields_numerator;
+  double *extension_fields_denominator =
+    fmm_field_data->extension_fields_denominator;
 
   /* variables used in distance function update */
   PointStatus  neighbor_status;
@@ -975,11 +991,7 @@ double FMM_UPDATE_GRID_POINT_ORDER1(
   /* unused function parameters */
   (void) num_dims;
 
-  /* allocate memory extension field calculations */
-  extension_fields_numerator = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_denominator = 
-    (double*) malloc(num_extension_fields*sizeof(double));;
+  /* initialize auxilliary variables for extension field calculations */
   for (k = 0; k < num_extension_fields; k++) {
     extension_fields_numerator[k] = 0;
     extension_fields_denominator[k] = 0;
@@ -1100,31 +1112,37 @@ double FMM_UPDATE_GRID_POINT_ORDER1(
 
 
   /* calculate extension field values */
-  for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
+  if (num_extension_fields > 0) {
 
-    /*
-     * only accumulate values from the current direction if this
-     * direction was used in the update of the distance function
-     */
-    if (dir_used[dir]) {
-      for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-        offset[l] = 0; 
-      }
-      offset[dir] = (use_plus[dir] ? 1 : -1);
-      for (l = 0; l < FMM_NDIM; l++) {
-        neighbor[l] = grid_idx[l] + offset[l];
-      }
-      LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
+    for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
+
+      /*
+       * only accumulate values from the current direction if this
+       * direction was used in the update of the distance function
+       */
+      if (dir_used[dir]) {
+        for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
+          offset[l] = 0; 
+        }
+        offset[dir] = (use_plus[dir] ? 1 : -1);
+        for (l = 0; l < FMM_NDIM; l++) {
+          neighbor[l] = grid_idx[l] + offset[l];
+        }
+        LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
   
-      inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
-      for (k = 0; k < num_extension_fields; k++) {
-        double dist_diff = dist_updated - phi_upwind[dir];
-        extension_fields_numerator[k] += 
-          inv_dx_sq*dist_diff*extension_fields[k][idx_neighbor];
-        extension_fields_denominator[k] += inv_dx_sq*dist_diff;
+        inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
+
+        for (k = 0; k < num_extension_fields; k++) {
+          double dist_diff = dist_updated - phi_upwind[dir];
+          extension_fields_numerator[k] += 
+            inv_dx_sq*dist_diff*extension_fields[k][idx_neighbor];
+          extension_fields_denominator[k] += inv_dx_sq*dist_diff;
+        }
+
       }
-    }
-  } /* loop over coordinate directions */
+
+    } /* loop over coordinate directions */
+  } /* end case: num_extension_fields > 0 */
 
 
   /* set updated quantities */
@@ -1134,10 +1152,6 @@ double FMM_UPDATE_GRID_POINT_ORDER1(
     extension_fields[k][idx_cur_gridpoint] =
       extension_fields_numerator[k]/extension_fields_denominator[k];
   }
-
-  /* free memory allocated for extension field calculations */
-  free(extension_fields_numerator);
-  free(extension_fields_denominator);
 
   return dist_updated;
 }
@@ -1159,8 +1173,10 @@ double FMM_UPDATE_GRID_POINT_ORDER2(
   double **extension_fields = fmm_field_data->extension_fields; 
 
   /* variables for extension field calculations */
-  double *extension_fields_numerator;
-  double *extension_fields_denominator;
+  double *extension_fields_numerator = 
+    fmm_field_data->extension_fields_numerator;
+  double *extension_fields_denominator =
+    fmm_field_data->extension_fields_denominator;
 
   /* variables used in distance function update */
   PointStatus  neighbor_status;
@@ -1192,11 +1208,7 @@ double FMM_UPDATE_GRID_POINT_ORDER2(
   /* unused function parameters */
   (void) num_dims;
 
-  /* allocate memory extension field calculations */
-  extension_fields_numerator = 
-    (double*) malloc(num_extension_fields*sizeof(double));
-  extension_fields_denominator = 
-    (double*) malloc(num_extension_fields*sizeof(double));;
+  /* initialize auxilliary variables used for extension field calculation */
   for (k = 0; k < num_extension_fields; k++) {
     extension_fields_numerator[k] = 0;
     extension_fields_denominator[k] = 0;
@@ -1381,63 +1393,66 @@ double FMM_UPDATE_GRID_POINT_ORDER2(
 
 
   /* calculate extension field values */
-  for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
+  if (num_extension_fields > 0) {
 
-    /*
-     * only accumulate values from the current direction if this
-     * direction was used in the update of the distance function
-     */
-    if (dir_used[dir]) {
-      for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-        offset[l] = 0; 
-      }
-      offset[dir] = (use_plus[dir] == LSM_FMM_TRUE ? 1 : -1);
-      for (l = 0; l < FMM_NDIM; l++) {
-        neighbor1[l] = grid_idx[l] + offset[l];
-        neighbor2[l] = grid_idx[l] + 2*offset[l];
-      }
-      LSM_FMM_IDX(idx_neighbor1, neighbor1, grid_dims);
-      LSM_FMM_IDX(idx_neighbor2, neighbor2, grid_dims);
-  
-      inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
-      if (second_order_switch[dir] == 1) {
+    for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
 
-        double grad_dist = 1.5*dist_updated - 2.0*phi_upwind1[dir] 
-                         + 0.5*phi_upwind2[dir]; 
-
-        for (k = 0; k < num_extension_fields; k++) {
-
-        /* KTC - second-order discretization seems to lead to  */
-        /*       larger errors than first-order discretization */
-        /*       Currently using first-order discretization.   */
-        /*       FIX ME!!!                                     */
-        /*
-          extension_fields_numerator[k] +=  
-             inv_dx_sq*grad_dist
-            *( 2.0*extension_fields[k][idx_neighbor1]
-             - 0.5*extension_fields[k][idx_neighbor2] );
-          extension_fields_denominator[k] += 1.5*inv_dx_sq*grad_dist;
-         */
-
-          extension_fields_numerator[k] += 
-            inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
-          extension_fields_denominator[k] += inv_dx_sq*grad_dist;
+      /*
+       * only accumulate values from the current direction if this
+       * direction was used in the update of the distance function
+       */
+      if (dir_used[dir]) {
+        for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
+          offset[l] = 0; 
         }
+        offset[dir] = (use_plus[dir] == LSM_FMM_TRUE ? 1 : -1);
+        for (l = 0; l < FMM_NDIM; l++) {
+          neighbor1[l] = grid_idx[l] + offset[l];
+          neighbor2[l] = grid_idx[l] + 2*offset[l];
+        }
+        LSM_FMM_IDX(idx_neighbor1, neighbor1, grid_dims);
+        LSM_FMM_IDX(idx_neighbor2, neighbor2, grid_dims);
+  
+        inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
+        if (second_order_switch[dir] == 1) {
 
-      } else {
+          double grad_dist = 1.5*dist_updated - 2.0*phi_upwind1[dir] 
+                           + 0.5*phi_upwind2[dir]; 
 
-        double grad_dist = dist_updated - phi_upwind1[dir];
+          for (k = 0; k < num_extension_fields; k++) {
+  
+          /* KTC - second-order discretization seems to lead to  */
+          /*       larger errors than first-order discretization */
+          /*       Currently using first-order discretization.   */
+          /*       FIX ME!!!                                     */
+          /*
+            extension_fields_numerator[k] +=  
+               inv_dx_sq*grad_dist
+              *( 2.0*extension_fields[k][idx_neighbor1]
+               - 0.5*extension_fields[k][idx_neighbor2] );
+            extension_fields_denominator[k] += 1.5*inv_dx_sq*grad_dist;
+           */
 
-        for (k = 0; k < num_extension_fields; k++) {
-          extension_fields_numerator[k] += 
-            inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
+            extension_fields_numerator[k] += 
+              inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
+            extension_fields_denominator[k] += inv_dx_sq*grad_dist;
+          }
+
+        } else {
+
+          double grad_dist = dist_updated - phi_upwind1[dir];
+
+          for (k = 0; k < num_extension_fields; k++) {
+            extension_fields_numerator[k] += 
+              inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
           extension_fields_denominator[k] += inv_dx_sq*grad_dist;
-        } 
+          } 
 
-      } /* end switch on second_order_switch[dir] */
+        } /* end switch on second_order_switch[dir] */
  
-    } /* end case: current direction used */
-  } /* loop over coordinate directions */
+      } /* end case: current direction used */
+    } /* loop over coordinate directions */
+  } /* end case: num_extension_fields > 0 */
 
 
   /* set updated quantities */
@@ -1447,10 +1462,6 @@ double FMM_UPDATE_GRID_POINT_ORDER2(
     extension_fields[k][idx_cur_gridpoint] =
       extension_fields_numerator[k]/extension_fields_denominator[k];
   }
-
-  /* free memory allocated for extension field calculations */
-  free(extension_fields_numerator);
-  free(extension_fields_denominator);
 
   return dist_updated;
 }
