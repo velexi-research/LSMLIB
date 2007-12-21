@@ -16,6 +16,7 @@ extern "C" {
   #include <limits.h>
 }
 
+#include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
 #include "OrthogonalizationAlgorithm.h" 
 
@@ -119,10 +120,10 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
-  const double cfl_number,
-  const double stop_distance, 
+  const LSMLIB_REAL cfl_number,
+  const LSMLIB_REAL stop_distance, 
   const int max_iterations,
-  const double iteration_stop_tolerance,
+  const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
   const string& object_name,
   const IntVector<DIM>& phi_ghostcell_width,
@@ -162,8 +163,19 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
@@ -241,7 +253,7 @@ void OrthogonalizationAlgorithm<DIM>::orthogonalizeLevelSetFunctions(
                   << endl);
       }
   
-      Pointer< CellData<DIM,double> > phi_data = 
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
         patch->getPatchData( d_phi_handle );
       d_num_field_components = phi_data->getDepth();
   
@@ -355,9 +367,20 @@ void OrthogonalizationAlgorithm<DIM>::getFromInput(
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
-    
+   
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {

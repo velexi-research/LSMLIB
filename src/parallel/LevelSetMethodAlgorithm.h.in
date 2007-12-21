@@ -298,7 +298,7 @@
  *                                       Box arrays describing where
  *                                       user-specified refinement is to occur
  *                                       on Level ln.
- *       - times (OPTIONAL)           =  double array specifying times at which
+ *       - times (OPTIONAL)           =  LSMLIB_REAL array specifying times at which
  *                                       a particular box sequence is to be 
  *                                       used.
  *       - cycles (OPTIONAL)          =  integer array specifying regrid cycles
@@ -645,7 +645,7 @@ public:
    * Return value :  start time
    *
    */
-  virtual double getStartTime() const; 
+  virtual LSMLIB_REAL getStartTime() const; 
 
   /*!
    * getEndTime() returns the simulation end time.
@@ -655,7 +655,7 @@ public:
    * Return value :  end time
    *
    */
-  virtual double getEndTime() const;
+  virtual LSMLIB_REAL getEndTime() const;
 
   /*!
    * getCurrentTime() returns the current simulation time. 
@@ -665,7 +665,7 @@ public:
    * Return value :  current time
    *
    */
-  virtual double getCurrentTime() const;
+  virtual LSMLIB_REAL getCurrentTime() const;
 
   /*!
    * endTimeReached() returns true if the end time for the 
@@ -759,7 +759,7 @@ public:
    * Return value :  CFL number
    *
    */
-  virtual double getCFLNumber() const;
+  virtual LSMLIB_REAL getCFLNumber() const;
 
   //! @}
 
@@ -873,7 +873,7 @@ public:
    * maximum stable dt is computed using the algorithm:
    *
    * <pre>
-   *   if (user_specified_dt < DBL_MAX)
+   *   if (user_specified_dt < @LSMLIB_REAL_MAX@)
    *
    *     dt = user_specified_dt
    *
@@ -916,7 +916,7 @@ public:
    * Return value:  maximum stable dt for next time step
    *
    */
-  virtual double computeStableDt();
+  virtual LSMLIB_REAL computeStableDt();
 
   /*!
    * advanceLevelSetFunctions() advances the level set function
@@ -934,7 +934,7 @@ public:
    *    currently always returns false.
    *
    */
-  virtual bool advanceLevelSetFunctions(const double dt); 
+  virtual bool advanceLevelSetFunctions(const LSMLIB_REAL dt); 
 
   //! @}
 
@@ -1250,10 +1250,10 @@ public:
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = UNKNOWN,
     int spatial_derivative_order = 0,
     int tvd_runge_kutta_order = 0,
-    double cfl_number = 0,
-    const double stop_distance = 0.0,
+    LSMLIB_REAL cfl_number = 0,
+    const LSMLIB_REAL stop_distance = 0.0,
     const int max_iterations = 0,
-    const double iteration_stop_tolerance = 0.0,
+    const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
     const string& object_name = "FieldExtensionAlgorithm");
 
@@ -1288,7 +1288,7 @@ protected:
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
   int d_tvd_runge_kutta_order;
-  double d_cfl_number;
+  LSMLIB_REAL d_cfl_number;
 
  
 private:

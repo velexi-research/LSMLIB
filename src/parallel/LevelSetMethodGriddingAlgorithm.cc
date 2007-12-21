@@ -113,7 +113,7 @@ void LevelSetMethodGriddingAlgorithm<DIM>::registerVelocityFieldStrategy(
 /* initializePatchHierarchy() */
 template <int DIM>
 void LevelSetMethodGriddingAlgorithm<DIM>::initializePatchHierarchy(
-  const double time)
+  const LSMLIB_REAL time)
 {
   /*
    * Construct and initialize the levels of hierarchy.
@@ -178,7 +178,7 @@ void LevelSetMethodGriddingAlgorithm<DIM>::initializePatchHierarchy(
  */
 template<int DIM> 
 void LevelSetMethodGriddingAlgorithm<DIM>::regridPatchHierarchy(
-  double time)
+  LSMLIB_REAL time)
 {
   int num_levels = d_patch_hierarchy->getNumberLevels();
   Array<int> tag_buffer(num_levels, true);
@@ -198,7 +198,7 @@ template<int DIM>
 void LevelSetMethodGriddingAlgorithm<DIM>::initializeLevelData(
   const Pointer< BasePatchHierarchy<DIM> > hierarchy,
   const int level_number,
-  const double init_data_time,
+  const LSMLIB_REAL init_data_time,
   const bool can_be_refined,
   const bool initial_time,
   const Pointer< BasePatchLevel<DIM> > old_level,
@@ -292,12 +292,12 @@ template<int DIM>
 void LevelSetMethodGriddingAlgorithm<DIM>::tagCellsForRefinement(
   const Pointer< BasePatchHierarchy<DIM> > hierarchy,
   const int level_number,
-  const double regrid_time,
+  const LSMLIB_REAL regrid_time,
   const int tag_index, 
   const bool initial_time,
   const bool coarsest_sync_level,
   const bool can_be_refined,
-  const double regrid_start_time)
+  const LSMLIB_REAL regrid_start_time)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(!(hierarchy.isNull()));

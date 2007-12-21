@@ -13,6 +13,7 @@
 #include <vector>
 #include <float.h>
 
+#include "LSMLIB_config.h" 
 #include "LevelSetMethodToolbox.h" 
 #include "LSMLIB_DefaultParameters.h"
 
@@ -130,16 +131,22 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
       }
 
       // compute spatial derivatives for phi
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > upwind_function_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > upwind_function_data =
         patch->getPatchData( upwind_function_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       Box<DIM> fillbox = grad_phi_data->getBox();
       const IntVector<DIM> grad_phi_fillbox_lower = fillbox.lower();
@@ -159,9 +166,9 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
       const IntVector<DIM> upwind_fcn_ghostbox_upper = 
         upwind_fcn_ghostbox.upper();
 
-      double* grad_phi[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
-      double* upwind_function[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* upwind_function[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         grad_phi[dim] = grad_phi_data->getPointer(dim);
         upwind_function[dim] = upwind_function_data->getPointer(dim);
@@ -175,14 +182,14 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_one_ghostcell_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -295,9 +302,9 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_two_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_two_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -307,8 +314,8 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               const IntVector<DIM> D2_ghostbox_lower = D2_ghostbox.lower();
               const IntVector<DIM> D2_ghostbox_upper = D2_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -438,11 +445,11 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D3_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D3_data =
                 patch->getPatchData( s_D3_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -455,9 +462,9 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               const IntVector<DIM> D3_ghostbox_lower = D3_ghostbox.lower();
               const IntVector<DIM> D3_ghostbox_upper = D3_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
-              double* D3 = D3_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D3 = D3_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -614,14 +621,14 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -789,13 +796,19 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
       // compute spatial derivatives for phi
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
-      Pointer< CellData<DIM,double> > grad_phi_plus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( grad_phi_plus_handle );
-      Pointer< CellData<DIM,double> > grad_phi_minus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( grad_phi_minus_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
   
       Box<DIM> fillbox = grad_phi_plus_data->getBox();
@@ -818,9 +831,9 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
       const IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
       const IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
 
-      double* grad_phi_plus[LSM_DIM_MAX];
-      double* grad_phi_minus[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
       for (int dim = 0; dim < DIM; dim++) {
         grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
         grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
@@ -834,14 +847,14 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_one_ghostcell_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -952,9 +965,9 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_two_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_two_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -964,8 +977,8 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               const IntVector<DIM> D2_ghostbox_lower = D2_ghostbox.lower();
               const IntVector<DIM> D2_ghostbox_upper = D2_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -1093,11 +1106,11 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D3_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D3_data =
                 patch->getPatchData( s_D3_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -1110,9 +1123,9 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               const IntVector<DIM> D3_ghostbox_lower = D3_ghostbox.lower();
               const IntVector<DIM> D3_ghostbox_upper = D3_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
-              double* D3 = D3_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D3 = D3_data->getPointer();
 
               if ( DIM == 3 ) { 
 
@@ -1267,14 +1280,14 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
 
@@ -1436,14 +1449,20 @@ void LevelSetMethodToolbox<DIM>::computeCentralSpatialDerivatives(
       }
 
       // compute spatial derivatives for phi
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       Box<DIM> fillbox = grad_phi_data->getBox();
       const IntVector<DIM> grad_phi_fillbox_lower = fillbox.lower();
@@ -1459,8 +1478,8 @@ void LevelSetMethodToolbox<DIM>::computeCentralSpatialDerivatives(
       const IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
       const IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
 
-      double* grad_phi[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
       for (int dim = 0; dim < DIM; dim++) {
         grad_phi[dim] = grad_phi_data->getPointer(dim);
       }
@@ -1633,7 +1652,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK1Step(
   const int u_next_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_next_component,
   const int u_cur_component,
   const int rhs_component)
@@ -1657,11 +1676,11 @@ void LevelSetMethodToolbox<DIM>::TVDRK1Step(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_next_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_next_data =
         patch->getPatchData( u_next_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_next_ghostbox = u_next_data->getGhostBox();
@@ -1681,9 +1700,9 @@ void LevelSetMethodToolbox<DIM>::TVDRK1Step(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_next = u_next_data->getPointer(u_next_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_next = u_next_data->getPointer(u_next_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_RK1_STEP(
@@ -1774,7 +1793,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage1(
   const int u_stage1_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_stage1_component,
   const int u_cur_component,
   const int rhs_component)
@@ -1798,11 +1817,11 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage1(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_stage1_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage1_data =
         patch->getPatchData( u_stage1_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_stage1_ghostbox = u_stage1_data->getGhostBox();
@@ -1826,9 +1845,9 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage1(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE1(
@@ -1920,7 +1939,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage2(
   const int u_stage1_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_next_component,
   const int u_stage1_component,
   const int u_cur_component,
@@ -1945,13 +1964,13 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage2(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_next_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_next_data =
         patch->getPatchData( u_next_handle );
-      Pointer< CellData<DIM,double> > u_stage1_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage1_data =
         patch->getPatchData( u_stage1_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_next_ghostbox = u_next_data->getGhostBox();
@@ -1981,10 +2000,10 @@ void LevelSetMethodToolbox<DIM>::TVDRK2Stage2(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_next = u_next_data->getPointer(u_next_component);
-      double* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_next = u_next_data->getPointer(u_next_component);
+      LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE2(
@@ -2091,7 +2110,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage1(
   const int u_stage1_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_stage1_component,
   const int u_cur_component,
   const int rhs_component)
@@ -2115,11 +2134,11 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage1(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_stage1_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage1_data =
         patch->getPatchData( u_stage1_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_stage1_ghostbox = u_stage1_data->getGhostBox();
@@ -2143,9 +2162,9 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage1(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE1(
@@ -2237,7 +2256,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage2(
   const int u_stage1_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_stage2_component,
   const int u_stage1_component,
   const int u_cur_component,
@@ -2262,13 +2281,13 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage2(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_stage2_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage2_data =
         patch->getPatchData( u_stage2_handle );
-      Pointer< CellData<DIM,double> > u_stage1_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage1_data =
         patch->getPatchData( u_stage1_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_stage2_ghostbox = u_stage2_data->getGhostBox();
@@ -2298,10 +2317,10 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage2(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
-      double* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
+      LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE2(
@@ -2409,7 +2428,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
   const int u_stage2_handle,
   const int u_cur_handle,
   const int rhs_handle,
-  const double dt,
+  const LSMLIB_REAL dt,
   const int u_next_component,
   const int u_stage2_component,
   const int u_cur_component,
@@ -2434,13 +2453,13 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > u_next_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_next_data =
         patch->getPatchData( u_next_handle );
-      Pointer< CellData<DIM,double> > u_stage2_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage2_data =
         patch->getPatchData( u_stage2_handle );
-      Pointer< CellData<DIM,double> > u_cur_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
         patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
       Box<DIM> u_next_ghostbox = u_next_data->getGhostBox();
@@ -2470,10 +2489,10 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* u_next = u_next_data->getPointer(u_next_component);
-      double* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
-      double* u_cur = u_cur_data->getPointer(u_cur_component);
-      double* rhs = rhs_data->getPointer(rhs_component);
+      LSMLIB_REAL* u_next = u_next_data->getPointer(u_next_component);
+      LSMLIB_REAL* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
+      LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
+      LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE3(
@@ -2632,12 +2651,18 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
       // get geometry information for patch
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       // get PatchData for distance function and phi
-      Pointer< CellData<DIM,double> > distance_function_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > distance_function_data =
         patch->getPatchData( distance_function_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
   
       // get index space information for PatchData
@@ -2646,9 +2671,9 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
         ghostbox.upper() - ghostbox.lower();
       int* grid_dims = grid_dims_int_vector;
 
-      double* distance_function = 
+      LSMLIB_REAL* distance_function = 
         distance_function_data->getPointer(distance_function_component);
-      double* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
 
       // call computeExtensionFields*() from toolbox to carry out
       // computation
@@ -2660,24 +2685,24 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
         /*
         computeExtensionFields3d(
           distance_function,
-          (double**) 0,
+          (LSMLIB_REAL**) 0,
           phi,
-          (double**) 0,
+          (LSMLIB_REAL**) 0,
           0,
           grid_dims,
-          (double*) dx);
+          (LSMLIB_REAL*) dx);
         */
       } else if ( DIM == 2 ) {
         computeExtensionFields2d(
           distance_function,
-          (double**) 0,
+          (LSMLIB_REAL**) 0,
           phi,
-          (double*) 0, // NULL mask field
-          (double**) 0,
+          (LSMLIB_REAL*) 0, // NULL mask field
+          (LSMLIB_REAL**) 0,
           0,
           spatial_derivative_order,  
           grid_dims,
-          (double*) dx);
+          (LSMLIB_REAL*) dx);
       } else if ( DIM == 1 ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeDistanceFunctionUsingFMM(): "
@@ -2736,8 +2761,8 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
 
   // allocate memory for extension fields and source fields
   int num_extension_fields = extension_field_handles.size();
-  double** extension_fields = new double*[num_extension_fields];
-  double** source_fields = new double*[num_extension_fields];
+  LSMLIB_REAL** extension_fields = new LSMLIB_REAL*[num_extension_fields];
+  LSMLIB_REAL** source_fields = new LSMLIB_REAL*[num_extension_fields];
 
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
@@ -2765,22 +2790,28 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
       // get geometry information for patch
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       // get PatchData for distance function and phi
-      Pointer< CellData<DIM,double> > distance_function_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > distance_function_data =
         patch->getPatchData( distance_function_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      double* distance_function = 
+      LSMLIB_REAL* distance_function = 
         distance_function_data->getPointer(distance_function_component);
-      double* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
   
       // get PatchData for source fields and extension fields
       for (int k=0; k < num_extension_fields; k++) {
-        Pointer< CellData<DIM,double> > extension_field_data = 
+        Pointer< CellData<DIM,LSMLIB_REAL> > extension_field_data = 
           patch->getPatchData( extension_field_handles[k] );
-        Pointer< CellData<DIM,double> > source_field_data = 
+        Pointer< CellData<DIM,LSMLIB_REAL> > source_field_data = 
           patch->getPatchData( source_field_handles[k] );
 
         extension_fields[k] = 
@@ -2807,23 +2838,23 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
           distance_function,
           ext_field
           phi,
-          (double*) 0,
-          (double**) 0,
+          (LSMLIB_REAL*) 0,
+          (LSMLIB_REAL**) 0,
           0,
           grid_dims,
-          (double*) dx);
+          (LSMLIB_REAL*) dx);
         */
       } else if ( DIM == 2 ) {
         computeExtensionFields2d(
           distance_function,
           extension_fields,
           phi,
-          (double*) 0,  // NULL mask field
+          (LSMLIB_REAL*) 0,  // NULL mask field
           source_fields,
           num_extension_fields,
           spatial_derivative_order,
           grid_dims,
-          (double*) dx);
+          (LSMLIB_REAL*) dx);
       } else if ( DIM == 1 ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeExtensionFieldsUsingFMM(): "
@@ -2889,20 +2920,26 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
       patch->allocatePatchData(s_compute_normal_grad_phi_minus_handle);
 
       // get PatchData
-      Pointer< CellData<DIM,double> > normal_vector_data=
+      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data=
         patch->getPatchData( normal_vector_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( s_compute_normal_grad_phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_plus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( s_compute_normal_grad_phi_plus_handle );
-      Pointer< CellData<DIM,double> > grad_phi_minus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( s_compute_normal_grad_phi_minus_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       Box<DIM> fillbox = normal_vector_data->getBox();
       const IntVector<DIM> fillbox_lower = fillbox.lower();
@@ -2936,11 +2973,11 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
       const IntVector<DIM> grad_phi_minus_ghostbox_upper = 
         grad_phi_minus_ghostbox.upper();
 
-      double* normal_vector[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
-      double* grad_phi[LSM_DIM_MAX];
-      double* grad_phi_plus[LSM_DIM_MAX];
-      double* grad_phi_minus[LSM_DIM_MAX];
+      LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         normal_vector[dim] = normal_vector_data->getPointer(dim);
         grad_phi[dim] = grad_phi_data->getPointer(dim);
@@ -2957,14 +2994,14 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_one_ghostcell_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
                 LSM3D_HJ_ENO1(
@@ -3074,9 +3111,9 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_two_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_two_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -3086,8 +3123,8 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               const IntVector<DIM> D2_ghostbox_lower = D2_ghostbox.lower();
               const IntVector<DIM> D2_ghostbox_upper = D2_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -3214,11 +3251,11 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D3_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D3_data =
                 patch->getPatchData( s_D3_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -3231,9 +3268,9 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               const IntVector<DIM> D3_ghostbox_lower = D3_ghostbox.lower();
               const IntVector<DIM> D3_ghostbox_upper = D3_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
-              double* D3 = D3_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D3 = D3_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -3388,14 +3425,14 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -3830,20 +3867,26 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
       patch->allocatePatchData(s_compute_normal_grad_phi_minus_handle);
 
       // get PatchData
-      Pointer< CellData<DIM,double> > normal_vector_data=
+      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data=
         patch->getPatchData( normal_vector_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( s_compute_normal_grad_phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_plus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( s_compute_normal_grad_phi_plus_handle );
-      Pointer< CellData<DIM,double> > grad_phi_minus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( s_compute_normal_grad_phi_minus_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM]; 
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       Box<DIM> fillbox = normal_vector_data->getBox();
       const IntVector<DIM> fillbox_lower = fillbox.lower();
@@ -3877,11 +3920,11 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
       const IntVector<DIM> grad_phi_minus_ghostbox_upper = 
         grad_phi_minus_ghostbox.upper();
 
-      double* normal_vector[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
-      double* grad_phi[LSM_DIM_MAX];
-      double* grad_phi_plus[LSM_DIM_MAX];
-      double* grad_phi_minus[LSM_DIM_MAX];
+      LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         normal_vector[dim] = normal_vector_data->getPointer(dim);
         grad_phi[dim] = grad_phi_data->getPointer(dim);
@@ -3898,14 +3941,14 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_one_ghostcell_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
                 LSM3D_HJ_ENO1(
@@ -4015,9 +4058,9 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_two_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_two_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -4027,8 +4070,8 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               const IntVector<DIM> D2_ghostbox_lower = D2_ghostbox.lower();
               const IntVector<DIM> D2_ghostbox_upper = D2_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -4155,11 +4198,11 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D2_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_three_ghostcells_handle );
-              Pointer< CellData<DIM,double> > D3_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D3_data =
                 patch->getPatchData( s_D3_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -4172,9 +4215,9 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               const IntVector<DIM> D3_ghostbox_lower = D3_ghostbox.lower();
               const IntVector<DIM> D3_ghostbox_upper = D3_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
-              double* D2 = D2_data->getPointer();
-              double* D3 = D3_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D2 = D2_data->getPointer();
+              LSMLIB_REAL* D3 = D3_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -4329,14 +4372,14 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,double> > D1_data =
+              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
               const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
               const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
 
-              double* D1 = D1_data->getPointer();
+              LSMLIB_REAL* D1 = D1_data->getPointer();
 
               if ( DIM == 3 ) {
               
@@ -4771,9 +4814,9 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
       }
 
       // get PatchData
-      Pointer< CellData<DIM,double> > normal_vector_data=
+      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data=
         patch->getPatchData( normal_vector_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
@@ -4795,8 +4838,8 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromGradPhi(
       const IntVector<DIM> grad_phi_ghostbox_upper = 
         grad_phi_ghostbox.upper();
 
-      double* normal_vector[LSM_DIM_MAX];
-      double* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         normal_vector[dim] = normal_vector_data->getPointer(dim);
         grad_phi[dim] = grad_phi_data->getPointer(dim);
@@ -4897,16 +4940,22 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromGradPhi(
       }
 
       // get PatchData
-      Pointer< CellData<DIM,double> > normal_vector_data=
+      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data=
         patch->getPatchData( normal_vector_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
   
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM]; 
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
   
       Box<DIM> fillbox = normal_vector_data->getBox();
       const IntVector<DIM> fillbox_lower = fillbox.lower();
@@ -4928,9 +4977,9 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromGradPhi(
       const IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
       const IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
 
-      double* normal_vector[LSM_DIM_MAX];
-      double* grad_phi[LSM_DIM_MAX];
-      double* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
       for (int dim = 0; dim < DIM; dim++) {
         normal_vector[dim] = normal_vector_data->getPointer(dim);
         grad_phi[dim] = grad_phi_data->getPointer(dim);
@@ -5025,7 +5074,7 @@ void LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromGradPhi(
 
 /* computeVolumeOfRegionDefinedByZeroLevelSet() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int phi_handle,
   const int control_volume_handle,
@@ -5033,7 +5082,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
   const int phi_component,
   const int heaviside_width)
 {
-  double volume = 0.0;
+  LSMLIB_REAL volume = 0.0;
 
   // loop over PatchHierarchy and compute the integral on each Patch
   // by calling Fortran subroutines
@@ -5058,17 +5107,23 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
         // get dx and epsilon
         Pointer< CartesianPatchGeometry<DIM> > patch_geom =
           patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
-        double max_dx = dx[0];
+#else
+        const double* dx_double = patch_geom->getDx();
+        float dx[DIM]; 
+        for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+        LSMLIB_REAL max_dx = dx[0];
         for (int k = 1; k < DIM; k++) {
           if (max_dx < dx[k]) max_dx = dx[k];
         }
-        double epsilon = heaviside_width*max_dx;
+        LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        Pointer< CellData<DIM,double> > phi_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
           patch->getPatchData( phi_handle );
-        Pointer< CellData<DIM,double> > control_volume_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
           patch->getPatchData( control_volume_handle );
     
         Box<DIM> phi_ghostbox = phi_data->getGhostBox();
@@ -5086,9 +5141,9 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
         const IntVector<DIM> interior_box_lower = interior_box.lower();
         const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-        double* phi = phi_data->getPointer(phi_component);
-        double* control_volume = control_volume_data->getPointer();
-        double volume_on_patch = 0.0;
+        LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+        LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+        LSMLIB_REAL volume_on_patch = 0.0;
         int control_volume_sgn = 1;
   
         if ( DIM == 3 ) {
@@ -5187,17 +5242,23 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
         // get dx and epsilon
         Pointer< CartesianPatchGeometry<DIM> > patch_geom =
           patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
-        double max_dx = dx[0];
+#else
+        const double* dx_double = patch_geom->getDx();
+        float dx[DIM]; 
+        for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+        LSMLIB_REAL max_dx = dx[0];
         for (int k = 1; k < DIM; k++) {
           if (max_dx < dx[k]) max_dx = dx[k];
         }
-        double epsilon = heaviside_width*max_dx;
+        LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        Pointer< CellData<DIM,double> > phi_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
           patch->getPatchData( phi_handle );
-        Pointer< CellData<DIM,double> > control_volume_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
           patch->getPatchData( control_volume_handle );
   
         Box<DIM> phi_ghostbox = phi_data->getGhostBox();
@@ -5215,9 +5276,9 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
         const IntVector<DIM> interior_box_lower = interior_box.lower();
         const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-        double* phi = phi_data->getPointer();
-        double* control_volume = control_volume_data->getPointer();
-        double volume_on_patch = 0.0;
+        LSMLIB_REAL* phi = phi_data->getPointer();
+        LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+        LSMLIB_REAL volume_on_patch = 0.0;
         int control_volume_sgn = 1;
   
         if ( DIM == 3 ) {
@@ -5304,7 +5365,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfRegionDefinedByZeroLevelSet(
 
 /* computeVolumeOfZeroLevelSet() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int phi_handle,
   const int grad_phi_handle,
@@ -5312,7 +5373,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
   const int phi_component,
   const int delta_width)
 {
-  double volume = 0.0;
+  LSMLIB_REAL volume = 0.0;
 
   // loop over PatchHierarchy and compute the integral on each Patch
   // by calling Fortran subroutines
@@ -5336,19 +5397,25 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
       // get dx and epsilon
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
-      double max_dx = dx[0];
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM]; 
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+      LSMLIB_REAL max_dx = dx[0];
       for (int k = 1; k < DIM; k++) {
         if (max_dx < dx[k]) max_dx = dx[k];
       }
-      double epsilon = delta_width*max_dx;
+      LSMLIB_REAL epsilon = delta_width*max_dx;
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,double> > control_volume_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
         patch->getPatchData( control_volume_handle );
   
       Box<DIM> phi_ghostbox = phi_data->getGhostBox();
@@ -5372,13 +5439,13 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
       const IntVector<DIM> interior_box_lower = interior_box.lower();
       const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-      double* phi = phi_data->getPointer(phi_component);
-      double* control_volume = control_volume_data->getPointer();
-      double* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       for (int k=0; k<DIM; k++) {
         grad_phi[k] = grad_phi_data->getPointer(k);
       }
-      double volume_on_patch = 0.0;
+      LSMLIB_REAL volume_on_patch = 0.0;
       int control_volume_sgn = 1;
 
       if ( DIM == 3 ) {
@@ -5478,7 +5545,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeOfZeroLevelSet(
 
 /* computeVolumeIntegral() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int F_handle,
   const int phi_handle,
@@ -5488,7 +5555,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
   const int phi_component,
   const int heaviside_width)
 {
-  double integral_F = 0.0;
+  LSMLIB_REAL integral_F = 0.0;
 
   // loop over PatchHierarchy and compute the integral on each Patch
   // by calling Fortran subroutines
@@ -5513,19 +5580,25 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
         // get dx and epsilon
         Pointer< CartesianPatchGeometry<DIM> > patch_geom =
           patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
-        double max_dx = dx[0];
+#else
+        const double* dx_double = patch_geom->getDx();
+        float dx[DIM]; 
+        for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+        LSMLIB_REAL max_dx = dx[0];
         for (int k = 1; k < DIM; k++) {
           if (max_dx < dx[k]) max_dx = dx[k];
         }
-        double epsilon = heaviside_width*max_dx;
+        LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        Pointer< CellData<DIM,double> > F_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > F_data =
           patch->getPatchData( F_handle);
-        Pointer< CellData<DIM,double> > phi_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
           patch->getPatchData( phi_handle );
-        Pointer< CellData<DIM,double> > control_volume_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
           patch->getPatchData( control_volume_handle );
     
         Box<DIM> F_ghostbox = F_data->getGhostBox();
@@ -5547,10 +5620,10 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
         const IntVector<DIM> interior_box_lower = interior_box.lower();
         const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-        double* F = F_data->getPointer(F_component);
-        double* phi = phi_data->getPointer(phi_component);
-        double* control_volume = control_volume_data->getPointer();
-        double integral_F_on_patch = 0.0;
+        LSMLIB_REAL* F = F_data->getPointer(F_component);
+        LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+        LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+        LSMLIB_REAL integral_F_on_patch = 0.0;
         int control_volume_sgn = 1;
   
         if ( DIM == 3 ) {
@@ -5664,19 +5737,25 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
         // get dx and epsilon
         Pointer< CartesianPatchGeometry<DIM> > patch_geom =
           patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
-        double max_dx = dx[0];
+#else
+        const double* dx_double = patch_geom->getDx();
+        float dx[DIM]; 
+        for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+        LSMLIB_REAL max_dx = dx[0];
         for (int k = 1; k < DIM; k++) {
           if (max_dx < dx[k]) max_dx = dx[k];
         }
-        double epsilon = heaviside_width*max_dx;
+        LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        Pointer< CellData<DIM,double> > F_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > F_data =
           patch->getPatchData( F_handle);
-        Pointer< CellData<DIM,double> > phi_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
           patch->getPatchData( phi_handle );
-        Pointer< CellData<DIM,double> > control_volume_data =
+        Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
           patch->getPatchData( control_volume_handle );
     
         Box<DIM> F_ghostbox = F_data->getGhostBox();
@@ -5698,10 +5777,10 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
         const IntVector<DIM> interior_box_lower = interior_box.lower();
         const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-        double* F = F_data->getPointer();
-        double* phi = phi_data->getPointer();
-        double* control_volume = control_volume_data->getPointer();
-        double integral_F_on_patch = 0.0;
+        LSMLIB_REAL* F = F_data->getPointer();
+        LSMLIB_REAL* phi = phi_data->getPointer();
+        LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+        LSMLIB_REAL integral_F_on_patch = 0.0;
         int control_volume_sgn = 1;
   
         if ( DIM == 3 ) {
@@ -5803,7 +5882,7 @@ double LevelSetMethodToolbox<DIM>::computeVolumeIntegral(
 
 /* computeSurfaceIntegral() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int F_handle,
   const int phi_handle,
@@ -5813,7 +5892,7 @@ double LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
   const int phi_component,
   const int delta_width)
 {
-  double integral_F = 0.0;
+  LSMLIB_REAL integral_F = 0.0;
 
   // loop over PatchHierarchy and compute the integral on each Patch
   // by calling Fortran subroutines
@@ -5837,21 +5916,27 @@ double LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
       // get dx and epsilon
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
-      const double* dx = patch_geom->getDx();
-      double max_dx = dx[0];
+#ifdef LSMLIB_DOUBLE_PRECISION
+        const double* dx = patch_geom->getDx();
+#else
+        const double* dx_double = patch_geom->getDx();
+        float dx[DIM]; 
+        for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+      LSMLIB_REAL max_dx = dx[0];
       for (int k = 1; k < DIM; k++) {
         if (max_dx < dx[k]) max_dx = dx[k];
       }
-      double epsilon = delta_width*max_dx;
+      LSMLIB_REAL epsilon = delta_width*max_dx;
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > F_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > F_data =
         patch->getPatchData( F_handle);
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,double> > control_volume_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
         patch->getPatchData( control_volume_handle );
   
       Box<DIM> F_ghostbox = F_data->getGhostBox();
@@ -5879,14 +5964,14 @@ double LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
       const IntVector<DIM> interior_box_lower = interior_box.lower();
       const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-      double* F = F_data->getPointer(F_component);
-      double* phi = phi_data->getPointer(phi_component);
-      double* control_volume = control_volume_data->getPointer();
-      double* grad_phi[LSM_DIM_MAX];
+      LSMLIB_REAL* F = F_data->getPointer(F_component);
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* control_volume = control_volume_data->getPointer();
+      LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       for (int k=0; k<DIM; k++) {
         grad_phi[k] = grad_phi_data->getPointer(k);
       }
-      double integral_F_on_patch = 0.0;
+      LSMLIB_REAL integral_F_on_patch = 0.0;
       int control_volume_sgn = 1;
 
       if ( DIM == 3 ) {
@@ -6001,16 +6086,22 @@ double LevelSetMethodToolbox<DIM>::computeSurfaceIntegral(
 
 /* computeStableAdvectionDt() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int velocity_handle,
   const int control_volume_handle,
-  const double cfl_number)
+  const LSMLIB_REAL cfl_number)
 {
   Pointer< CartesianGridGeometry<DIM> > grid_geometry = 
     patch_hierarchy->getGridGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx_level0 = grid_geometry->getDx();
-  double max_advection_dt = DBL_MAX;
+#else
+  const double* dx_level0_double = grid_geometry->getDx();
+  float dx_level0[DIM]; 
+  for (int i = 0; i < DIM; i++) dx_level0[i] = (float) dx_level0_double[i];
+#endif
+  LSMLIB_REAL max_advection_dt = @LSMLIB_REAL_MAX@;
 
   // loop over PatchHierarchy and compute the maximum stable 
   // advection dt by calling Fortran routines
@@ -6020,7 +6111,7 @@ double LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
     Pointer< PatchLevel<DIM> > level = patch_hierarchy->getPatchLevel(ln);
     const IntVector<DIM> ratio_to_coarsest = level->getRatio();
   
-    double dx[LSM_DIM_MAX];
+    LSMLIB_REAL dx[LSM_DIM_MAX];
     for (int dir = 0; dir < DIM; dir++) {
       dx[dir] = dx_level0[dir]/ratio_to_coarsest[dir];
     }
@@ -6036,12 +6127,12 @@ double LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
                   << endl);
       }
 
-      double max_advection_dt_on_patch = -1;  // bogus value overwritten
+      LSMLIB_REAL max_advection_dt_on_patch = -1;  // bogus value overwritten
                                               // by Fortran subroutine
 
-      Pointer< CellData<DIM,double> > vel_data = 
+      Pointer< CellData<DIM,LSMLIB_REAL> > vel_data = 
         patch->getPatchData( velocity_handle );
-      Pointer< CellData<DIM,double> > control_volume_data = 
+      Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data = 
         patch->getPatchData( control_volume_handle );
 
       Box<DIM> vel_box = vel_data->getBox();
@@ -6147,18 +6238,24 @@ double LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
 
 /* computeStableNormalVelocityDt() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int normal_velocity_handle,
   const int grad_phi_plus_handle,
   const int grad_phi_minus_handle,
   const int control_volume_handle,
-  const double cfl_number)
+  const LSMLIB_REAL cfl_number)
 {
   Pointer< CartesianGridGeometry<DIM> > grid_geometry = 
     patch_hierarchy->getGridGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx_level0 = grid_geometry->getDx();
-  double max_normal_vel_dt = DBL_MAX;
+#else
+  const double* dx_level0_double = grid_geometry->getDx();
+  float dx_level0[DIM]; 
+  for (int i = 0; i < DIM; i++) dx_level0[i] = (float) dx_level0_double[i];
+#endif
+  LSMLIB_REAL max_normal_vel_dt = @LSMLIB_REAL_MAX@;
 
   // loop over PatchHierarchy and compute the maximum stable 
   // advection dt by calling Fortran routines
@@ -6168,7 +6265,7 @@ double LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
     Pointer< PatchLevel<DIM> > level = patch_hierarchy->getPatchLevel(ln);
     const IntVector<DIM> ratio_to_coarsest = level->getRatio();
   
-    double dx[LSM_DIM_MAX];
+    LSMLIB_REAL dx[LSM_DIM_MAX];
     for (int dir = 0; dir < DIM; dir++) {
       dx[dir] = dx_level0[dir]/ratio_to_coarsest[dir];
     }
@@ -6184,16 +6281,16 @@ double LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
                   << endl);
       }
 
-      double max_normal_vel_dt_on_patch = -1;  // bogus value overwritten
+      LSMLIB_REAL max_normal_vel_dt_on_patch = -1;  // bogus value overwritten
                                                // by Fortran subroutine
 
-      Pointer< CellData<DIM,double> > vel_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > vel_data =
         patch->getPatchData(normal_velocity_handle);
-      Pointer< CellData<DIM,double> > grad_phi_plus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( grad_phi_plus_handle );
-      Pointer< CellData<DIM,double> > grad_phi_minus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( grad_phi_minus_handle );
-      Pointer< CellData<DIM,double> > control_volume_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
         patch->getPatchData( control_volume_handle );
 
       Box<DIM> vel_box = vel_data->getBox();
@@ -6343,7 +6440,7 @@ double LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
 
 /* maxNormOfDifference() */
 template <int DIM> 
-double LevelSetMethodToolbox<DIM>::maxNormOfDifference(
+LSMLIB_REAL LevelSetMethodToolbox<DIM>::maxNormOfDifference(
   Pointer< PatchHierarchy<DIM> > patch_hierarchy,
   const int field1_handle,
   const int field2_handle,
@@ -6351,7 +6448,7 @@ double LevelSetMethodToolbox<DIM>::maxNormOfDifference(
   const int field1_component,
   const int field2_component)
 {
-  double max_norm_diff = 0;
+  LSMLIB_REAL max_norm_diff = 0;
 
   // loop over PatchHierarchy and compute the max norm of (field1-field2)
   // by calling Fortran routines
@@ -6372,11 +6469,11 @@ double LevelSetMethodToolbox<DIM>::maxNormOfDifference(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > field1_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > field1_data =
         patch->getPatchData( field1_handle );
-      Pointer< CellData<DIM,double> > field2_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > field2_data =
         patch->getPatchData( field2_handle );
-      Pointer< CellData<DIM,double> > control_volume_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > control_volume_data =
         patch->getPatchData( control_volume_handle );
   
       Box<DIM> field1_ghostbox = field1_data->getGhostBox();
@@ -6399,12 +6496,12 @@ double LevelSetMethodToolbox<DIM>::maxNormOfDifference(
       const IntVector<DIM> interior_box_lower = interior_box.lower();
       const IntVector<DIM> interior_box_upper = interior_box.upper();
 
-      double* field1 = field1_data->getPointer(field1_component);
-      double* field2 = field2_data->getPointer(field2_component);
-      double* control_volume = control_volume_data->getPointer();
+      LSMLIB_REAL* field1 = field1_data->getPointer(field1_component);
+      LSMLIB_REAL* field2 = field2_data->getPointer(field2_component);
+      LSMLIB_REAL* control_volume = control_volume_data->getPointer();
       int control_volume_sgn = 1;
 
-      double max_norm_diff_on_patch = 0.0;
+      LSMLIB_REAL max_norm_diff_on_patch = 0.0;
 
       if ( DIM == 3 ) {
         LSM3D_MAX_NORM_DIFF_CONTROL_VOLUME(
@@ -6518,13 +6615,19 @@ void LevelSetMethodToolbox<DIM>::computeControlVolumes(
       Pointer< Patch<DIM> > patch = level->getPatch(pn);
       Pointer< CartesianPatchGeometry<DIM> > patch_geometry =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geometry->getDx();
-      double cell_vol = dx[0];
+#else
+      const double* dx_double = patch_geometry->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
+      LSMLIB_REAL cell_vol = dx[0];
       for (int i = 1; i<DIM; i++) {
         cell_vol *= dx[i];
       } 
 
-      Pointer< CellData<DIM,double> > cv_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > cv_data =
         patch->getPatchData(control_volume_handle);
       if ( !cv_data ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
@@ -6571,7 +6674,7 @@ void LevelSetMethodToolbox<DIM>::computeControlVolumes(
           Box<DIM> coarse_box = coarsened_boxes(i);
           Box<DIM> intersection = coarse_box*(patch->getBox());
           if ( !intersection.empty() ) {
-            Pointer< CellData<DIM, double> > cv_data =
+            Pointer< CellData<DIM, LSMLIB_REAL> > cv_data =
             patch->getPatchData(control_volume_handle);
             cv_data->fillAll(0.0, intersection);
 
@@ -6610,9 +6713,9 @@ void LevelSetMethodToolbox<DIM>::copySAMRAIData(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > dst_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > dst_data =
         patch->getPatchData( dst_handle );
-      Pointer< CellData<DIM,double> > src_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > src_data =
         patch->getPatchData( src_handle );
 
       Box<DIM> dst_ghostbox = dst_data->getGhostBox();
@@ -6627,8 +6730,8 @@ void LevelSetMethodToolbox<DIM>::copySAMRAIData(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* dst = dst_data->getPointer(dst_component);
-      double* src = src_data->getPointer(src_component);
+      LSMLIB_REAL* dst = dst_data->getPointer(dst_component);
+      LSMLIB_REAL* src = src_data->getPointer(src_component);
 
       if (DIM == 3) {
 
@@ -6715,23 +6818,23 @@ void LevelSetMethodToolbox<DIM>::initializeComputeSpatialDerivativesParameters()
   IntVector<DIM> three_ghostcells_width(3);
 
   // create Variables and VariableContext 
-  Pointer< CellVariable<DIM,double> > D1_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > D1_variable;
   if (var_db->checkVariableExists("D1")) {
     D1_variable = var_db->getVariable("D1");
   } else {
-    D1_variable = new CellVariable<DIM,double>("D1", 1);
+    D1_variable = new CellVariable<DIM,LSMLIB_REAL>("D1", 1);
   }
-  Pointer< CellVariable<DIM,double> > D2_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > D2_variable;
   if (var_db->checkVariableExists("D2")) {
     D2_variable = var_db->getVariable("D2");
   } else {
-    D2_variable = new CellVariable<DIM,double>("D2", 1);
+    D2_variable = new CellVariable<DIM,LSMLIB_REAL>("D2", 1);
   }
-  Pointer< CellVariable<DIM,double> > D3_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > D3_variable;
   if (var_db->checkVariableExists("D3")) {
     D3_variable = var_db->getVariable("D3");
   } else {
-    D3_variable = new CellVariable<DIM,double>("D3", 1);
+    D3_variable = new CellVariable<DIM,LSMLIB_REAL>("D3", 1);
   }
   Pointer<VariableContext> one_ghostcell_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH::ONE_GHOSTCELL");
@@ -6777,11 +6880,11 @@ void LevelSetMethodToolbox<DIM>::initializeComputeUnitNormalParameters()
   IntVector<DIM> zero_ghostcell_width(0);
 
   // create Variables and VariableContext 
-  Pointer< CellVariable<DIM,double> > grad_phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi")) {
     grad_phi_variable = var_db->getVariable("grad phi");
   } else {
-    grad_phi_variable = new CellVariable<DIM,double>("grad phi", DIM);
+    grad_phi_variable = new CellVariable<DIM,LSMLIB_REAL>("grad phi", DIM);
   }
   Pointer<VariableContext> scratch_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH");

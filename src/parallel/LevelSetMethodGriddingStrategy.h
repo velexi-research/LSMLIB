@@ -90,7 +90,7 @@ public:
    *    be registered using registerTagAndInitStrategy() before the 
    *    PatchHierarchy is constructed and initialized.
    */
-  virtual void initializePatchHierarchy(const double time) = 0;
+  virtual void initializePatchHierarchy(const LSMLIB_REAL time) = 0;
 
   /*!
    * resetHierarchyConfiguration() resets the configuration of the 
@@ -124,7 +124,7 @@ public:
    * Return value:   none
    *
    */
-  virtual void regridPatchHierarchy(double time) = 0;
+  virtual void regridPatchHierarchy(LSMLIB_REAL time) = 0;
 
   //! @}
 

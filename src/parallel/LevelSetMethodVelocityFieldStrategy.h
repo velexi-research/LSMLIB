@@ -209,7 +209,7 @@ public:
    *
    */
   virtual void computeVelocityField(
-    const double time,
+    const LSMLIB_REAL time,
     const int phi_handle,
     const int psi_handle,
     const int component) = 0;
@@ -241,7 +241,7 @@ public:
    *    order to use the LevelSetFunctionIntegrator class.
    *
    */
-  virtual void setCurrentTime(const double time) = 0;
+  virtual void setCurrentTime(const LSMLIB_REAL time) = 0;
   
   /*!
    * computeStableDt() returns the maximum acceptable (stable) time 
@@ -259,7 +259,7 @@ public:
    *    order to use the LevelSetFunctionIntegrator class.
    *
    */
-  virtual double computeStableDt() = 0;
+  virtual LSMLIB_REAL computeStableDt() = 0;
 
   //! @}
 
@@ -321,7 +321,7 @@ public:
   virtual void initializeLevelData(
     const Pointer< PatchHierarchy<DIM> > hierarchy,
     const int level_number,
-    const double init_data_time,
+    const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,

@@ -95,7 +95,7 @@ public:
    * 
    */
   virtual void initializeLevelSetFunctionsOnPatch(Patch<DIM>& patch,
-                                                  const double time,
+                                                  const LSMLIB_REAL time,
                                                   const int phi_handle,
                                                   const int psi_handle) = 0;
 
@@ -135,7 +135,7 @@ public:
    */
   virtual void setLevelSetFunctionBoundaryConditions(
     Patch<DIM>& patch,
-    const double fill_time,
+    const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
     const IntVector<DIM>& ghost_width_to_fill){}
@@ -169,8 +169,8 @@ public:
    *    This method is intended to allow the user to specify a completely 
    *    arbitrary time step size.
    *
-   *  - If this method returns any value smaller than DBL_MAX, the
-   *    LevelSetFunctionIntegrator will ignore the internally computed
+   *  - If this method returns any value smaller than @LSMLIB_REAL_MAX@, 
+   *    the LevelSetFunctionIntegrator will ignore the internally computed
    *    maximum stable dt and the stable dt returned by the user 
    *    implemented subclass of LevelSetMethodVelocityFieldStrategy.
    *
@@ -183,11 +183,11 @@ public:
    *    implementation. 
    * 
    */
-  inline virtual double computeStableDtOnPatch(
+  inline virtual LSMLIB_REAL computeStableDtOnPatch(
     Patch<DIM>& patch,
     LevelSetFunctionIntegrator<DIM>* lsm_integrator,
     LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy) {
-      return DBL_MAX;
+      return LSMLIB_REAL_MAX;
   } 
 
   //! @}

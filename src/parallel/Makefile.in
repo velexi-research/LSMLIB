@@ -37,22 +37,22 @@ all:  includes library
 
 includes:   
 	@CP@ $(SRC_DIR)/LSMLIB_DefaultParameters.h $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.h $(BUILD_DIR)/include/
+	@CP@ $(BUILD_DIR)/src/parallel/LevelSetMethodAlgorithm.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.inline $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.cc $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.h $(BUILD_DIR)/include/
+	@CP@ $(BUILD_DIR)/src/parallel/LevelSetFunctionIntegrator.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.inline $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.cc $(BUILD_DIR)/include/
+	@CP@ $(BUILD_DIR)/src/parallel/LevelSetFunctionIntegrator.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.cc $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetMethodPatchStrategy.h $(BUILD_DIR)/include/
+	@CP@ $(BUILD_DIR)/src/parallel/LevelSetMethodPatchStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodPatchStrategy.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodToolbox.h $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetMethodToolbox.cc $(BUILD_DIR)/include/
+	@CP@ $(BUILD_DIR)/src/parallel/LevelSetMethodToolbox.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodVelocityFieldStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodVelocityFieldStrategy.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/FieldExtensionAlgorithm.h $(BUILD_DIR)/include/

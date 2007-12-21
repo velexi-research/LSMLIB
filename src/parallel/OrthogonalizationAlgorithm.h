@@ -291,10 +291,10 @@ public:
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int tvd_runge_kutta_order,
-    const double cfl_number,
-    const double stop_distance = 0.0,
+    const LSMLIB_REAL cfl_number,
+    const LSMLIB_REAL stop_distance = 0.0,
     const int max_iterations = 0,
-    const double iteration_stop_tolerance = 0.0,
+    const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
     const string& object_name = "OrthogonalizationAlgorithm",
     const IntVector<DIM>& phi_ghostcell_width = 0,
@@ -604,10 +604,10 @@ protected:
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
   int d_tvd_runge_kutta_order;
-  double d_cfl_number;
-  double d_stop_distance;
+  LSMLIB_REAL d_cfl_number;
+  LSMLIB_REAL d_stop_distance;
   int d_max_iterations;
-  double d_iteration_stop_tol;
+  LSMLIB_REAL d_iteration_stop_tol;
 
   // verbose mode
   bool d_verbose_mode;

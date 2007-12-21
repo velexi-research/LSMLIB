@@ -224,10 +224,10 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
   SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   int spatial_derivative_order,
   int tvd_runge_kutta_order,
-  double cfl_number,
-  const double stop_distance,
+  LSMLIB_REAL cfl_number,
+  const LSMLIB_REAL stop_distance,
   const int max_iterations,
-  const double iteration_stop_tolerance,
+  const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
   const string& object_name)
 {

@@ -233,7 +233,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
   int patch_num = patch.getPatchNumber();
 
   // get PatchData
-  Pointer< CellData<DIM,double> > phi_data = 
+  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
     patch.getPatchData( phi_handle );
 
   // check that the ghostcell width for phi is compatible
@@ -295,7 +295,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int k = fillbox_lower(2); k <= fillbox_upper(2); k++) {
             for (int j = fillbox_lower(1); j <= fillbox_upper(1); j++) {
@@ -380,7 +380,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int k = fillbox_lower(2); k <= fillbox_upper(2); k++) {
             for (int j = fillbox_lower(1); j <= fillbox_upper(1); j++) {
@@ -439,7 +439,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int k = fillbox_lower(2); k <= fillbox_upper(2); k++) {
             for (int j = fillbox_lower(1); j <= fillbox_upper(1); j++) {
@@ -512,7 +512,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int j = fillbox_lower(1); j <= fillbox_upper(1); j++) {
             for (int i = fillbox_lower(0); i <= fillbox_upper(0); i++) {
@@ -566,7 +566,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int j = fillbox_lower(1); j <= fillbox_upper(1); j++) {
             for (int i = fillbox_lower(0); i <= fillbox_upper(0); i++) {
@@ -633,7 +633,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch(
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           for (int i = fillbox_lower(0); i <= fillbox_upper(0); i++) {
 
@@ -742,7 +742,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
   int patch_num = patch.getPatchNumber();
 
   // get PatchData
-  Pointer< CellData<DIM,double> > phi_data =
+  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
     patch.getPatchData( phi_handle );
 
   // check that the ghostcell width for phi is compatible
@@ -798,7 +798,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM3D_HOMOGENEOUS_NEUMANN_ENO1(
                     phi,
@@ -822,7 +822,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM2D_HOMOGENEOUS_NEUMANN_ENO1(
                     phi,
@@ -842,7 +842,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM1D_HOMOGENEOUS_NEUMANN_ENO1(
                     phi,
@@ -873,7 +873,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM3D_HOMOGENEOUS_NEUMANN_ENO2(
                     phi,
@@ -897,7 +897,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM2D_HOMOGENEOUS_NEUMANN_ENO2(
                     phi,
@@ -917,7 +917,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM1D_HOMOGENEOUS_NEUMANN_ENO2(
                     phi,
@@ -948,7 +948,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM3D_HOMOGENEOUS_NEUMANN_ENO3(
                     phi,
@@ -972,7 +972,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM2D_HOMOGENEOUS_NEUMANN_ENO3(
                     phi,
@@ -992,7 +992,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM1D_HOMOGENEOUS_NEUMANN_ENO3(
                     phi,
@@ -1038,7 +1038,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM3D_HOMOGENEOUS_NEUMANN_WENO5(
                     phi,
@@ -1062,7 +1062,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM2D_HOMOGENEOUS_NEUMANN_WENO5(
                     phi,
@@ -1082,7 +1082,7 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-                  double* phi = phi_data->getPointer(comp);
+                  LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
                   LSM1D_HOMOGENEOUS_NEUMANN_WENO5(
                     phi,
@@ -1191,7 +1191,7 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch(
   int patch_num = patch.getPatchNumber();
 
   // get PatchData
-  Pointer< CellData<DIM,double> > phi_data =
+  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
     patch.getPatchData( phi_handle );
 
   // check that the ghostcell width for phi is compatible
@@ -1242,7 +1242,7 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM3D_LINEAR_EXTRAPOLATION(
             phi,
@@ -1266,7 +1266,7 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM2D_LINEAR_EXTRAPOLATION(
             phi,
@@ -1286,7 +1286,7 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM1D_LINEAR_EXTRAPOLATION(
             phi,
@@ -1367,7 +1367,7 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch(
   int patch_num = patch.getPatchNumber();
 
   // get PatchData
-  Pointer< CellData<DIM,double> > phi_data =
+  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
     patch.getPatchData( phi_handle );
 
   // check that the ghostcell width for phi is compatible
@@ -1418,7 +1418,7 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM3D_SIGNED_LINEAR_EXTRAPOLATION(
             phi,
@@ -1442,7 +1442,7 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM2D_SIGNED_LINEAR_EXTRAPOLATION(
             phi,
@@ -1462,7 +1462,7 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch(
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
-          double* phi = phi_data->getPointer(comp);
+          LSMLIB_REAL* phi = phi_data->getPointer(comp);
 
           LSM1D_SIGNED_LINEAR_EXTRAPOLATION(
             phi,

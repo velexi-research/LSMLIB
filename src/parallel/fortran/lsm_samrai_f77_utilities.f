@@ -36,8 +36,8 @@ c     _fb refers to fillbox
       integer ilo_dst_gb, ihi_dst_gb
       integer ilo_src_gb, ihi_src_gb
       integer ilo_fb, ihi_fb
-      double precision dst_data(ilo_dst_gb:ihi_dst_gb)
-      double precision src_data(ilo_src_gb:ihi_src_gb)
+      real dst_data(ilo_dst_gb:ihi_dst_gb)
+      real src_data(ilo_src_gb:ihi_src_gb)
       integer i
 
 c     loop over cells with sufficient data {
@@ -86,9 +86,9 @@ c     _fb refers to fillbox
       integer jlo_src_gb, jhi_src_gb
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
-      double precision dst_data(ilo_dst_gb:ihi_dst_gb,
+      real dst_data(ilo_dst_gb:ihi_dst_gb,
      &                          jlo_dst_gb:jhi_dst_gb)
-      double precision src_data(ilo_src_gb:ihi_src_gb,
+      real src_data(ilo_src_gb:ihi_src_gb,
      &                          jlo_src_gb:jhi_src_gb)
       integer i,j
 
@@ -146,10 +146,10 @@ c     _fb refers to fillbox
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
-      double precision dst_data(ilo_dst_gb:ihi_dst_gb,
+      real dst_data(ilo_dst_gb:ihi_dst_gb,
      &                          jlo_dst_gb:jhi_dst_gb,
      &                          klo_dst_gb:khi_dst_gb)
-      double precision src_data(ilo_src_gb:ihi_src_gb,
+      real src_data(ilo_src_gb:ihi_src_gb,
      &                          jlo_src_gb:jhi_src_gb,
      &                          klo_src_gb:khi_src_gb)
       integer i,j,k

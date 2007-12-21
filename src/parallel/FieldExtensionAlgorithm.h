@@ -247,10 +247,10 @@ public:
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = ENO,
     const int spatial_derivative_order = 1,
     const int tvd_runge_kutta_order = 1,
-    const double cfl_number = 0.5,
-    const double stop_distance = 0.0,
+    const LSMLIB_REAL cfl_number = 0.5,
+    const LSMLIB_REAL stop_distance = 0.0,
     const int max_iterations = 0,
-    const double iteration_stop_tolerance = 0.0,
+    const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
     const string& object_name = "FieldExtensionAlgorithm",
     const IntVector<DIM>& phi_ghostcell_width = 0);
@@ -535,19 +535,19 @@ protected:
    *
    */
   virtual void advanceFieldExtensionEqnUsingTVDRK1(
-    const double dt,
+    const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
     const IntVector<DIM>& lower_bc_ext,
     const IntVector<DIM>& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK2(
-    const double dt,
+    const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
     const IntVector<DIM>& lower_bc_ext,
     const IntVector<DIM>& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK3(
-    const double dt,
+    const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
     const IntVector<DIM>& lower_bc_ext,
@@ -662,10 +662,10 @@ protected:
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
   int d_tvd_runge_kutta_order;
-  double d_cfl_number;
-  double d_stop_distance;
+  LSMLIB_REAL d_cfl_number;
+  LSMLIB_REAL d_stop_distance;
   int d_max_iterations;
-  double d_iteration_stop_tol;
+  LSMLIB_REAL d_iteration_stop_tol;
 
   // verbose mode
   bool d_verbose_mode;

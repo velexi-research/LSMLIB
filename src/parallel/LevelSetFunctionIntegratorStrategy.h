@@ -114,7 +114,7 @@ public:
    * Return value :  start time
    *
    */
-  virtual double getStartTime() const = 0;
+  virtual LSMLIB_REAL getStartTime() const = 0;
 
   /*!
    * getEndTime() returns the end time value for the time integration.
@@ -124,7 +124,7 @@ public:
    * Return value :  end time
    *
    */
-  virtual double getEndTime() const = 0;
+  virtual LSMLIB_REAL getEndTime() const = 0;
 
   /*!
    * getCurrentTime() returns the current time value in the time integration.
@@ -134,7 +134,7 @@ public:
    * Return value :  current time
    *
    */
-  virtual double getCurrentTime() const = 0;
+  virtual LSMLIB_REAL getCurrentTime() const = 0;
 
   /*!
    * endTimeReached() returns true if the end time for the integration has 
@@ -260,7 +260,7 @@ public:
    * Return value:  maximum stable dt for next time step
    *
    */
-  virtual double computeStableDt() = 0;
+  virtual LSMLIB_REAL computeStableDt() = 0;
 
   /*!
    * advanceLevelSetFunctions() advances the level set function
@@ -274,7 +274,7 @@ public:
    *                this time step; false otherwise.
    *
    */
-  virtual bool advanceLevelSetFunctions(const double dt) = 0;
+  virtual bool advanceLevelSetFunctions(const LSMLIB_REAL dt) = 0;
 
   //! @}
 

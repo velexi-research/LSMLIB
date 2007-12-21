@@ -66,6 +66,8 @@
 #include "tbox/Array.h"
 #include "tbox/Pointer.h"
 
+#include "LSMLIB_config.h"
+
 // SAMRAI namespaces 
 using namespace SAMRAI;
 using namespace geom;
@@ -316,7 +318,7 @@ public:
     const int u_next_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_next_component = 0,
     const int u_cur_component = 0,
     const int rhs_component = 0);
@@ -347,7 +349,7 @@ public:
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_stage1_component = 0,
     const int u_cur_component = 0,
     const int rhs_component = 0);
@@ -382,7 +384,7 @@ public:
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_next_component = 0,
     const int u_stage1_component = 0,
     const int u_cur_component = 0,
@@ -414,7 +416,7 @@ public:
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_stage1_component = 0,
     const int u_cur_component = 0,
     const int rhs_component = 0);
@@ -449,7 +451,7 @@ public:
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_stage2_component = 0,
     const int u_stage1_component = 0,
     const int u_cur_component = 0,
@@ -485,7 +487,7 @@ public:
     const int u_stage2_handle,
     const int u_cur_handle,
     const int rhs_handle,
-    const double dt,
+    const LSMLIB_REAL dt,
     const int u_next_component = 0,
     const int u_stage2_component = 0,
     const int u_cur_component = 0,
@@ -814,7 +816,7 @@ public:
    *                                 is enclosed by the zero level set
    *
    */
-  static double computeVolumeOfRegionDefinedByZeroLevelSet(
+  static LSMLIB_REAL computeVolumeOfRegionDefinedByZeroLevelSet(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int phi_handle,
     const int control_volume_handle,
@@ -846,7 +848,7 @@ public:
    *    to compute the spatial derivatives required. 
    *
    */
-  static double computeVolumeOfZeroLevelSet(
+  static LSMLIB_REAL computeVolumeOfZeroLevelSet(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int phi_handle,
     const int grad_phi_handle,
@@ -882,7 +884,7 @@ public:
    * Return value:                   integral of F over the specified domain
    *
    */
-  static double computeVolumeIntegral(
+  static LSMLIB_REAL computeVolumeIntegral(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
@@ -919,7 +921,7 @@ public:
    *    to compute the spatial derivatives required. 
    *
    */
-  static double computeSurfaceIntegral(
+  static LSMLIB_REAL computeSurfaceIntegral(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
@@ -956,11 +958,11 @@ public:
    * Return value:                   none
    *
    */
-  static double computeStableAdvectionDt(
+  static LSMLIB_REAL computeStableAdvectionDt(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int velocity_handle,
     const int control_volume_handle,
-    const double cfl_number);
+    const LSMLIB_REAL cfl_number);
 
   /*!
    * computeStableNormalVelocityDt() computes the maximum stable
@@ -985,13 +987,13 @@ public:
    *  - KTC - fill me in
    *
    */
-  static double computeStableNormalVelocityDt(
+  static LSMLIB_REAL computeStableNormalVelocityDt(
     Pointer< PatchHierarchy<DIM> > patch_hierarchy,
     const int normal_velocity_handle,
     const int grad_phi_plus_handle,
     const int grad_phi_minus_handle,
     const int control_volume_handle,
-    const double cfl_number);
+    const LSMLIB_REAL cfl_number);
 
   /*!
    * maxNormOfDifference() computes the max norm of the difference 
@@ -1011,7 +1013,7 @@ public:
    * Return value:                   max norm of (field1 - field2)
    *
    */
-  static double maxNormOfDifference(
+  static LSMLIB_REAL maxNormOfDifference(
     Pointer< PatchHierarchy<DIM> > hierarchy,
     const int field1_handle,
     const int field2_handle,

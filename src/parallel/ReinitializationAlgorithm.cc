@@ -15,6 +15,7 @@ extern "C" {
   #include <limits.h>
 }
 
+#include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
 #include "ReinitializationAlgorithm.h" 
 
@@ -91,10 +92,10 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
-  const double cfl_number,
-  const double stop_distance, 
+  const LSMLIB_REAL cfl_number,
+  const LSMLIB_REAL stop_distance, 
   const int max_iterations,
-  const double iteration_stop_tolerance,
+  const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
   const string& object_name)
 {
@@ -131,8 +132,19 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
@@ -189,17 +201,17 @@ void ReinitializationAlgorithm<DIM>::reinitializeLevelSetFunctions(
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
   const double* coarsest_dx = d_grid_geometry->getDx();
-  double finest_dx[DIM];
+  LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  double min_dx = finest_dx[0];
+  LSMLIB_REAL min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
 
   // compute dt
-  const double dt = d_cfl_number*min_dx;  
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
 
   // compute the maximum number of iterations
   int num_steps = LSM_REINIT_ALG_STOP_TOLERANCE_MAX_ITERATIONS;
@@ -236,7 +248,7 @@ void ReinitializationAlgorithm<DIM>::reinitializeLevelSetFunctions(
                   << endl);
       }
   
-      Pointer< CellData<DIM,double> > phi_data = 
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
         patch->getPatchData( d_phi_handle );
       d_num_phi_components = phi_data->getDepth();
   
@@ -249,7 +261,7 @@ void ReinitializationAlgorithm<DIM>::reinitializeLevelSetFunctions(
    *  main reinitialization loop
    */
   int count = 0;
-  double delta = 1.0;
+  LSMLIB_REAL delta = 1.0;
   const int phi_handle_after_step = d_phi_handle;
   const int phi_handle_before_step = d_phi_scr_handles[0];
   while ( (count < num_steps) &&
@@ -381,17 +393,17 @@ void ReinitializationAlgorithm<DIM>::
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
   const double* coarsest_dx = d_grid_geometry->getDx();
-  double finest_dx[DIM];
+  LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  double min_dx = finest_dx[0];
+  LSMLIB_REAL min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
 
   // compute dt
-  const double dt = d_cfl_number*min_dx;  
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
 
   // compute the maximum number of iterations
   int num_steps = LSM_REINIT_ALG_STOP_TOLERANCE_MAX_ITERATIONS;
@@ -414,7 +426,7 @@ void ReinitializationAlgorithm<DIM>::
    *  main reinitialization loop
    */
   int count = 0;
-  double delta = 1.0;
+  LSMLIB_REAL delta = 1.0;
   const int phi_handle_after_step = d_phi_handle;
   const int phi_handle_before_step = d_phi_scr_handles[0];
   while ( (count < num_steps) &&
@@ -552,7 +564,7 @@ void ReinitializationAlgorithm<DIM>::resetHierarchyConfiguration(
 /* advanceReinitializationEqnUsingTVDRK1() */
 template <int DIM> 
 void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int phi_component,
   const IntVector<DIM>& lower_bc,
   const IntVector<DIM>& upper_bc)
@@ -599,7 +611,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
 /* advanceReinitializationEqnUsingTVDRK2() */
 template <int DIM> 
 void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int phi_component,
   const IntVector<DIM>& lower_bc,
   const IntVector<DIM>& upper_bc)
@@ -682,7 +694,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
 /* advanceReinitializationEqnUsingTVDRK3() */
 template <int DIM> 
 void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int phi_component,
   const IntVector<DIM>& lower_bc,
   const IntVector<DIM>& upper_bc)
@@ -828,13 +840,13 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( d_rhs_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,double> > grad_phi_plus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( d_grad_phi_plus_handle );
-      Pointer< CellData<DIM,double> > grad_phi_minus_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( d_grad_phi_minus_handle );
 
       Box<DIM> rhs_ghostbox = rhs_data->getGhostBox();
@@ -862,10 +874,10 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* rhs = rhs_data->getPointer();
-      double* phi = phi_data->getPointer();
-      double* grad_phi_plus[LSM_DIM_MAX];
-      double* grad_phi_minus[LSM_DIM_MAX];
+      LSMLIB_REAL* rhs = rhs_data->getPointer();
+      LSMLIB_REAL* phi = phi_data->getPointer();
+      LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
+      LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
         grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
@@ -874,7 +886,13 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
       // get dx
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM];
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
       
       // flag for whether or not to use phi0 in computing sgn(phi)
       int use_phi0 = 0; // KTC do NOT use phi0 for sgn(phi) calculation
@@ -1037,7 +1055,7 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   // get variable associated with phi_handle
   Pointer< Variable<DIM> > tmp_variable;
   Pointer<VariableContext> tmp_context;
-  Pointer< CellVariable<DIM,double> > phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle, 
                                            tmp_variable, tmp_context)) {
     phi_variable = tmp_variable;
@@ -1063,12 +1081,12 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   stringstream phi_scratch_variable_name("");
   phi_scratch_variable_name << phi_variable->getName() 
                             << "::REINITIALIZATION_PHI_SCRATCH";
-  Pointer< CellVariable<DIM,double> > phi_scratch_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_scratch_variable;
   if (var_db->checkVariableExists(phi_scratch_variable_name.str())) {
    phi_scratch_variable = var_db->getVariable(
      phi_scratch_variable_name.str());
   } else {
-   phi_scratch_variable = new CellVariable<DIM,double>(
+   phi_scratch_variable = new CellVariable<DIM,LSMLIB_REAL>(
      phi_scratch_variable_name.str(), 1);
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
@@ -1087,11 +1105,11 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << phi_variable->getName() << "::REINITIALIZATION_RHS";
-  Pointer< CellVariable<DIM,double> > rhs_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
    rhs_variable = var_db->getVariable(rhs_name.str());
   } else {
-   rhs_variable = new CellVariable<DIM,double>(rhs_name.str(), 1);
+   rhs_variable = new CellVariable<DIM,LSMLIB_REAL>(rhs_name.str(), 1);
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1101,11 +1119,11 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName() 
                 << "::REINITIALIZATION_GRAD_PHI";
-  Pointer< CellVariable<DIM,double> > grad_phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
    grad_phi_variable = var_db->getVariable(grad_phi_name.str());
   } else {
-   grad_phi_variable = new CellVariable<DIM,double>(grad_phi_name.str(), DIM);
+   grad_phi_variable = new CellVariable<DIM,LSMLIB_REAL>(grad_phi_name.str(), DIM);
   }
   Pointer<VariableContext> grad_phi_plus_context =  
     var_db->getContext("REINITIALIZATION_GRAD_PHI_PLUS");
@@ -1137,7 +1155,7 @@ void ReinitializationAlgorithm<DIM>::initializeCommunicationObjects()
    * Lookup refine operations
    */
   // get CellVariable associated with d_phi_handle
-  Pointer< CellVariable<DIM,double> > phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_variable;
   Pointer< Variable<DIM> > tmp_variable;
   Pointer<VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
@@ -1226,8 +1244,19 @@ void ReinitializationAlgorithm<DIM>::getFromInput(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {

@@ -65,7 +65,7 @@ int LevelSetMethodAlgorithm<DIM>::getControlVolumePatchDataHandle() const
 
 /* getStartTime() */
 template<int DIM> inline 
-double LevelSetMethodAlgorithm<DIM>::getStartTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getStartTime() const
 {
   return d_lsm_integrator_strategy->getStartTime();
 }
@@ -73,7 +73,7 @@ double LevelSetMethodAlgorithm<DIM>::getStartTime() const
 
 /* getEndTime() */
 template<int DIM> inline 
-double LevelSetMethodAlgorithm<DIM>::getEndTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getEndTime() const
 {
   return d_lsm_integrator_strategy->getEndTime();
 }
@@ -81,7 +81,7 @@ double LevelSetMethodAlgorithm<DIM>::getEndTime() const
 
 /* getCurrentTime() */
 template<int DIM> inline 
-double LevelSetMethodAlgorithm<DIM>::getCurrentTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getCurrentTime() const
 {
   return d_lsm_integrator_strategy->getCurrentTime();
 }
@@ -153,7 +153,7 @@ int LevelSetMethodAlgorithm<DIM>::getTVDRungeKuttaOrder() const
 
 /* getCFLNumber() */
 template<int DIM> inline 
-double LevelSetMethodAlgorithm<DIM>::getCFLNumber() const
+LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getCFLNumber() const
 {
   if (!d_using_standard_level_set_fcn_integrator) {
     TBOX_WARNING( d_object_name
@@ -191,7 +191,7 @@ void LevelSetMethodAlgorithm<DIM>::initializeLevelSetMethodCalculation()
 
 /* computeStableDt() */
 template<int DIM> inline 
-double LevelSetMethodAlgorithm<DIM>::computeStableDt() 
+LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::computeStableDt() 
 {
   return d_lsm_integrator_strategy->computeStableDt();
 }
@@ -199,7 +199,7 @@ double LevelSetMethodAlgorithm<DIM>::computeStableDt()
 
 /* advanceLevelSetFunctions() */
 template<int DIM> inline 
-bool LevelSetMethodAlgorithm<DIM>::advanceLevelSetFunctions(const double dt) 
+bool LevelSetMethodAlgorithm<DIM>::advanceLevelSetFunctions(const LSMLIB_REAL dt) 
 {
   return d_lsm_integrator_strategy->advanceLevelSetFunctions(dt);
 }

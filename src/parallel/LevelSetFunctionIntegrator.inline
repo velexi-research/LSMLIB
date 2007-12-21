@@ -44,21 +44,21 @@ int LevelSetFunctionIntegrator<DIM>::getControlVolumePatchDataHandle() const
 
 
 template<int DIM> inline 
-double LevelSetFunctionIntegrator<DIM>::getStartTime() const
+LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::getStartTime() const
 {
   return d_start_time;
 }
 
 
 template<int DIM> inline 
-double LevelSetFunctionIntegrator<DIM>::getEndTime() const
+LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::getEndTime() const
 {
   return d_end_time;
 }
 
 
 template<int DIM> inline 
-double LevelSetFunctionIntegrator<DIM>::getCurrentTime() const
+LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::getCurrentTime() const
 {
   return d_current_time;
 }

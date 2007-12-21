@@ -96,10 +96,10 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
-  const double cfl_number,
-  const double stop_distance, 
+  const LSMLIB_REAL cfl_number,
+  const LSMLIB_REAL stop_distance, 
   const int max_iterations,
-  const double iteration_stop_tolerance,
+  const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
   const string& object_name,
   const IntVector<DIM>& phi_ghostcell_width)
@@ -138,8 +138,19 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else 
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
@@ -199,17 +210,17 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionField(
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
   const double* coarsest_dx = d_grid_geometry->getDx();
-  double finest_dx[DIM];
+  LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  double min_dx = finest_dx[0];
+  LSMLIB_REAL min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
 
   // compute dt
-  const double dt = d_cfl_number*min_dx;  
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
 
   // compute the maximum number of iterations
   int num_steps = LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS;
@@ -305,7 +316,7 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionField(
                   << endl);
       }
   
-      Pointer< CellData<DIM,double> > field_data= 
+      Pointer< CellData<DIM,LSMLIB_REAL> > field_data= 
         patch->getPatchData( d_extension_field_handle );
       d_num_field_components = field_data->getDepth();
   
@@ -317,7 +328,7 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionField(
    *  main field extension loop
    */
   int count = 0;
-  double delta = 1.0;
+  LSMLIB_REAL delta = 1.0;
   const int field_handle_after_step = d_extension_field_handle;
   const int field_handle_before_step = d_extension_field_scr_handles[0];
   while ( (count < num_steps) &&
@@ -468,17 +479,17 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionFieldForSingleComponent(
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
   const double* coarsest_dx = d_grid_geometry->getDx();
-  double finest_dx[DIM];
+  LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  double min_dx = finest_dx[0];
+  LSMLIB_REAL min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
 
   // compute dt 
-  const double dt = d_cfl_number*min_dx;  
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
 
   // compute the maximum number of iterations
   int num_steps = LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS;
@@ -561,7 +572,7 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionFieldForSingleComponent(
    *  main field extension loop
    */
   int count = 0;
-  double delta = 1.0;
+  LSMLIB_REAL delta = 1.0;
   const int field_handle_after_step = d_extension_field_handle;
   const int field_handle_before_step = d_extension_field_scr_handles[0];
   while ( (count < num_steps) &&
@@ -734,7 +745,7 @@ void FieldExtensionAlgorithm<DIM>::resetHierarchyConfiguration(
 /* advanceFieldExtensionEqnUsingTVDRK1() */
 template <int DIM> 
 void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
   const IntVector<DIM>& lower_bc_ext,
@@ -783,7 +794,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
 /* advanceFieldExtensionEqnUsingTVDRK2() */
 template <int DIM> 
 void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
   const IntVector<DIM>& lower_bc_ext,
@@ -870,7 +881,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
 /* advanceFieldExtensionEqnUsingTVDRK3() */
 template <int DIM> 
 void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
-  const double dt,
+  const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
   const IntVector<DIM>& lower_bc_ext,
@@ -1024,18 +1035,24 @@ void FieldExtensionAlgorithm<DIM>::computeFieldExtensionEqnRHS(
       // get grid spacing
       Pointer< CartesianPatchGeometry<DIM> > patch_geom =
         patch->getPatchGeometry();
+#ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
+#else 
+      const double* dx_double = patch_geom->getDx();
+      float dx[DIM]; 
+      for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
+#endif
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,double> > rhs_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
         patch->getPatchData( d_rhs_handle );
-      Pointer< CellData<DIM,double> > field_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > field_data =
         patch->getPatchData( extension_field_handle );
-      Pointer< CellData<DIM,double> > phi_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
         patch->getPatchData( d_phi_scr_handle );
-      Pointer< CellData<DIM,double> > normal_vector_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data =
         patch->getPatchData( d_normal_vector_handle );
-      Pointer< CellData<DIM,double> > grad_field_data =
+      Pointer< CellData<DIM,LSMLIB_REAL> > grad_field_data =
         patch->getPatchData( d_grad_field_handle );
 
       Box<DIM> rhs_ghostbox = rhs_data->getGhostBox();
@@ -1067,11 +1084,11 @@ void FieldExtensionAlgorithm<DIM>::computeFieldExtensionEqnRHS(
       const IntVector<DIM> fillbox_lower = fillbox.lower();
       const IntVector<DIM> fillbox_upper = fillbox.upper();
 
-      double* rhs = rhs_data->getPointer();
-      double* field = field_data->getPointer();
-      double* phi = phi_data->getPointer(phi_component);
-      double* normal_vector[LSM_DIM_MAX];
-      double* upwind_grad_field[LSM_DIM_MAX];
+      LSMLIB_REAL* rhs = rhs_data->getPointer();
+      LSMLIB_REAL* field = field_data->getPointer();
+      LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
+      LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
+      LSMLIB_REAL* upwind_grad_field[LSM_DIM_MAX];
       for (int dim = 0; dim < DIM; dim++) {
         upwind_grad_field[dim] = grad_field_data->getPointer(dim);
         normal_vector[dim] = normal_vector_data->getPointer(dim);
@@ -1239,7 +1256,7 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   // get variable associated with phi_handle
   Pointer< Variable<DIM> > tmp_variable;
   Pointer<VariableContext> tmp_context;
-  Pointer< CellVariable<DIM,double> > phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle, 
                                            tmp_variable, tmp_context)) {
     phi_variable = tmp_variable;
@@ -1262,7 +1279,7 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   d_scratch_data.clrAllFlags();
 
   // get CellVariable associated with d_extension_field_handle
-  Pointer< CellVariable<DIM,double> > field_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > field_variable;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle, 
                                            tmp_variable, tmp_context)) {
     field_variable = tmp_variable;
@@ -1279,13 +1296,13 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   stringstream ext_field_scratch_name("");
   ext_field_scratch_name << d_object_name << "::" << field_variable->getName() 
                    << "::EXTENSION_FIELD_SCRATCH"; 
-  Pointer< CellVariable<DIM,double> > ext_field_scratch_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > ext_field_scratch_variable;
   if (var_db->checkVariableExists(ext_field_scratch_name.str())) {
     ext_field_scratch_variable = 
       var_db->getVariable(ext_field_scratch_name.str());
   } else {
     ext_field_scratch_variable = 
-      new CellVariable<DIM,double>(ext_field_scratch_name.str(), 1);
+      new CellVariable<DIM,LSMLIB_REAL>(ext_field_scratch_name.str(), 1);
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
     stringstream context_name("");
@@ -1309,12 +1326,12 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
     stringstream phi_scratch_name("");
     phi_scratch_name << d_object_name << "::" << phi_variable->getName() 
                      << "::EXTENSION_FIELD_PHI_SCRATCH"; 
-    Pointer< CellVariable<DIM,double> > phi_scratch_variable;
+    Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_scratch_variable;
     if (var_db->checkVariableExists(phi_scratch_name.str())) {
       phi_scratch_variable = var_db->getVariable(phi_scratch_name.str());
     } else {
       phi_scratch_variable = 
-        new CellVariable<DIM,double>(phi_scratch_name.str(), 1);
+        new CellVariable<DIM,LSMLIB_REAL>(phi_scratch_name.str(), 1);
     }
     d_phi_scr_handle = var_db->registerVariableAndContext(
       phi_scratch_variable, scratch_context, scratch_ghostcell_width);
@@ -1328,11 +1345,11 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << field_variable->getName() << "::EXTENSION_FIELD_RHS";
-  Pointer< CellVariable<DIM,double> > rhs_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
    rhs_variable = var_db->getVariable(rhs_name.str());
   } else {
-   rhs_variable = new CellVariable<DIM,double>(rhs_name.str(), 1);
+   rhs_variable = new CellVariable<DIM,LSMLIB_REAL>(rhs_name.str(), 1);
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1342,12 +1359,12 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   stringstream normal_vector_name("");
   normal_vector_name << phi_variable->getName() 
                      << "::EXTENSION_FIELD_NORMAL_VECTOR";
-  Pointer< CellVariable<DIM,double> > normal_vector_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > normal_vector_variable;
   if (var_db->checkVariableExists(normal_vector_name.str())) {
    normal_vector_variable = var_db->getVariable(normal_vector_name.str());
   } else {
    normal_vector_variable = 
-     new CellVariable<DIM,double>(normal_vector_name.str(), DIM);
+     new CellVariable<DIM,LSMLIB_REAL>(normal_vector_name.str(), DIM);
   }
   d_normal_vector_handle = var_db->registerVariableAndContext(
     normal_vector_variable, scratch_context, zero_ghostcell_width);
@@ -1357,11 +1374,11 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName() 
                 << "::EXTENSION_FIELD_GRAD_PHI";
-  Pointer< CellVariable<DIM,double> > grad_phi_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
    grad_phi_variable = var_db->getVariable(grad_phi_name.str());
   } else {
-   grad_phi_variable = new CellVariable<DIM,double>(grad_phi_name.str(), DIM);
+   grad_phi_variable = new CellVariable<DIM,LSMLIB_REAL>(grad_phi_name.str(), DIM);
   }
   Pointer<VariableContext> grad_phi_plus_context =  
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_PLUS");
@@ -1379,12 +1396,12 @@ void FieldExtensionAlgorithm<DIM>::initializeVariables(
   grad_field_name << field_variable->getName() << "::" 
                   << phi_variable->getName()
                   << "::EXTENSION_FIELD_GRAD_FIELD";
-  Pointer< CellVariable<DIM,double> > grad_field_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_field_variable;
   if (var_db->checkVariableExists(grad_field_name.str())) {
    grad_field_variable = var_db->getVariable(grad_field_name.str());
   } else {
    grad_field_variable = 
-     new CellVariable<DIM,double>(grad_field_name.str(), DIM);
+     new CellVariable<DIM,LSMLIB_REAL>(grad_field_name.str(), DIM);
   }
   d_grad_field_handle = var_db->registerVariableAndContext(
     grad_field_variable, 
@@ -1410,7 +1427,7 @@ void FieldExtensionAlgorithm<DIM>::initializeCommunicationObjects()
    * Look up refine operation
    */
   // get CellVariable associated with d_extension_field_handle
-  Pointer< CellVariable<DIM,double> > field_variable;
+  Pointer< CellVariable<DIM,LSMLIB_REAL> > field_variable;
   Pointer< Variable<DIM> > tmp_variable;
   Pointer<VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
@@ -1513,8 +1530,20 @@ void FieldExtensionAlgorithm<DIM>::getFromInput(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
+#else
+    const double *X_lower_double = d_grid_geometry->getXLower();
+    const double *X_upper_double = d_grid_geometry->getXUpper();
+    float X_lower[DIM];
+    float X_upper[DIM];
+    for (int i = 0; i < DIM; i++) {
+      X_lower[i] = (float) X_lower_double[i];
+      X_upper[i] = (float) X_upper_double[i];
+    }
+#endif
+
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
