@@ -11,6 +11,8 @@
 #include <float.h>
 #include "FMM_Heap.h" 
 
+#include "LSMLIB_config.h"
+
 /*
  * FMM_Heap Constants
  */
@@ -42,7 +44,7 @@ struct FMM_Heap {
   int d_num_dims;
   int d_heap_size;
   int d_heap_mem_size;
-  double d_heap_growth_factor;
+  LSMLIB_REAL d_heap_growth_factor;
 };
 
 
@@ -50,7 +52,7 @@ struct FMM_Heap {
 
 /*
  * FMM_Heap_makeNewHeap() allocates memory for and initializes all
- * nodes in the heap to have a big value (DBL_MAX).
+ * nodes in the heap to have a big value (LSMLIB_REAL_MAX).
  * The amount of memory allocated is dynamically adjusted
  * to accomodate the number of nodes in the heap.
  */
@@ -85,7 +87,7 @@ void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos);
 /*==================== Function Definitions =========================*/
 
 FMM_Heap* FMM_Heap_createHeap(int num_dims, int heap_mem_size, 
-  double growth_factor)
+  LSMLIB_REAL growth_factor)
 {
   FMM_Heap* heap;
 
@@ -111,7 +113,7 @@ void FMM_Heap_destroyHeap(FMM_Heap* heap)
   free(heap);
 }
 
-int FMM_Heap_insertNode(FMM_Heap* heap, int *grid_idx, double value)
+int FMM_Heap_insertNode(FMM_Heap* heap, int *grid_idx, LSMLIB_REAL value)
 {
   int *d_heap = heap->d_heap;
   FMM_HeapNode* d_nodes = heap->d_nodes;
@@ -166,15 +168,15 @@ FMM_HeapNode FMM_Heap_extractMin(FMM_Heap* heap, FMM_HeapNode* moved_node,
     d_heap[moved_node_local.heap_pos] = root_handle; 
 
     /* invalidate copy of moved_node */
-    d_nodes[d_heap_size-1].value = DBL_MAX;
+    d_nodes[d_heap_size-1].value = LSMLIB_REAL_MAX;
 
   } else {
 
     /* set position occupied by root node to invalid state */
-    d_nodes[root_handle].value = DBL_MAX;
+    d_nodes[root_handle].value = LSMLIB_REAL_MAX;
     
     /* set moved_node and moved_handle to invalid state */
-    moved_node_local.value = DBL_MAX;
+    moved_node_local.value = LSMLIB_REAL_MAX;
     moved_node_local.heap_pos = -1;
     moved_handle_local = -1;
 
@@ -212,7 +214,7 @@ FMM_HeapNode FMM_Heap_extractMin(FMM_Heap* heap, FMM_HeapNode* moved_node,
   return min_node;
 }
 
-void FMM_Heap_updateNode(FMM_Heap* heap, int node_handle, double value)
+void FMM_Heap_updateNode(FMM_Heap* heap, int node_handle, LSMLIB_REAL value)
 {
   int *d_heap = heap->d_heap;
   FMM_HeapNode* d_nodes = heap->d_nodes;
@@ -238,12 +240,12 @@ void FMM_Heap_clear(FMM_Heap* heap)
   heap->d_heap_size = 0;
 
   /* 
-   * initialize the value of all nodes to DBL_MAX and all 
+   * initialize the value of all nodes to LSMLIB_REAL_MAX and all 
    * heap pointers to -1 
    */
   for (i = 0; i < heap->d_heap_mem_size; i++) {
     d_heap[i] = -1;
-    d_nodes[i].value = DBL_MAX;
+    d_nodes[i].value = LSMLIB_REAL_MAX;
   }
 }
 
@@ -300,10 +302,11 @@ void FMM_Heap_makeNewHeap(FMM_Heap* heap, int heap_mem_size)
   heap->d_heap = (int*) malloc(heap_mem_size*sizeof(int));
   heap->d_nodes = (FMM_HeapNode*) malloc(heap_mem_size*sizeof(FMM_HeapNode));
 
-  /* initialize the value of all nodes to DBL_MAX and all heap pointers to -1 */
+  /* initialize the value of all nodes to LSMLIB_REAL_MAX and all heap 
+     pointers to -1 */
   for (i = 0; i < heap_mem_size; i++) {
     heap->d_heap[i] = -1;
-    heap->d_nodes[i].value = DBL_MAX;
+    heap->d_nodes[i].value = LSMLIB_REAL_MAX;
   }
 
 }
@@ -313,7 +316,7 @@ void FMM_Heap_growHeap(FMM_Heap* heap)
   int *d_heap = heap->d_heap;
   FMM_HeapNode* d_nodes = heap->d_nodes;
   int d_heap_size = heap->d_heap_size;
-  double d_heap_growth_factor = heap->d_heap_growth_factor;
+  LSMLIB_REAL d_heap_growth_factor = heap->d_heap_growth_factor;
   int i;
   int *old_heap; 
   FMM_HeapNode *old_nodes; 
@@ -376,9 +379,9 @@ void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos)
   int d_heap_size = heap->d_heap_size;
   int left_pos; 
   int right_pos;
-  double cur_value;
-  double left_value; 
-  double right_value;
+  LSMLIB_REAL cur_value;
+  LSMLIB_REAL left_value; 
+  LSMLIB_REAL right_value;
   int tmp;
 
   int done = 0;
@@ -388,7 +391,7 @@ void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos)
     right_pos = CHILD_RIGHT_H(heap_pos);
     cur_value = d_nodes[d_heap[heap_pos]].value;
     left_value = d_nodes[d_heap[left_pos]].value;
-    right_value = DBL_MAX;
+    right_value = LSMLIB_REAL_MAX;
 
     if (right_pos < d_heap_size) {
       right_value = d_nodes[d_heap[right_pos]].value;
@@ -445,14 +448,14 @@ void FMM_Heap_checkHeap(FMM_Heap* heap)
 
   /* check heap property */
   for (i = 0; 2*(i+1)-1 < d_heap_size; i++) {
-    double parent = d_nodes[d_heap[i]].value;
+    LSMLIB_REAL parent = d_nodes[d_heap[i]].value;
     if (2*(i+1)-1 < d_heap_size) {
-      double child_left = d_nodes[d_heap[CHILD_LEFT_H(i)]].value;
+      LSMLIB_REAL child_left = d_nodes[d_heap[CHILD_LEFT_H(i)]].value;
       if (parent > child_left) 
         printf("ERROR: Heap property failed - left child!!!: %d\n",i);
     }
     if (2*(i+1) < d_heap_size) {
-      double child_right = d_nodes[d_heap[CHILD_RIGHT_H(i)]].value;
+      LSMLIB_REAL child_right = d_nodes[d_heap[CHILD_RIGHT_H(i)]].value;
       if (parent > child_right) 
         printf("ERROR: Heap property failed - right child!!!: %d\n", i);
     }  

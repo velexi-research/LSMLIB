@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_BOUNDARY_CONDITIONS_3D_H
 #define INCLUDED_LSM_BOUNDARY_CONDITIONS_3D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,7 +67,7 @@ extern "C" {
  * Return value:               none
  */
 void LSM3D_LINEAR_EXTRAPOLATION(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -105,7 +107,7 @@ void LSM3D_LINEAR_EXTRAPOLATION(
  * Return value:               none
  */
 void LSM3D_SIGNED_LINEAR_EXTRAPOLATION(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -129,7 +131,7 @@ void LSM3D_SIGNED_LINEAR_EXTRAPOLATION(
  * Return value:               none
  */
 void LSM3D_COPY_EXTRAPOLATION(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -155,7 +157,7 @@ void LSM3D_COPY_EXTRAPOLATION(
  * Return value:               none
  */
 void LSM3D_HOMOGENEOUS_NEUMANN_ENO1(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -180,7 +182,7 @@ void LSM3D_HOMOGENEOUS_NEUMANN_ENO1(
  * Return value:               none
  */
 void LSM3D_HOMOGENEOUS_NEUMANN_ENO2(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -205,7 +207,7 @@ void LSM3D_HOMOGENEOUS_NEUMANN_ENO2(
  * Return value:               none
  */
 void LSM3D_HOMOGENEOUS_NEUMANN_ENO3(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,
@@ -230,7 +232,7 @@ void LSM3D_HOMOGENEOUS_NEUMANN_ENO3(
  * Return value:               none
  */
 void LSM3D_HOMOGENEOUS_NEUMANN_WENO5(
-  double *phi,
+  LSMLIB_REAL *phi,
   const int *ilo_gb, const int *ihi_gb,
   const int *jlo_gb, const int *jhi_gb,
   const int *klo_gb, const int *khi_gb,

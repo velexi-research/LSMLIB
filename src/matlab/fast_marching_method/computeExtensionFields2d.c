@@ -46,6 +46,7 @@
  *===========================================================================*/
 
 #include "mex.h"
+#include "LSMLIB_config.h"
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
@@ -64,17 +65,17 @@
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
   /* field data */
-  double *phi;
-  double *mask;
-  double **source_fields;
-  double *distance_function;
-  double **extension_fields;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *mask;
+  LSMLIB_REAL **source_fields;
+  LSMLIB_REAL *distance_function;
+  LSMLIB_REAL **extension_fields;
   int num_ext_fields;
  
   /* grid data */
   const int *grid_dims = mxGetDimensions(PHI);
   double *dX = mxGetPr(DX);
-  double dX_matlab_order[2];
+  LSMLIB_REAL dX_matlab_order[2];
 
   /* numerical parameters */
   int spatial_discretization_order;
@@ -94,11 +95,33 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     mexErrMsgTxt("Too many output arguments.");
   }
 
+  /* Check that the inputs have the correct floating-point precision */
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi is single-precision");
+    }
+#else
+    if (!mxIsSingle(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi is double-precision");
+    }
+#endif
+
   /* Get mask */
-  if (nrhs < 4) {
+  if ( (nrhs < 4) || (mxIsEmpty(MASK)) ) {
     mask = 0;  /* NULL mask ==> all points are in interior of domain */
   } else {
-    mask = mxGetPr(MASK);
+
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but mask is single-precision");
+    }
+#else
+    if (!mxIsSingle(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but mask is double-precision");
+    }
+#endif
+
+    mask = (LSMLIB_REAL*) mxGetPr(MASK);
   }
 
   /* Get spatial derivative order */
@@ -109,25 +132,47 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
 
   /* Assign pointers for phi and extension field data */
-  phi = mxGetPr(PHI);
+  phi = (LSMLIB_REAL*) mxGetPr(PHI);
   num_ext_fields = mxGetNumberOfElements(SOURCE_FIELDS);
-  source_fields = (double**) malloc(num_ext_fields*sizeof(double*)); 
+  source_fields = (LSMLIB_REAL**) mxMalloc(num_ext_fields*sizeof(LSMLIB_REAL*));
   for (i = 0; i < num_ext_fields; i++) {
     tmp_mxArray = mxGetCell(SOURCE_FIELDS,i);
-    source_fields[i] = mxGetPr(tmp_mxArray);
+
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(tmp_mxArray)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but one of the source fields is single-precision");
+    }
+#else
+    if (!mxIsSingle(tmp_mxArray)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but one of the source fields is double-precision");
+    }
+#endif
+
+    source_fields[i] = (LSMLIB_REAL*) mxGetPr(tmp_mxArray);
   }
 
 
   /* Create distance function and extension field data */
+#ifdef LSMLIB_DOUBLE_PRECISION
   DISTANCE_FUNCTION = mxCreateDoubleMatrix(grid_dims[0], grid_dims[1], mxREAL);
-  distance_function = mxGetPr(DISTANCE_FUNCTION);
+#else
+  DISTANCE_FUNCTION = mxCreateNumericMatrix(grid_dims[0], grid_dims[1],
+                                            mxSINGLE_CLASS, mxREAL);
+#endif                                
+  distance_function = (LSMLIB_REAL*) mxGetPr(DISTANCE_FUNCTION);
   num_ext_fields = mxGetNumberOfElements(SOURCE_FIELDS);
   EXTENSION_FIELDS = mxCreateCellArray(1, &num_ext_fields);
-  extension_fields = (double**) malloc(num_ext_fields*sizeof(double*)); 
+  extension_fields = 
+    (LSMLIB_REAL**) mxMalloc(num_ext_fields*sizeof(LSMLIB_REAL*)); 
   for (i = 0; i < num_ext_fields; i++) {
+#ifdef LSMLIB_DOUBLE_PRECISION
     tmp_mxArray = mxCreateDoubleMatrix(grid_dims[0], grid_dims[1], mxREAL);
+#else
+    tmp_mxArray= mxCreateNumericMatrix(grid_dims[0], grid_dims[1],
+                                       mxSINGLE_CLASS, mxREAL);
+#endif                                
     mxSetCell(EXTENSION_FIELDS, i, tmp_mxArray);
-    extension_fields[i] = mxGetPr(tmp_mxArray);
+    extension_fields[i] = (LSMLIB_REAL*) mxGetPr(tmp_mxArray);
   }
 
   /* Change order of dX to be match MATLAB meshgrid() order for grids. */
@@ -151,8 +196,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
 
   /* Clean up memory */
-  free(source_fields); 
-  free(extension_fields);
+  mxFree(source_fields); 
+  mxFree(extension_fields);
 
   return;
 }

@@ -10,6 +10,8 @@
 #ifndef INCLUDED_LSM_GEOMETRY_1D_H
 #define INCLUDED_LSM_GEOMETRY_1D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,10 +67,10 @@ extern "C" {
  *
  */
 void LSM1D_COMPUTE_UNIT_NORMAL(
-  double *normal,
+  LSMLIB_REAL *normal,
   const int *ilo_normal_gb, 
   const int *ihi_normal_gb,
-  const double *phi_x,
+  const LSMLIB_REAL *phi_x,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *ilo_fb, 
@@ -102,18 +104,18 @@ void LSM1D_COMPUTE_UNIT_NORMAL(
  *
  */
 void LSM1D_COMPUTE_SIGNED_UNIT_NORMAL(
-  double *normal,
+  LSMLIB_REAL *normal,
   const int *ilo_normal_gb, 
   const int *ihi_normal_gb,
-  const double *phi_x,
+  const LSMLIB_REAL *phi_x,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *ilo_fb, 
   const int *ihi_fb,
-  const double *dx);
+  const LSMLIB_REAL *dx);
 
 /*!
  * LSM1D_LENGTH_REGION_PHI_LESS_THAN_ZERO() computes the length of the
@@ -132,14 +134,14 @@ void LSM1D_COMPUTE_SIGNED_UNIT_NORMAL(
  *
  */
 void LSM1D_LENGTH_REGION_PHI_LESS_THAN_ZERO(
-  double *length,
-  const double *phi,
+  LSMLIB_REAL *length,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -159,14 +161,14 @@ void LSM1D_LENGTH_REGION_PHI_LESS_THAN_ZERO(
  *
  */
 void LSM1D_LENGTH_REGION_PHI_GREATER_THAN_ZERO(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -187,17 +189,17 @@ void LSM1D_LENGTH_REGION_PHI_GREATER_THAN_ZERO(
  *
  */
 void LSM1D_SIZE_ZERO_LEVEL_SET(
-  double *size,
-  const double *phi,
+  LSMLIB_REAL *size,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
-  const double *phi_x,
+  const LSMLIB_REAL *phi_x,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -223,18 +225,18 @@ void LSM1D_SIZE_ZERO_LEVEL_SET(
  *
  */
 void LSM1D_LENGTH_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
-  double *length,
-  const double *phi,
+  LSMLIB_REAL *length,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *control_vol_sgn,  
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -260,18 +262,18 @@ void LSM1D_LENGTH_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
  *
  */
 void LSM1D_LENGTH_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *control_vol_sgn,
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -298,21 +300,21 @@ void LSM1D_LENGTH_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
  *
  */
 void LSM1D_SIZE_ZERO_LEVEL_SET_CONTROL_VOLUME(
-  double *size,
-  const double *phi,
+  LSMLIB_REAL *size,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
-  const double *phi_x,
+  const LSMLIB_REAL *phi_x,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *control_vol_sgn,
   const int *ilo_ib, 
   const int *ihi_ib,
-  const double *dx,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *epsilon);
 
 
 #ifdef __cplusplus

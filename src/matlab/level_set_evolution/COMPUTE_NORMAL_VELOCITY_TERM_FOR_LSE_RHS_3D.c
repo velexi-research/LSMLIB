@@ -55,6 +55,7 @@
 
 #include "mex.h"
 #include "matrix.h"
+#include "LSMLIB_config.h"
 #include "lsm_level_set_evolution3d.h"
 
 /* Input Arguments */ 
@@ -83,14 +84,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
   /* data variables */
   int ilo_phi_gb, ihi_phi_gb, jlo_phi_gb, jhi_phi_gb, klo_phi_gb, khi_phi_gb;
   int phi_ghostcell_width;
-  double *normal_velocity; 
+  LSMLIB_REAL *normal_velocity; 
   int ilo_vel_gb, ihi_vel_gb, jlo_vel_gb, jhi_vel_gb, klo_vel_gb, khi_vel_gb;
-  double *phi_x_plus, *phi_y_plus, *phi_z_plus;
-  double *phi_x_minus, *phi_y_minus, *phi_z_minus;
+  LSMLIB_REAL *phi_x_plus, *phi_y_plus, *phi_z_plus;
+  LSMLIB_REAL *phi_x_minus, *phi_y_minus, *phi_z_minus;
   int ilo_grad_phi_gb, ihi_grad_phi_gb;
   int jlo_grad_phi_gb, jhi_grad_phi_gb;
   int klo_grad_phi_gb, khi_grad_phi_gb;
-  double *lse_rhs; 
+  LSMLIB_REAL *lse_rhs; 
   int ilo_lse_rhs_gb, ihi_lse_rhs_gb;
   int jlo_lse_rhs_gb, jhi_lse_rhs_gb;
   int klo_lse_rhs_gb, khi_lse_rhs_gb;
@@ -113,6 +114,59 @@ void mexFunction( int nlhs, mxArray *plhs[],
     mexErrMsgTxt("Too many output arguments."); 
   } 
     
+  /* Check that the inputs have the correct floating-point precision */
+#ifdef LSMLIB_DOUBLE_PRECISION 
+    if (!mxIsDouble(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi is single-precision");
+    }
+    if (!mxIsDouble(NORMAL_VELOCITY)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but normal_velocity is single-precision");
+    }
+    if (!mxIsDouble(PHI_X_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_x_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Y_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_y_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Z_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_z_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_X_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_x_minus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Y_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_y_minus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Z_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_z_minus is single-precision");
+    }
+#else       
+    if (!mxIsSingle(PHI)) {           
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi is double-precision");
+    }
+    if (!mxIsSingle(NORMAL_VELOCITY)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but normal_velocity is double-precision");
+    }
+    if (!mxIsSingle(PHI_X_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_x_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Y_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_y_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Z_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_z_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_X_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_x_minus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Y_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_y_minus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Z_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_z_minus is double-precision");
+    }
+#endif
+
   /* Parameter Checks */
   num_data_array_dims = mxGetNumberOfDimensions(PHI);
   if (num_data_array_dims != 3) {
@@ -120,14 +174,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
   }
 
   /* Assign pointers for normal velocity and grad(phi) */
-  normal_velocity = mxGetPr(NORMAL_VELOCITY);
-  phi_x_plus      = mxGetPr(PHI_X_PLUS);
-  phi_y_plus      = mxGetPr(PHI_Y_PLUS);
-  phi_z_plus      = mxGetPr(PHI_Z_PLUS);
-  phi_x_minus     = mxGetPr(PHI_X_MINUS);
-  phi_y_minus     = mxGetPr(PHI_Y_MINUS);
-  phi_z_minus     = mxGetPr(PHI_Z_MINUS);
-
+  normal_velocity = (LSMLIB_REAL*) mxGetPr(NORMAL_VELOCITY);
+  phi_x_plus      = (LSMLIB_REAL*) mxGetPr(PHI_X_PLUS);
+  phi_y_plus      = (LSMLIB_REAL*) mxGetPr(PHI_Y_PLUS);
+  phi_z_plus      = (LSMLIB_REAL*) mxGetPr(PHI_Z_PLUS);
+  phi_x_minus     = (LSMLIB_REAL*) mxGetPr(PHI_X_MINUS);
+  phi_y_minus     = (LSMLIB_REAL*) mxGetPr(PHI_Y_MINUS);
+  phi_z_minus     = (LSMLIB_REAL*) mxGetPr(PHI_Z_MINUS);
       
   /* Get size of data */
   data_array_dims_in = mxGetDimensions(PHI);
@@ -201,9 +254,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
   data_array_dims_out[0] = ihi_lse_rhs_gb-ilo_lse_rhs_gb+1;
   data_array_dims_out[1] = jhi_lse_rhs_gb-jlo_lse_rhs_gb+1;
   data_array_dims_out[2] = khi_lse_rhs_gb-klo_lse_rhs_gb+1;
+#ifdef LSMLIB_DOUBLE_PRECISION
   LSE_RHS = mxCreateNumericArray(NDIM, data_array_dims_out,
                                  mxDOUBLE_CLASS, mxREAL);
-  lse_rhs = mxGetPr(LSE_RHS); 
+#else
+  LSE_RHS = mxCreateNumericArray(NDIM, data_array_dims_out,
+                                 mxSINGLE_CLASS, mxREAL);
+#endif
+  lse_rhs = (LSMLIB_REAL*) mxGetPr(LSE_RHS); 
 
   /* zero out LSE_RHS */
   num_grid_cells = data_array_dims_out[0]*data_array_dims_out[1]
@@ -211,7 +269,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
   for (i = 0; i < num_grid_cells; i++, lse_rhs++) {
     (*lse_rhs) = 0.0;
   }
-  lse_rhs = mxGetPr(LSE_RHS);  /* reset lse_rhs to start of data array */
+  /* reset lse_rhs to start of data array */
+  lse_rhs = (LSMLIB_REAL*) mxGetPr(LSE_RHS);  
 
 
   /* Do the actual computations in a Fortran 77 subroutine */

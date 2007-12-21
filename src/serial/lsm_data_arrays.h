@@ -10,6 +10,8 @@
 #ifndef included_lsm_data_arrays_h
 #define included_lsm_data_arrays_h
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,38 +34,38 @@ extern "C" {
 typedef struct _LSM_DataArrays
 {
   /* level set function at different time integration steps*/
-  double  *phi, *phi_stage1, *phi_stage2, *phi_next;
+  LSMLIB_REAL  *phi, *phi_stage1, *phi_stage2, *phi_next;
   
   /* extra storage in reinitialization */
-  double  *phi0;      
+  LSMLIB_REAL  *phi0;      
 
   /* extra storage for previous step functions */
-  double  *phi_prev;  
+  LSMLIB_REAL  *phi_prev;  
   
   /* mask is the level set function that defines restricted domains */
-  double  *mask;
+  LSMLIB_REAL  *mask;
 
    /* LS Equation right hand side */
-  double  *lse_rhs; 
+  LSMLIB_REAL  *lse_rhs; 
   
   /* 1st order derivatives (upwinding and central) */
-  double  *phi_x_plus, *phi_x_minus, *phi_x;
-  double  *phi_y_plus, *phi_y_minus, *phi_y;
-  double  *phi_z_plus, *phi_z_minus, *phi_z;
+  LSMLIB_REAL  *phi_x_plus, *phi_x_minus, *phi_x;
+  LSMLIB_REAL  *phi_y_plus, *phi_y_minus, *phi_y;
+  LSMLIB_REAL  *phi_z_plus, *phi_z_minus, *phi_z;
   
   /* scratch space for divided differences */
-  double  *D1, *D2, *D3;
+  LSMLIB_REAL  *D1, *D2, *D3;
   
   /* 2nd order derivatives */
-  double  *phi_xx, *phi_yy, *phi_xy, *phi_zz, *phi_xz, *phi_yz;
+  LSMLIB_REAL  *phi_xx, *phi_yy, *phi_xy, *phi_zz, *phi_xz, *phi_yz;
   
   /* normal velocity */
-  double *normal_velocity; 
+  LSMLIB_REAL *normal_velocity; 
   
    /* external velocity field */
-  double *external_velocity_x;
-  double *external_velocity_y;
-  double *external_velocity_z;
+  LSMLIB_REAL *external_velocity_x;
+  LSMLIB_REAL *external_velocity_y;
+  LSMLIB_REAL *external_velocity_z;
    
   /* arrays defining narrow band position */
   unsigned char *narrow_band;
@@ -83,7 +85,7 @@ typedef struct _LSM_DataArrays
   int    *solid_index_x, *solid_index_y, *solid_index_z;
   int    solid_n_lo[10], solid_n_hi[10];
   
-  double *solid_normal_x, *solid_normal_y, *solid_normal_z;
+  LSMLIB_REAL *solid_normal_x, *solid_normal_y, *solid_normal_z;
 
 }  LSM_DataArrays;
 
@@ -164,11 +166,11 @@ void freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_arrays);
  *   overwritten.
  *
  */   
-void writeDataArray(double *data, Grid *grid, char *file_name);
+void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name);
 
 
 /*!
- * readDataArray() loads the data from a binary file into a double
+ * readDataArray() loads the data from a binary file into a LSMLIB_REAL
  * array and returns it to the user.  
  *   
  * Arguments:
@@ -187,7 +189,7 @@ void writeDataArray(double *data, Grid *grid, char *file_name);
  *   data, the third grid dimension is set to 1.
  *
  */   
-double *readDataArray(int *grid_dims, char *file_name);
+LSMLIB_REAL *readDataArray(int *grid_dims, char *file_name);
 
 
 /*!
@@ -209,11 +211,11 @@ double *readDataArray(int *grid_dims, char *file_name);
  *   overwritten.
  *
  */   
-void writeDataArray1d(double *data, int num_gridpts, char *file_name);
+void writeDataArray1d(LSMLIB_REAL *data, int num_gridpts, char *file_name);
 
 
 /*!
- * readDataArray1d() loads the data from a binary file into a double
+ * readDataArray1d() loads the data from a binary file into a LSMLIB_REAL
  * array and returns it to the user.  
  *   
  * Arguments:
@@ -230,7 +232,7 @@ void writeDataArray1d(double *data, int num_gridpts, char *file_name);
  *
  *
  */   
-double *readDataArray1d(int *num_elements, char *file_name);
+LSMLIB_REAL *readDataArray1d(int *num_elements, char *file_name);
 
 
 #ifdef __cplusplus

@@ -57,10 +57,10 @@ c     _fb refers to fillbox
       integer ilo_Dn_minus_one_gb, ihi_Dn_minus_one_gb
       integer jlo_Dn_minus_one_gb, jhi_Dn_minus_one_gb
       integer klo_Dn_minus_one_gb, khi_Dn_minus_one_gb
-      double precision Dn(ilo_Dn_gb:ihi_Dn_gb,
+      real Dn(ilo_Dn_gb:ihi_Dn_gb,
      &                    jlo_Dn_gb:jhi_Dn_gb,
      &                    klo_Dn_gb:khi_Dn_gb)
-      double precision Dn_minus_one(
+      real Dn_minus_one(
      &                   ilo_Dn_minus_one_gb:ihi_Dn_minus_one_gb,
      &                   jlo_Dn_minus_one_gb:jhi_Dn_minus_one_gb,
      &                   klo_Dn_minus_one_gb:khi_Dn_minus_one_gb)
@@ -81,8 +81,8 @@ c     _fb refers to fillbox
       integer i,j,k,l
       integer offset(1:3)
       integer fillbox_shift(1:3)
-      double precision sign_multiplier
-      double precision big
+      real sign_multiplier
+      real big
       parameter (big=1.d10)
       
 
@@ -202,37 +202,37 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_D1_gb, ihi_D1_gb
       integer jlo_D1_gb, jhi_D1_gb
       integer klo_D1_gb, khi_D1_gb
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision D1(ilo_D1_gb:ihi_D1_gb,
+      real D1(ilo_D1_gb:ihi_D1_gb,
      &                    jlo_D1_gb:jhi_D1_gb,
      &                    klo_D1_gb:khi_D1_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index0, nhi_index0
       integer nlo_index1, nhi_index1
       integer index_x(nlo_index0:nhi_index1)
@@ -246,11 +246,11 @@ c     _fb refers to fill-box for grad_phi data
      &                      klo_nb_gb:khi_nb_gb)
       integer*1 mark_fb, mark_D1     
       
-      double precision inv_dx, inv_dy, inv_dz
+      real inv_dx, inv_dy, inv_dz
       integer i,j,k,l
-      double precision zero
+      real zero
       parameter (zero=0.0d0)
-      double precision zero_tol
+      real zero_tol
       parameter (zero_tol=1.d-8)
       integer order
       parameter (order=1)
@@ -474,40 +474,40 @@ c     _fb refers to fill-box for grad_phi data
       integer index_x(nlo_index0:nhi_index2)
       integer index_y(nlo_index0:nhi_index2)
       integer index_z(nlo_index0:nhi_index2)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision D1(ilo_D1_gb:ihi_D1_gb,
+      real D1(ilo_D1_gb:ihi_D1_gb,
      &                    jlo_D1_gb:jhi_D1_gb,
      &                    klo_D1_gb:khi_D1_gb)
-      double precision D2(ilo_D2_gb:ihi_D2_gb,
+      real D2(ilo_D2_gb:ihi_D2_gb,
      &                    jlo_D2_gb:jhi_D2_gb,
      &                    klo_D2_gb:khi_D2_gb)      
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
@@ -518,11 +518,11 @@ c     _fb refers to fill-box for grad_phi data
       integer*1 mark_D1
       integer*1 mark_fb
       
-      double precision inv_dx, inv_dy, inv_dz
+      real inv_dx, inv_dy, inv_dz
       integer i,j,k,l
-      double precision zero, half
+      real zero, half
       parameter (zero=0.0d0, half=0.5d0)
-      double precision zero_tol
+      real zero_tol
       parameter (zero_tol=1.d-8)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
@@ -798,22 +798,22 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_phi_gb, ihi_phi_gb
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
-      double precision phi_x(
+      real phi_x(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_y(
+      real phi_y(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_z(
+      real phi_z(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -828,7 +828,7 @@ c     _fb refers to fill-box for grad_phi data
 
 c     local variables      
       integer i,j,k,l
-      double precision dx_factor, dy_factor, dz_factor
+      real dx_factor, dy_factor, dz_factor
 
 c     compute denominator values
       dx_factor = 0.5d0/dx
@@ -907,22 +907,22 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_phi_gb, ihi_phi_gb
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
-      double precision phi_x(
+      real phi_x(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_y(
+      real phi_y(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_z(
+      real phi_z(
      &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -936,8 +936,8 @@ c     _fb refers to fill-box for grad_phi data
       integer*1 mark_fb
       
       integer i,j,k,l
-      double precision dx_factor, dy_factor, dz_factor
-      double precision eight
+      real dx_factor, dy_factor, dz_factor
+      real eight
       parameter (eight = 8.0d0)
 
 c     compute denominator values
@@ -1024,14 +1024,14 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_phi_gb, ihi_phi_gb
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
-      double precision laplacian_phi(
+      real laplacian_phi(
      &                   ilo_laplacian_phi_gb:ihi_laplacian_phi_gb,
      &                   jlo_laplacian_phi_gb:jhi_laplacian_phi_gb,
      &                   klo_laplacian_phi_gb:khi_laplacian_phi_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -1045,9 +1045,9 @@ c     _fb refers to fill-box for grad_phi data
       integer*1 mark_fb
             
       integer i, j, k, l
-      double precision inv_dx_sq
-      double precision inv_dy_sq
-      double precision inv_dz_sq
+      real inv_dx_sq
+      real inv_dy_sq
+      real inv_dz_sq
 
 c     compute denominator values
       inv_dx_sq = 1.0d0/dx/dx
@@ -1120,14 +1120,14 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision grad_phi_ave
+      real grad_phi_ave
       integer ilo_phi_gb, ihi_phi_gb
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -1142,8 +1142,8 @@ c { begin subroutine
 
 c     local variables      
       integer i,j,k,l,count
-      double precision dx_factor, dy_factor, dz_factor
-      double precision phi_x, phi_y, phi_z
+      real dx_factor, dy_factor, dz_factor
+      real phi_x, phi_y, phi_z
       
 
 c     compute denominator values

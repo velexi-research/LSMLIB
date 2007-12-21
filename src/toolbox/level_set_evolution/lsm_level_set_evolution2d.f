@@ -30,7 +30,7 @@ c { begin subroutine
 
       integer ilo_lse_rhs_gb, ihi_lse_rhs_gb
       integer jlo_lse_rhs_gb, jhi_lse_rhs_gb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
      &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
       integer i,j
 
@@ -89,15 +89,15 @@ c { begin subroutine
       integer jlo_vel_gb, jhi_vel_gb
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
      &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
-      double precision phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
-      double precision vel_x(ilo_vel_gb:ihi_vel_gb,
+      real vel_x(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb)
-      double precision vel_y(ilo_vel_gb:ihi_vel_gb,
+      real vel_y(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb)
       integer i,j
 
@@ -165,26 +165,26 @@ c { begin subroutine
       integer jlo_vel_gb, jhi_vel_gb
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
      &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      double precision vel_n(ilo_vel_gb:ihi_vel_gb,
+      real vel_n(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb)
       integer i,j
-      double precision vel_n_cur
-      double precision norm_grad_phi_sq
-      double precision tol
+      real vel_n_cur
+      real norm_grad_phi_sq
+      real tol
       parameter (tol=1.d-13)
 
 c     { begin loop over grid
@@ -271,25 +271,25 @@ c { begin subroutine
       integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
      &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      double precision vel_n
+      real vel_n
       
       integer i,j
-      double precision norm_grad_phi_sq
-      double precision tol
+      real norm_grad_phi_sq
+      real tol
       parameter (tol=1.d-13)
 
       if (abs(vel_n) .ge. tol) then
@@ -377,23 +377,23 @@ c { begin subroutine
       integer jlo_grad2_phi_gb, jhi_grad2_phi_gb
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
      &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                         jlo_grad_phi_gb:jhi_grad_phi_gb)
-      double precision phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                         jlo_grad_phi_gb:jhi_grad_phi_gb)
-      double precision phi_xx(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
+      real phi_xx(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
      &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
-      double precision phi_yy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
+      real phi_yy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
      &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
-      double precision phi_xy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
+      real phi_xy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
      &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
-      double precision b
+      real b
       
       integer i,j
-      double precision grad_mag2, curv
-      double precision tol
+      real grad_mag2, curv
+      real tol
       parameter (tol=1.d-13)
 
 c     { begin loop over grid

@@ -87,40 +87,40 @@ c     _fb refers to fillbox
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
       integer klo_grad_phi_minus_gb, khi_grad_phi_minus_gb
-      double precision reinit_rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real reinit_rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                            jlo_rhs_gb:jhi_rhs_gb,
      &                            klo_rhs_gb:khi_rhs_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision phi0(ilo_phi0_gb:ihi_phi0_gb,
+      real phi0(ilo_phi0_gb:ihi_phi0_gb,
      &                      jlo_phi0_gb:jhi_phi0_gb,
      &                      klo_phi0_gb:khi_phi0_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer use_phi0_for_sgn
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
@@ -135,20 +135,20 @@ c     _fb refers to fillbox
       integer*1 mark_fb     
 
 c     local variables      
-      double precision phi_cur
+      real phi_cur
       integer DIM
       parameter (DIM=3)
-      double precision grad_phi_plus_cur(1:DIM)
-      double precision grad_phi_minus_cur(1:DIM)
-      double precision grad_phi_star(1:DIM)
+      real grad_phi_plus_cur(1:DIM)
+      real grad_phi_minus_cur(1:DIM)
+      real grad_phi_star(1:DIM)
       integer i,j,k,l
       integer dir
-      double precision sgn_phi
-      double precision norm_grad_phi_sq
-      double precision dx_sq
-      double precision tol
+      real sgn_phi
+      real norm_grad_phi_sq
+      real dx_sq
+      real tol
       parameter (tol=1.d-13)
-      double precision one
+      real one
       parameter (one=1.d0)
 
 c     set value of dx_sq to be square of max{dx,dy,dz}
@@ -375,61 +375,61 @@ c     _fb refers to fillbox
       integer ilo_grad_psi_minus_gb, ihi_grad_psi_minus_gb
       integer jlo_grad_psi_minus_gb, jhi_grad_psi_minus_gb
       integer klo_grad_psi_minus_gb, khi_grad_psi_minus_gb
-      double precision ortho_rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real ortho_rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                           jlo_rhs_gb:jhi_rhs_gb,
      &                           klo_rhs_gb:khi_rhs_gb)
-      double precision psi(ilo_psi_gb:ihi_psi_gb,
+      real psi(ilo_psi_gb:ihi_psi_gb,
      &                     jlo_psi_gb:jhi_psi_gb,
      &                     klo_psi_gb:khi_psi_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision psi_x_plus(
+      real psi_x_plus(
      &                    ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
      &                    jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb,
      &                    klo_grad_psi_plus_gb:khi_grad_psi_plus_gb)
-      double precision psi_y_plus(
+      real psi_y_plus(
      &                    ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
      &                    jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb,
      &                    klo_grad_psi_plus_gb:khi_grad_psi_plus_gb)
-      double precision psi_z_plus(
+      real psi_z_plus(
      &                    ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
      &                    jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb,
      &                    klo_grad_psi_plus_gb:khi_grad_psi_plus_gb)
-      double precision psi_x_minus(
+      real psi_x_minus(
      &                    ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
      &                    jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb,
      &                    klo_grad_psi_minus_gb:khi_grad_psi_minus_gb)
-      double precision psi_y_minus(
+      real psi_y_minus(
      &                    ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
      &                    jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb,
      &                    klo_grad_psi_minus_gb:khi_grad_psi_minus_gb)
-      double precision psi_z_minus(
+      real psi_z_minus(
      &                    ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
      &                    jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb,
      &                    klo_grad_psi_minus_gb:khi_grad_psi_minus_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -442,16 +442,16 @@ c     _fb refers to fillbox
      &                      klo_nb_gb:khi_nb_gb)
       integer*1 mark_fb
       
-      double precision dx_sq
+      real dx_sq
       integer DIM
       parameter (DIM=3)
-      double precision grad_psi_star(1:DIM)
-      double precision norm_grad_psi
-      double precision sgn_psi
+      real grad_psi_star(1:DIM)
+      real norm_grad_psi
+      real sgn_psi
       integer i,j,k,l
-      double precision psi_tol, grad_psi_tol
+      real psi_tol, grad_psi_tol
       parameter (psi_tol=1.d-13,grad_psi_tol=1.d-8)
-      double precision one, half
+      real one, half
       parameter (one=1.d0,half=0.5d0)
 
 c     set value of dx_sq to be square of max{dx,dy,dz}

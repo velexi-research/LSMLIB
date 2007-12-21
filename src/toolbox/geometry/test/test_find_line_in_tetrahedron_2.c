@@ -514,7 +514,7 @@ void checkCase(
   /* check if two endpoints are the same */
   same_point = ( fabs(endpt1[0] - endpt2[0])
                + fabs(endpt1[1] - endpt2[1])
-               + fabs(endpt1[2] - endpt2[2]) < @lsmlib_zero_tol@) ? 1 : 0;
+               + fabs(endpt1[2] - endpt2[2]) < LSMLIB_ZERO_TOL) ? 1 : 0;
 
   /* compute direction of line defined by endpt1 and endpt2 */
   if (!same_point) {
@@ -522,11 +522,11 @@ void checkCase(
     line_dir[1] = endpt2[1] - endpt1[1];
     line_dir[2] = endpt2[2] - endpt1[2];
 
-    if (fabs(line_dir[2]) > @lsmlib_zero_tol@) {
+    if (fabs(line_dir[2]) > LSMLIB_ZERO_TOL) {
       line_dir[0] /= line_dir[2];
       line_dir[1] /= line_dir[2];
       line_dir[2] /= line_dir[2];
-    } else if (fabs(line_dir[1]) > @lsmlib_zero_tol@) {
+    } else if (fabs(line_dir[1]) > LSMLIB_ZERO_TOL) {
       line_dir[0] /= line_dir[1];
       line_dir[1] /= line_dir[1];
       line_dir[2] /= line_dir[1];
@@ -549,7 +549,7 @@ void checkCase(
       fabs(line_dir[0]*true_line_dir[1]-line_dir[1]*true_line_dir[0])
     + fabs(line_dir[0]*true_line_dir[2]-line_dir[2]*true_line_dir[0])
     + fabs(line_dir[1]*true_line_dir[2]-line_dir[2]*true_line_dir[1]); 
-    if (fabs(check_line_dir) < @lsmlib_zero_tol@)
+    if (fabs(check_line_dir) < LSMLIB_ZERO_TOL)
       printf("OK: check line direction: %f\n", check_line_dir);
     else
       printf("ERROR: check line direction: %f\n", check_line_dir);
@@ -569,12 +569,12 @@ void checkCase(
                + fabs( (endpt2[1] - point_on_line[1])*true_line_dir[2] 
                       -(endpt2[2] - point_on_line[2])*true_line_dir[1] );
 
-  if (fabs(check_endpt1) < @lsmlib_zero_tol@)
+  if (fabs(check_endpt1) < LSMLIB_ZERO_TOL)
     printf("OK: check endpt1: %f\n", check_endpt1);
   else
     printf("ERROR: check endpt1: %f\n", check_endpt1);
 
-  if (fabs(check_endpt2) < @lsmlib_zero_tol@)
+  if (fabs(check_endpt2) < LSMLIB_ZERO_TOL)
     printf("OK: check endpt2: %f\n", check_endpt2);
   else
     printf("ERROR: check endpt2: %f\n", check_endpt2);

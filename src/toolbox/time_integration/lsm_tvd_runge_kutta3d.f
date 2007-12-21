@@ -56,17 +56,17 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb,
      &                        klo_u_next_gb:khi_u_next_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
       integer i, j, k
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do k=klo_fb,khi_fb
@@ -131,16 +131,16 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb,
      &                          klo_u_stage1_gb:khi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
-      double precision dt
+      real dt
 
 c     use lsm3dRK1Step() to compute first stage
       call lsm3dRK1Step(u_stage1,
@@ -216,20 +216,20 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb,
      &                        klo_u_next_gb:khi_u_next_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb,
      &                          klo_u_stage1_gb:khi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
       integer i, j, k
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do k=klo_fb,khi_fb
@@ -293,16 +293,16 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb,
      &                          klo_u_stage1_gb:khi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
-      double precision dt
+      real dt
 
 c     use lsm3dRK1Step() to compute first stage
       call lsm3dRK1Step(u_stage1,
@@ -378,20 +378,20 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
      &                          jlo_u_stage2_gb:jhi_u_stage2_gb,
      &                          klo_u_stage2_gb:khi_u_stage2_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb,
      &                          klo_u_stage1_gb:khi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
       integer i, j, k
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do k=klo_fb,khi_fb
@@ -462,21 +462,21 @@ c { begin subroutine
       integer jlo_rhs_gb, jhi_rhs_gb
       integer klo_rhs_gb, khi_rhs_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb,
      &                        klo_u_next_gb:khi_u_next_gb)
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
      &                          jlo_u_stage2_gb:jhi_u_stage2_gb,
      &                          klo_u_stage2_gb:khi_u_stage2_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb,
      &                       klo_u_cur_gb:khi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
       integer i, j, k
-      double precision dt
-      double precision one_third, two_thirds
+      real dt
+      real one_third, two_thirds
       parameter (one_third = 1.d0/3.d0)
       parameter (two_thirds = 2.d0/3.d0)
 

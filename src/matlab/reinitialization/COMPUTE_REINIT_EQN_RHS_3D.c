@@ -52,6 +52,7 @@
 
 #include "mex.h"
 #include "matrix.h"
+#include "LSMLIB_config.h"
 #include "lsm_reinitialization3d.h"
 
 /* Input Arguments */ 
@@ -78,22 +79,22 @@ void mexFunction( int nlhs, mxArray *plhs[],
 { 
 
   /* data variables */
-  double *reinit_rhs; 
+  LSMLIB_REAL *reinit_rhs; 
   int ilo_reinit_rhs_gb, ihi_reinit_rhs_gb;
   int jlo_reinit_rhs_gb, jhi_reinit_rhs_gb;
   int klo_reinit_rhs_gb, khi_reinit_rhs_gb;
-  double *phi; 
+  LSMLIB_REAL *phi; 
   int ilo_phi_gb, ihi_phi_gb, jlo_phi_gb, jhi_phi_gb, klo_phi_gb, khi_phi_gb;
   int phi_ghostcell_width;
   int ilo_vel_gb, ihi_vel_gb, jlo_vel_gb, jhi_vel_gb, klo_vel_gb, khi_vel_gb;
-  double *phi_x_plus, *phi_y_plus, *phi_z_plus;
-  double *phi_x_minus, *phi_y_minus, *phi_z_minus;
+  LSMLIB_REAL *phi_x_plus, *phi_y_plus, *phi_z_plus;
+  LSMLIB_REAL *phi_x_minus, *phi_y_minus, *phi_z_minus;
   int ilo_grad_phi_gb, ihi_grad_phi_gb;
   int jlo_grad_phi_gb, jhi_grad_phi_gb;
   int klo_grad_phi_gb, khi_grad_phi_gb;
   int ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb;
   double *dX;
-  double dX_meshgrid_order[3];
+  LSMLIB_REAL dX_meshgrid_order[3];
 
   /* array dimension information */
   int num_data_array_dims;
@@ -113,6 +114,53 @@ void mexFunction( int nlhs, mxArray *plhs[],
     mexErrMsgTxt("Too many output arguments."); 
   } 
     
+  /* Check that the inputs have the correct floating-point precision */
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi is single-precision");
+    }
+    if (!mxIsDouble(PHI_X_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_x_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Y_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_y_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Z_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_z_plus is single-precision");
+    }
+    if (!mxIsDouble(PHI_X_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_x_minus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Y_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_y_minus is single-precision");
+    }
+    if (!mxIsDouble(PHI_Z_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi_z_minus is single-precision");
+    }
+#else      
+    if (!mxIsSingle(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi is double-precision");
+    }
+    if (!mxIsSingle(PHI_X_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_x_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Y_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_y_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Z_PLUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_z_plus is double-precision");
+    }
+    if (!mxIsSingle(PHI_X_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_x_minus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Y_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_y_minus is double-precision");
+    }
+    if (!mxIsSingle(PHI_Z_MINUS)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi_z_minus is double-precision");
+    }
+#endif
+    
   /* Parameter Checks */
   num_data_array_dims = mxGetNumberOfDimensions(PHI);
   if (num_data_array_dims != 3) {
@@ -120,13 +168,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
   }
 
   /* Assign pointers for grad(phi) */
-  phi         = mxGetPr(PHI);
-  phi_x_plus  = mxGetPr(PHI_X_PLUS);
-  phi_y_plus  = mxGetPr(PHI_Y_PLUS);
-  phi_z_plus  = mxGetPr(PHI_Z_PLUS);
-  phi_x_minus = mxGetPr(PHI_X_MINUS);
-  phi_y_minus = mxGetPr(PHI_Y_MINUS);
-  phi_z_minus = mxGetPr(PHI_Z_MINUS);
+  phi         = (LSMLIB_REAL*) mxGetPr(PHI);
+  phi_x_plus  = (LSMLIB_REAL*) mxGetPr(PHI_X_PLUS);
+  phi_y_plus  = (LSMLIB_REAL*) mxGetPr(PHI_Y_PLUS);
+  phi_z_plus  = (LSMLIB_REAL*) mxGetPr(PHI_Z_PLUS);
+  phi_x_minus = (LSMLIB_REAL*) mxGetPr(PHI_X_MINUS);
+  phi_y_minus = (LSMLIB_REAL*) mxGetPr(PHI_Y_MINUS);
+  phi_z_minus = (LSMLIB_REAL*) mxGetPr(PHI_Z_MINUS);
 
       
   /* Get size of data */
@@ -175,9 +223,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
   data_array_dims_out[0] = ihi_reinit_rhs_gb-ilo_reinit_rhs_gb+1;
   data_array_dims_out[1] = jhi_reinit_rhs_gb-jlo_reinit_rhs_gb+1;
   data_array_dims_out[2] = khi_reinit_rhs_gb-klo_reinit_rhs_gb+1;
+#ifdef LSMLIB_DOUBLE_PRECISION
   REINIT_RHS = mxCreateNumericArray(NDIM, data_array_dims_out,
                                     mxDOUBLE_CLASS, mxREAL);
-  reinit_rhs = mxGetPr(REINIT_RHS); 
+#else
+  REINIT_RHS = mxCreateNumericArray(NDIM, data_array_dims_out,
+                                    mxSINGLE_CLASS, mxREAL);
+#endif
+  reinit_rhs = (LSMLIB_REAL*) mxGetPr(REINIT_RHS); 
 
   /* zero out REINIT_RHS */
   num_grid_cells = data_array_dims_out[0]*data_array_dims_out[1]
@@ -187,7 +240,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
   }
 
   /* reset reinit_rhs to start of data array */
-  reinit_rhs = mxGetPr(REINIT_RHS);  
+  reinit_rhs = (LSMLIB_REAL*) mxGetPr(REINIT_RHS);  
 
   /* Get dX */
   dX = mxGetPr(DX);

@@ -12,6 +12,8 @@
 #include "FMM_Heap.h"
 #include "FMM_Core.h"
 
+#include "LSMLIB_config.h"
+
 /*======================= FMM_Core Constants =========================*/
 #define FMM_CORE_TRUE                   (1)
 #define FMM_CORE_FALSE                  (0)
@@ -64,7 +66,7 @@ struct FMM_CoreData {
   int num_dims;
   FMM_FieldData *fmm_field_data;
   int grid_dims[FMM_CORE_MAX_NDIM];
-  double dx[FMM_CORE_MAX_NDIM];
+  LSMLIB_REAL dx[FMM_CORE_MAX_NDIM];
 
   /* function pointer to grid update function */
   initializeFrontFuncPtr initializeFront;
@@ -85,7 +87,7 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx,
+  LSMLIB_REAL *dx,
   initializeFrontFuncPtr initializeFront,
   updateGridPointFuncPtr updateGridPoint)
 {
@@ -221,8 +223,8 @@ void FMM_Core_initializeFront(FMM_CoreData *fmm_core_data)
 
     
     /* update neighbors if the value of the node is */
-    /* less than DBL_MAX                            */
-    if (node.value < DBL_MAX) {
+    /* less than LSMLIB_REAL_MAX                    */
+    if (node.value < LSMLIB_REAL_MAX) {
 
       /* set grid_idx */
       for (i = 0; i < num_dims; i++) {
@@ -252,7 +254,7 @@ void FMM_Core_initializeFront(FMM_CoreData *fmm_core_data)
 void FMM_Core_setInitialFrontPoint(
   FMM_CoreData *fmm_core_data, 
   int *grid_idx, 
-  double value)
+  LSMLIB_REAL value)
 {
   int num_dims = fmm_core_data->num_dims; 
   int *grid_dims = fmm_core_data->grid_dims;
@@ -376,7 +378,7 @@ void FMM_Core_updateNeighbors(FMM_CoreData *fmm_core_data, int *grid_idx)
   /* variables for update calculation */
   int neighbor[FMM_CORE_MAX_NDIM];
   int offset[FMM_CORE_MAX_NDIM];
-  double value;
+  LSMLIB_REAL value;
   int heapnode_handle;
 
   /* auxilliary variables */

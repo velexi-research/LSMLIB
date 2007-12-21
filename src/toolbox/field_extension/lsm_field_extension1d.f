@@ -52,18 +52,18 @@ c     _fb refers to fill-box
       integer ilo_grad_S_upwind_gb, ihi_grad_S_upwind_gb
       integer ilo_signed_normal_gb, ihi_signed_normal_gb
       integer ilo_fb, ihi_fb
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
-      double precision S(ilo_S_gb:ihi_S_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision S_x_upwind(
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real S(ilo_S_gb:ihi_S_gb)
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real S_x_upwind(
      &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb)
-      double precision signed_normal_x(
+      real signed_normal_x(
      &                   ilo_signed_normal_gb:ihi_signed_normal_gb)
-      double precision dx
+      real dx
       integer i
-      double precision zero
+      real zero
       parameter (zero=0.0d0)
-      double precision zero_level_set_cutoff
+      real zero_level_set_cutoff
 
 c     set zero_level_set_cutoff to 3*dx
       zero_level_set_cutoff = 3.0d0*dx

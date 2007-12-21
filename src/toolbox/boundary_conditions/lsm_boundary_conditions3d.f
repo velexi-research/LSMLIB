@@ -53,11 +53,11 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
 c     local variables       
       integer i,j,k
-      double precision dist, slope
+      real dist, slope
 
       if (bdry_location_idx .eq. 0) then
 c     { extrapolate data in x-direction at lower end
@@ -200,12 +200,12 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
 c     local variables       
       integer i,j,k
-      double precision s, abs_diff, dist, slope
-      double precision one
+      real s, abs_diff, dist, slope
+      real one
       parameter (one = 1.0d0)
 
       if (bdry_location_idx .eq. 0) then
@@ -359,7 +359,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
 c     local variables       
       integer i,j,k
@@ -493,7 +493,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
       call lsm3dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,
@@ -537,7 +537,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
       call lsm3dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,
@@ -581,7 +581,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
       call lsm3dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,
@@ -625,7 +625,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       
       call lsm3dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,

@@ -1,7 +1,17 @@
-v0.9.1 (2007/06/??)
+v1.0.0 (2008/01/??)
 -------------------
 * ENHANCEMENTS:
   - Improved support for localization/narrow-band calculations
+  - Added support for second-order accurate Fast Marching Method 
+    calculations:
+    * computation of signed distance function
+    * solution of Eikonal equation
+  - Redesigned Fast Marching Method implementation to use generic
+    programming ideas.  The field extension, distance function calculation,
+    and solution of Eikonal equation are now all "templated" on the
+    number of dimensions.
+  - Added support for building single precision version of library 
+    (via --enable-float configure option).
 * MINOR CHANGES:
   - Added support for gfortran compiler (default Fortran compiler) in 
     configuration scripts.

@@ -57,7 +57,7 @@ c { begin subroutine
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
       integer nlo_index, nhi_index
@@ -228,14 +228,14 @@ c { begin subroutine
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
       integer index_z(nlo_index:nhi_index)
-      double precision width, width_inner
+      real width, width_inner
       integer nlo_index_outer, nhi_index_outer
       integer nlo_outer_plus, nhi_outer_plus
       integer nlo_outer_minus, nhi_outer_minus
@@ -244,7 +244,7 @@ c { begin subroutine
       integer n_lo(0:level), n_hi(0:level)
       
       integer i,j,k, count, count_outer_minus, count_outer_plus
-      double precision abs_phi_val
+      real abs_phi_val
       integer*1  one, zero
 
 c     get level 0 narrow band points 
@@ -473,10 +473,10 @@ c { begin subroutine
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
-      double precision mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -586,15 +586,15 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer jlo_gb, jhi_gb
       integer klo_gb, khi_gb
-      double precision lse_rhs(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
+      real lse_rhs(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
      &                         klo_gb:khi_gb)
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
      &                     klo_gb:khi_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
       integer index_z(nlo_index:nhi_index)
-      double precision beta, gamma
+      real beta, gamma
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
@@ -604,8 +604,8 @@ c { begin subroutine
       
 c     local variables      
       integer i,j,k,l
-      double precision abs_phi_val, cut_off_coeff
-      double precision tol
+      real abs_phi_val, cut_off_coeff
+      real tol
       parameter (tol=1.d-13)
 
 c     { begin loop over indexed points
@@ -672,8 +672,8 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer jlo_gb, jhi_gb
       integer klo_gb, khi_gb
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
-      double precision mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -736,7 +736,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer jlo_gb, jhi_gb
       integer klo_gb, khi_gb
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)

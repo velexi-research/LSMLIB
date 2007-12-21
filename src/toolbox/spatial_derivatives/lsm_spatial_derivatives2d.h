@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_H
 #define INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -75,24 +77,24 @@ extern "C" {
  *
  */
 void LSM2D_HJ_ENO1(
-  double *phi_x_plus,
-  double *phi_y_plus,
+  LSMLIB_REAL *phi_x_plus,
+  LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,
   const int *jhi_grad_phi_plus_gb,
-  double *phi_x_minus,
-  double *phi_y_minus,
+  LSMLIB_REAL *phi_x_minus,
+  LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,
   const int *jhi_grad_phi_minus_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
@@ -101,8 +103,8 @@ void LSM2D_HJ_ENO1(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*!
@@ -138,29 +140,29 @@ void LSM2D_HJ_ENO1(
  *
  */
 void LSM2D_HJ_ENO2(
-  double *phi_x_plus,
-  double *phi_y_plus,
+  LSMLIB_REAL *phi_x_plus,
+  LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,
   const int *jhi_grad_phi_plus_gb,
-  double *phi_x_minus,
-  double *phi_y_minus,
+  LSMLIB_REAL *phi_x_minus,
+  LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,
   const int *jhi_grad_phi_minus_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
   const int *jhi_D1_gb,
-  double *D2,
+  LSMLIB_REAL *D2,
   const int *ilo_D2_gb,
   const int *ihi_D2_gb,
   const int *jlo_D2_gb,
@@ -169,8 +171,8 @@ void LSM2D_HJ_ENO2(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*!
@@ -207,34 +209,34 @@ void LSM2D_HJ_ENO2(
  *
  */
 void LSM2D_HJ_ENO3(
-  double *phi_x_plus,
-  double *phi_y_plus,
+  LSMLIB_REAL *phi_x_plus,
+  LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,
   const int *jhi_grad_phi_plus_gb,
-  double *phi_x_minus,
-  double *phi_y_minus,
+  LSMLIB_REAL *phi_x_minus,
+  LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,
   const int *jhi_grad_phi_minus_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
   const int *jhi_D1_gb,
-  double *D2,
+  LSMLIB_REAL *D2,
   const int *ilo_D2_gb,
   const int *ihi_D2_gb,
   const int *jlo_D2_gb,
   const int *jhi_D2_gb,
-  double *D3,
+  LSMLIB_REAL *D3,
   const int *ilo_D3_gb,
   const int *ihi_D3_gb,
   const int *jlo_D3_gb,
@@ -243,8 +245,8 @@ void LSM2D_HJ_ENO3(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*!
@@ -278,24 +280,24 @@ void LSM2D_HJ_ENO3(
  *
  */
 void LSM2D_HJ_WENO5(
-  double *phi_x_plus,
-  double *phi_y_plus,
+  LSMLIB_REAL *phi_x_plus,
+  LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,
   const int *jhi_grad_phi_plus_gb,
-  double *phi_x_minus,
-  double *phi_y_minus,
+  LSMLIB_REAL *phi_x_minus,
+  LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,
   const int *jhi_grad_phi_minus_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
@@ -304,8 +306,8 @@ void LSM2D_HJ_WENO5(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -328,24 +330,24 @@ void LSM2D_HJ_WENO5(
  *    cell-centered data
  */
 void LSM2D_UPWIND_HJ_ENO1(
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  const double *vel_x,
-  const double *vel_y,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb,
   const int *ihi_vel_gb,
   const int *jlo_vel_gb,
   const int *jhi_vel_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
@@ -354,8 +356,8 @@ void LSM2D_UPWIND_HJ_ENO1(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -379,29 +381,29 @@ void LSM2D_UPWIND_HJ_ENO1(
  *    cell-centered data
  */
 void LSM2D_UPWIND_HJ_ENO2(
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  const double *vel_x,
-  const double *vel_y,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb,
   const int *ihi_vel_gb,
   const int *jlo_vel_gb,
   const int *jhi_vel_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
   const int *jhi_D1_gb,
-  double *D2,
+  LSMLIB_REAL *D2,
   const int *ilo_D2_gb,
   const int *ihi_D2_gb,
   const int *jlo_D2_gb,
@@ -410,8 +412,8 @@ void LSM2D_UPWIND_HJ_ENO2(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -436,34 +438,34 @@ void LSM2D_UPWIND_HJ_ENO2(
  *    cell-centered data
  */
 void LSM2D_UPWIND_HJ_ENO3(
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  const double *vel_x,
-  const double *vel_y,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb,
   const int *ihi_vel_gb,
   const int *jlo_vel_gb,
   const int *jhi_vel_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
   const int *jhi_D1_gb,
-  double *D2,
+  LSMLIB_REAL *D2,
   const int *ilo_D2_gb,
   const int *ihi_D2_gb,
   const int *jlo_D2_gb,
   const int *jhi_D2_gb,
-  double *D3,
+  LSMLIB_REAL *D3,
   const int *ilo_D3_gb,
   const int *ihi_D3_gb,
   const int *jlo_D3_gb,
@@ -472,8 +474,8 @@ void LSM2D_UPWIND_HJ_ENO3(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -496,24 +498,24 @@ void LSM2D_UPWIND_HJ_ENO3(
  *    cell-centered data
  */
 void LSM2D_UPWIND_HJ_WENO5(
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
   const int *jhi_phi_gb,
-  const double *vel_x,
-  const double *vel_y,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb,
   const int *ihi_vel_gb,
   const int *jlo_vel_gb,
   const int *jhi_vel_gb,
-  double *D1,
+  LSMLIB_REAL *D1,
   const int *ilo_D1_gb,
   const int *ihi_D1_gb,
   const int *jlo_D1_gb,
@@ -522,8 +524,8 @@ void LSM2D_UPWIND_HJ_WENO5(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -548,13 +550,13 @@ void LSM2D_UPWIND_HJ_WENO5(
  * Return value:        none
  */
 void LSM2D_CENTRAL_GRAD_ORDER2( 
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
@@ -563,8 +565,8 @@ void LSM2D_CENTRAL_GRAD_ORDER2(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -590,13 +592,13 @@ void LSM2D_CENTRAL_GRAD_ORDER2(
  * Return value:        none
  */
 void LSM2D_CENTRAL_GRAD_ORDER4( 
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
@@ -605,8 +607,8 @@ void LSM2D_CENTRAL_GRAD_ORDER4(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*! 
@@ -634,12 +636,12 @@ void LSM2D_CENTRAL_GRAD_ORDER4(
  * Return value:            none
  */
 void LSM2D_LAPLACIAN_ORDER2( 
-  double *laplacian_phi,
+  LSMLIB_REAL *laplacian_phi,
   const int *ilo_laplacian_phi_gb,
   const int *ihi_laplacian_phi_gb,
   const int *jlo_laplacian_phi_gb,
   const int *jhi_laplacian_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
@@ -648,8 +650,8 @@ void LSM2D_LAPLACIAN_ORDER2(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 
 /*!
@@ -681,25 +683,25 @@ void LSM2D_LAPLACIAN_ORDER2(
  *
  */
 void LSM2D_PHI_UPWIND_GRAD_F(
-  double *F_x,
-  double *F_y,
+  LSMLIB_REAL *F_x,
+  LSMLIB_REAL *F_y,
   const int *ilo_grad_F_gb,
   const int *ihi_grad_F_gb,
   const int *jlo_grad_F_gb,
   const int *jhi_grad_F_gb,
-  double *F_x_plus,
-  double *F_y_plus,
+  LSMLIB_REAL *F_x_plus,
+  LSMLIB_REAL *F_y_plus,
   const int *ilo_grad_F_plus_gb,
   const int *ihi_grad_F_plus_gb,
   const int *jlo_grad_F_plus_gb,
   const int *jhi_grad_F_plus_gb,
-  double *F_x_minus,
-  double *F_y_minus,
+  LSMLIB_REAL *F_x_minus,
+  LSMLIB_REAL *F_y_minus,
   const int *ilo_grad_F_minus_gb,
   const int *ihi_grad_F_minus_gb,
   const int *jlo_grad_F_minus_gb,
   const int *jhi_grad_F_minus_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb,
   const int *ihi_phi_gb,
   const int *jlo_phi_gb,
@@ -730,20 +732,20 @@ void LSM2D_PHI_UPWIND_GRAD_F(
  * Return value:         none
  */
 void LSM2D_AVERAGE_GRAD_PHI(
-  double *phi_x,
-  double *phi_y,
+  LSMLIB_REAL *phi_x,
+  LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  double *phi_x_plus,
-  double *phi_y_plus,
+  LSMLIB_REAL *phi_x_plus,
+  LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,
   const int *jhi_grad_phi_plus_gb,
-  double *phi_x_minus,
-  double *phi_y_minus,
+  LSMLIB_REAL *phi_x_minus,
+  LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,

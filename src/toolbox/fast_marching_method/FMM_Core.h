@@ -9,6 +9,8 @@
 #ifndef included_FMM_Core_h
 #define included_FMM_Core_h
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -74,20 +76,20 @@ typedef void (*initializeFrontFuncPtr)(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * updateGridPointFuncPtr is a function pointer to one of the callback 
  * functions defined in @ref FMM_Callback_API.h, which must be defined 
  * in order to use the functions in @ref FMM_Core.h.
  */
-typedef double (*updateGridPointFuncPtr)(  
+typedef LSMLIB_REAL (*updateGridPointFuncPtr)(  
   FMM_CoreData *fmm_core_data,
   FMM_FieldData *fmm_field_data,
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 
 /*================== FMM_Core Function Declarations ==================*/
@@ -101,8 +103,8 @@ typedef double (*updateGridPointFuncPtr)(
  *  - num_dims (in):                number of dimensions for FMM computation
  *  - grid_dims (in):               integer array of dimensions of computational
  *                                  grid
- *  - dx (in):                      double array containing grid cell sizes 
- *                                  in each of the coordinate directions
+ *  - dx (in):                      LSMLIB_REAL array containing grid cell 
+ *                                  sizes in each of the coordinate directions
  *  - initializeFront (in):         callback function pointer that is 
  *                                  used to find and initialize the front
  *                                  at the beginning of the FMM algorithm
@@ -133,7 +135,7 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx,
+  LSMLIB_REAL *dx,
   initializeFrontFuncPtr initializeFront,
   updateGridPointFuncPtr updateGridPoint);
 
@@ -186,8 +188,8 @@ void FMM_Core_initializeFront(FMM_CoreData *fmm_core_data);
  *    to the initial front.  Otherwise, the initial front will remain 
  *    empty and the FMM calculation wll yield incorrect results.
  *
- *  - If the value of a grid point is set to DBL_MAX, then it will
- *    be treated as being outside of the domain of the problem.
+ *  - If the value of a grid point is set to LSMLIB_REAL_MAX, then 
+ *    it will be treated as being outside of the domain of the problem.
  *
  *  - It is assumed that the size of the grid_idx array is at least 
  *    equal to the number of spatial dimensions of the problem. 
@@ -196,7 +198,7 @@ void FMM_Core_initializeFront(FMM_CoreData *fmm_core_data);
 void FMM_Core_setInitialFrontPoint(
   FMM_CoreData *fmm_core_data, 
   int *grid_idx, 
-  double value);
+  LSMLIB_REAL value);
 
 /*!
  * FMM_Core_markPointOutsideDomain() sets a grid point as being outside of 

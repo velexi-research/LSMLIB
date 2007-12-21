@@ -50,14 +50,14 @@ c     _ib refers to box to include in norm calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision field1(ilo_field1_gb:ihi_field1_gb,
+      real field1(ilo_field1_gb:ihi_field1_gb,
      &                        jlo_field1_gb:jhi_field1_gb,
      &                        klo_field1_gb:khi_field1_gb)
-      double precision field2(ilo_field2_gb:ihi_field2_gb,
+      real field2(ilo_field2_gb:ihi_field2_gb,
      &                        jlo_field2_gb:jhi_field2_gb,
      &                        klo_field2_gb:khi_field2_gb)
-      double precision max_norm_diff
-      double precision next_diff
+      real max_norm_diff
+      real next_diff
       integer i,j,k
 
 
@@ -113,7 +113,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -123,23 +123,23 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_x(ilo_vel_gb:ihi_vel_gb,
+      real vel_x(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision vel_y(ilo_vel_gb:ihi_vel_gb,
+      real vel_y(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision vel_z(ilo_vel_gb:ihi_vel_gb,
+      real vel_z(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision dx, dy, dz
-      double precision inv_dx, inv_dy, inv_dz
-      double precision cfl_number
+      real dx, dy, dz
+      real inv_dx, inv_dy, inv_dz
+      real cfl_number
       integer i, j, k
-      double precision max_U_over_dX
-      double precision U_over_dX_cur
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_U_over_dX
+      real U_over_dX_cur
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     initialize max_U_over_dX to -1
       max_U_over_dX = -1.0d0
@@ -221,7 +221,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -237,44 +237,44 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_n(ilo_vel_gb:ihi_vel_gb,
+      real vel_n(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision dx,dy,dz
-      double precision inv_dx, inv_dy, inv_dz
-      double precision max_dx_sq
-      double precision cfl_number
+      real dx,dy,dz
+      real inv_dx, inv_dy, inv_dz
+      real max_dx_sq
+      real cfl_number
       integer i,j,k
-      double precision max_H_over_dX
-      double precision H_over_dX_cur
-      double precision phi_x_cur, phi_y_cur, phi_z_cur
-      double precision norm_grad_phi
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_H_over_dX
+      real H_over_dX_cur
+      real phi_x_cur, phi_y_cur, phi_z_cur
+      real norm_grad_phi
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -369,7 +369,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -382,41 +382,41 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_n
-      double precision phi_x_plus(
+      real vel_n
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision dx,dy,dz
-      double precision inv_dx,inv_dy,inv_dz
-      double precision max_dx_sq
-      double precision cfl_number
+      real dx,dy,dz
+      real inv_dx,inv_dy,inv_dz
+      real max_dx_sq
+      real cfl_number
       integer i,j,k
-      double precision max_H_over_dX
-      double precision H_over_dX_cur
-      double precision phi_x_cur, phi_y_cur, phi_z_cur
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_H_over_dX
+      real H_over_dX_cur
+      real phi_x_cur, phi_y_cur, phi_z_cur
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -504,7 +504,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -517,22 +517,22 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx,dy,dz
-      double precision epsilon
+      real dx,dy,dz
+      real epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision one_minus_H
-      double precision dV
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real one_minus_H
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -606,7 +606,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -619,22 +619,22 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision dx,dy,dz
-      double precision epsilon
+      real dx,dy,dz
+      real epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision H
-      double precision dV
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real H
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -712,7 +712,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -728,30 +728,30 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision dx,dy,dz
-      double precision epsilon
-      double precision one_over_epsilon
+      real dx,dy,dz
+      real epsilon
+      real one_over_epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision delta
-      double precision norm_grad_phi
-      double precision dV
-      double precision pi
+      real phi_cur
+      real delta
+      real norm_grad_phi
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
       
 
@@ -849,19 +849,19 @@ c     _ib refers to box to include in norm calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision field1(ilo_field1_gb:ihi_field1_gb,
+      real field1(ilo_field1_gb:ihi_field1_gb,
      &                        jlo_field1_gb:jhi_field1_gb,
      &                        klo_field1_gb:khi_field1_gb)
-      double precision field2(ilo_field2_gb:ihi_field2_gb,
+      real field2(ilo_field2_gb:ihi_field2_gb,
      &                        jlo_field2_gb:jhi_field2_gb,
      &                        klo_field2_gb:khi_field2_gb)
-      double precision control_vol(
+      real control_vol(
      &                        ilo_control_vol_gb:ihi_control_vol_gb,
      &                        jlo_control_vol_gb:jhi_control_vol_gb,
      &                        klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision max_norm_diff
-      double precision next_diff
+      real max_norm_diff
+      real next_diff
       integer i,j,k
 
 
@@ -959,7 +959,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -969,31 +969,31 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_x(ilo_vel_gb:ihi_vel_gb,
+      real vel_x(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision vel_y(ilo_vel_gb:ihi_vel_gb,
+      real vel_y(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision vel_z(ilo_vel_gb:ihi_vel_gb,
+      real vel_z(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
       integer klo_control_vol_gb, khi_control_vol_gb
-      double precision control_vol(
+      real control_vol(
      &                        ilo_control_vol_gb:ihi_control_vol_gb,
      &                        jlo_control_vol_gb:jhi_control_vol_gb,
      &                        klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx, dy, dz
-      double precision inv_dx, inv_dy, inv_dz
-      double precision cfl_number
+      real dx, dy, dz
+      real inv_dx, inv_dy, inv_dz
+      real cfl_number
       integer i, j, k
-      double precision max_U_over_dX
-      double precision U_over_dX_cur
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_U_over_dX
+      real U_over_dX_cur
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     initialize max_U_over_dX to -1
       max_U_over_dX = -1.0d0
@@ -1115,7 +1115,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -1131,52 +1131,52 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_n(ilo_vel_gb:ihi_vel_gb,
+      real vel_n(ilo_vel_gb:ihi_vel_gb,
      &                       jlo_vel_gb:jhi_vel_gb,
      &                       klo_vel_gb:khi_vel_gb)
-      double precision phi_x_plus(
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
       integer klo_control_vol_gb, khi_control_vol_gb
-      double precision control_vol(
+      real control_vol(
      &                        ilo_control_vol_gb:ihi_control_vol_gb,
      &                        jlo_control_vol_gb:jhi_control_vol_gb,
      &                        klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx,dy,dz
-      double precision inv_dx, inv_dy, inv_dz
-      double precision max_dx_sq
-      double precision cfl_number
+      real dx,dy,dz
+      real inv_dx, inv_dy, inv_dz
+      real max_dx_sq
+      real cfl_number
       integer i,j,k
-      double precision max_H_over_dX
-      double precision H_over_dX_cur
-      double precision phi_x_cur, phi_y_cur, phi_z_cur
-      double precision norm_grad_phi
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_H_over_dX
+      real H_over_dX_cur
+      real phi_x_cur, phi_y_cur, phi_z_cur
+      real norm_grad_phi
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -1322,7 +1322,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision dt
+      real dt
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in dt calculation
@@ -1335,49 +1335,49 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision vel_n
-      double precision phi_x_plus(
+      real vel_n
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_y_plus(
+      real phi_y_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_z_plus(
+      real phi_z_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
      &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
      &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_y_minus(
+      real phi_y_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      double precision phi_z_minus(
+      real phi_z_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
      &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
      &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
       integer klo_control_vol_gb, khi_control_vol_gb
-      double precision control_vol(
+      real control_vol(
      &                   ilo_control_vol_gb:ihi_control_vol_gb,
      &                   jlo_control_vol_gb:jhi_control_vol_gb,
      &                   klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx,dy,dz
-      double precision inv_dx,inv_dy,inv_dz
-      double precision max_dx_sq
-      double precision cfl_number
+      real dx,dy,dz
+      real inv_dx,inv_dy,inv_dz
+      real max_dx_sq
+      real cfl_number
       integer i,j,k
-      double precision max_H_over_dX
-      double precision H_over_dX_cur
-      double precision phi_x_cur, phi_y_cur, phi_z_cur
-      double precision small_number
-      parameter (small_number = 1.d-99)
+      real max_H_over_dX
+      real H_over_dX_cur
+      real phi_x_cur, phi_y_cur, phi_z_cur
+      real small_number
+      parameter (small_number = @tiny_nonzero_number@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -1515,7 +1515,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -1531,27 +1531,27 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision control_vol(
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb,
      &                     jlo_control_vol_gb:jhi_control_vol_gb,
      &                     klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx,dy,dz
-      double precision epsilon
+      real dx,dy,dz
+      real epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision one_minus_H
-      double precision dV
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real one_minus_H
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -1674,7 +1674,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -1690,27 +1690,27 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision control_vol(
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb,
      &                     jlo_control_vol_gb:jhi_control_vol_gb,
      &                     klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx,dy,dz
-      double precision epsilon
+      real dx,dy,dz
+      real epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision H
-      double precision dV
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real H
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -1837,7 +1837,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision int_F
+      real int_F
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -1856,35 +1856,35 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
-      double precision F(ilo_F_gb:ihi_F_gb,
+      real F(ilo_F_gb:ihi_F_gb,
      &                   jlo_F_gb:jhi_F_gb,
      &                   klo_F_gb:khi_F_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
      &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
      &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      double precision control_vol(
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb,
      &                     jlo_control_vol_gb:jhi_control_vol_gb,
      &                     klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx,dy,dz
-      double precision epsilon
-      double precision one_over_epsilon
+      real dx,dy,dz
+      real epsilon
+      real one_over_epsilon
       integer i,j,k
-      double precision phi_cur
-      double precision delta
-      double precision norm_grad_phi
-      double precision dV
-      double precision pi
+      real phi_cur
+      real delta
+      real norm_grad_phi
+      real dV
+      real pi
       parameter (pi=3.14159265358979323846d0)
       
 

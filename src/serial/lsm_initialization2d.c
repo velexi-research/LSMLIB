@@ -9,15 +9,15 @@
 #include <math.h>
 #include <stdlib.h>
 #include <float.h>
-
+#include "LSMLIB_config.h"
 #include "lsm_initialization2d.h"
 #include "lsm_macros.h"
 
 
 void createLine(
-  double *phi,
-  double normal_x, double normal_y,
-  double point_x, double point_y,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL normal_x, LSMLIB_REAL normal_y,
+  LSMLIB_REAL point_x, LSMLIB_REAL point_y,
   Grid *grid)
 {
   /* use createIntersectionOfHalfSpaces2d() */
@@ -27,17 +27,17 @@ void createLine(
 
 
 void createIntersectionOfHalfSpaces2d(
-  double* phi, int num_half_spaces,
-  double *normal_x, double *normal_y,
-  double *point_x, double *point_y,
+  LSMLIB_REAL* phi, int num_half_spaces,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
   Grid *grid)
 {
   int    i,j,l;
   int    idx;
-  double x,y;
-  double dot_prod,norm;
-  double max;
-  double signed_dist_to_line;
+  LSMLIB_REAL x,y;
+  LSMLIB_REAL dot_prod,norm;
+  LSMLIB_REAL max;
+  LSMLIB_REAL signed_dist_to_line;
   
   for (j = 0; j < grid->grid_dims_ghostbox[1]; j++)
   {
@@ -47,7 +47,7 @@ void createIntersectionOfHalfSpaces2d(
       x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
       y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
 
-      max = -DBL_MAX;
+      max = -LSMLIB_REAL_MAX;
 
       for (l = 0; l < num_half_spaces; l++)
       { 
@@ -66,9 +66,9 @@ void createIntersectionOfHalfSpaces2d(
 
 
 void createPolyhedron2d(
-  double* phi, int num_sides,
-  double *normal_x, double *normal_y,
-  double *point_x, double *point_y,
+  LSMLIB_REAL* phi, int num_sides,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
   Grid *grid)
 {
   /* use createIntersectionOfHalfSpaces2d() */
@@ -78,9 +78,9 @@ void createPolyhedron2d(
 
 
 void createCircle(
-  double* phi,
-  double center_x, double center_y,
-  double radius,
+  LSMLIB_REAL* phi,
+  LSMLIB_REAL center_x, LSMLIB_REAL center_y,
+  LSMLIB_REAL radius,
   int inside_flag,
   Grid *grid)
 {
@@ -91,18 +91,18 @@ void createCircle(
 
 
 void createIntersectionOfCircles(
-  double *phi, 
+  LSMLIB_REAL *phi, 
   int num_circles,
-  double *center_x, double *center_y,
-  double *radius,
+  LSMLIB_REAL *center_x, LSMLIB_REAL *center_y,
+  LSMLIB_REAL *radius,
   int *inside_flag,
   Grid *grid)
 {
   int    i,j,l;
   int    idx;
-  double x,y;
-  double max;
-  double signed_dist_to_circle;
+  LSMLIB_REAL x,y;
+  LSMLIB_REAL max;
+  LSMLIB_REAL signed_dist_to_circle;
     
     
   for (j = 0; j < (grid->grid_dims_ghostbox)[1]; j++)
@@ -113,7 +113,7 @@ void createIntersectionOfCircles(
       x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
       y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
     
-      max = -DBL_MAX;
+      max = -LSMLIB_REAL_MAX;
 
       for (l = 0; l < num_circles; l++)
       {
@@ -132,11 +132,11 @@ void createIntersectionOfCircles(
 
 
 void createRectangle(
-  double *phi,
-  double corner_x,
-  double corner_y,
-  double side_length_x,
-  double side_length_y,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL corner_x,
+  LSMLIB_REAL corner_y,
+  LSMLIB_REAL side_length_x,
+  LSMLIB_REAL side_length_y,
   int inside_flag,
   Grid *grid)
 {
@@ -149,18 +149,19 @@ void createRectangle(
 
 
 void createIntersectionOfRectangles(
-  double *phi,
+  LSMLIB_REAL *phi,
   int num_rectangles,   
-  double *corner_x, double  *corner_y,
-  double *side_length_x, double *side_length_y,
+  LSMLIB_REAL *corner_x, LSMLIB_REAL  *corner_y,
+  LSMLIB_REAL *side_length_x, LSMLIB_REAL *side_length_y,
   int *inside_flag,
   Grid *grid)
 {   
-  double point_x[4], point_y[4];
-  double normal_x[4], normal_y[4];
+  LSMLIB_REAL point_x[4], point_y[4];
+  LSMLIB_REAL normal_x[4], normal_y[4];
   int i, l, num_planes;
      
-  double  *phi1 = (double *)malloc(grid->num_gridpts*sizeof(double)); 
+  LSMLIB_REAL  *phi1 = 
+    (LSMLIB_REAL *)malloc(grid->num_gridpts*sizeof(LSMLIB_REAL)); 
         
   for(l = 0; l < num_rectangles; l++) {
     /* Each rectangle is the intersection of 4 half spaces */

@@ -76,44 +76,44 @@ c     _fb refers to fill-box
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb,
      &                     klo_rhs_gb:khi_rhs_gb)
-      double precision S(ilo_S_gb:ihi_S_gb,
+      real S(ilo_S_gb:ihi_S_gb,
      &                   jlo_S_gb:jhi_S_gb,
      &                   klo_S_gb:khi_S_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb,
+      real phi(ilo_phi_gb:ihi_phi_gb,
      &                     jlo_phi_gb:jhi_phi_gb,
      &                     klo_phi_gb:khi_phi_gb)
-      double precision S_x_upwind(
+      real S_x_upwind(
      &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
      &                   jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb,
      &                   klo_grad_S_upwind_gb:khi_grad_S_upwind_gb)
-      double precision S_y_upwind(
+      real S_y_upwind(
      &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
      &                   jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb,
      &                   klo_grad_S_upwind_gb:khi_grad_S_upwind_gb)
-      double precision S_z_upwind(
+      real S_z_upwind(
      &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
      &                   jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb,
      &                   klo_grad_S_upwind_gb:khi_grad_S_upwind_gb)
-      double precision signed_normal_x(
+      real signed_normal_x(
      &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
      &                   jlo_signed_normal_gb:jhi_signed_normal_gb,
      &                   klo_signed_normal_gb:khi_signed_normal_gb)
-      double precision signed_normal_y(
+      real signed_normal_y(
      &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
      &                   jlo_signed_normal_gb:jhi_signed_normal_gb,
      &                   klo_signed_normal_gb:khi_signed_normal_gb)
-      double precision signed_normal_z(
+      real signed_normal_z(
      &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
      &                   jlo_signed_normal_gb:jhi_signed_normal_gb,
      &                   klo_signed_normal_gb:khi_signed_normal_gb)
-      double precision dx, dy, dz
+      real dx, dy, dz
       integer i,j,k
-      double precision zero
+      real zero
       parameter (zero=0.0d0)
-      double precision zero_level_set_cutoff
+      real zero_level_set_cutoff
 
 c     set zero_level_set_cutoff to 3*max(dx,dy,dz)
       zero_level_set_cutoff = 3.0d0*max(dx,dy,dz)

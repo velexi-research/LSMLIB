@@ -5,13 +5,14 @@ TO_DO LIST
 * (2005/10/03) (DONE 2005/10/10) Clean up documentation of MEX-code. 
 * (2005/10/03) (DONE 2005/10/09) Add reinitialization/orthogonalization. 
 * (2005/10/03) (DONE 2005/10/09) Add 3D fast marching method calculations. 
-* (2005/10/03) Add second-order fast marching method calculations.
+* (2005/10/03) (DONE 2007/11/03) Add second-order fast marching method 
+  calculations.
 * (2005/10/03) Add standard boundary conditions for level set evolution 
   equation
   - (DONE) periodic
   - (DONE) anti-periodic
-  - neumann
-  - extrapolation
+  - (DONE) neumann
+  - (DONE) extrapolation
 * (2005/10/03) (DONE 2005/12/14) Add extension of fields off of the surface 
   and computation of distance function using PDE based formulation.
 * (2005/10/11) Add verbose mode for LevelSetMethodAlgorithm, 
@@ -40,3 +41,5 @@ TO_DO LIST
 * (2007/07/31) Add documentation 
   - how to set the size of ghostboxes for D1, D2, D3, etc. for computing
     spatial derivatives
+* (2007/08/24) Add AMR for Parallel Package
+* (2007/09/05) Add support for non-convex speed functions.

@@ -10,6 +10,8 @@
 #ifndef included_lsm_grid_h
 #define included_lsm_grid_h
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -44,13 +46,13 @@ typedef struct _Grid {
 
    /* lower and upper geometric limits in each coordinate direction */
    /* for the interior of the computational domain (user specified) */
-   double   x_lo[3];
-   double   x_hi[3];
+   LSMLIB_REAL   x_lo[3];
+   LSMLIB_REAL   x_hi[3];
 
    /* lower and upper geometric limits in each coordinate direction */
    /* for the entire computational grid INCLUDING the ghostcells    */
-   double   x_lo_ghostbox[3]; 
-   double   x_hi_ghostbox[3];
+   LSMLIB_REAL   x_lo_ghostbox[3]; 
+   LSMLIB_REAL   x_hi_ghostbox[3];
 
    /* number of grid points in each coordinate direction for the */
    /* interior of the comptuational domain (user specified)      */ 
@@ -61,7 +63,7 @@ typedef struct _Grid {
    int      grid_dims_ghostbox[3];
 
    /* grid spacing in each coordinate direction */
-   double   dx[3];
+   LSMLIB_REAL   dx[3];
 
    /* total number of gridpoints */  
    int      num_gridpts;
@@ -86,7 +88,7 @@ typedef struct _Grid {
   unsigned char mark_gb, mark_D1, mark_D2, mark_D3, mark_fb;
   
   /* inner and outer narrow band widths (local method) */
-  double beta, gamma;
+  LSMLIB_REAL beta, gamma;
   
   
  } Grid;
@@ -139,8 +141,8 @@ typedef enum { LOW = 0, MEDIUM = 1, HIGH = 2, VERY_HIGH = 3 }
  *
  */
  
-Grid *createGridSetDx(int num_dims, double dx, 
-                      double *x_lo, double *x_hi,
+Grid *createGridSetDx(int num_dims, LSMLIB_REAL dx, 
+                      LSMLIB_REAL *x_lo, LSMLIB_REAL *x_hi,
                       LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 
 
@@ -171,7 +173,7 @@ Grid *createGridSetDx(int num_dims, double dx,
  *
  */
 Grid *createGridSetGridDims(int num_dims, int *grid_dims, 
-                            double *x_lo, double *x_hi,
+                            LSMLIB_REAL *x_lo, LSMLIB_REAL *x_hi,
                             LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 
 /*! 

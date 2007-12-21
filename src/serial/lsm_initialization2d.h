@@ -9,6 +9,8 @@
 #ifndef included_lsm_initialization2d_h
 #define included_lsm_initialization2d_h
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,9 +61,9 @@ extern "C" {
  *
  */
 void createLine(
-  double *phi, 
-  double normal_x, double normal_y,
-  double point_x, double point_y,
+  LSMLIB_REAL *phi, 
+  LSMLIB_REAL normal_x, LSMLIB_REAL normal_y,
+  LSMLIB_REAL point_x, LSMLIB_REAL point_y,
   Grid *grid);
 
 
@@ -102,9 +104,9 @@ void createLine(
  *
  */
 void createIntersectionOfHalfSpaces2d(
-  double *phi, int num_half_spaces,
-  double *normal_x, double *normal_y,
-  double *point_x, double *point_y,
+  LSMLIB_REAL *phi, int num_half_spaces,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
   Grid *grid);
 
 
@@ -146,9 +148,9 @@ void createIntersectionOfHalfSpaces2d(
  *
  */
 void createPolyhedron2d(
-  double *phi, int num_sides,
-  double *normal_x, double *normal_y,
-  double *point_x, double *point_y,
+  LSMLIB_REAL *phi, int num_sides,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
   Grid *grid);
 
 
@@ -177,9 +179,9 @@ void createPolyhedron2d(
  *
  */
 void createCircle(
-  double *phi, 
-  double center_x, double center_y,
-  double radius,
+  LSMLIB_REAL *phi, 
+  LSMLIB_REAL center_x, LSMLIB_REAL center_y,
+  LSMLIB_REAL radius,
   int inside_flag,
   Grid *grid);
 
@@ -219,9 +221,9 @@ void createCircle(
  *
  */
 void createIntersectionOfCircles(
-  double *phi, int num_circles, 
-  double *center_x, double *center_y,
-  double *radius,
+  LSMLIB_REAL *phi, int num_circles, 
+  LSMLIB_REAL *center_x, LSMLIB_REAL *center_y,
+  LSMLIB_REAL *radius,
   int *inside_flag,
   Grid *grid);
 
@@ -262,9 +264,9 @@ void createIntersectionOfCircles(
  *
  */
 void createRectangle(
-  double *phi,
-  double corner_x, double corner_y,
-  double side_length_x, double side_length_y,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL corner_x, LSMLIB_REAL corner_y,
+  LSMLIB_REAL side_length_x, LSMLIB_REAL side_length_y,
   int inside_flag,
   Grid *grid);
 
@@ -308,10 +310,10 @@ void createRectangle(
  *
  */
 void createIntersectionOfRectangles(
-  double *phi,
+  LSMLIB_REAL *phi,
   int num_rectangles,   
-  double *corner_x, double *corner_y,
-  double *side_length_x, double *side_length_y,
+  LSMLIB_REAL *corner_x, LSMLIB_REAL *corner_y,
+  LSMLIB_REAL *side_length_x, LSMLIB_REAL *side_length_y,
   int *inside_flag,
   Grid *grid);
 

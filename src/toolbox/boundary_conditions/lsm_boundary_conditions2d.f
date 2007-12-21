@@ -51,11 +51,11 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
 c     local variables       
       integer i,j
-      double precision dist, slope
+      real dist, slope
 
       if (bdry_location_idx .eq. 0) then
 c     { extrapolate data in x-direction at lower end
@@ -156,13 +156,13 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
 c     local variables       
       integer i,j, zero
       parameter (zero = 0)
-      double precision s, abs_diff, dist, slope
-      double precision one
+      real s, abs_diff, dist, slope
+      real one
       parameter (one = 1.0d0)
 
       if (bdry_location_idx .eq. 0) then
@@ -271,7 +271,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
 c     local variables       
       integer i,j
@@ -367,7 +367,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
       call lsm2dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb,
@@ -410,7 +410,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
       call lsm2dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb,
@@ -453,7 +453,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
       call lsm2dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb,
@@ -496,7 +496,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       
       call lsm2dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb, jlo_gb, jhi_gb,

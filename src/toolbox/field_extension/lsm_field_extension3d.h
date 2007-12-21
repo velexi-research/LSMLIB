@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_FIELD_EXTENSION_3D_H
 #define INCLUDED_LSM_FIELD_EXTENSION_3D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,39 +61,39 @@ extern "C" {
  *
  */
 void LSM3D_COMPUTE_FIELD_EXTENSION_EQN_RHS(
-  double *rhs,
+  LSMLIB_REAL *rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb, 
   const int *jhi_rhs_gb,
   const int *klo_rhs_gb, 
   const int *khi_rhs_gb,
-  const double *S,
+  const LSMLIB_REAL *S,
   const int *ilo_S_gb, 
   const int *ihi_S_gb,
   const int *jlo_S_gb, 
   const int *jhi_S_gb,
   const int *klo_S_gb, 
   const int *khi_S_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
   const int *klo_phi_gb, 
   const int *khi_phi_gb,
-  const double *S_x_upwind, 
-  const double *S_y_upwind, 
-  const double *S_z_upwind, 
+  const LSMLIB_REAL *S_x_upwind, 
+  const LSMLIB_REAL *S_y_upwind, 
+  const LSMLIB_REAL *S_z_upwind, 
   const int *ilo_grad_S_upwind_gb, 
   const int *ihi_grad_S_upwind_gb,
   const int *jlo_grad_S_upwind_gb, 
   const int *jhi_grad_S_upwind_gb,
   const int *klo_grad_S_upwind_gb, 
   const int *khi_grad_S_upwind_gb,
-  const double *signed_normal_x,
-  const double *signed_normal_y,
-  const double *signed_normal_z,
+  const LSMLIB_REAL *signed_normal_x,
+  const LSMLIB_REAL *signed_normal_y,
+  const LSMLIB_REAL *signed_normal_z,
   const int *ilo_signed_normal_gb, 
   const int *ihi_signed_normal_gb,
   const int *jlo_signed_normal_gb, 
@@ -104,9 +106,9 @@ void LSM3D_COMPUTE_FIELD_EXTENSION_EQN_RHS(
   const int *jhi_fb,
   const int *klo_fb, 
   const int *khi_fb,
-  const double *dx,
-  const double *dy,
-  const double *dz);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz);
 
 #ifdef __cplusplus
 }

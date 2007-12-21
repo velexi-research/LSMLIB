@@ -48,6 +48,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
+#include "LSMLIB_config.h"
 #include "FMM_Core.h"
 #include "FMM_Heap.h"
 #include "FMM_Macros.h"
@@ -76,8 +77,8 @@
 
 /*================== lsm_FMM_eikonal Data Structures ================*/
 struct FMM_FieldData {
-  double *phi;                 /* solution to Eikonal equation */
-  double *speed;               /* speed function               */
+  LSMLIB_REAL *phi;         /* solution to Eikonal equation */
+  LSMLIB_REAL *speed;       /* speed function               */
 };
 
 
@@ -93,7 +94,7 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /* 
  * FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1() implements the callback 
@@ -103,13 +104,13 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
  * neighbors that have status "KNOWN" and a first-order accurate 
  * discretization of the gradient operator.
  */
-double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
+LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   FMM_CoreData *fmm_core_data,
   FMM_FieldData *fmm_field_data,
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /* 
  * FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2() implements the callback  
@@ -122,25 +123,25 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
  * an insufficient number of "KNOWN" neighbors, the discretization
  * of the gradient drops to first-order accuracy.
  */
-double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
+LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   FMM_CoreData *fmm_core_data,
   FMM_FieldData *fmm_field_data,
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 
 /*==================== Function Definitions =========================*/
 
 
 int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
-  double *phi,
-  double *speed,
-  double *mask,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *speed,
+  LSMLIB_REAL *mask,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx)
+  LSMLIB_REAL *dx)
 {
   /* fast marching method data */
   FMM_CoreData *fmm_core_data;
@@ -222,18 +223,18 @@ int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
 
       FMM_Core_markPointOutsideDomain(fmm_core_data, grid_idx);
 
-      /* set phi to DBL_MAX (i.e. infinity) */
-      phi[idx] = DBL_MAX;
+      /* set phi to LSMLIB_REAL_MAX (i.e. infinity) */
+      phi[idx] = LSMLIB_REAL_MAX;
     }
 
     /* grid points with a non-positive speed are taken to */
     /* be outside of the mathemtatical/physical domain    */
-    if (speed[idx] < LSM_FMM_ZERO_TOL) {
+    if (speed[idx] < LSMLIB_ZERO_TOL) {
 
       FMM_Core_markPointOutsideDomain(fmm_core_data, grid_idx);
 
-      /* speed is zero, so set phi to be DBL_MAX (i.e. infinity) */
-      phi[idx] = DBL_MAX;
+      /* speed is zero, so set phi to be LSMLIB_REAL_MAX (i.e. infinity) */
+      phi[idx] = LSMLIB_REAL_MAX;
     }
 
   } /* end loop over grid to mark points outside of domain */ 
@@ -258,10 +259,10 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx)
+  LSMLIB_REAL *dx)
 {
   /* FMM Field Data variables */
-  double *phi   = fmm_field_data->phi;
+  LSMLIB_REAL *phi   = fmm_field_data->phi;
 
   /* auxilliary variables */
   int num_gridpoints;
@@ -294,7 +295,7 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
     }
 
     /* set grid points on the initial front */
-    if (phi[idx] > -LSM_FMM_ZERO_TOL) {
+    if (phi[idx] > -LSMLIB_ZERO_TOL) {
 
       /* the value for phi(i,j) has already been provided */
       FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx,
@@ -306,34 +307,34 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
 }
 
 
-double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
+LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   FMM_CoreData *fmm_core_data,
   FMM_FieldData *fmm_field_data,
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx)
+  LSMLIB_REAL *dx)
 {
   int *gridpoint_status = FMM_Core_getGridPointStatusDataArray(fmm_core_data);
 
   /* FMM Field Data variables */
-  double *phi   = fmm_field_data->phi; 
-  double *speed = fmm_field_data->speed;
+  LSMLIB_REAL *phi   = fmm_field_data->phi; 
+  LSMLIB_REAL *speed = fmm_field_data->speed;
 
   /* variables used in phi update */
   PointStatus neighbor_status;
-  double phi_upwind;
-  double phi_plus;
-  double inv_dx_sq; 
+  LSMLIB_REAL phi_upwind;
+  LSMLIB_REAL phi_plus;
+  LSMLIB_REAL inv_dx_sq; 
   int offset[FMM_NDIM]; 
   int neighbor[FMM_NDIM];
 
   /* coefficients of quadratic equation for phi */
-  double phi_A = 0;
-  double phi_B = 0;
-  double phi_C = 0;
-  double discriminant;
-  double phi_updated;
+  LSMLIB_REAL phi_A = 0;
+  LSMLIB_REAL phi_B = 0;
+  LSMLIB_REAL phi_C = 0;
+  LSMLIB_REAL discriminant;
+  LSMLIB_REAL phi_updated;
 
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
@@ -356,7 +357,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
     }
 
     /* find "upwind" direction and phi value */
-    phi_upwind = DBL_MAX;
+    phi_upwind = LSMLIB_REAL_MAX;
 
     /* check minus direction */
     offset[dir] = -1;
@@ -400,7 +401,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
     /*
      * accumulate coefficients for phi if any of the neighbors are "KNOWN"
      */
-    if (phi_upwind < DBL_MAX) {
+    if (phi_upwind < LSMLIB_REAL_MAX) {
       /* accumulate coefs for phi */ 
       inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq; 
       phi_A += inv_dx_sq;
@@ -414,7 +415,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   if (LSM_FMM_ABS(phi_A) == 0) {
     fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
     fprintf(stderr,"       phi set to 'infinity'.\n");
-    return DBL_MAX;
+    return LSMLIB_REAL_MAX;
   }
 
   /* complete computation of phi_B and phi_C */
@@ -423,7 +424,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
 
   /* compute phi by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
-  phi_updated = DBL_MAX;
+  phi_updated = LSMLIB_REAL_MAX;
   if (discriminant >= 0) {
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
   } else {
@@ -444,37 +445,37 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
 }
 
 
-double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
+LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   FMM_CoreData *fmm_core_data,
   FMM_FieldData *fmm_field_data,
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx)
+  LSMLIB_REAL *dx)
 {
   int *gridpoint_status = FMM_Core_getGridPointStatusDataArray(fmm_core_data);
 
   /* FMM Field Data variables */
-  double *phi   = fmm_field_data->phi; 
-  double *speed = fmm_field_data->speed;
+  LSMLIB_REAL *phi   = fmm_field_data->phi; 
+  LSMLIB_REAL *speed = fmm_field_data->speed;
 
   /* variables used in phi update */
   PointStatus neighbor_status;
-  double phi_upwind1, phi_upwind2;
-  double phi_plus;
+  LSMLIB_REAL phi_upwind1, phi_upwind2;
+  LSMLIB_REAL phi_plus;
   int second_order_switch;
-  double inv_dx_sq; 
+  LSMLIB_REAL inv_dx_sq; 
   int offset[FMM_NDIM]; 
   int neighbor1[FMM_NDIM];
   int neighbor2[FMM_NDIM];
 
   /* coefficients of quadratic equation for phi */
-  double phi_A = 0;
-  double phi_B = 0;
-  double phi_C = 0;
-  double discriminant;
-  double phi_updated;
-  double max_dx;
+  LSMLIB_REAL phi_A = 0;
+  LSMLIB_REAL phi_B = 0;
+  LSMLIB_REAL phi_C = 0;
+  LSMLIB_REAL discriminant;
+  LSMLIB_REAL phi_updated;
+  LSMLIB_REAL max_dx;
 
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
@@ -496,9 +497,9 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
       offset[l] = 0; 
     }
 
-    /* reset phi_upwind1 and phi_upwind2 to DBL_MAX */
-    phi_upwind1 = DBL_MAX;
-    phi_upwind2 = DBL_MAX;
+    /* reset phi_upwind1 and phi_upwind2 to LSMLIB_REAL_MAX */
+    phi_upwind1 = LSMLIB_REAL_MAX;
+    phi_upwind2 = LSMLIB_REAL_MAX;
 
     /* reset second_order_switch to 0 (i.e. assume there are not enough */
     /* KNOWN neighbors for second-order discretization.                 */
@@ -555,7 +556,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind1)) {
           phi_upwind1 = phi_plus;
-          phi_upwind2 = DBL_MAX;
+          phi_upwind2 = LSMLIB_REAL_MAX;
           second_order_switch = 0;
 
           /* check for neighbor required for second-order accuracy */
@@ -578,10 +579,10 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
     /*
      * accumulate coefficients for phi if any of the neighbors are "KNOWN"
      */
-    if (phi_upwind1 < DBL_MAX) {
+    if (phi_upwind1 < LSMLIB_REAL_MAX) {
       /* temporary variables */
-      double one_plus_switch_over_two = 1.0+0.5*second_order_switch;
-      double phi_upwind_contrib;
+      LSMLIB_REAL one_plus_switch_over_two = 1.0+0.5*second_order_switch;
+      LSMLIB_REAL phi_upwind_contrib;
 
       /* set phi_upwind_contrib to be first- or second-order */
       /* contribution based on value of second_order_switch  */
@@ -604,7 +605,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   if (LSM_FMM_ABS(phi_A) == 0) {
     fprintf(stderr,"ERROR: phi update - no KNOWN neighbors!!!\n");
     fprintf(stderr,"       phi set to 'infinity'.\n");
-    return DBL_MAX;
+    return LSMLIB_REAL_MAX;
   }
 
   /* complete computation of phi_B and phi_C */
@@ -613,7 +614,7 @@ double FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
 
   /* compute phi by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
-  phi_updated = DBL_MAX;
+  phi_updated = LSMLIB_REAL_MAX;
   max_dx = dx[0];
   for (dir = 1; dir < FMM_NDIM; dir++) {
     max_dx = (max_dx > dx[dir]) ? max_dx : dx[dir];

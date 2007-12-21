@@ -9,6 +9,8 @@
 #ifndef included_fast_marching_method_h
 #define included_fast_marching_method_h
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -112,15 +114,15 @@ extern "C" {
  *
  */
 int computeExtensionFields2d(
-  double *distance_function,
-  double **extension_fields,
-  double *phi,
-  double *mark,
-  double **source_fields,
+  LSMLIB_REAL *distance_function,
+  LSMLIB_REAL **extension_fields,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *mark,
+  LSMLIB_REAL **source_fields,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * computeDistanceFunction2d uses the FMM algorithm to compute the 
@@ -166,12 +168,12 @@ int computeExtensionFields2d(
  *
  */
 int computeDistanceFunction2d(
-  double *distance_function,
-  double *phi,
-  double *mark,
+  LSMLIB_REAL *distance_function,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *mark,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * solveEikonalEquation2d uses the FMM algorithm to solve the Eikonal
@@ -228,7 +230,7 @@ int computeDistanceFunction2d(
  *    negative values for phi.
  *
  *  - For grid points that are masked out or have speed equal to zero, phi 
- *    is set to DBL_MAX.
+ *    is set to LSMLIB_REAL_MAX.
  *
  *  - It is assumed that the phi, speed, and mask data arrays are all of 
  *    the same size.  That is, all data fields are assumed to have the 
@@ -243,12 +245,12 @@ int computeDistanceFunction2d(
  *
  */
 int solveEikonalEquation2d(
-  double *phi,
-  double *speed,
-  double *mask,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *speed,
+  LSMLIB_REAL *mask,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * computeExtensionFields3d uses the FMM algorithm to compute the 
@@ -313,15 +315,15 @@ int solveEikonalEquation2d(
  *
  */
 int computeExtensionFields3d(
-  double *distance_function,
-  double **extension_fields,
-  double *phi,
-  double *mask,
-  double **source_fields,
+  LSMLIB_REAL *distance_function,
+  LSMLIB_REAL **extension_fields,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *mask,
+  LSMLIB_REAL **source_fields,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * computeDistanceFunction3d uses the FMM algorithm to compute the 
@@ -367,12 +369,12 @@ int computeExtensionFields3d(
  *
  */
 int computeDistanceFunction3d(
-  double *distance_function,
-  double *phi,
-  double *mask,
+  LSMLIB_REAL *distance_function,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *mask,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * solveEikonalEquation3d uses the FMM algorithm to solve the Eikonal
@@ -429,7 +431,7 @@ int computeDistanceFunction3d(
  *    negative values for phi.
  *
  *  - For grid points that are masked out or have speed equal to zero, phi 
- *    is set to DBL_MAX.
+ *    is set to LSMLIB_REAL_MAX.
  *
  *  - It is assumed that the phi, speed, and mask data arrays are all of 
  *    the same size.  That is, all data fields are assumed to have the 
@@ -444,12 +446,12 @@ int computeDistanceFunction3d(
  *
  */
 int solveEikonalEquation3d(
-  double *phi,
-  double *speed,
-  double *mask,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL *speed,
+  LSMLIB_REAL *mask,
   int spatial_discretization_order,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 #ifdef __cplusplus
 }

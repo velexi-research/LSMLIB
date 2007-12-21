@@ -9,14 +9,15 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
+#include "LSMLIB_config.h"
 #include "lsm_initialization3d.h"
 #include "lsm_macros.h"
 
 
 void createPlane(
-  double *phi, 
-  double normal_x, double normal_y, double normal_z,
-  double point_x, double point_y, double point_z,
+  LSMLIB_REAL *phi, 
+  LSMLIB_REAL normal_x, LSMLIB_REAL normal_y, LSMLIB_REAL normal_z,
+  LSMLIB_REAL point_x, LSMLIB_REAL point_y, LSMLIB_REAL point_z,
   Grid *grid)
 {
   /* use createIntersectionOfHalfSpaces3d() */
@@ -29,18 +30,18 @@ void createPlane(
 
 
 void createIntersectionOfHalfSpaces3d(
-  double *phi, 
+  LSMLIB_REAL *phi, 
   int num_half_spaces,
-  double *normal_x, double *normal_y, double *normal_z,
-  double *point_x, double *point_y, double *point_z,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y, LSMLIB_REAL *normal_z,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y, LSMLIB_REAL *point_z,
   Grid *grid)
 {
   int    i, j, k, l;
   int    idx, nxy;
-  double x, y, z;
-  double dot_prod, norm;
-  double max;
-  double signed_dist_to_plane;
+  LSMLIB_REAL x, y, z;
+  LSMLIB_REAL dot_prod, norm;
+  LSMLIB_REAL max;
+  LSMLIB_REAL signed_dist_to_plane;
   
   nxy = grid->grid_dims_ghostbox[0]*grid->grid_dims_ghostbox[1];
   for (k = 0; k < grid->grid_dims_ghostbox[2]; k++)
@@ -53,7 +54,7 @@ void createIntersectionOfHalfSpaces3d(
         x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
-        max = -DBL_MAX;
+        max = -LSMLIB_REAL_MAX;
 
         for (l = 0; l < num_half_spaces; l++)
         { 
@@ -77,10 +78,10 @@ void createIntersectionOfHalfSpaces3d(
 
 
 void createPolyhedron3d(
-  double *phi, 
+  LSMLIB_REAL *phi, 
   int num_planes,
-  double *normal_x, double *normal_y, double *normal_z,
-  double *point_x, double *point_y, double *point_z,
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y, LSMLIB_REAL *normal_z,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y, LSMLIB_REAL *point_z,
   Grid *grid)
 {
   /* use createIntersectionOfHalfSpaces3d() */
@@ -93,11 +94,11 @@ void createPolyhedron3d(
 
 
 void createSphere(
-  double   *phi,
-  double   center_x,
-  double   center_y,
-  double   center_z,
-  double   radius,
+  LSMLIB_REAL   *phi,
+  LSMLIB_REAL   center_x,
+  LSMLIB_REAL   center_y,
+  LSMLIB_REAL   center_z,
+  LSMLIB_REAL   radius,
   int      inside_flag,
   Grid     *grid)
 {
@@ -111,20 +112,20 @@ void createSphere(
 
 
 void createIntersectionOfSpheres(
-  double   *phi,
+  LSMLIB_REAL   *phi,
   int       num_spheres,
-  double   *center_x,
-  double   *center_y,
-  double   *center_z,
-  double   *radius,
+  LSMLIB_REAL   *center_x,
+  LSMLIB_REAL   *center_y,
+  LSMLIB_REAL   *center_z,
+  LSMLIB_REAL   *radius,
   int      *inside_flag,
   Grid     *grid)
 {
   int    i, j, k, l;
   int    idx, nx, nxy;
-  double x, y, z;
-  double max;
-  double signed_dist_to_sphere;
+  LSMLIB_REAL x, y, z;
+  LSMLIB_REAL max;
+  LSMLIB_REAL signed_dist_to_sphere;
   
   nx = (grid->grid_dims_ghostbox)[0];
   nxy = (grid->grid_dims_ghostbox)[0]*(grid->grid_dims_ghostbox)[1];
@@ -140,7 +141,7 @@ void createIntersectionOfSpheres(
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
     
-        max = -DBL_MAX;
+        max = -LSMLIB_REAL_MAX;
 
         for (l = 0; l < num_spheres; l++)
         {
@@ -163,14 +164,14 @@ void createIntersectionOfSpheres(
 
 
 void createCylinder(
-  double *phi,
-  double  tangent_x,
-  double  tangent_y,
-  double  tangent_z,
-  double  point_x,
-  double  point_y,
-  double  point_z,
-  double  radius,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL  tangent_x,
+  LSMLIB_REAL  tangent_y,
+  LSMLIB_REAL  tangent_z,
+  LSMLIB_REAL  point_x,
+  LSMLIB_REAL  point_y,
+  LSMLIB_REAL  point_z,
+  LSMLIB_REAL  radius,
   int     inside_flag,
   Grid    *grid)
 {
@@ -186,15 +187,15 @@ void createCylinder(
 
 
 void createIntersectionOfCylinders(
-  double   *phi,
+  LSMLIB_REAL   *phi,
   int       num_cylinders,
-  double   *tangent_x,
-  double   *tangent_y,
-  double   *tangent_z,
-  double   *point_x,
-  double   *point_y,
-  double   *point_z,
-  double   *radius,
+  LSMLIB_REAL   *tangent_x,
+  LSMLIB_REAL   *tangent_y,
+  LSMLIB_REAL   *tangent_z,
+  LSMLIB_REAL   *point_x,
+  LSMLIB_REAL   *point_y,
+  LSMLIB_REAL   *point_z,
+  LSMLIB_REAL   *radius,
   int      *inside_flag,
   Grid     *grid)
 {
@@ -209,19 +210,19 @@ void createIntersectionOfCylinders(
     {
       for (i = 0; i < (grid->grid_dims_ghostbox)[0]; i++) 
       {
-        double  x, y, z, max;
+        LSMLIB_REAL  x, y, z, max;
         int idx = i+j*nx + k*nxy;
 
         x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
     
-        max = -DBL_MAX;
+        max = -LSMLIB_REAL_MAX;
         for (l = 0; l < num_cylinders; l++)
         {
-          double signed_dist_to_cylinder;
-          double norm_sq_x_minus_p;
-          double x_minus_p_dot_tangent;
+          LSMLIB_REAL signed_dist_to_cylinder;
+          LSMLIB_REAL norm_sq_x_minus_p;
+          LSMLIB_REAL x_minus_p_dot_tangent;
 
           norm_sq_x_minus_p = (x - point_x[l])*(x - point_x[l])
                             + (y - point_y[l])*(y - point_y[l])
@@ -253,15 +254,15 @@ void createIntersectionOfCylinders(
 
 
 void createHyperboloid(
-  double *phi,
-  double  tangent_x,
-  double  tangent_y,
-  double  tangent_z,
-  double  center_x,
-  double  center_y,
-  double  center_z,
-  double  alpha,
-  double  beta,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL  tangent_x,
+  LSMLIB_REAL  tangent_y,
+  LSMLIB_REAL  tangent_z,
+  LSMLIB_REAL  center_x,
+  LSMLIB_REAL  center_y,
+  LSMLIB_REAL  center_z,
+  LSMLIB_REAL  alpha,
+  LSMLIB_REAL  beta,
   int     inside_flag,
   Grid    *grid)
 {
@@ -277,10 +278,10 @@ void createHyperboloid(
 
 
 void createIntersectionOfHyperboloids(
-  double *phi, int num_hyperboloids,
-  double *tangent_x, double *tangent_y, double *tangent_z,
-  double *center_x, double *center_y, double *center_z,
-  double *alpha, double *beta,
+  LSMLIB_REAL *phi, int num_hyperboloids,
+  LSMLIB_REAL *tangent_x, LSMLIB_REAL *tangent_y, LSMLIB_REAL *tangent_z,
+  LSMLIB_REAL *center_x, LSMLIB_REAL *center_y, LSMLIB_REAL *center_z,
+  LSMLIB_REAL *alpha, LSMLIB_REAL *beta,
   int *inside_flag,
   Grid *grid)
 {
@@ -295,20 +296,20 @@ void createIntersectionOfHyperboloids(
     {
       for (i = 0; i < (grid->grid_dims_ghostbox)[0]; i++) 
       {
-        double  x, y, z, max;
+        LSMLIB_REAL  x, y, z, max;
         int idx = i+j*nx + k*nxy;
 
         x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
       
-        max = -DBL_MAX;
+        max = -LSMLIB_REAL_MAX;
         for (l = 0; l < num_hyperboloids; l++)
         {
-          double level_set_function_value;
-          double norm_sq_x_minus_center;
-          double dist_to_axis;
-          double dist_along_axis;
+          LSMLIB_REAL level_set_function_value;
+          LSMLIB_REAL norm_sq_x_minus_center;
+          LSMLIB_REAL dist_to_axis;
+          LSMLIB_REAL dist_along_axis;
 
           norm_sq_x_minus_center = (x - center_x[l])*(x - center_x[l])
                                  + (y - center_y[l])*(y - center_y[l])
@@ -344,15 +345,15 @@ void createIntersectionOfHyperboloids(
 
 
 void createCone(
-  double *phi,
-  double  tangent_x,
-  double  tangent_y,
-  double  tangent_z,
-  double  center_x,
-  double  center_y,
-  double  center_z,
-  double  alpha,
-  double  beta,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL  tangent_x,
+  LSMLIB_REAL  tangent_y,
+  LSMLIB_REAL  tangent_z,
+  LSMLIB_REAL  center_x,
+  LSMLIB_REAL  center_y,
+  LSMLIB_REAL  center_z,
+  LSMLIB_REAL  alpha,
+  LSMLIB_REAL  beta,
   int     inside_flag,
   Grid    *grid)
 {
@@ -368,10 +369,10 @@ void createCone(
 
 
 void createIntersectionOfCones(
-  double *phi, int num_cones,
-  double *tangent_x, double *tangent_y, double *tangent_z,
-  double *center_x, double *center_y, double *center_z,
-  double *alpha, double *beta,
+  LSMLIB_REAL *phi, int num_cones,
+  LSMLIB_REAL *tangent_x, LSMLIB_REAL *tangent_y, LSMLIB_REAL *tangent_z,
+  LSMLIB_REAL *center_x, LSMLIB_REAL *center_y, LSMLIB_REAL *center_z,
+  LSMLIB_REAL *alpha, LSMLIB_REAL *beta,
   int *inside_flag,
   Grid *grid)
 {
@@ -386,20 +387,20 @@ void createIntersectionOfCones(
     {
       for (i = 0; i < (grid->grid_dims_ghostbox)[0]; i++) 
       {
-        double  x, y, z, max;
+        LSMLIB_REAL  x, y, z, max;
         int idx = i+j*nx + k*nxy;
 
         x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
       
-        max = -DBL_MAX;
+        max = -LSMLIB_REAL_MAX;
         for (l = 0; l < num_cones; l++)
         {
-          double level_set_function_value;
-          double norm_sq_x_minus_center;
-          double dist_to_axis;
-          double dist_along_axis;
+          LSMLIB_REAL level_set_function_value;
+          LSMLIB_REAL norm_sq_x_minus_center;
+          LSMLIB_REAL dist_to_axis;
+          LSMLIB_REAL dist_along_axis;
 
           norm_sq_x_minus_center = (x - center_x[l])*(x - center_x[l])
                                  + (y - center_y[l])*(y - center_y[l])
@@ -435,9 +436,11 @@ void createIntersectionOfCones(
 
 
 void createCuboid(
-  double *phi,
-  double corner_x, double corner_y, double corner_z,
-  double side_length_x, double side_length_y, double side_length_z,
+  LSMLIB_REAL *phi,
+  LSMLIB_REAL corner_x, LSMLIB_REAL corner_y, LSMLIB_REAL corner_z,
+  LSMLIB_REAL side_length_x, 
+  LSMLIB_REAL side_length_y, 
+  LSMLIB_REAL side_length_z,
   int inside_flag,
   Grid *grid)
 {
@@ -451,18 +454,21 @@ void createCuboid(
 
 
 void createIntersectionOfCuboids(
-  double *phi,
+  LSMLIB_REAL *phi,
   int num_cuboids,   
-  double *corner_x, double *corner_y, double *corner_z,
-  double *side_length_x, double *side_length_y, double *side_length_z,
+  LSMLIB_REAL *corner_x, LSMLIB_REAL *corner_y, LSMLIB_REAL *corner_z,
+  LSMLIB_REAL *side_length_x, 
+  LSMLIB_REAL *side_length_y, 
+  LSMLIB_REAL *side_length_z,
   int *inside_flag,
   Grid *grid)
 {   
-  double  point_x[6], point_y[6], point_z[6];
-  double  normal_x[6], normal_y[6], normal_z[6];
+  LSMLIB_REAL  point_x[6], point_y[6], point_z[6];
+  LSMLIB_REAL  normal_x[6], normal_y[6], normal_z[6];
   int     i, l, num_planes;
      
-  double  *phi1 = (double *)malloc(grid->num_gridpts*sizeof(double)); 
+  LSMLIB_REAL  *phi1 = 
+    (LSMLIB_REAL *)malloc(grid->num_gridpts*sizeof(LSMLIB_REAL)); 
         
   for(l = 0; l < num_cuboids; l++)
   {

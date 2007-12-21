@@ -23,11 +23,11 @@
 
 #include "lsm_data_arrays.h"
 
-#define DSZ  sizeof(double)
+#define DSZ  sizeof(LSMLIB_REAL)
 #define ISZ  sizeof(int)
 #define UCSZ sizeof(unsigned char)
 
-#define LSMLIB_SERIAL_dummy_pointer        ((double*)(-1))
+#define LSMLIB_SERIAL_dummy_pointer        ((LSMLIB_REAL*)(-1))
 #define LSMLIB_SERIAL_dummy_pointer_int    ((int*)(-1))
 #define LSMLIB_SERIAL_dummy_pointer_uchar  ((unsigned char*)(-1))
 
@@ -109,119 +109,119 @@ void  allocateMemoryForLSMDataArrays(
   */
         
   if( lsm_data_arrays->phi == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->phi = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
     
   if( lsm_data_arrays->phi_stage1  == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->phi_stage1 = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_stage1 = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
   
   if( lsm_data_arrays->phi_stage2  == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->phi_stage2 = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_stage2 = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
   
   if( lsm_data_arrays->phi_next  == LSMLIB_SERIAL_dummy_pointer ) 
-    lsm_data_arrays->phi_next = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_next = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
   
   if( lsm_data_arrays->phi0  == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->phi0 = (double*) calloc(grid->num_gridpts,DSZ);  
+    lsm_data_arrays->phi0 = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);  
   
   if( lsm_data_arrays->phi_prev  == LSMLIB_SERIAL_dummy_pointer ) 
-    lsm_data_arrays->phi_prev = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_prev = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
     
   if( lsm_data_arrays->mask  == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->mask = (double*) calloc(grid->num_gridpts,DSZ);  
+    lsm_data_arrays->mask = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);  
     
   if( lsm_data_arrays->lse_rhs  == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->lse_rhs = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->lse_rhs = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
         
   if( lsm_data_arrays->phi_x_plus  == LSMLIB_SERIAL_dummy_pointer ) 
-    lsm_data_arrays->phi_x_plus  = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_x_plus  = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
    
   if( lsm_data_arrays->phi_x_minus  == LSMLIB_SERIAL_dummy_pointer )     
-    lsm_data_arrays->phi_x_minus = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_x_minus = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
     
   if( lsm_data_arrays->phi_x  == LSMLIB_SERIAL_dummy_pointer )     
-    lsm_data_arrays->phi_x = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_x = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
      
   if( lsm_data_arrays->phi_y_plus  == LSMLIB_SERIAL_dummy_pointer )      
-    lsm_data_arrays->phi_y_plus  = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_y_plus  = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   
   if( lsm_data_arrays->phi_y_minus  == LSMLIB_SERIAL_dummy_pointer )     
-    lsm_data_arrays->phi_y_minus = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_y_minus = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   
   if( lsm_data_arrays->phi_y  == LSMLIB_SERIAL_dummy_pointer )     
-    lsm_data_arrays->phi_y = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->phi_y = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   
   if(grid->num_dims == 3)
   {
       if( lsm_data_arrays->phi_z_plus  == LSMLIB_SERIAL_dummy_pointer )
-        lsm_data_arrays->phi_z_plus  = (double*) malloc(grid->num_gridpts*DSZ);
+        lsm_data_arrays->phi_z_plus  = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
       
       if( lsm_data_arrays->phi_z_minus  == LSMLIB_SERIAL_dummy_pointer )	    
-        lsm_data_arrays->phi_z_minus = (double*) malloc(grid->num_gridpts*DSZ);
+        lsm_data_arrays->phi_z_minus = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
      
       if( lsm_data_arrays->phi_z  == LSMLIB_SERIAL_dummy_pointer )	    
-        lsm_data_arrays->phi_z = (double*) malloc(grid->num_gridpts*DSZ);
+        lsm_data_arrays->phi_z = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   }
   else
   {
-     lsm_data_arrays->phi_z_plus = (double *)NULL;
-     lsm_data_arrays->phi_z_minus = (double *)NULL;
-     lsm_data_arrays->phi_z = (double *)NULL;
+     lsm_data_arrays->phi_z_plus = (LSMLIB_REAL *)NULL;
+     lsm_data_arrays->phi_z_minus = (LSMLIB_REAL *)NULL;
+     lsm_data_arrays->phi_z = (LSMLIB_REAL *)NULL;
   }
   
   if( lsm_data_arrays->phi_xx  == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->phi_xx = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_xx = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
     
   if( lsm_data_arrays->phi_xy  == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->phi_xy = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_xy = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
     
   if( lsm_data_arrays->phi_yy  == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->phi_yy = (double*) calloc(grid->num_gridpts,DSZ);
+    lsm_data_arrays->phi_yy = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
   
   if(grid->num_dims == 3)
   {
      if( lsm_data_arrays->phi_zz  == LSMLIB_SERIAL_dummy_pointer )
-       lsm_data_arrays->phi_zz = (double*) calloc(grid->num_gridpts,DSZ);
+       lsm_data_arrays->phi_zz = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
      
      if( lsm_data_arrays->phi_xz  == LSMLIB_SERIAL_dummy_pointer )
-       lsm_data_arrays->phi_xz = (double*) calloc(grid->num_gridpts,DSZ);
+       lsm_data_arrays->phi_xz = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
      
      if( lsm_data_arrays->phi_yz  == LSMLIB_SERIAL_dummy_pointer )
-       lsm_data_arrays->phi_yz = (double*) calloc(grid->num_gridpts,DSZ);
+       lsm_data_arrays->phi_yz = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
   }
   else
   {
-     lsm_data_arrays->phi_zz = (double *)NULL;
-     lsm_data_arrays->phi_xz = (double *)NULL;
-     lsm_data_arrays->phi_yz = (double *)NULL;
+     lsm_data_arrays->phi_zz = (LSMLIB_REAL *)NULL;
+     lsm_data_arrays->phi_xz = (LSMLIB_REAL *)NULL;
+     lsm_data_arrays->phi_yz = (LSMLIB_REAL *)NULL;
   }
   
   if( lsm_data_arrays->normal_velocity  == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->normal_velocity = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->normal_velocity = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   
   if( lsm_data_arrays->external_velocity_x  == LSMLIB_SERIAL_dummy_pointer )  
     lsm_data_arrays->external_velocity_x = 
-      (double*) malloc(grid->num_gridpts*DSZ);
+      (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
    
   if( lsm_data_arrays->external_velocity_y  == LSMLIB_SERIAL_dummy_pointer )  
     lsm_data_arrays->external_velocity_y = 
-      (double*) malloc(grid->num_gridpts*DSZ);
+      (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
     
   if(grid->num_dims == 3)
   {
     if( lsm_data_arrays->external_velocity_z  == LSMLIB_SERIAL_dummy_pointer )  
       lsm_data_arrays->external_velocity_z = 
-        (double*) malloc(grid->num_gridpts*DSZ);	
+        (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);	
   }
-  else lsm_data_arrays->external_velocity_z = (double *)NULL;
+  else lsm_data_arrays->external_velocity_z = (LSMLIB_REAL *)NULL;
   
   if (lsm_data_arrays->D1 == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->D1 = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->D1 = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
   
   if (lsm_data_arrays->D2 == LSMLIB_SERIAL_dummy_pointer )  
-    lsm_data_arrays->D2 = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->D2 = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
    
   if (lsm_data_arrays->D3 == LSMLIB_SERIAL_dummy_pointer )
-    lsm_data_arrays->D3 = (double*) malloc(grid->num_gridpts*DSZ);
+    lsm_data_arrays->D3 = (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
         
   if( lsm_data_arrays->narrow_band == LSMLIB_SERIAL_dummy_pointer_uchar )  
     lsm_data_arrays->narrow_band = (unsigned char*) malloc(grid->num_gridpts*UCSZ);
@@ -299,7 +299,7 @@ void  freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_data_arrays)
 }
    
 
-void writeDataArray(double *data, Grid *grid, char *file_name)
+void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name)
 {
    FILE *fp;
    
@@ -315,11 +315,11 @@ void writeDataArray(double *data, Grid *grid, char *file_name)
 }
 
 
-double *readDataArray(int *grid_dims_ghostbox,char *file_name)
+LSMLIB_REAL *readDataArray(int *grid_dims_ghostbox,char *file_name)
 {
    FILE *fp;
    int  num_gridpts;
-   double *data;
+   LSMLIB_REAL *data;
    
    fp = fopen(file_name,"r");
 
@@ -329,7 +329,7 @@ double *readDataArray(int *grid_dims_ghostbox,char *file_name)
    /* allocate memory for data array */ 
    num_gridpts = grid_dims_ghostbox[0] * grid_dims_ghostbox[1]
                * grid_dims_ghostbox[2];
-   data = (double *) malloc(num_gridpts*DSZ);
+   data = (LSMLIB_REAL *) malloc(num_gridpts*DSZ);
 
    /* read data array */ 
    fread(data, DSZ, num_gridpts, fp);
@@ -340,7 +340,7 @@ double *readDataArray(int *grid_dims_ghostbox,char *file_name)
 }
 
 
-void writeDataArray1d(double *data, int num_elements, char *file_name)
+void writeDataArray1d(LSMLIB_REAL *data, int num_elements, char *file_name)
 {
    FILE *fp;
    
@@ -356,10 +356,10 @@ void writeDataArray1d(double *data, int num_elements, char *file_name)
 }
 
 
-double *readDataArray1d(int *num_elements, char *file_name)
+LSMLIB_REAL *readDataArray1d(int *num_elements, char *file_name)
 {
    FILE *fp;
-   double *data;
+   LSMLIB_REAL *data;
    
    fp = fopen(file_name,"r");
 
@@ -367,7 +367,7 @@ double *readDataArray1d(int *num_elements, char *file_name)
    fread(num_elements, sizeof(int), 1, fp); 
    
    /* allocate memory for data*/
-   data = (double *)malloc((*num_elements)*DSZ);
+   data = (LSMLIB_REAL *)malloc((*num_elements)*DSZ);
 
    /* read data array */
    fread(data ,DSZ, *num_elements, fp);

@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_FIELD_EXTENSION_1D_H
 #define INCLUDED_LSM_FIELD_EXTENSION_1D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,24 +61,24 @@ extern "C" {
  *
  */
 void LSM1D_COMPUTE_FIELD_EXTENSION_EQN_RHS(
-  double *rhs,
+  LSMLIB_REAL *rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb,
-  const double *S,
+  const LSMLIB_REAL *S,
   const int *ilo_S_gb, 
   const int *ihi_S_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
-  const double *S_x_upwind, 
+  const LSMLIB_REAL *S_x_upwind, 
   const int *ilo_grad_S_upwind_gb, 
   const int *ihi_grad_S_upwind_gb,
-  const double *signed_normal_x,
+  const LSMLIB_REAL *signed_normal_x,
   const int *ilo_signed_normal_gb, 
   const int *ihi_signed_normal_gb,
   const int *ilo_fb, 
   const int *ihi_fb,
-  const double *dx);
+  const LSMLIB_REAL *dx);
 
 #ifdef __cplusplus
 }

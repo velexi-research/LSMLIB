@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_REINITIALIZATION_2D_H
 #define INCLUDED_LSM_REINITIALIZATION_2D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,29 +70,29 @@ extern "C" {
  *
  */
 void LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS(
-  double *reinit_rhs,
+  LSMLIB_REAL *reinit_rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb, 
   const int *jlo_rhs_gb, 
   const int *jhi_rhs_gb,
-  const double* phi,
+  const LSMLIB_REAL* phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb, 
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
-  const double* phi0,
+  const LSMLIB_REAL* phi0,
   const int *ilo_phi0_gb, 
   const int *ihi_phi0_gb, 
   const int *jlo_phi0_gb, 
   const int *jhi_phi0_gb,
-  const double *phi_x_plus, 
-  const double *phi_y_plus,
+  const LSMLIB_REAL *phi_x_plus, 
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,   
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,   
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus, 
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus, 
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,   
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,   
@@ -99,8 +101,8 @@ void LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS(
   const int *ihi_fb,
   const int *jlo_fb,   
   const int *jhi_fb,
-  const double *dx, 
-  const double *dy,
+  const LSMLIB_REAL *dx, 
+  const LSMLIB_REAL *dy,
   const int *use_phi0_for_sgn);
 
 
@@ -139,36 +141,36 @@ void LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS(
  *  Return value:             none
  */
 void LSM2D_COMPUTE_ORTHOGONALIZATION_EQN_RHS(
-  double *ortho_rhs,
+  LSMLIB_REAL *ortho_rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb, 
   const int *jlo_rhs_gb, 
   const int *jhi_rhs_gb,
-  const double *phi_x_plus, 
-  const double *phi_y_plus,
+  const LSMLIB_REAL *phi_x_plus, 
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb,   
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb,   
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus, 
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus, 
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb,   
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb,   
   const int *jhi_grad_phi_minus_gb,
-  const double* psi,
+  const LSMLIB_REAL* psi,
   const int *ilo_psi_gb, 
   const int *ihi_psi_gb, 
   const int *jlo_psi_gb, 
   const int *jhi_psi_gb,
-  const double *psi_x_plus, 
-  const double *psi_y_plus,
+  const LSMLIB_REAL *psi_x_plus, 
+  const LSMLIB_REAL *psi_y_plus,
   const int *ilo_grad_psi_plus_gb,   
   const int *ihi_grad_psi_plus_gb,
   const int *jlo_grad_psi_plus_gb,   
   const int *jhi_grad_psi_plus_gb,
-  const double *psi_x_minus, 
-  const double *psi_y_minus,
+  const LSMLIB_REAL *psi_x_minus, 
+  const LSMLIB_REAL *psi_y_minus,
   const int *ilo_grad_psi_minus_gb,   
   const int *ihi_grad_psi_minus_gb,
   const int *jlo_grad_psi_minus_gb,   
@@ -177,8 +179,8 @@ void LSM2D_COMPUTE_ORTHOGONALIZATION_EQN_RHS(
   const int *ihi_fb,
   const int *jlo_fb,   
   const int *jhi_fb,
-  const double *dx, 
-  const double *dy);
+  const LSMLIB_REAL *dx, 
+  const LSMLIB_REAL *dy);
 
 #ifdef __cplusplus
 }

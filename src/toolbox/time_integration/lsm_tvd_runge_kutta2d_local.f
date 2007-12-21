@@ -46,11 +46,11 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
@@ -64,7 +64,7 @@ c { begin subroutine
       
 c     local variables      
       integer i,j,l     
-      double precision dt
+      real dt
      
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
@@ -136,13 +136,13 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
-      double precision dt
+      real dt
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -230,15 +230,15 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
-      double precision dt
+      real dt
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -321,13 +321,13 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
-      double precision dt
+      real dt
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -414,15 +414,15 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
      &                          jlo_u_stage2_gb:jhi_u_stage2_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb,
      &                          jlo_u_stage1_gb:jhi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
-      double precision dt
+      real dt
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -509,15 +509,15 @@ c { begin subroutine
       integer jlo_u_cur_gb, jhi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer jlo_rhs_gb, jhi_rhs_gb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb,
+      real u_next(ilo_u_next_gb:ihi_u_next_gb,
      &                        jlo_u_next_gb:jhi_u_next_gb)
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb,
      &                          jlo_u_stage2_gb:jhi_u_stage2_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb,
      &                       jlo_u_cur_gb:jhi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb,
+      real rhs(ilo_rhs_gb:ihi_rhs_gb,
      &                     jlo_rhs_gb:jhi_rhs_gb)
-      double precision dt
+      real dt
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -528,7 +528,7 @@ c { begin subroutine
       integer*1 mark_fb
       
       integer i,j,l
-      double precision one_third, two_thirds
+      real one_third, two_thirds
       parameter (one_third = 1.d0/3.d0)
       parameter (two_thirds = 2.d0/3.d0)
 

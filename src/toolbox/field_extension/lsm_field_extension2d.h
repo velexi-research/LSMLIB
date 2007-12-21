@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_FIELD_EXTENSION_2D_H
 #define INCLUDED_LSM_FIELD_EXTENSION_2D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,29 +61,29 @@ extern "C" {
  *
  */
 void LSM2D_COMPUTE_FIELD_EXTENSION_EQN_RHS(
-  double *rhs,
+  LSMLIB_REAL *rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb, 
   const int *jhi_rhs_gb,
-  const double *S,
+  const LSMLIB_REAL *S,
   const int *ilo_S_gb, 
   const int *ihi_S_gb,
   const int *jlo_S_gb, 
   const int *jhi_S_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
-  const double *S_x_upwind, 
-  const double *S_y_upwind, 
+  const LSMLIB_REAL *S_x_upwind, 
+  const LSMLIB_REAL *S_y_upwind, 
   const int *ilo_grad_S_upwind_gb, 
   const int *ihi_grad_S_upwind_gb,
   const int *jlo_grad_S_upwind_gb, 
   const int *jhi_grad_S_upwind_gb,
-  const double *signed_normal_x,
-  const double *signed_normal_y,
+  const LSMLIB_REAL *signed_normal_x,
+  const LSMLIB_REAL *signed_normal_y,
   const int *ilo_signed_normal_gb, 
   const int *ihi_signed_normal_gb,
   const int *jlo_signed_normal_gb, 
@@ -90,8 +92,8 @@ void LSM2D_COMPUTE_FIELD_EXTENSION_EQN_RHS(
   const int *ihi_fb,
   const int *jlo_fb, 
   const int *jhi_fb,
-  const double *dx,
-  const double *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 #ifdef __cplusplus
 }

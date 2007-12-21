@@ -49,11 +49,11 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
 c     local variables       
       integer i
-      double precision dist, slope
+      real dist, slope
 
 c     lower end extrapolation   
       if (bdry_location_idx .eq. 0) then
@@ -110,12 +110,12 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
 c     local variables       
       integer i
-      double precision s, abs_diff, dist, slope
-      double precision one
+      real s, abs_diff, dist, slope
+      real one
       parameter (one = 1.0d0)
 
 c     lower end extrapolation   
@@ -176,7 +176,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
 c     local variables       
       integer i
@@ -232,7 +232,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
       call lsm1dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb,
@@ -275,7 +275,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
       call lsm1dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb,
@@ -318,7 +318,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
       call lsm1dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb,
@@ -361,7 +361,7 @@ c { begin subroutine
       integer ilo_gb, ihi_gb
       integer ilo_fb, ihi_fb
       integer bdry_location_idx
-      double precision phi(ilo_gb:ihi_gb)
+      real phi(ilo_gb:ihi_gb)
       
       call lsm1dCopyExtrapolation(phi,
      &        ilo_gb, ihi_gb,

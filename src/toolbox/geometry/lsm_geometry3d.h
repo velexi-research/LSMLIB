@@ -10,6 +10,8 @@
 #ifndef INCLUDED_LSM_GEOMETRY_3D_H
 #define INCLUDED_LSM_GEOMETRY_3D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,18 +66,18 @@ extern "C" {
  *
  */
 void LSM3D_COMPUTE_UNIT_NORMAL(
-  double *normal_x,
-  double *normal_y,
-  double *normal_z,
+  LSMLIB_REAL *normal_x,
+  LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *normal_z,
   const int *ilo_normal_gb, 
   const int *ihi_normal_gb,
   const int *jlo_normal_gb, 
   const int *jhi_normal_gb,
   const int *klo_normal_gb, 
   const int *khi_normal_gb,
-  const double *phi_x,
-  const double *phi_y,
-  const double *phi_z,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
@@ -117,25 +119,25 @@ void LSM3D_COMPUTE_UNIT_NORMAL(
  *
  */
 void LSM3D_COMPUTE_SIGNED_UNIT_NORMAL(
-  double *normal_x,
-  double *normal_y,
-  double *normal_z,
+  LSMLIB_REAL *normal_x,
+  LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *normal_z,
   const int *ilo_normal_gb, 
   const int *ihi_normal_gb,
   const int *jlo_normal_gb, 
   const int *jhi_normal_gb,
   const int *klo_normal_gb, 
   const int *khi_normal_gb,
-  const double *phi_x,
-  const double *phi_y,
-  const double *phi_z,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
   const int *jhi_grad_phi_gb,
   const int *klo_grad_phi_gb, 
   const int *khi_grad_phi_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
@@ -148,9 +150,9 @@ void LSM3D_COMPUTE_SIGNED_UNIT_NORMAL(
   const int *jhi_fb,
   const int *klo_fb, 
   const int *khi_fb,
-  const double *dx,
-  const double *dy,
-  const double *dz);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz);
 
 
 /*!
@@ -170,8 +172,8 @@ void LSM3D_COMPUTE_SIGNED_UNIT_NORMAL(
  *
  */
 void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
@@ -184,10 +186,10 @@ void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 /*! 
@@ -207,8 +209,8 @@ void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO(
  *
  */
 void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
@@ -221,10 +223,10 @@ void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -246,17 +248,17 @@ void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO(
  *
  */
 void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET(
-  double *surface_area,
-  const double *phi,
+  LSMLIB_REAL *surface_area,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
   const int *klo_phi_gb, 
   const int *khi_phi_gb,
-  const double *phi_x,
-  const double *phi_y,
-  const double *phi_z,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
@@ -269,10 +271,10 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -298,15 +300,15 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET(
  *
  */
 void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
   const int *klo_phi_gb, 
   const int *khi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -320,10 +322,10 @@ void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 /*! 
@@ -349,15 +351,15 @@ void LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
  *
  */
 void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
-  double *volume,
-  const double *phi,
+  LSMLIB_REAL *volume,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
   const int *klo_phi_gb, 
   const int *khi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -371,10 +373,10 @@ void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -402,24 +404,24 @@ void LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
  *
  */
 void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
-  double *surface_area,
-  const double *phi,
+  LSMLIB_REAL *surface_area,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
   const int *klo_phi_gb, 
   const int *khi_phi_gb,
-  const double *phi_x,
-  const double *phi_y,
-  const double *phi_z,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
   const int *jhi_grad_phi_gb,
   const int *klo_grad_phi_gb, 
   const int *khi_grad_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -433,10 +435,10 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
   const int *jhi_ib,
   const int *klo_ib, 
   const int *khi_ib,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *epsilon);
 
 
 
@@ -484,14 +486,14 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
  *
  */
 int LSM3D_findLineInTetrahedron(
-  double *endpt1,
-  double *endpt2,
-  const double *x1,
-  const double *x2,
-  const double *x3,
-  const double *x4,
-  const double *phi,
-  const double *psi);
+  LSMLIB_REAL *endpt1,
+  LSMLIB_REAL *endpt2,
+  const LSMLIB_REAL *x1,
+  const LSMLIB_REAL *x2,
+  const LSMLIB_REAL *x3,
+  const LSMLIB_REAL *x4,
+  const LSMLIB_REAL *phi,
+  const LSMLIB_REAL *psi);
 
 #ifdef __cplusplus
 }

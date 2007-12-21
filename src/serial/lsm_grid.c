@@ -45,13 +45,13 @@ static int lsmlib_num_ghostcells[] = {2,3,5,4};
 
 Grid *createGridSetDx(
       int    num_dims,
-      double dx,
-      double *x_lo,
-      double *x_hi,
+      LSMLIB_REAL dx,
+      LSMLIB_REAL *x_lo,
+      LSMLIB_REAL *x_hi,
       LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy)
 {
   int     i;
-  double  diff;
+  LSMLIB_REAL  diff;
 
   Grid    *g;
   
@@ -112,8 +112,8 @@ Grid *createGridSetDx(
 Grid *createGridSetGridDims(
   int     num_dims,
   int    *grid_dims,
-  double *x_lo,
-  double *x_hi,
+  LSMLIB_REAL *x_lo,
+  LSMLIB_REAL *x_hi,
   LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy)
 {
   Grid    *g;
@@ -532,13 +532,13 @@ void writeGridToBinaryFile(Grid *grid, char *file_name)
   fp = fopen(file_name,"w");
 
   fwrite(&(grid->num_dims), sizeof(int), 1, fp);
-  fwrite(grid->x_lo, sizeof(double), 3, fp);
-  fwrite(grid->x_hi, sizeof(double), 3, fp);
-  fwrite(grid->x_lo_ghostbox, sizeof(double), 3, fp);
-  fwrite(grid->x_hi_ghostbox, sizeof(double), 3, fp);
+  fwrite(grid->x_lo, sizeof(LSMLIB_REAL), 3, fp);
+  fwrite(grid->x_hi, sizeof(LSMLIB_REAL), 3, fp);
+  fwrite(grid->x_lo_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
+  fwrite(grid->x_hi_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
   fwrite(grid->grid_dims, sizeof(int), 3, fp); 
   fwrite(grid->grid_dims_ghostbox, sizeof(int), 3, fp); 
-  fwrite(grid->dx, sizeof(double), 3, fp);
+  fwrite(grid->dx, sizeof(LSMLIB_REAL), 3, fp);
   fwrite(&(grid->num_gridpts), sizeof(int), 1, fp);
 
   fwrite(&(grid->ilo_gb), sizeof(int), 1, fp);
@@ -583,8 +583,8 @@ void writeGridToBinaryFile(Grid *grid, char *file_name)
   fwrite(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
   fwrite(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
   
-  fwrite(&(grid->beta),   sizeof(double), 1, fp);
-  fwrite(&(grid->gamma),  sizeof(double), 1, fp);
+  fwrite(&(grid->beta),   sizeof(LSMLIB_REAL), 1, fp);
+  fwrite(&(grid->gamma),  sizeof(LSMLIB_REAL), 1, fp);
   
   fclose(fp);
 }
@@ -600,13 +600,13 @@ Grid *readGridFromBinaryFile(char *file_name)
   grid = allocateGrid();
 
   fread(&(grid->num_dims), sizeof(int), 1, fp);
-  fread(grid->x_lo, sizeof(double), 3, fp);
-  fread(grid->x_hi, sizeof(double), 3, fp);
-  fread(grid->x_lo_ghostbox, sizeof(double), 3, fp);
-  fread(grid->x_hi_ghostbox, sizeof(double), 3, fp);
+  fread(grid->x_lo, sizeof(LSMLIB_REAL), 3, fp);
+  fread(grid->x_hi, sizeof(LSMLIB_REAL), 3, fp);
+  fread(grid->x_lo_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
+  fread(grid->x_hi_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
   fread(grid->grid_dims, sizeof(int), 3, fp); 
   fread(grid->grid_dims_ghostbox, sizeof(int), 3, fp); 
-  fread(grid->dx, sizeof(double), 3, fp);
+  fread(grid->dx, sizeof(LSMLIB_REAL), 3, fp);
   fread(&(grid->num_gridpts), sizeof(int), 1, fp);
 
   fread(&(grid->ilo_gb), sizeof(int), 1, fp);
@@ -651,8 +651,8 @@ Grid *readGridFromBinaryFile(char *file_name)
   fread(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
   fread(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
   
-  fread(&(grid->beta),   sizeof(double), 1, fp);
-  fread(&(grid->gamma),  sizeof(double), 1, fp);
+  fread(&(grid->beta),   sizeof(LSMLIB_REAL), 1, fp);
+  fread(&(grid->gamma),  sizeof(LSMLIB_REAL), 1, fp);
   
   fclose(fp);
   

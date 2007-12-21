@@ -1,3 +1,11 @@
+/*
+ * File:        lsm_tvd_runge_kutta2d_local.h
+ * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Revision:    $Revision: 1.8 $
+ * Modified:    $Date: 2006/05/18 23:20:20 $
+ * Description: Header file for Fortran 77 2D narrow-band TVD Runge-Kutta 
+ *              routines
+ */
 
 #ifndef INCLUDED_LSM_TVD_RUNGE_KUTTA_2D_LOCAL_H
 #define INCLUDED_LSM_TVD_RUNGE_KUTTA_2D_LOCAL_H
@@ -16,27 +24,29 @@
 #define LSM2D_TVD_RK3_STAGE2_LOCAL                lsm2dtvdrk3stage2local_
 #define LSM2D_TVD_RK3_STAGE3_LOCAL                lsm2dtvdrk3stage3local_
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void LSM2D_RK1_STEP_LOCAL(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
   const int *jlo_u_next_gb,
   const int *jhi_u_next_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,
@@ -50,22 +60,22 @@ void LSM2D_RK1_STEP_LOCAL(
 
 
 void LSM2D_TVD_RK2_STAGE1_LOCAL(
-  double *u_stage1,
+  LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
   const int *jlo_u_stage1_gb,
   const int *jhi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,
@@ -79,27 +89,27 @@ void LSM2D_TVD_RK2_STAGE1_LOCAL(
 
 
 void LSM2D_TVD_RK2_STAGE2_LOCAL(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
   const int *jlo_u_next_gb,
   const int *jhi_u_next_gb,
-  const double *u_stage1,
+  const LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
   const int *jlo_u_stage1_gb,
   const int *jhi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,
@@ -113,22 +123,22 @@ void LSM2D_TVD_RK2_STAGE2_LOCAL(
   
   
   void LSM2D_TVD_RK3_STAGE1_LOCAL(
-  double *u_stage1,
+  LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
   const int *jlo_u_stage1_gb,
   const int *jhi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,
@@ -142,27 +152,27 @@ void LSM2D_TVD_RK2_STAGE2_LOCAL(
   
   
   void LSM2D_TVD_RK3_STAGE2_LOCAL(
-  double *u_stage2,
+  LSMLIB_REAL *u_stage2,
   const int *ilo_u_stage2_gb,
   const int *ihi_u_stage2_gb,
   const int *jlo_u_stage2_gb,
   const int *jhi_u_stage2_gb,
-  const double *u_stage1,
+  const LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
   const int *jlo_u_stage1_gb,
   const int *jhi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,
@@ -175,27 +185,27 @@ void LSM2D_TVD_RK2_STAGE2_LOCAL(
   const unsigned char *mark_fb);
   
   void LSM2D_TVD_RK3_STAGE3_LOCAL(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
   const int *jlo_u_next_gb,
   const int *jhi_u_next_gb,
-  const double *u_stage2,
+  const LSMLIB_REAL *u_stage2,
   const int *ilo_u_stage2_gb,
   const int *ihi_u_stage2_gb,
   const int *jlo_u_stage2_gb,
   const int *jhi_u_stage2_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
   const int *jlo_u_cur_gb,
   const int *jhi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *jlo_rhs_gb,
   const int *jhi_rhs_gb,
-  const double *dt,
+  const LSMLIB_REAL *dt,
   const int *index_x,
   const int *index_y,
   const int *nlo_index,

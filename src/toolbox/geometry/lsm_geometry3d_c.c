@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include <float.h>
+#include "LSMLIB_config.h"
 #include "lsm_geometry3d.h"
 
 /* MACROS */
@@ -56,19 +57,19 @@
                                     p_ref_x, p_ref_y, p_ref_z,           \
                                     edge_x, edge_y, edge_z )             \
 {                                                                        \
-  double p1_minus_p_ref_x = (p1_x) - (p_ref_x);                          \
-  double p1_minus_p_ref_y = (p1_y) - (p_ref_y);                          \
-  double p1_minus_p_ref_z = (p1_z) - (p_ref_z);                          \
-  double p2_minus_p_ref_x = (p2_x) - (p_ref_x);                          \
-  double p2_minus_p_ref_y = (p2_y) - (p_ref_y);                          \
-  double p2_minus_p_ref_z = (p2_z) - (p_ref_z);                          \
+  LSMLIB_REAL p1_minus_p_ref_x = (p1_x) - (p_ref_x);                          \
+  LSMLIB_REAL p1_minus_p_ref_y = (p1_y) - (p_ref_y);                          \
+  LSMLIB_REAL p1_minus_p_ref_z = (p1_z) - (p_ref_z);                          \
+  LSMLIB_REAL p2_minus_p_ref_x = (p2_x) - (p_ref_x);                          \
+  LSMLIB_REAL p2_minus_p_ref_y = (p2_y) - (p_ref_y);                          \
+  LSMLIB_REAL p2_minus_p_ref_z = (p2_z) - (p_ref_z);                          \
                                                                          \
-  double cross1_x, cross1_y, cross1_z;                                   \
-  double cross2_x, cross2_y, cross2_z;                                   \
-  double norm_p1_minus_p_ref_sq;                                         \
-  double norm_p2_minus_p_ref_sq;                                         \
+  LSMLIB_REAL cross1_x, cross1_y, cross1_z;                                   \
+  LSMLIB_REAL cross2_x, cross2_y, cross2_z;                                   \
+  LSMLIB_REAL norm_p1_minus_p_ref_sq;                                         \
+  LSMLIB_REAL norm_p2_minus_p_ref_sq;                                         \
                                                                          \
-  double edge_len_sq;                                                    \
+  LSMLIB_REAL edge_len_sq;                                                    \
                                                                          \
   norm_p1_minus_p_ref_sq = p1_minus_p_ref_x*p1_minus_p_ref_x             \
                          + p1_minus_p_ref_y*p1_minus_p_ref_y             \
@@ -83,7 +84,7 @@
   if (    (norm_p1_minus_p_ref_sq > LSM_GEOM_3D_ZERO_TOL)                \
        && (norm_p2_minus_p_ref_sq > LSM_GEOM_3D_ZERO_TOL) ) {            \
                                                                          \
-    double norm_cross_1_sq, norm_cross_2_sq;                             \
+    LSMLIB_REAL norm_cross_1_sq, norm_cross_2_sq;                             \
                                                                          \
     LSM_GEOM_3D_CROSS(cross1_x, cross1_y, cross1_z,                      \
       p1_minus_p_ref_x, p1_minus_p_ref_y, p1_minus_p_ref_z,              \
@@ -120,48 +121,48 @@
 
 /* LSM3D_findLineInTetrahedron() */
 int LSM3D_findLineInTetrahedron(
-  double *endpt1,
-  double *endpt2,
-  const double *x1,
-  const double *x2,
-  const double *x3,
-  const double *x4,
-  const double *phi,
-  const double *psi)
+  LSMLIB_REAL *endpt1,
+  LSMLIB_REAL *endpt2,
+  const LSMLIB_REAL *x1,
+  const LSMLIB_REAL *x2,
+  const LSMLIB_REAL *x3,
+  const LSMLIB_REAL *x4,
+  const LSMLIB_REAL *phi,
+  const LSMLIB_REAL *psi)
 {
   /* number of intersections of {phi = 0,psi = 0} line with tetrahedron */
   int count = 0;
 
   /* coefficients for linear approximation to phi and psi */
-  double alpha_0, alpha_1, alpha_2, alpha_3;
-  double beta_0, beta_1, beta_2, beta_3;
+  LSMLIB_REAL alpha_0, alpha_1, alpha_2, alpha_3;
+  LSMLIB_REAL beta_0, beta_1, beta_2, beta_3;
 
   /* matrix for computing linear approximation to phi and psi */
-  double X11, X12, X13, X14;
-  double X21, X22, X23, X24;
-  double X31, X32, X33, X34;
-  double X41, X42, X43, X44;
+  LSMLIB_REAL X11, X12, X13, X14;
+  LSMLIB_REAL X21, X22, X23, X24;
+  LSMLIB_REAL X31, X32, X33, X34;
+  LSMLIB_REAL X41, X42, X43, X44;
 
   /* RHS values for linear system used to solve for alpha and beta */
-  double rhs_alpha_1, rhs_alpha_2, rhs_alpha_3, rhs_alpha_4;
-  double rhs_beta_1, rhs_beta_2, rhs_beta_3, rhs_beta_4;
+  LSMLIB_REAL rhs_alpha_1, rhs_alpha_2, rhs_alpha_3, rhs_alpha_4;
+  LSMLIB_REAL rhs_beta_1, rhs_beta_2, rhs_beta_3, rhs_beta_4;
 
   /* Householder reflection variables */
-  double norm, inv_norm_sq;
-  double inner_product_with_V;  /* V is the Householder reflection vector */
+  LSMLIB_REAL norm, inv_norm_sq;
+  LSMLIB_REAL inner_product_with_V;  /* V is the Householder reflection vector */
 
   /* {phi = 0, psi = 0} line variables */
-  double x_on_line, y_on_line, z_on_line;
-  double line_dir_x, line_dir_y, line_dir_z;
+  LSMLIB_REAL x_on_line, y_on_line, z_on_line;
+  LSMLIB_REAL line_dir_x, line_dir_y, line_dir_z;
 
   /* variables for computing intersection of {phi=0,psi=0} line with faces */
-  double vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z;
-  double vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z;
-  double vector_in_plane_3_x, vector_in_plane_3_y, vector_in_plane_3_z;
-  double normal_x, normal_y, normal_z, plane_constant;
-  double normal_dot_line;
-  double intersect_coef_max = -DBL_MAX;
-  double intersect_coef_min = DBL_MAX;
+  LSMLIB_REAL vector_in_plane_1_x, vector_in_plane_1_y, vector_in_plane_1_z;
+  LSMLIB_REAL vector_in_plane_2_x, vector_in_plane_2_y, vector_in_plane_2_z;
+  LSMLIB_REAL vector_in_plane_3_x, vector_in_plane_3_y, vector_in_plane_3_z;
+  LSMLIB_REAL normal_x, normal_y, normal_z, plane_constant;
+  LSMLIB_REAL normal_dot_line;
+  LSMLIB_REAL intersect_coef_max = -LSMLIB_REAL_MAX;
+  LSMLIB_REAL intersect_coef_min =  LSMLIB_REAL_MAX;
 
 
   /* check that {phi = 0,psi = 0} line intersects the tetrahedron */
@@ -380,8 +381,8 @@ int LSM3D_findLineInTetrahedron(
 
     } else {  /* case: line exists and is parallel to x-axis */
 
-      double abs_alpha_2 = LSM_GEOM_3D_ABS(alpha_2);
-      double abs_beta_2 = LSM_GEOM_3D_ABS(beta_2);
+      LSMLIB_REAL abs_alpha_2 = LSM_GEOM_3D_ABS(alpha_2);
+      LSMLIB_REAL abs_beta_2 = LSM_GEOM_3D_ABS(beta_2);
 
       x_on_line = 0.0;  /* arbitrarily take x_on_line to be 0.0 */
 
@@ -389,7 +390,7 @@ int LSM3D_findLineInTetrahedron(
       /* elimination with partial pivoting                 */
       if (abs_alpha_2 > abs_beta_2) {
 
-        double elimination_factor = beta_2/alpha_2;
+        LSMLIB_REAL elimination_factor = beta_2/alpha_2;
 
         /* beta_2 = 0.0;   no need to actually set beta_2 since it  */
         /*                 is not used.                             */
@@ -401,7 +402,7 @@ int LSM3D_findLineInTetrahedron(
 
       } else {       
 
-        double elimination_factor = alpha_2/beta_2;
+        LSMLIB_REAL elimination_factor = alpha_2/beta_2;
 
         /* alpha_2 = 0.0;   no need to actually set alpha_2 since it  */
         /*                  is not used.                              */
@@ -416,14 +417,14 @@ int LSM3D_findLineInTetrahedron(
 
   } else {     /* case: line not parallel to x-axis */
 
-    double abs_alpha_1 = LSM_GEOM_3D_ABS(alpha_1);
-    double abs_beta_1 = LSM_GEOM_3D_ABS(beta_1);
+    LSMLIB_REAL abs_alpha_1 = LSM_GEOM_3D_ABS(alpha_1);
+    LSMLIB_REAL abs_beta_1 = LSM_GEOM_3D_ABS(beta_1);
 
     /* solve for a point on the {phi = 0, psi = 0} line and its     */
     /* direction using Gaussian elimination with partial pivoting   */
     if (abs_alpha_1 > abs_beta_1) {   /* case: abs(alpha_1) > abs(beta_1) */
 
-      double elimination_factor = beta_1/alpha_1;
+      LSMLIB_REAL elimination_factor = beta_1/alpha_1;
 
       /* beta_1 = 0.0;   no need to actually set beta_1 since it  */
       /*                 is not used.                             */
@@ -457,7 +458,7 @@ int LSM3D_findLineInTetrahedron(
 
     } else {   /* case: abs(alpha_1) <= abs(beta_1) */
 
-      double elimination_factor = alpha_1/beta_1;
+      LSMLIB_REAL elimination_factor = alpha_1/beta_1;
 
       /* alpha_1 = 0.0;   no need to actually set alpha_1 since it  */
       /*                  is not used.                              */
@@ -532,12 +533,12 @@ int LSM3D_findLineInTetrahedron(
   if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
-    double intersect_coef = -(plane_constant + normal_x*x_on_line 
+    LSMLIB_REAL intersect_coef = -(plane_constant + normal_x*x_on_line 
       + normal_y*y_on_line + normal_z*z_on_line)/normal_dot_line;
 
-    double x_intersect = x_on_line + intersect_coef*line_dir_x;
-    double y_intersect = y_on_line + intersect_coef*line_dir_y;
-    double z_intersect = z_on_line + intersect_coef*line_dir_z;
+    LSMLIB_REAL x_intersect = x_on_line + intersect_coef*line_dir_x;
+    LSMLIB_REAL y_intersect = y_on_line + intersect_coef*line_dir_y;
+    LSMLIB_REAL z_intersect = z_on_line + intersect_coef*line_dir_z;
 
 
     /* check if point is in the interior of face using point in    */
@@ -630,12 +631,12 @@ int LSM3D_findLineInTetrahedron(
   if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
-    double intersect_coef = -(plane_constant + normal_x*x_on_line 
+    LSMLIB_REAL intersect_coef = -(plane_constant + normal_x*x_on_line 
       + normal_y*y_on_line + normal_z*z_on_line)/normal_dot_line;
 
-    double x_intersect = x_on_line + intersect_coef*line_dir_x;
-    double y_intersect = y_on_line + intersect_coef*line_dir_y;
-    double z_intersect = z_on_line + intersect_coef*line_dir_z;
+    LSMLIB_REAL x_intersect = x_on_line + intersect_coef*line_dir_x;
+    LSMLIB_REAL y_intersect = y_on_line + intersect_coef*line_dir_y;
+    LSMLIB_REAL z_intersect = z_on_line + intersect_coef*line_dir_z;
 
 
     /* check if point is in the interior of face using point in    */
@@ -728,12 +729,12 @@ int LSM3D_findLineInTetrahedron(
   if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
-    double intersect_coef = -(plane_constant + normal_x*x_on_line 
+    LSMLIB_REAL intersect_coef = -(plane_constant + normal_x*x_on_line 
       + normal_y*y_on_line + normal_z*z_on_line)/normal_dot_line;
 
-    double x_intersect = x_on_line + intersect_coef*line_dir_x;
-    double y_intersect = y_on_line + intersect_coef*line_dir_y;
-    double z_intersect = z_on_line + intersect_coef*line_dir_z;
+    LSMLIB_REAL x_intersect = x_on_line + intersect_coef*line_dir_x;
+    LSMLIB_REAL y_intersect = y_on_line + intersect_coef*line_dir_y;
+    LSMLIB_REAL z_intersect = z_on_line + intersect_coef*line_dir_z;
 
 
     /* check if point is in the interior of face using point in    */
@@ -826,12 +827,12 @@ int LSM3D_findLineInTetrahedron(
   if ( LSM_GEOM_3D_ABS(normal_dot_line) > LSM_GEOM_3D_ZERO_TOL ) { 
     /* case: single intersection exists */
     
-    double intersect_coef = -(plane_constant + normal_x*x_on_line 
+    LSMLIB_REAL intersect_coef = -(plane_constant + normal_x*x_on_line 
       + normal_y*y_on_line + normal_z*z_on_line)/normal_dot_line;
 
-    double x_intersect = x_on_line + intersect_coef*line_dir_x;
-    double y_intersect = y_on_line + intersect_coef*line_dir_y;
-    double z_intersect = z_on_line + intersect_coef*line_dir_z;
+    LSMLIB_REAL x_intersect = x_on_line + intersect_coef*line_dir_x;
+    LSMLIB_REAL y_intersect = y_on_line + intersect_coef*line_dir_y;
+    LSMLIB_REAL z_intersect = z_on_line + intersect_coef*line_dir_z;
 
 
     /* check if point is in the interior of face using point in    */

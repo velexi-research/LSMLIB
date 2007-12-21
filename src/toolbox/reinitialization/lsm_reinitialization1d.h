@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_REINITIALIZATION_1D_H
 #define INCLUDED_LSM_REINITIALIZATION_1D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,24 +67,24 @@ extern "C" {
  *
  */
 void LSM1D_COMPUTE_REINITIALIZATION_EQN_RHS(
-  double *reinit_rhs,
+  LSMLIB_REAL *reinit_rhs,
   const int *ilo_rhs_gb, 
   const int *ihi_rhs_gb, 
-  const double* phi,
+  const LSMLIB_REAL* phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb, 
-  const double* phi0,
+  const LSMLIB_REAL* phi0,
   const int *ilo_phi0_gb, 
   const int *ihi_phi0_gb, 
-  const double *phi_x_plus, 
+  const LSMLIB_REAL *phi_x_plus, 
   const int *ilo_grad_phi_plus_gb,   
   const int *ihi_grad_phi_plus_gb,
-  const double *phi_x_minus, 
+  const LSMLIB_REAL *phi_x_minus, 
   const int *ilo_grad_phi_minus_gb,   
   const int *ihi_grad_phi_minus_gb,
   const int *ilo_fb,   
   const int *ihi_fb,
-  const double *dx, 
+  const LSMLIB_REAL *dx, 
   const int *use_phi0_for_sgn);
 
 #ifdef __cplusplus

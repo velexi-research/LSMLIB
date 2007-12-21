@@ -58,6 +58,7 @@
  *===========================================================================*/
 
 #include "mex.h"
+#include "LSMLIB_config.h"
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
@@ -74,17 +75,17 @@
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
   /* field data */
-  double *boundary_data;
-  double *phi;
-  double *speed;
-  double *mask;
+  LSMLIB_REAL *boundary_data;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *speed;
+  LSMLIB_REAL *mask;
  
   /* grid data */
   const int *grid_dims_phi = mxGetDimensions(BOUNDARY_DATA);
   const int *grid_dims_speed = mxGetDimensions(SPEED);
   int num_gridpts; 
   double *dX = mxGetPr(DX);
-  double dX_matlab_order[3]; 
+  LSMLIB_REAL dX_matlab_order[3]; 
 
   /* numerical parameters */
   int spatial_discretization_order;
@@ -111,11 +112,39 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     mexErrMsgTxt("The dimensions for phi and speed should be the same.");
   }
 
+  /* Check that the inputs have the correct floating-point precision */
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(BOUNDARY_DATA)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but boundary_data is single-precision");
+    }
+    if (!mxIsDouble(SPEED)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but speed is single-precision");
+    }
+#else
+    if (!mxIsSingle(BOUNDARY_DATA)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but boundary_data is double-precision");
+    }
+    if (!mxIsSingle(SPEED)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but speed is double-precision");
+    }
+#endif
+
   /* Get mask */
-  if (nrhs < 4) {
+  if ( (nrhs < 4) || (mxIsEmpty(MASK)) ) {
     mask = 0;  /* NULL mask ==> all points are in interior of domain */
   } else {
-    mask = mxGetPr(MASK);
+
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but mask is single-precision");
+    }
+#else
+    if (!mxIsSingle(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but mask is double-precision");
+    }
+#endif
+
+    mask = (LSMLIB_REAL*) mxGetPr(MASK);
   }
 
   /* Get spatial derivative order */
@@ -126,12 +155,16 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
   
   /* Assign pointers for boundary_data and speed data */
-  boundary_data = mxGetPr(BOUNDARY_DATA);
-  speed = mxGetPr(SPEED);
+  boundary_data = (LSMLIB_REAL*) mxGetPr(BOUNDARY_DATA);
+  speed = (LSMLIB_REAL*) mxGetPr(SPEED);
 
   /* Create and initialize PHI data */
+#ifdef LSMLIB_DOUBLE_PRECISION
   PHI = mxCreateNumericArray(3, grid_dims_phi, mxDOUBLE_CLASS, mxREAL);
-  phi = mxGetPr(PHI);
+#else
+  PHI = mxCreateNumericArray(3, grid_dims_phi, mxSINGLE_CLASS, mxREAL);
+#endif                                
+  phi = (LSMLIB_REAL*) mxGetPr(PHI);
   num_gridpts = grid_dims_phi[0]*grid_dims_phi[1]*grid_dims_phi[2];
   for (i = 0; i < num_gridpts; i++) {
     phi[i] = boundary_data[i];

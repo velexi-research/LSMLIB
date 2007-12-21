@@ -9,6 +9,8 @@
 #ifndef included_FMM_Heap_h
 #define included_FMM_Heap_h
  
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,9 +61,9 @@ typedef struct FMM_Heap FMM_Heap;
  * internally to maintain the heap.
  */
 typedef struct HeapNode {
-  int grid_idx[FMM_HEAP_MAX_NDIM];  	/* grid index     */
-  double value;     			/* function value */
-  int heap_pos;     			/* internal data  */
+  int grid_idx[FMM_HEAP_MAX_NDIM];      /* grid index     */
+  LSMLIB_REAL value;                    /* function value */
+  int heap_pos;                         /* internal data  */
 } FMM_HeapNode;
 
 
@@ -86,7 +88,7 @@ typedef struct HeapNode {
  *
  */
 FMM_Heap* FMM_Heap_createHeap(int num_dims, int heap_mem_size, 
-  double growth_factor);
+  LSMLIB_REAL growth_factor);
 
 /*!
  * FMM_Heap_destroyHeap() frees the memory used to store the heap.
@@ -115,7 +117,7 @@ void FMM_Heap_destroyHeap(FMM_Heap* heap);
  *       may be changed by an FMM_Heap_extractMin() operation and need 
  *       to be updated accordingly after calling FMM_Heap_extractMin().
  */
-int FMM_Heap_insertNode(FMM_Heap* heap, int *grid_idx, double value);
+int FMM_Heap_insertNode(FMM_Heap* heap, int *grid_idx, LSMLIB_REAL value);
 
 /*!
  * FMM_Heap_extractMin() removes the FMM_HeapNode with the minimum 
@@ -161,7 +163,7 @@ FMM_HeapNode FMM_Heap_extractMin(FMM_Heap* heap, FMM_HeapNode* moved_node,
  * Return value:         none
  *
  */
-void FMM_Heap_updateNode(FMM_Heap* heap, int node_handle, double value);
+void FMM_Heap_updateNode(FMM_Heap* heap, int node_handle, LSMLIB_REAL value);
 
 /*!
  * FMM_Heap_clear() empties out the heap.

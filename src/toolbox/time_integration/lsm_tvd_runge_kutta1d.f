@@ -44,11 +44,11 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real u_next(ilo_u_next_gb:ihi_u_next_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
       integer i
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do i=ilo_fb,ihi_fb
@@ -97,10 +97,10 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
-      double precision dt
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real dt
 
 c     use lsm1dRK1Step() to compute first stage
       call lsm1dRK1Step(u_stage1, 
@@ -152,12 +152,12 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real u_next(ilo_u_next_gb:ihi_u_next_gb)
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
       integer i
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do i=ilo_fb,ihi_fb
@@ -207,10 +207,10 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
-      double precision dt
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real dt
 
 c     use lsm1dRK1Step() to compute first stage
       call lsm1dRK1Step(u_stage1, 
@@ -262,12 +262,12 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb)
-      double precision u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb)
+      real u_stage1(ilo_u_stage1_gb:ihi_u_stage1_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
       integer i
-      double precision dt
+      real dt
 
 c     { begin loop over grid
       do i=ilo_fb,ihi_fb
@@ -318,13 +318,13 @@ c { begin subroutine
       integer ilo_u_cur_gb, ihi_u_cur_gb
       integer ilo_rhs_gb, ihi_rhs_gb
       integer ilo_fb, ihi_fb
-      double precision u_next(ilo_u_next_gb:ihi_u_next_gb)
-      double precision u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb)
-      double precision u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
-      double precision rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real u_next(ilo_u_next_gb:ihi_u_next_gb)
+      real u_stage2(ilo_u_stage2_gb:ihi_u_stage2_gb)
+      real u_cur(ilo_u_cur_gb:ihi_u_cur_gb)
+      real rhs(ilo_rhs_gb:ihi_rhs_gb)
       integer i
-      double precision dt
-      double precision one_third, two_thirds
+      real dt
+      real one_third, two_thirds
       parameter (one_third = 1.d0/3.d0)
       parameter (two_thirds = 2.d0/3.d0)
 

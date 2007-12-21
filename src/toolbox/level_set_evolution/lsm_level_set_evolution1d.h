@@ -10,6 +10,8 @@
 #ifndef INCLUDED_LSM_LEVEL_SET_EVOLUTION_1D_H
 #define INCLUDED_LSM_LEVEL_SET_EVOLUTION_1D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -51,7 +53,7 @@ extern "C" {
  * Return value:         none
  */
 void LSM1D_ZERO_OUT_LEVEL_SET_EQN_RHS(
-  double *lse_rhs,
+  LSMLIB_REAL *lse_rhs,
   const int *ilo_lse_rhs_gb, 
   const int *ihi_lse_rhs_gb);
 
@@ -77,13 +79,13 @@ void LSM1D_ZERO_OUT_LEVEL_SET_EQN_RHS(
  * Return value:         none
  */
 void LSM1D_ADD_ADVECTION_TERM_TO_LSE_RHS(
-  double *lse_rhs,
+  LSMLIB_REAL *lse_rhs,
   const int *ilo_lse_rhs_gb, 
   const int *ihi_lse_rhs_gb,
-  const double *phi_x,
+  const LSMLIB_REAL *phi_x,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
-  const double *vel_x,
+  const LSMLIB_REAL *vel_x,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *ilo_fb, 
@@ -114,16 +116,16 @@ void LSM1D_ADD_ADVECTION_TERM_TO_LSE_RHS(
  * Return value:        none
  */
 void LSM1D_ADD_NORMAL_VEL_TERM_TO_LSE_RHS(
-  double *lse_rhs,
+  LSMLIB_REAL *lse_rhs,
   const int *ilo_lse_rhs_gb, 
   const int *ihi_lse_rhs_gb,
-  const double *phi_x_plus,
+  const LSMLIB_REAL *phi_x_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
-  const double *phi_x_minus,
+  const LSMLIB_REAL *phi_x_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
-  const double *vel_n,
+  const LSMLIB_REAL *vel_n,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *ilo_fb, 

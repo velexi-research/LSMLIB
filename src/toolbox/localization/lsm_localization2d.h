@@ -1,6 +1,8 @@
 #ifndef INCLUDED_LSM_LOCALIZATION_2D_H
 #define INCLUDED_LSM_LOCALIZATION_2D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,7 +35,7 @@ extern "C" {
 #endif
  
  void LSM2D_DETERMINE_NARROW_BAND(
- const double *phi,
+ const LSMLIB_REAL *phi,
  const int *ilo_gb, 
  const int *ihi_gb,
  const int *jlo_gb, 
@@ -56,8 +58,8 @@ extern "C" {
  int *nhi_index_outer_plus,
  int *nlo_index_outer_minus, 
  int *nhi_index_outer_minus,
- const double *width,
- const double *width_inner,
+ const LSMLIB_REAL *width,
+ const LSMLIB_REAL *width_inner,
  const int *level);
  
  void LSM2D_MARK_NARROW_BAND_BOUNDARY_LAYER(
@@ -73,8 +75,8 @@ extern "C" {
  const unsigned char *mark_boundary_layer);
  
  void LSM2D_DETERMINE_NARROW_BAND_FROM_MASK(
- const double *phi,
- const double *mask,
+ const LSMLIB_REAL *phi,
+ const LSMLIB_REAL *mask,
  const int *ilo_gb, 
  const int *ihi_gb,
  const int *jlo_gb, 
@@ -94,8 +96,8 @@ extern "C" {
  const int *use_mask_sign);
  
  void LSM2D_MULTIPLY_CUT_OFF_LSE_RHS_LOCAL(
- const double *phi,
- double *lse_rhs,
+ const LSMLIB_REAL *phi,
+ LSMLIB_REAL *lse_rhs,
  const int *ilo_gb, 
  const int *ihi_gb,
  const int *jlo_gb, 
@@ -110,12 +112,12 @@ extern "C" {
  const int *jlo_nb_gb, 
  const int *jhi_nb_gb,
  const unsigned char *mark_fb,
- const double *beta,
- const double *gamma);
+ const LSMLIB_REAL *beta,
+ const LSMLIB_REAL *gamma);
  
  void  LSM2D_IMPOSE_MAX_PHI_MASK_LOCAL(
- double *phi,
- const double *mask,
+ LSMLIB_REAL *phi,
+ const LSMLIB_REAL *mask,
  const int *ilo_gb, 
  const int *ihi_gb,
  const int *jlo_gb, 
@@ -127,7 +129,7 @@ extern "C" {
  
  void LSM2D_CHECK_OUTER_NARROW_BAND_LAYER(
  int  *change_sign,
- const double *phi,
+ const LSMLIB_REAL *phi,
  const int *ilo_gb, 
  const int *ihi_gb,
  const int *jlo_gb, 

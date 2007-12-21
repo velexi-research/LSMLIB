@@ -10,6 +10,8 @@
 #ifndef INCLUDED_LSM_BOUNDARY_CONDITIONS_H
 #define INCLUDED_LSM_BOUNDARY_CONDITIONS_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,7 +91,7 @@ typedef enum {
  *      
  */
 void linearExtrapolationBC(
-  double *phi,
+  LSMLIB_REAL *phi,
   Grid *grid,
   int bdry_location_idx);
 
@@ -124,7 +126,7 @@ void linearExtrapolationBC(
  *      
  */
 void signedLinearExtrapolationBC(
-  double *phi,
+  LSMLIB_REAL *phi,
   Grid *grid,
   int bdry_location_idx);
  
@@ -144,7 +146,7 @@ void signedLinearExtrapolationBC(
  *      
  */
 void copyExtrapolationBC(
-  double *phi,
+  LSMLIB_REAL *phi,
   Grid *grid,
   int bdry_location_idx);
 
@@ -167,7 +169,7 @@ void copyExtrapolationBC(
  *      
  */
 void homogeneousNeumannBC(
-  double *phi,
+  LSMLIB_REAL *phi,
   Grid *grid,
   int bdry_location_idx);
 

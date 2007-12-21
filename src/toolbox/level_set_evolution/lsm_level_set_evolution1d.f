@@ -28,7 +28,7 @@ c { begin subroutine
       implicit none
 
       integer ilo_lse_rhs_gb, ihi_lse_rhs_gb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
       integer i
 
 c     { begin loop over grid
@@ -76,9 +76,9 @@ c { begin subroutine
       integer ilo_grad_phi_gb, ihi_grad_phi_gb
       integer ilo_vel_gb, ihi_vel_gb
       integer ilo_fb, ihi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      double precision vel_x(ilo_vel_gb:ihi_vel_gb)
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
+      real vel_x(ilo_vel_gb:ihi_vel_gb)
       integer i
 
 c     { begin loop over grid
@@ -132,16 +132,16 @@ c { begin subroutine
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer ilo_vel_gb, ihi_vel_gb
       integer ilo_fb, ihi_fb
-      double precision lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
-      double precision phi_x_plus(
+      real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
+      real phi_x_plus(
      &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
-      double precision vel_n(ilo_vel_gb:ihi_vel_gb)
+      real vel_n(ilo_vel_gb:ihi_vel_gb)
       integer i
-      double precision vel_n_cur
-      double precision phi_x_sq_cur
-      double precision tol
+      real vel_n_cur
+      real phi_x_sq_cur
+      real tol
       parameter (tol=1.d-13)
 
 c     { begin loop over grid

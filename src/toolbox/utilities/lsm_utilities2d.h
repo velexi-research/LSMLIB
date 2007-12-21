@@ -10,6 +10,8 @@
 #ifndef INCLUDED_LSM_UTILITIES_2D_H
 #define INCLUDED_LSM_UTILITIES_2D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -74,13 +76,13 @@ extern "C" {
  * Return value:            none
  */
 void LSM2D_MAX_NORM_DIFF(
-  double *max_norm_diff,
-  const double *field1,
+  LSMLIB_REAL *max_norm_diff,
+  const LSMLIB_REAL *field1,
   const int *ilo_field1_gb, 
   const int *ihi_field1_gb,
   const int *jlo_field1_gb, 
   const int *jhi_field1_gb,
-  const double *field2,
+  const LSMLIB_REAL *field2,
   const int *ilo_field2_gb, 
   const int *ihi_field2_gb,
   const int *jlo_field2_gb, 
@@ -105,9 +107,9 @@ void LSM2D_MAX_NORM_DIFF(
  * Return value:             none 
  */
 void LSM2D_COMPUTE_STABLE_ADVECTION_DT(
-  double *dt,
-  const double *vel_x,
-  const double *vel_y,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
@@ -116,9 +118,9 @@ void LSM2D_COMPUTE_STABLE_ADVECTION_DT(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
 
 
 /*!
@@ -146,20 +148,20 @@ void LSM2D_COMPUTE_STABLE_ADVECTION_DT(
  *
  */
 void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT(
-  double *dt,
-  const double *vel_n,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
   const int *jhi_vel_gb,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
@@ -168,9 +170,9 @@ void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
 
 
 /*!
@@ -198,16 +200,16 @@ void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT(
  *
  */
 void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT(
-  double *dt,
-  const double *vel_n,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
@@ -216,9 +218,9 @@ void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
   
   
 /*!
@@ -241,13 +243,13 @@ void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT(
  * Return value:             none
  */
 void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
@@ -256,9 +258,9 @@ void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -280,13 +282,13 @@ void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO(
  * Return value:             none
  */
 void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
@@ -295,9 +297,9 @@ void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -319,19 +321,19 @@ void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO(
  * Return value:             none
  */
 void LSM2D_SURFACE_INTEGRAL(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb, 
-  const double *phi_x,
-  const double *phi_y,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
@@ -340,9 +342,9 @@ void LSM2D_SURFACE_INTEGRAL(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -365,18 +367,18 @@ void LSM2D_SURFACE_INTEGRAL(
  * Return value:            none
  */
 void LSM2D_MAX_NORM_DIFF_CONTROL_VOLUME(
-  double *max_norm_diff,
-  const double *field1,
+  LSMLIB_REAL *max_norm_diff,
+  const LSMLIB_REAL *field1,
   const int *ilo_field1_gb, 
   const int *ihi_field1_gb,
   const int *jlo_field1_gb, 
   const int *jhi_field1_gb,
-  const double *field2,
+  const LSMLIB_REAL *field2,
   const int *ilo_field2_gb, 
   const int *ihi_field2_gb,
   const int *jlo_field2_gb, 
   const int *jhi_field2_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -408,14 +410,14 @@ void LSM2D_MAX_NORM_DIFF_CONTROL_VOLUME(
  * Return value:             none 
  */
 void LSM2D_COMPUTE_STABLE_ADVECTION_DT_CONTROL_VOLUME(
-  double *dt,
-  const double *vel_x,
-  const double *vel_y,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
   const int *jhi_vel_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -425,9 +427,9 @@ void LSM2D_COMPUTE_STABLE_ADVECTION_DT_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
 
 
 /*!
@@ -461,25 +463,25 @@ void LSM2D_COMPUTE_STABLE_ADVECTION_DT_CONTROL_VOLUME(
  *
  */
 void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_CONTROL_VOLUME(
-  double *dt,
-  const double *vel_n,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
   const int *jhi_vel_gb,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
   const int *jhi_grad_phi_minus_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -489,9 +491,9 @@ void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
 
 
 /*!
@@ -525,21 +527,21 @@ void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_CONTROL_VOLUME(
  *
  */
 void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_CONTROL_VOLUME(
-  double *dt,
-  const double *vel_n,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
   const int *jhi_grad_phi_minus_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -549,9 +551,9 @@ void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *cfl_number);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *cfl_number);
   
   
 /*!
@@ -579,18 +581,18 @@ void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_CONTROL_VOLUME(
  * Return value:             none
  */
 void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -600,9 +602,9 @@ void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -630,18 +632,18 @@ void LSM2D_VOLUME_INTEGRAL_PHI_LESS_THAN_ZERO_CONTROL_VOLUME(
  * Return value:             none
  */
 void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -651,9 +653,9 @@ void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 
 /*!
@@ -681,24 +683,24 @@ void LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME(
  * Return value:             none
  */
 void LSM2D_SURFACE_INTEGRAL_CONTROL_VOLUME(
-  double *int_F,
-  const double *F,
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
   const int *ilo_F_gb, 
   const int *ihi_F_gb,
   const int *jlo_F_gb, 
   const int *jhi_F_gb,
-  const double *phi,
+  const LSMLIB_REAL *phi,
   const int *ilo_phi_gb, 
   const int *ihi_phi_gb,
   const int *jlo_phi_gb, 
   const int *jhi_phi_gb, 
-  const double *phi_x,
-  const double *phi_y,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
   const int *ilo_grad_phi_gb, 
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb, 
   const int *jhi_grad_phi_gb,
-  const double *control_vol,
+  const LSMLIB_REAL *control_vol,
   const int *ilo_control_vol_gb, 
   const int *ihi_control_vol_gb,
   const int *jlo_control_vol_gb, 
@@ -708,9 +710,9 @@ void LSM2D_SURFACE_INTEGRAL_CONTROL_VOLUME(
   const int *ihi_ib,
   const int *jlo_ib, 
   const int *jhi_ib,
-  const double *dx,
-  const double *dy,
-  const double *epsilon);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *epsilon);
 
 #ifdef __cplusplus
 }

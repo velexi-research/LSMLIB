@@ -43,6 +43,7 @@
  *===========================================================================*/
 
 #include "mex.h"
+#include "LSMLIB_config.h"
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
@@ -58,17 +59,14 @@
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
   /* field data */
-  double *phi;
-  double *mask;
-  double **ext_fields_orig;
-  double *distance_fcn;
-  double **ext_fields_updated;
-  int num_ext_fields;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *mask;
+  LSMLIB_REAL *distance_fcn;
  
   /* grid data */
   const int *grid_dims = mxGetDimensions(PHI);
   double *dX = mxGetPr(DX);
-  double dX_matlab_order[2];
+  LSMLIB_REAL dX_matlab_order[2];
 
   /* numerical parameters */
   int spatial_discretization_order;
@@ -88,11 +86,34 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     mexErrMsgTxt("Too many output arguments.");
   }
 
+  /* Check that the inputs have the correct floating-point precision */
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but phi is single-precision");
+    }
+#else
+    if (!mxIsSingle(PHI)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but phi is double-precision");
+    }
+#endif
+
   /* Get mask */
-  if (nrhs < 3) {
+  if ( (nrhs < 3) || (mxIsEmpty(MASK)) ) {
     mask = 0;  /* NULL mask ==> all points are in interior of domain */
   } else {
-    mask = mxGetPr(MASK);
+
+    /* Check that mask has proper precision */
+#ifdef LSMLIB_DOUBLE_PRECISION
+    if (!mxIsDouble(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for double-precision but mask is single-precision");
+    }
+#else
+    if (!mxIsSingle(MASK)) {
+      mexErrMsgTxt("Incompatible precision: LSMLIB built for single-precision but mask is double-precision");
+    }
+#endif
+
+    mask = (LSMLIB_REAL*) mxGetPr(MASK);
   }
   
   /* Get spatial derivative order */
@@ -103,15 +124,20 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
 
   /* Assign pointers for phi data */
-  phi = mxGetPr(PHI);
+  phi = (LSMLIB_REAL*) mxGetPr(PHI);
 
   /* Create distance function data */
+#ifdef LSMLIB_DOUBLE_PRECISION
   DISTANCE_FUNCTION = mxCreateDoubleMatrix(grid_dims[0], grid_dims[1], mxREAL);
-  distance_fcn = mxGetPr(DISTANCE_FUNCTION);
+#else
+  DISTANCE_FUNCTION = mxCreateNumericMatrix(grid_dims[0], grid_dims[1],
+                                            mxSINGLE_CLASS, mxREAL);
+#endif
+  distance_fcn = (LSMLIB_REAL*) mxGetPr(DISTANCE_FUNCTION);
 
   /* Change order of dX to be match MATLAB meshgrid() order for grids. */
-  dX_matlab_order[0] = dX[1];
-  dX_matlab_order[1] = dX[0];
+  dX_matlab_order[0] = (LSMLIB_REAL) dX[1];
+  dX_matlab_order[1] = (LSMLIB_REAL) dX[0];
 
   /* Carry out FMM calculation */
   error_code = computeDistanceFunction2d(

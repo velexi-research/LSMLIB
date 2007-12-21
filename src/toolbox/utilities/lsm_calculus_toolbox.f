@@ -28,13 +28,13 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision H
-      double precision x
-      double precision epsilon
-      double precision one_over_epsilon
-      double precision pi
+      real H
+      real x
+      real epsilon
+      real one_over_epsilon
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
 
       if (x .lt. -epsilon) then
@@ -71,11 +71,11 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision delta
-      double precision x
-      double precision epsilon
-      double precision one_over_epsilon
-      double precision pi
+      real delta
+      real x
+      real epsilon
+      real one_over_epsilon
+      real pi
       parameter (pi=3.14159265358979323846d0)
 
       if (abs(x) .gt. epsilon) then

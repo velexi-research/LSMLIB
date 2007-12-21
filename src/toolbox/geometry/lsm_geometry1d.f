@@ -38,13 +38,13 @@ c     _fb refers to fill-box for normal data
       integer ilo_normal_gb, ihi_normal_gb
       integer ilo_grad_phi_gb, ihi_grad_phi_gb
       integer ilo_fb, ihi_fb
-      double precision normal(ilo_normal_gb:ihi_normal_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
+      real normal(ilo_normal_gb:ihi_normal_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
       integer i
-      double precision abs_phi_x_cur
-      double precision half
+      real abs_phi_x_cur
+      real half
       parameter (half=0.5d0)
-      double precision zero_tol
+      real zero_tol
       parameter (zero_tol=1.0d-13)
 
 c     compute unit normal by taking average of upwind and downwind 
@@ -108,19 +108,19 @@ c     _fb refers to fill-box for normal data
       integer ilo_grad_phi_gb, ihi_grad_phi_gb
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_fb, ihi_fb
-      double precision normal_x(ilo_normal_gb:ihi_normal_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision dx
-      double precision phi_cur
-      double precision phi_x_cur
-      double precision sgn_phi
-      double precision norm_grad_phi_sq
-      double precision dx_sq
+      real normal_x(ilo_normal_gb:ihi_normal_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real dx
+      real phi_cur
+      real phi_x_cur
+      real sgn_phi
+      real norm_grad_phi_sq
+      real dx_sq
       integer i
-      double precision zero, half
+      real zero, half
       parameter (zero=0.d0, half=0.5d0)
-      double precision zero_tol
+      real zero_tol
       parameter (zero_tol=1.d-13)
 
 
@@ -190,22 +190,22 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision length
+      real length
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision dx
-      double precision epsilon
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real dx
+      real epsilon
       integer i
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision one_minus_H
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real one_minus_H
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -259,22 +259,22 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision length
+      real length
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision dx
-      double precision epsilon
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real dx
+      real epsilon
       integer i
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision H
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real H
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -330,22 +330,22 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision size
+      real size
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_grad_phi_gb, ihi_grad_phi_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      double precision dx
-      double precision epsilon
-      double precision one_over_epsilon
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
+      real dx
+      real epsilon
+      real one_over_epsilon
       integer i
-      double precision phi_cur
-      double precision delta
-      double precision pi
+      real phi_cur
+      real delta
+      real pi
       parameter (pi=3.14159265358979323846d0)
       
 
@@ -408,26 +408,26 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision length
+      real length
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision control_vol(
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx
-      double precision epsilon
+      real dx
+      real epsilon
       integer i
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision one_minus_H
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real one_minus_H
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -498,26 +498,26 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision length
+      real length
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision control_vol(
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx
-      double precision epsilon
+      real dx
+      real epsilon
       integer i
-      double precision phi_cur
-      double precision phi_cur_over_epsilon
-      double precision H
-      double precision pi
+      real phi_cur
+      real phi_cur_over_epsilon
+      real H
+      real pi
       parameter (pi=3.14159265358979323846d0)
-      double precision one_over_pi
+      real one_over_pi
       parameter (one_over_pi=0.31830988618379d0)
       
 
@@ -591,7 +591,7 @@ c***********************************************************************
 c { begin subroutine
       implicit none
 
-      double precision size
+      real size
 
 c     _gb refers to ghostbox 
 c     _ib refers to box to include in integral calculation
@@ -599,18 +599,18 @@ c     _ib refers to box to include in integral calculation
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer ilo_grad_phi_gb, ihi_grad_phi_gb
       integer ilo_ib, ihi_ib
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      double precision control_vol(
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
+      real control_vol(
      &                     ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
-      double precision dx
-      double precision epsilon
-      double precision one_over_epsilon
+      real dx
+      real epsilon
+      real one_over_epsilon
       integer i
-      double precision phi_cur
-      double precision delta
-      double precision pi
+      real phi_cur
+      real delta
+      real pi
       parameter (pi=3.14159265358979323846d0)
       
 

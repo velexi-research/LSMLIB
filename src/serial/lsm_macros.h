@@ -11,6 +11,8 @@
 
 #include <float.h>
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -154,8 +156,8 @@ extern "C" {
 #define COMPUTE_MAX_ABS_ERR(max_abs_err, data1, data2, grid)               \
 {                                                                          \
   int idx;                                                                 \
-  double min_err, max_err, err1, err2, err;                                \
-  min_err = DBL_MAX; max_err = 0.0;                                        \
+  LSMLIB_REAL min_err, max_err, err1, err2, err;                           \
+  min_err = LSMLIB_REAL_MAX; max_err = 0.0;                                \
   for(idx = 0; idx < grid->num_gridpts; idx++)                             \
   {                                                                        \
     err = data1[idx] - data2[idx];                                         \
@@ -180,8 +182,8 @@ extern "C" {
 #define COMPUTE_MAX_ABS_DATA(max_abs, data, grid)                          \
 {                                                                          \
   int idx;                                                                 \
-  double min_err, max_err, err1, err2, err;                                \
-  min_err = DBL_MAX; max_err = 0.0;                                        \
+  LSMLIB_REAL min_err, max_err, err1, err2, err;                           \
+  min_err = LSMLIB_REAL_MAX; max_err = 0.0;                                \
   for(idx = 0; idx < grid->num_gridpts; idx++)                             \
   {                                                                        \
     err = data[idx];                                                       \
@@ -206,8 +208,8 @@ extern "C" {
 #define EXAMINE_ARRAY(name,data,g)                                         \
 {                                                                          \
   int idx;                                                                 \
-  double min = DBL_MAX, max = -DBL_MAX;                                    \
-  double abs_min = DBL_MAX, abs_val;                                       \
+  LSMLIB_REAL min = LSMLIB_REAL_MAX, max = -LSMLIB_REAL_MAX;               \
+  LSMLIB_REAL abs_min = LSMLIB_REAL_MAX, abs_val;                          \
   for(idx=0; idx < g->num_gridpts; idx++)                                  \
   {                                                                        \
     if (isnan(data[idx])) printf("\nNaN at position %d",idx);              \
@@ -215,7 +217,8 @@ extern "C" {
     if( data[idx] < min) min = data[idx];                                  \
     if( data[idx] > max) max = data[idx];                                  \
     abs_val = fabs(data[idx]);                                             \
-    if( abs_val < abs_min && abs_val > DBL_EPSILON) abs_min = abs_val;     \
+    if( abs_val < abs_min && abs_val > LSMLIB_REAL_EPSILON)                \
+      abs_min = abs_val;                                                   \
   }                                                                        \
   printf("\n%s min %g max %g min(|array|) %g",name,min,max,abs_min);       \
   fflush(stdout);                                                          \

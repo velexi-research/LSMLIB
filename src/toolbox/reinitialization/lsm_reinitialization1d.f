@@ -69,26 +69,26 @@ c     _fb refers to fillbox
       integer ilo_grad_phi_plus_gb, ihi_grad_phi_plus_gb
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer ilo_fb, ihi_fb
-      double precision reinit_rhs(ilo_rhs_gb:ihi_rhs_gb)
-      double precision phi(ilo_phi_gb:ihi_phi_gb)
-      double precision phi0(ilo_phi0_gb:ihi_phi0_gb)
-      double precision phi_x_plus(
+      real reinit_rhs(ilo_rhs_gb:ihi_rhs_gb)
+      real phi(ilo_phi_gb:ihi_phi_gb)
+      real phi0(ilo_phi0_gb:ihi_phi0_gb)
+      real phi_x_plus(
      &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      double precision phi_x_minus(
+      real phi_x_minus(
      &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
-      double precision dx
+      real dx
       integer use_phi0_for_sgn
-      double precision phi_cur
-      double precision grad_phi_plus_cur
-      double precision grad_phi_minus_cur
-      double precision grad_phi_star
+      real phi_cur
+      real grad_phi_plus_cur
+      real grad_phi_minus_cur
+      real grad_phi_star
       integer i
-      double precision sgn_phi
-      double precision norm_grad_phi
-      double precision dx_sq
-      double precision tol
+      real sgn_phi
+      real norm_grad_phi
+      real dx_sq
+      real tol
       parameter (tol=1.d-13)
-      double precision one
+      real one
       parameter (one=1.d0)
 
 c     set value of dx_sq to be square of dx

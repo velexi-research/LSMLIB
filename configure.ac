@@ -9,7 +9,7 @@
 AC_PREREQ(2.57)
 AC_INIT([LSMLIB], 1.0.0, [ktchu@princeton.edu])
 AC_REVISION($Revision: 1.31 $)
-AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.h])
+AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.cc])
 AC_CONFIG_HEADER([config/LSMLIB_config.h])
 AC_CONFIG_AUX_DIR([config/autoconf])
 AC_CANONICAL_BUILD
@@ -223,6 +223,56 @@ AS_IF([test $enable_implicit_template_instantiation = no],
       esac])
 
 
+#==========================================================================
+# Process remaining configure options.
+#==========================================================================
+AC_MSG_CHECKING([whether to build single-precision library])
+AC_ARG_ENABLE([float],
+              [AC_HELP_STRING([--enable-float],
+              [Compile LSMLIB for single-precision calculations (default NO)])],
+              [], [enable_float=no])
+AC_MSG_RESULT([$enable_float])
+AS_IF([test $enable_float = no],
+      [case "$F77" in
+         g77)
+           FFLAGS="-fdefault-real-8 -fdefault-double-8 $FFLAGS"
+         ;;
+         gfortran)
+           FFLAGS="-fdefault-real-8 -fdefault-double-8 $FFLAGS"
+         ;;
+         ifort)
+           FFLAGS="-r8 $FFLAGS"
+         ;;
+         xlf)
+           FFLAGS="-qrealsize=8 $FFLAGS"
+         ;;
+         blrts_xlf)
+           FFLAGS="-qrealsize=8 $FFLAGS"
+         ;;
+      esac])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_DOUBLE_PRECISION)],
+      [])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_REAL,double)],
+      [AC_DEFINE(LSMLIB_REAL,float)])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_ZERO_TOL,1.e-10)],
+      [AC_DEFINE(LSMLIB_ZERO_TOL,1.e-5)])
+AS_IF([test $enable_float = no],
+      [AC_SUBST(tiny_nonzero_number,1.d-99)],
+      [AC_SUBST(tiny_nonzero_number,1.d-35)])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_REAL_MAX,DBL_MAX)],
+      [AC_DEFINE(LSMLIB_REAL_MAX,FLT_MAX)])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_REAL_MIN,DBL_MIN)],
+      [AC_DEFINE(LSMLIB_REAL_MIN,FLT_MIN)])
+AS_IF([test $enable_float = no],
+      [AC_DEFINE(LSMLIB_REAL_EPSILON,DBL_EPSILON)],
+      [AC_DEFINE(LSMLIB_REAL_EPSILON,FLT_EPSILON)])
+
+
 #--------------------------------------------------------------------------
 # Determine build mode; either "optimize", "debug", or "profile".
 #--------------------------------------------------------------------------
@@ -290,8 +340,18 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/localization/Makefile
            src/toolbox/reinitialization/Makefile
            src/toolbox/spatial_derivatives/Makefile
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d.f
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d_local.f
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d_local.f
            src/toolbox/time_integration/Makefile
            src/toolbox/utilities/Makefile
+           src/toolbox/utilities/lsm_utilities1d.f
+           src/toolbox/utilities/lsm_utilities2d.f
+           src/toolbox/utilities/lsm_utilities3d.f
+           src/toolbox/utilities/lsm_utilities2d_local.f
+           src/toolbox/utilities/lsm_utilities3d_local.f
            examples/Makefile
            examples/parallel/Makefile
            examples/parallel/2d/Makefile
@@ -352,6 +412,11 @@ echo""
 echo "  Configuration Summmary"
 echo "  Compiling Options:"
 echo "              Compilation Mode: $build_mode"
+if test "$enable_float" = "no"; then
+echo "      Floating-Point Precision: double"
+else 
+echo "      Floating-Point Precision: single"
+fi
 echo "                C Compiler(CC): $CC"
 echo "                        CFLAGS: $CFLAGS"
 echo "             C++ Compiler(CXX): $CXX"

@@ -55,8 +55,8 @@ typedef struct FMM_FieldData FMM_FieldData;
  *  - num_dims (in):                number of dimensions for FMM computation
  *  - grid_dims (in):               integer array of dimensions of 
  *                                  computational grid
- *  - dx (in):                      double array containing grid cell sizes
- *                                  in each of the coordinate directions
+ *  - dx (in):                      LSMLIB_REAL array containing grid cell 
+ *                                  sizes in each of the coordinate directions
  *
  * Return value:                    none
  *
@@ -66,7 +66,7 @@ void initializeFront_CallbackFunc(
   FMM_FieldData *fmm_field_data,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 /*!
  * updateGridPoint_CallbackFunc() defines the signature of the callback
@@ -84,20 +84,20 @@ void initializeFront_CallbackFunc(
  *  - num_dims (in):                number of dimensions for FMM computation
  *  - grid_dims (in):               integer array of dimensions of computational
  *                                  grid
- *  - dx (in):                      double array containing grid cell sizes
- *                                  in each of the coordinate directions
+ *  - dx (in):                      LSMLIB_REAL array containing grid cell 
+ *                                  sizes in each of the coordinate directions
  *
  * Return value:                    updated distance function value at
  *                                  specified grid point
  *
  */
-double updateGridPoint_CallbackFunc(
+LSMLIB_REAL updateGridPoint_CallbackFunc(
   FMM_CoreData *fmm_core_data, 
   FMM_FieldData *fmm_field_data, 
   int *grid_idx,
   int num_dims,
   int *grid_dims,
-  double *dx);
+  LSMLIB_REAL *dx);
 
 #ifdef __cplusplus
 }

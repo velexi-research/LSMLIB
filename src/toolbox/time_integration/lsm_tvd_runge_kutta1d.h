@@ -9,6 +9,8 @@
 #ifndef INCLUDED_LSM_TVD_RUNGE_KUTTA_1D_H
 #define INCLUDED_LSM_TVD_RUNGE_KUTTA_1D_H
 
+#include "LSMLIB_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,18 +55,18 @@ extern "C" {
  * Return value:     none
  */
 void LSM1D_RK1_STEP(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 
 /*!
@@ -86,18 +88,18 @@ void LSM1D_RK1_STEP(
  *
  */
 void LSM1D_TVD_RK2_STAGE1(
-  double *u_stage1,
+  LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 
 /*!
@@ -116,21 +118,21 @@ void LSM1D_TVD_RK2_STAGE1(
  * Return value:      none
  */
 void LSM1D_TVD_RK2_STAGE2(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
-  const double *u_stage1,
+  const LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 
 /*!
@@ -152,18 +154,18 @@ void LSM1D_TVD_RK2_STAGE2(
  *
  */
 void LSM1D_TVD_RK3_STAGE1(
-  double *u_stage1,
+  LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 
 /*!
@@ -182,21 +184,21 @@ void LSM1D_TVD_RK3_STAGE1(
  * Return value:       none
  */
 void LSM1D_TVD_RK3_STAGE2(
-  double *u_stage2,
+  LSMLIB_REAL *u_stage2,
   const int *ilo_u_stage2_gb,
   const int *ihi_u_stage2_gb,
-  const double *u_stage1,
+  const LSMLIB_REAL *u_stage1,
   const int *ilo_u_stage1_gb,
   const int *ihi_u_stage1_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 
 /*!
@@ -215,21 +217,21 @@ void LSM1D_TVD_RK3_STAGE2(
  * Return value:      none
  */
 void LSM1D_TVD_RK3_STAGE3(
-  double *u_next,
+  LSMLIB_REAL *u_next,
   const int *ilo_u_next_gb,
   const int *ihi_u_next_gb,
-  const double *u_stage2,
+  const LSMLIB_REAL *u_stage2,
   const int *ilo_u_stage2_gb,
   const int *ihi_u_stage2_gb,
-  const double *u_cur,
+  const LSMLIB_REAL *u_cur,
   const int *ilo_u_cur_gb,
   const int *ihi_u_cur_gb,
-  const double *rhs, 
+  const LSMLIB_REAL *rhs, 
   const int *ilo_rhs_gb,
   const int *ihi_rhs_gb,
   const int *ilo_fb,
   const int *ihi_fb,
-  const double *dt);
+  const LSMLIB_REAL *dt);
 
 #ifdef __cplusplus
 }

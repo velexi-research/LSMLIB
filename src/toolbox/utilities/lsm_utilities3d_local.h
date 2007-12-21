@@ -1,5 +1,16 @@
+/*
+ * File:        lsm_utilities3d_local.h
+ * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Revision:    $Revision: 1.23 $
+ * Modified:    $Date: 2006/10/28 04:54:37 $
+ * Description: Header file for 3D Fortran 77 level set method narrow-band
+ *              utility subroutines
+ */
+
 #ifndef INCLUDED_LSM_UTILITIES_3D_LOCAL_H
 #define INCLUDED_LSM_UTILITIES_3D_LOCAL_H
+
+#include "LSMLIB_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,15 +40,15 @@ extern "C" {
                                         lsm3dcomputestableconstnormalveldtlocal_
 
 void LSM3D_MAX_NORM_DIFF_LOCAL(
-  double *max_norm_diff,
-  const double *field1,
+  LSMLIB_REAL *max_norm_diff,
+  const LSMLIB_REAL *field1,
   const int *ilo_field1_gb, 
   const int *ihi_field1_gb,
   const int *jlo_field1_gb, 
   const int *jhi_field1_gb,
   const int *klo_field1_gb, 
   const int *khi_field1_gb,
-  const double *field2,
+  const LSMLIB_REAL *field2,
   const int *ilo_field2_gb, 
   const int *ihi_field2_gb,
   const int *jlo_field2_gb, 
@@ -59,20 +70,20 @@ void LSM3D_MAX_NORM_DIFF_LOCAL(
   const unsigned char *mark_fb);
 
 void LSM3D_COMPUTE_STABLE_ADVECTION_DT_LOCAL(
-  double *dt,
-  const double *vel_x,
-  const double *vel_y,
-  const double *vel_z,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
+  const LSMLIB_REAL *vel_z,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
   const int *jhi_vel_gb,
   const int *klo_vel_gb, 
   const int *khi_vel_gb,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *cfl_number,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *cfl_number,
   const int *index_x,
   const int *index_y, 
   const int *index_z,
@@ -88,36 +99,36 @@ void LSM3D_COMPUTE_STABLE_ADVECTION_DT_LOCAL(
   const unsigned char *mark_fb);
 
 void LSM3D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL(
-  double *dt,
-  const double *vel_n,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
   const int *ilo_vel_gb, 
   const int *ihi_vel_gb,
   const int *jlo_vel_gb, 
   const int *jhi_vel_gb,
   const int *klo_vel_gb, 
   const int *khi_vel_gb,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
-  const double *phi_z_plus,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
+  const LSMLIB_REAL *phi_z_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
   const int *klo_grad_phi_plus_gb, 
   const int *khi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
-  const double *phi_z_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
+  const LSMLIB_REAL *phi_z_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
   const int *jhi_grad_phi_minus_gb,
   const int *klo_grad_phi_minus_gb, 
   const int *khi_grad_phi_minus_gb,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *cfl_number,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *cfl_number,
   const int *index_x,
   const int *index_y, 
   const int *index_z,
@@ -133,30 +144,30 @@ void LSM3D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL(
   const unsigned char *mark_fb);
     
 void LSM3D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_LOCAL(
-  double *dt,
-  const double *vel_n,
-  const double *phi_x_plus,
-  const double *phi_y_plus,
-  const double *phi_z_plus,
+  LSMLIB_REAL *dt,
+  const LSMLIB_REAL *vel_n,
+  const LSMLIB_REAL *phi_x_plus,
+  const LSMLIB_REAL *phi_y_plus,
+  const LSMLIB_REAL *phi_z_plus,
   const int *ilo_grad_phi_plus_gb, 
   const int *ihi_grad_phi_plus_gb,
   const int *jlo_grad_phi_plus_gb, 
   const int *jhi_grad_phi_plus_gb,
   const int *klo_grad_phi_plus_gb, 
   const int *khi_grad_phi_plus_gb,
-  const double *phi_x_minus,
-  const double *phi_y_minus,
-  const double *phi_z_minus,
+  const LSMLIB_REAL *phi_x_minus,
+  const LSMLIB_REAL *phi_y_minus,
+  const LSMLIB_REAL *phi_z_minus,
   const int *ilo_grad_phi_minus_gb, 
   const int *ihi_grad_phi_minus_gb,
   const int *jlo_grad_phi_minus_gb, 
   const int *jhi_grad_phi_minus_gb,
   const int *klo_grad_phi_minus_gb, 
   const int *khi_grad_phi_minus_gb,
-  const double *dx,
-  const double *dy,
-  const double *dz,
-  const double *cfl_number,  
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz,
+  const LSMLIB_REAL *cfl_number,  
   const int *index_x,
   const int *index_y, 
   const int *index_z,
