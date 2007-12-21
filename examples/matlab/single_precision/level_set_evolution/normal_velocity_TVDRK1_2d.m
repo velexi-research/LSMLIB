@@ -59,7 +59,7 @@ t_start = 0;
 t_end = 0.25;
 
 % initialize phi
-phi_init = x.^2 + 0.1*y.^2 - 0.05;
+phi_init = single( x.^2 + 0.1*y.^2 - 0.05 );
 phi = phi_init;
 
 % initialize t_cur
@@ -119,7 +119,7 @@ while (t_cur < t_end)
 
   % plot the current level set function and zero level set
   figure(1); clf;
-  pcolor(x,y,phi);
+  pcolor(x,y,double(phi));
   shading interp
   hold on
   contour(x,y,phi,[0 0],'c','linewidth',2);
@@ -138,7 +138,7 @@ end
 
 % plot results
 figure(1); clf;
-pcolor(x,y,phi);
+pcolor(x,y,double(phi));
 shading interp
 hold on
 contour(x,y,phi,[0 0],'c','linewidth',2);
