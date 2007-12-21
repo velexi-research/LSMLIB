@@ -27,22 +27,23 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "LSMLIB_config.h"
 #include "lsm_geometry3d.h"
 
 /* Helper Function Declarations */
 void checkCase(
-  double *x1, double *x2, double *x3, double *x4, 
-  double *phi, double *psi, 
-  double *point_on_line, double *true_line_dir);
+  LSMLIB_REAL *x1, LSMLIB_REAL *x2, LSMLIB_REAL *x3, LSMLIB_REAL *x4, 
+  LSMLIB_REAL *phi, LSMLIB_REAL *psi, 
+  LSMLIB_REAL *point_on_line, LSMLIB_REAL *true_line_dir);
 
 
 int main(void)
 {
 
-  double alpha[4], beta[4];
-  double x1[3], x2[3], x3[3], x4[3];
-  double phi[4], psi[4];
-  double point_on_line[3], true_line_dir[3];
+  LSMLIB_REAL alpha[4], beta[4];
+  LSMLIB_REAL x1[3], x2[3], x3[3], x4[3];
+  LSMLIB_REAL phi[4], psi[4];
+  LSMLIB_REAL point_on_line[3], true_line_dir[3];
 
   /* set alpha and beta values */
   /* NOTE: for this choice of alpha and beta, the {phi=0,psi=0} */
@@ -488,15 +489,15 @@ int main(void)
 
 
 void checkCase(
-  double *x1, double *x2, double *x3, double *x4, 
-  double *phi, double *psi, 
-  double *point_on_line, double *true_line_dir)
+  LSMLIB_REAL *x1, LSMLIB_REAL *x2, LSMLIB_REAL *x3, LSMLIB_REAL *x4, 
+  LSMLIB_REAL *phi, LSMLIB_REAL *psi, 
+  LSMLIB_REAL *point_on_line, LSMLIB_REAL *true_line_dir)
 {
 
-  double endpt1[3], endpt2[3];
-  double line_dir[3];
-  double check_endpt1, check_endpt2;
-  double check_line_dir;
+  LSMLIB_REAL endpt1[3], endpt2[3];
+  LSMLIB_REAL line_dir[3];
+  LSMLIB_REAL check_endpt1, check_endpt2;
+  LSMLIB_REAL check_line_dir;
   int same_point;
   int err_code;
 
@@ -513,7 +514,7 @@ void checkCase(
   /* check if two endpoints are the same */
   same_point = ( fabs(endpt1[0] - endpt2[0])
                + fabs(endpt1[1] - endpt2[1])
-               + fabs(endpt1[2] - endpt2[2]) < 1e-8) ? 1 : 0;
+               + fabs(endpt1[2] - endpt2[2]) < @lsmlib_zero_tol@) ? 1 : 0;
 
   /* compute direction of line defined by endpt1 and endpt2 */
   if (!same_point) {
@@ -521,11 +522,11 @@ void checkCase(
     line_dir[1] = endpt2[1] - endpt1[1];
     line_dir[2] = endpt2[2] - endpt1[2];
 
-    if (fabs(line_dir[2]) > 1e-8) {
+    if (fabs(line_dir[2]) > @lsmlib_zero_tol@) {
       line_dir[0] /= line_dir[2];
       line_dir[1] /= line_dir[2];
       line_dir[2] /= line_dir[2];
-    } else if (fabs(line_dir[1]) > 1e-8) {
+    } else if (fabs(line_dir[1]) > @lsmlib_zero_tol@) {
       line_dir[0] /= line_dir[1];
       line_dir[1] /= line_dir[1];
       line_dir[2] /= line_dir[1];
@@ -548,7 +549,7 @@ void checkCase(
       fabs(line_dir[0]*true_line_dir[1]-line_dir[1]*true_line_dir[0])
     + fabs(line_dir[0]*true_line_dir[2]-line_dir[2]*true_line_dir[0])
     + fabs(line_dir[1]*true_line_dir[2]-line_dir[2]*true_line_dir[1]); 
-    if (fabs(check_line_dir) < 1e-6)
+    if (fabs(check_line_dir) < @lsmlib_zero_tol@)
       printf("OK: check line direction: %f\n", check_line_dir);
     else
       printf("ERROR: check line direction: %f\n", check_line_dir);
@@ -568,12 +569,12 @@ void checkCase(
                + fabs( (endpt2[1] - point_on_line[1])*true_line_dir[2] 
                       -(endpt2[2] - point_on_line[2])*true_line_dir[1] );
 
-  if (fabs(check_endpt1) < 1e-6)
+  if (fabs(check_endpt1) < @lsmlib_zero_tol@)
     printf("OK: check endpt1: %f\n", check_endpt1);
   else
     printf("ERROR: check endpt1: %f\n", check_endpt1);
 
-  if (fabs(check_endpt2) < 1e-6)
+  if (fabs(check_endpt2) < @lsmlib_zero_tol@)
     printf("OK: check endpt2: %f\n", check_endpt2);
   else
     printf("ERROR: check endpt2: %f\n", check_endpt2);

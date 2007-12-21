@@ -31,15 +31,16 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "LSMLIB_config.h"
 #include "lsm_geometry3d.h"
 
 int main(void)
 {
 
-  double endpt1[3], endpt2[3];
-  double x1[3], x2[3], x3[3], x4[3];
-  double phi[4], psi[4];
-  double line_dir[3];
+  LSMLIB_REAL endpt1[3], endpt2[3];
+  LSMLIB_REAL x1[3], x2[3], x3[3], x4[3];
+  LSMLIB_REAL phi[4], psi[4];
+  LSMLIB_REAL line_dir[3];
   int err_code;
 
   /* set coordinates and values at corners of tetrahedron */
