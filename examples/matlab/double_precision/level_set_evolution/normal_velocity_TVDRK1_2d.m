@@ -53,7 +53,7 @@ Y = (y_lo-(ghostcell_width-0.5)*dy:dy:y_hi+ghostcell_width*dy)';
 [x,y] = meshgrid(X,Y);
 
 % set up time integration parameters
-cfl_number = 0.4;
+cfl_number = 0.25;
 dt = cfl_number/(1/dx^2+1/dy^2);
 t_start = 0;
 t_end = 0.25;
