@@ -23,10 +23,6 @@ extern "C" {
  * discretizations for narrow banding (local) approach. 
  *
  */
- 
-#ifndef INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_LOCAL_H
-#define INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_LOCAL_H
-
 
 
 /* Link between C/C++ and Fortran function names

@@ -24,10 +24,6 @@ extern "C" {
  *
  */
  
-#ifndef INCLUDED_LSM_SPATIAL_DERIVATIVES_3D_LOCAL_H
-#define INCLUDED_LSM_SPATIAL_DERIVATIVES_3D_LOCAL_H
-
-
 
 /* Link between C/C++ and Fortran function names
  *
