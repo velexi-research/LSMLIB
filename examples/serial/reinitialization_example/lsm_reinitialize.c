@@ -1,5 +1,6 @@
 // System headers
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "lsm_data_arrays.h"
