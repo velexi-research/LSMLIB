@@ -873,7 +873,7 @@ public:
    * maximum stable dt is computed using the algorithm:
    *
    * <pre>
-   *   if (user_specified_dt < @LSMLIB_REAL_MAX@)
+   *   if (user_specified_dt < LSMLIB_REAL_MAX)
    *
    *     dt = user_specified_dt
    *

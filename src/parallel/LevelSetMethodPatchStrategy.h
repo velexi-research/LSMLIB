@@ -169,7 +169,7 @@ public:
    *    This method is intended to allow the user to specify a completely 
    *    arbitrary time step size.
    *
-   *  - If this method returns any value smaller than @LSMLIB_REAL_MAX@, 
+   *  - If this method returns any value smaller than LSMLIB_REAL_MAX, 
    *    the LevelSetFunctionIntegrator will ignore the internally computed
    *    maximum stable dt and the stable dt returned by the user 
    *    implemented subclass of LevelSetMethodVelocityFieldStrategy.

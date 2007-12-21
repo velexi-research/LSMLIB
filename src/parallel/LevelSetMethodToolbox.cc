@@ -6101,7 +6101,7 @@ LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeStableAdvectionDt(
   float dx_level0[DIM]; 
   for (int i = 0; i < DIM; i++) dx_level0[i] = (float) dx_level0_double[i];
 #endif
-  LSMLIB_REAL max_advection_dt = @LSMLIB_REAL_MAX@;
+  LSMLIB_REAL max_advection_dt = LSMLIB_REAL_MAX;
 
   // loop over PatchHierarchy and compute the maximum stable 
   // advection dt by calling Fortran routines
@@ -6255,7 +6255,7 @@ LSMLIB_REAL LevelSetMethodToolbox<DIM>::computeStableNormalVelocityDt(
   float dx_level0[DIM]; 
   for (int i = 0; i < DIM; i++) dx_level0[i] = (float) dx_level0_double[i];
 #endif
-  LSMLIB_REAL max_normal_vel_dt = @LSMLIB_REAL_MAX@;
+  LSMLIB_REAL max_normal_vel_dt = LSMLIB_REAL_MAX;
 
   // loop over PatchHierarchy and compute the maximum stable 
   // advection dt by calling Fortran routines

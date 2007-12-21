@@ -345,7 +345,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::computeStableDt()
   /*
    * compute maximum stable dt using:
    *
-   *   if (user_specified_dt < @LSMLIB_REAL_MAX@)
+   *   if (user_specified_dt < LSMLIB_REAL_MAX)
    *
    *     dt = user_specified_dt
    *
@@ -360,9 +360,9 @@ LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::computeStableDt()
    *       velocity fields are provided by the 
    *       LevelSetMethodVelocityFieldStrategy.
    */
-  LSMLIB_REAL max_advection_dt = @LSMLIB_REAL_MAX@;
-  LSMLIB_REAL max_normal_vel_dt = @LSMLIB_REAL_MAX@;
-  LSMLIB_REAL max_user_specified_dt = @LSMLIB_REAL_MAX@;
+  LSMLIB_REAL max_advection_dt = LSMLIB_REAL_MAX;
+  LSMLIB_REAL max_normal_vel_dt = LSMLIB_REAL_MAX;
+  LSMLIB_REAL max_user_specified_dt = LSMLIB_REAL_MAX;
 
   // allocate scratch space
   const int num_levels = d_patch_hierarchy->getNumberLevels();
@@ -437,7 +437,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator<DIM>::computeStableDt()
   max_user_specified_dt = tbox::MPI::minReduction(max_user_specified_dt);
 
   LSMLIB_REAL max_stable_dt = -1; // temporary value to be set below
-  if (max_user_specified_dt < @LSMLIB_REAL_MAX@) {
+  if (max_user_specified_dt < LSMLIB_REAL_MAX) {
 
     max_stable_dt = max_user_specified_dt;
 
