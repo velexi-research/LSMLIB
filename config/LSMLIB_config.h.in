@@ -15,9 +15,9 @@
 #undef LSMLIB_DEBUG_NO_INLINE 
 #endif
 
-/* Macro defined if single precision library is enabled. */
-#ifndef LSMLIB_SINGLE_PRECISION
-#define LSMLIB_SINGLE_PRECISION
+/* Macro defined if double precision library is being built. */
+#ifndef LSMLIB_DOUBLE_PRECISION
+#define LSMLIB_DOUBLE_PRECISION
 #endif
 
 /* Floating-point precision for LSMLIB_REAL */
@@ -38,6 +38,11 @@
 /* Minimum value for LSMLIB_REAL */
 #ifndef LSMLIB_REAL_MIN
 #define LSMLIB_REAL_MIN @LSMLIB_REAL_MIN@
+#endif
+
+/* Machine epsilon value for LSMLIB_REAL */
+#ifndef LSMLIB_REAL_EPSILON
+#define LSMLIB_REAL_EPSILON @LSMLIB_REAL_EPSILON@
 #endif
 
 #endif
