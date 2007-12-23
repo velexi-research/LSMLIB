@@ -81,23 +81,19 @@ c     _fb refers to fillbox
       integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
       real reinit_rhs(ilo_rhs_gb:ihi_rhs_gb,
-     &                            jlo_rhs_gb:jhi_rhs_gb)
+     &                jlo_rhs_gb:jhi_rhs_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
       real phi0(ilo_phi0_gb:ihi_phi0_gb,
-     &                      jlo_phi0_gb:jhi_phi0_gb)
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &          jlo_phi0_gb:jhi_phi0_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real dx, dy
       integer use_phi0_for_sgn
       integer nlo_index, nhi_index
@@ -329,33 +325,25 @@ c     _fb refers to fillbox
       integer ilo_grad_psi_minus_gb, ihi_grad_psi_minus_gb
       integer jlo_grad_psi_minus_gb, jhi_grad_psi_minus_gb
       real ortho_rhs(ilo_rhs_gb:ihi_rhs_gb,
-     &                           jlo_rhs_gb:jhi_rhs_gb)
+     &               jlo_rhs_gb:jhi_rhs_gb)
       real psi(ilo_psi_gb:ihi_psi_gb,
-     &                     jlo_psi_gb:jhi_psi_gb)
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real psi_x_plus(
-     &                    ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
-     &                    jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb)
-      real psi_y_plus(
-     &                    ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
-     &                    jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb)
-      real psi_x_minus(
-     &                    ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
-     &                    jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb)
-      real psi_y_minus(
-     &                    ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
-     &                    jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb)
+     &         jlo_psi_gb:jhi_psi_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real psi_x_plus(ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
+     &                jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb)
+      real psi_y_plus(ilo_grad_psi_plus_gb:ihi_grad_psi_plus_gb,
+     &                jlo_grad_psi_plus_gb:jhi_grad_psi_plus_gb)
+      real psi_x_minus(ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
+     &                 jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb)
+      real psi_y_minus(ilo_grad_psi_minus_gb:ihi_grad_psi_minus_gb,
+     &                 jlo_grad_psi_minus_gb:jhi_grad_psi_minus_gb)
       real dx, dy
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)

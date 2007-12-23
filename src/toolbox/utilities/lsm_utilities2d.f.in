@@ -45,9 +45,9 @@ c     _ib refers to box to include in norm calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real field1(ilo_field1_gb:ihi_field1_gb,
-     &                        jlo_field1_gb:jhi_field1_gb)
+     &            jlo_field1_gb:jhi_field1_gb)
       real field2(ilo_field2_gb:ihi_field2_gb,
-     &                        jlo_field2_gb:jhi_field2_gb)
+     &            jlo_field2_gb:jhi_field2_gb)
       real max_norm_diff
       real next_diff
       integer i,j
@@ -109,9 +109,9 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real dx, dy
       real inv_dx, inv_dy
       real cfl_number
@@ -207,19 +207,15 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_n(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real dx,dy
       real inv_dx,inv_dy
       real max_dx_sq
@@ -326,18 +322,14 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_n
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real dx,dy
       real inv_dx,inv_dy
       real max_dx_sq
@@ -436,9 +428,9 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
       real dx,dy
       real epsilon
       integer i,j
@@ -528,9 +520,9 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
       real dx,dy
       real epsilon
       integer i,j
@@ -625,13 +617,13 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real dx,dy
       real epsilon
       real one_over_epsilon
@@ -727,12 +719,11 @@ c     _ib refers to box to include in norm calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real field1(ilo_field1_gb:ihi_field1_gb,
-     &                        jlo_field1_gb:jhi_field1_gb)
+     &            jlo_field1_gb:jhi_field1_gb)
       real field2(ilo_field2_gb:ihi_field2_gb,
-     &                        jlo_field2_gb:jhi_field2_gb)
-      real control_vol(
-     &                   ilo_control_vol_gb:ihi_control_vol_gb,
-     &                   jlo_control_vol_gb:jhi_control_vol_gb)
+     &            jlo_field2_gb:jhi_field2_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real max_norm_diff
       real next_diff
@@ -833,14 +824,13 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
-      real control_vol(
-     &                   ilo_control_vol_gb:ihi_control_vol_gb,
-     &                   jlo_control_vol_gb:jhi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx, dy
       real inv_dx, inv_dy
@@ -969,24 +959,19 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_n(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
-      real control_vol(
-     &                   ilo_control_vol_gb:ihi_control_vol_gb,
-     &                   jlo_control_vol_gb:jhi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy
       real inv_dx,inv_dy
@@ -1134,23 +1119,18 @@ c     _ib refers to box to include in dt calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real vel_n
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer jlo_control_vol_gb, jhi_control_vol_gb
-      real control_vol(
-     &                   ilo_control_vol_gb:ihi_control_vol_gb,
-     &                   jlo_control_vol_gb:jhi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy
       real inv_dx,inv_dy
@@ -1294,12 +1274,11 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy
       real epsilon
@@ -1436,12 +1415,11 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy
       real epsilon
@@ -1584,16 +1562,15 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       integer jlo_ib, jhi_ib
       real F(ilo_F_gb:ihi_F_gb,
-     &                   jlo_F_gb:jhi_F_gb)
+     &       jlo_F_gb:jhi_F_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy
       real epsilon

@@ -55,10 +55,8 @@ c     _fb refers to fill-box
       real rhs(ilo_rhs_gb:ihi_rhs_gb)
       real S(ilo_S_gb:ihi_S_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
-      real S_x_upwind(
-     &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb)
-      real signed_normal_x(
-     &                   ilo_signed_normal_gb:ihi_signed_normal_gb)
+      real S_x_upwind(ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb)
+      real signed_normal_x(ilo_signed_normal_gb:ihi_signed_normal_gb)
       real dx
       integer i
       real zero

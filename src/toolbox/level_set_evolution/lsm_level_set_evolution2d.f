@@ -31,7 +31,7 @@ c { begin subroutine
       integer ilo_lse_rhs_gb, ihi_lse_rhs_gb
       integer jlo_lse_rhs_gb, jhi_lse_rhs_gb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
-     &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
+     &             jlo_lse_rhs_gb:jhi_lse_rhs_gb)
       integer i,j
 
 c     { begin loop over grid
@@ -90,15 +90,15 @@ c { begin subroutine
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
-     &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
+     &             jlo_lse_rhs_gb:jhi_lse_rhs_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       integer i,j
 
 c     { begin loop over grid
@@ -166,21 +166,17 @@ c { begin subroutine
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
-     &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &             jlo_lse_rhs_gb:jhi_lse_rhs_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real vel_n(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       integer i,j
       real vel_n_cur
       real norm_grad_phi_sq
@@ -272,19 +268,15 @@ c { begin subroutine
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
-     &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &             jlo_lse_rhs_gb:jhi_lse_rhs_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real vel_n
       
       integer i,j
@@ -378,17 +370,17 @@ c { begin subroutine
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb,
-     &                         jlo_lse_rhs_gb:jhi_lse_rhs_gb)
+     &             jlo_lse_rhs_gb:jhi_lse_rhs_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                         jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                         jlo_grad_phi_gb:jhi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
       real phi_xx(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
-     &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
+     &            jlo_grad2_phi_gb:jhi_grad2_phi_gb)
       real phi_yy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
-     &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
+     &            jlo_grad2_phi_gb:jhi_grad2_phi_gb)
       real phi_xy(ilo_grad2_phi_gb:ihi_grad2_phi_gb,
-     &                         jlo_grad2_phi_gb:jhi_grad2_phi_gb)
+     &            jlo_grad2_phi_gb:jhi_grad2_phi_gb)
       real b
       
       integer i,j

@@ -53,9 +53,9 @@ c     _ib refers to box to include in norm calculation
       integer ilo_field2_gb, ihi_field2_gb
       integer jlo_field2_gb, jhi_field2_gb
       real field1(ilo_field1_gb:ihi_field1_gb,
-     &                        jlo_field1_gb:jhi_field1_gb)
+     &            jlo_field1_gb:jhi_field1_gb)
       real field2(ilo_field2_gb:ihi_field2_gb,
-     &                        jlo_field2_gb:jhi_field2_gb)
+     &            jlo_field2_gb:jhi_field2_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -139,9 +139,9 @@ c     _ib refers to box to include in dt calculation
       integer ilo_vel_gb, ihi_vel_gb
       integer jlo_vel_gb, jhi_vel_gb
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
       real dx, dy
       real inv_dx, inv_dy
       real cfl_number
@@ -255,19 +255,15 @@ c     _ib refers to box to include in dt calculation
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
       real vel_n(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+     &           jlo_vel_gb:jhi_vel_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real dx,dy
       real inv_dx, inv_dy
       real max_dx_sq
@@ -394,18 +390,14 @@ c     _fb refers to box to include in dt calculation
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
       real vel_n
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
       real dx,dy
       real cfl_number
       integer nlo_index, nhi_index

@@ -65,23 +65,19 @@ c     _fb refers to fill-box
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       real rhs(ilo_rhs_gb:ihi_rhs_gb,
-     &                     jlo_rhs_gb:jhi_rhs_gb)
+     &         jlo_rhs_gb:jhi_rhs_gb)
       real S(ilo_S_gb:ihi_S_gb,
-     &                   jlo_S_gb:jhi_S_gb)
+     &       jlo_S_gb:jhi_S_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb)
-      real S_x_upwind(
-     &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
-     &                   jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb)
-      real S_y_upwind(
-     &                   ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
-     &                   jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb)
-      real signed_normal_x(
-     &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
-     &                   jlo_signed_normal_gb:jhi_signed_normal_gb)
-      real signed_normal_y(
-     &                   ilo_signed_normal_gb:ihi_signed_normal_gb,
-     &                   jlo_signed_normal_gb:jhi_signed_normal_gb)
+     &         jlo_phi_gb:jhi_phi_gb)
+      real S_x_upwind(ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
+     &                jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb)
+      real S_y_upwind(ilo_grad_S_upwind_gb:ihi_grad_S_upwind_gb,
+     &                jlo_grad_S_upwind_gb:jhi_grad_S_upwind_gb)
+      real signed_normal_x(ilo_signed_normal_gb:ihi_signed_normal_gb,
+     &                     jlo_signed_normal_gb:jhi_signed_normal_gb)
+      real signed_normal_y(ilo_signed_normal_gb:ihi_signed_normal_gb,
+     &                     jlo_signed_normal_gb:jhi_signed_normal_gb)
       real dx, dy
       integer i,j
       real zero

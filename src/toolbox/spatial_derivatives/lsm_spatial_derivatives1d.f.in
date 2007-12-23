@@ -61,8 +61,7 @@ c     _fb refers to fillbox
       integer ilo_Dn_minus_one_gb, ihi_Dn_minus_one_gb
       integer ilo_fb, ihi_fb
       real Dn(ilo_Dn_gb:ihi_Dn_gb)
-      real Dn_minus_one(
-     &                    ilo_Dn_minus_one_gb:ihi_Dn_minus_one_gb)
+      real Dn_minus_one(ilo_Dn_minus_one_gb:ihi_Dn_minus_one_gb)
       integer n
       integer i
       integer fillbox_shift
@@ -155,10 +154,8 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_D1_gb, ihi_D1_gb
       integer ilo_fb, ihi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb)
       real dx, inv_dx
@@ -257,10 +254,8 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_D1_gb, ihi_D1_gb
       integer ilo_D2_gb, ihi_D2_gb
       integer ilo_fb, ihi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb)
@@ -380,10 +375,8 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_D2_gb, ihi_D2_gb
       integer ilo_D3_gb, ihi_D3_gb
       integer ilo_fb, ihi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb)
@@ -533,10 +526,8 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_D1_gb, ihi_D1_gb
       integer ilo_fb, ihi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb)
       real dx, inv_dx
@@ -1338,8 +1329,7 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_laplacian_phi_gb, ihi_laplacian_phi_gb
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_fb, ihi_fb
-      real laplacian_phi(
-     &                   ilo_laplacian_phi_gb:ihi_laplacian_phi_gb)
+      real laplacian_phi(ilo_laplacian_phi_gb:ihi_laplacian_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real dx
       integer i
@@ -1409,10 +1399,8 @@ c     _fb refers to fill-box
       integer ilo_phi_gb, ihi_phi_gb
       integer ilo_fb, ihi_fb
       real F_x(ilo_grad_F_gb:ihi_grad_F_gb)
-      real F_x_plus(
-     &                   ilo_grad_F_plus_gb:ihi_grad_F_plus_gb)
-      real F_x_minus(
-     &                   ilo_grad_F_minus_gb:ihi_grad_F_minus_gb)
+      real F_x_plus(ilo_grad_F_plus_gb:ihi_grad_F_plus_gb)
+      real F_x_minus(ilo_grad_F_minus_gb:ihi_grad_F_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real phi_cur
       real phi_neighbor_plus, phi_neighbor_minus
@@ -1510,10 +1498,8 @@ c     _fb refers to fill-box
       integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
       integer ilo_fb, ihi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       integer i
       real half
       parameter (half=0.5d0)

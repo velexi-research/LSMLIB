@@ -597,9 +597,9 @@ c { begin subroutine
       integer jlo_gb, jhi_gb
       integer klo_gb, khi_gb
       real lse_rhs(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
-     &                         klo_gb:khi_gb)
+     &             klo_gb:khi_gb)
       real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,
-     &                     klo_gb:khi_gb)
+     &         klo_gb:khi_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)

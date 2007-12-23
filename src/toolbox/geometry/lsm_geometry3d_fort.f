@@ -51,23 +51,23 @@ c     _fb refers to fill-box for normal data
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
       real normal_x(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real normal_y(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real normal_z(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real norm_grad_phi, inv_norm_grad_phi
       integer i,j,k
       real half
@@ -161,26 +161,26 @@ c     _fb refers to fill-box for normal data
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
       real normal_x(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real normal_y(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real normal_z(ilo_normal_gb:ihi_normal_gb,
-     &                          jlo_normal_gb:jhi_normal_gb,
-     &                          klo_normal_gb:khi_normal_gb)
+     &              jlo_normal_gb:jhi_normal_gb,
+     &              klo_normal_gb:khi_normal_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx, dy, dz
       real phi_cur
       real sgn_phi
@@ -284,8 +284,8 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx,dy,dz
       real epsilon
       integer i,j,k
@@ -373,8 +373,8 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx,dy,dz
       real epsilon
       integer i,j,k
@@ -470,17 +470,17 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real dx,dy,dz
       real epsilon
       real one_over_epsilon
@@ -586,12 +586,11 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb,
-     &                     klo_control_vol_gb:khi_control_vol_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy,dz
       real epsilon
@@ -733,12 +732,11 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb,
-     &                     klo_control_vol_gb:khi_control_vol_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy,dz
       real epsilon
@@ -886,21 +884,20 @@ c     _ib refers to box to include in integral calculation
       integer jlo_ib, jhi_ib
       integer klo_ib, khi_ib
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb,
-     &                     jlo_control_vol_gb:jhi_control_vol_gb,
-     &                     klo_control_vol_gb:khi_control_vol_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
       integer control_vol_sgn
       real dx,dy,dz
       real epsilon

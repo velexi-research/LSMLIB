@@ -133,10 +133,8 @@ c { begin subroutine
       integer ilo_vel_gb, ihi_vel_gb
       integer ilo_fb, ihi_fb
       real lse_rhs(ilo_lse_rhs_gb:ihi_lse_rhs_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real vel_n(ilo_vel_gb:ihi_vel_gb)
       integer i
       real vel_n_cur

@@ -70,12 +70,11 @@ c     _fb refers to fillbox
       integer klo_Dn_minus_one_gb, khi_Dn_minus_one_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       real Dn(ilo_Dn_gb:ihi_Dn_gb,
-     &                    jlo_Dn_gb:jhi_Dn_gb,
-     &                    klo_Dn_gb:khi_Dn_gb)
-      real Dn_minus_one(
-     &                   ilo_Dn_minus_one_gb:ihi_Dn_minus_one_gb,
-     &                   jlo_Dn_minus_one_gb:jhi_Dn_minus_one_gb,
-     &                   klo_Dn_minus_one_gb:khi_Dn_minus_one_gb)
+     &        jlo_Dn_gb:jhi_Dn_gb,
+     &        klo_Dn_gb:khi_Dn_gb)
+      real Dn_minus_one(ilo_Dn_minus_one_gb:ihi_Dn_minus_one_gb,
+     &                  jlo_Dn_minus_one_gb:jhi_Dn_minus_one_gb,
+     &                  klo_Dn_minus_one_gb:khi_Dn_minus_one_gb)
       integer n
       integer dir 
       integer i,j,k
@@ -235,36 +234,30 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_D1_gb, jhi_D1_gb
       integer klo_D1_gb, khi_D1_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_z_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_z_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_z_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_z_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k
@@ -446,39 +439,33 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_D2_gb, jhi_D2_gb
       integer klo_D2_gb, khi_D2_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_z_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_z_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_z_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_z_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb,
-     &                    jlo_D2_gb:jhi_D2_gb,
-     &                    klo_D2_gb:khi_D2_gb)
+     &        jlo_D2_gb:jhi_D2_gb,
+     &        klo_D2_gb:khi_D2_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i, j, k
@@ -757,42 +744,36 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_D3_gb, jhi_D3_gb
       integer klo_D3_gb, khi_D3_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_z_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_z_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_z_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_z_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb,
-     &                    jlo_D2_gb:jhi_D2_gb,
-     &                    klo_D2_gb:khi_D2_gb)
+     &        jlo_D2_gb:jhi_D2_gb,
+     &        klo_D2_gb:khi_D2_gb)
       real D3(ilo_D3_gb:ihi_D3_gb,
-     &                    jlo_D3_gb:jhi_D3_gb,
-     &                    klo_D3_gb:khi_D3_gb)
+     &        jlo_D3_gb:jhi_D3_gb,
+     &        klo_D3_gb:khi_D3_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k 
@@ -1223,36 +1204,30 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_D1_gb, jhi_D1_gb
       integer klo_D1_gb, khi_D1_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_z_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                    jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                    klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_z_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                    jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                    klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_z_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_z_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
 
@@ -1703,29 +1678,29 @@ c     _fb refers to fill-box for grad_phi data
       integer klo_D1_gb, khi_D1_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_z(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k
@@ -1934,32 +1909,32 @@ c     _fb refers to fill-box for grad_phi data
       integer klo_D2_gb, khi_D2_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_z(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb,
-     &                    jlo_D2_gb:jhi_D2_gb,
-     &                    klo_D2_gb:khi_D2_gb)
+     &        jlo_D2_gb:jhi_D2_gb,
+     &        klo_D2_gb:khi_D2_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i, j, k
@@ -2261,35 +2236,35 @@ c     _fb refers to fill-box for grad_phi data
       integer klo_D3_gb, khi_D3_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_z(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real D2(ilo_D2_gb:ihi_D2_gb,
-     &                    jlo_D2_gb:jhi_D2_gb,
-     &                    klo_D2_gb:khi_D2_gb)
+     &        jlo_D2_gb:jhi_D2_gb,
+     &        klo_D2_gb:khi_D2_gb)
       real D3(ilo_D3_gb:ihi_D3_gb,
-     &                    jlo_D3_gb:jhi_D3_gb,
-     &                    klo_D3_gb:khi_D3_gb)
+     &        jlo_D3_gb:jhi_D3_gb,
+     &        klo_D3_gb:khi_D3_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k 
@@ -2701,29 +2676,29 @@ c     _fb refers to fill-box for grad_phi data
       integer klo_D1_gb, khi_D1_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real vel_x(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_y(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real vel_z(ilo_vel_gb:ihi_vel_gb,
-     &                       jlo_vel_gb:jhi_vel_gb,
-     &                       klo_vel_gb:khi_vel_gb)
+     &           jlo_vel_gb:jhi_vel_gb,
+     &           klo_vel_gb:khi_vel_gb)
       real D1(ilo_D1_gb:ihi_D1_gb,
-     &                    jlo_D1_gb:jhi_D1_gb,
-     &                    klo_D1_gb:khi_D1_gb)
+     &        jlo_D1_gb:jhi_D1_gb,
+     &        klo_D1_gb:khi_D1_gb)
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
 
@@ -3073,21 +3048,18 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      real phi_y(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      real phi_z(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx, dy, dz
       integer i,j,k
       real dx_factor, dy_factor, dz_factor
@@ -3154,21 +3126,18 @@ c     _fb refers to fill-box for grad_phi data
       integer jlo_phi_gb, jhi_phi_gb
       integer klo_phi_gb, khi_phi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb
-      real phi_x(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      real phi_y(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
-      real phi_z(
-     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                    klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx, dy, dz
       integer i,j,k
       real dx_factor, dy_factor, dz_factor
@@ -3245,13 +3214,12 @@ c     _fb refers to fill-box for grad_phi data
       integer ilo_fb, ihi_fb
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
-      real laplacian_phi(
-     &                   ilo_laplacian_phi_gb:ihi_laplacian_phi_gb,
+      real laplacian_phi(ilo_laplacian_phi_gb:ihi_laplacian_phi_gb,
      &                   jlo_laplacian_phi_gb:jhi_laplacian_phi_gb,
      &                   klo_laplacian_phi_gb:khi_laplacian_phi_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real dx, dy, dz
       integer i, j, k
       real inv_dx_sq
@@ -3352,41 +3320,35 @@ c     _fb refers to fill-box
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
       real F_x(ilo_grad_F_gb:ihi_grad_F_gb,
-     &                     jlo_grad_F_gb:jhi_grad_F_gb,
-     &                     klo_grad_F_gb:khi_grad_F_gb)
+     &         jlo_grad_F_gb:jhi_grad_F_gb,
+     &         klo_grad_F_gb:khi_grad_F_gb)
       real F_y(ilo_grad_F_gb:ihi_grad_F_gb,
-     &                     jlo_grad_F_gb:jhi_grad_F_gb,
-     &                     klo_grad_F_gb:khi_grad_F_gb)
+     &         jlo_grad_F_gb:jhi_grad_F_gb,
+     &         klo_grad_F_gb:khi_grad_F_gb)
       real F_z(ilo_grad_F_gb:ihi_grad_F_gb,
-     &                     jlo_grad_F_gb:jhi_grad_F_gb,
-     &                     klo_grad_F_gb:khi_grad_F_gb)
-      real F_x_plus(
-     &                   ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
-     &                   jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
-     &                   klo_grad_F_plus_gb:khi_grad_F_plus_gb)
-      real F_y_plus(
-     &                   ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
-     &                   jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
-     &                   klo_grad_F_plus_gb:khi_grad_F_plus_gb)
-      real F_z_plus(
-     &                   ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
-     &                   jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
-     &                   klo_grad_F_plus_gb:khi_grad_F_plus_gb)
-      real F_x_minus(
-     &                   ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
-     &                   jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
-     &                   klo_grad_F_minus_gb:khi_grad_F_minus_gb)
-      real F_y_minus(
-     &                   ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
-     &                   jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
-     &                   klo_grad_F_minus_gb:khi_grad_F_minus_gb)
-      real F_z_minus(
-     &                   ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
-     &                   jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
-     &                   klo_grad_F_minus_gb:khi_grad_F_minus_gb)
+     &         jlo_grad_F_gb:jhi_grad_F_gb,
+     &         klo_grad_F_gb:khi_grad_F_gb)
+      real F_x_plus(ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
+     &              jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
+     &              klo_grad_F_plus_gb:khi_grad_F_plus_gb)
+      real F_y_plus(ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
+     &              jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
+     &              klo_grad_F_plus_gb:khi_grad_F_plus_gb)
+      real F_z_plus(ilo_grad_F_plus_gb:ihi_grad_F_plus_gb,
+     &              jlo_grad_F_plus_gb:jhi_grad_F_plus_gb,
+     &              klo_grad_F_plus_gb:khi_grad_F_plus_gb)
+      real F_x_minus(ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
+     &               jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
+     &               klo_grad_F_minus_gb:khi_grad_F_minus_gb)
+      real F_y_minus(ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
+     &               jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
+     &               klo_grad_F_minus_gb:khi_grad_F_minus_gb)
+      real F_z_minus(ilo_grad_F_minus_gb:ihi_grad_F_minus_gb,
+     &               jlo_grad_F_minus_gb:jhi_grad_F_minus_gb,
+     &               klo_grad_F_minus_gb:khi_grad_F_minus_gb)
       real phi(ilo_phi_gb:ihi_phi_gb,
-     &                     jlo_phi_gb:jhi_phi_gb,
-     &                     klo_phi_gb:khi_phi_gb)
+     &         jlo_phi_gb:jhi_phi_gb,
+     &         klo_phi_gb:khi_phi_gb)
       real phi_cur
       real phi_neighbor_plus, phi_neighbor_minus
       integer i,j,k
@@ -3567,38 +3529,32 @@ c     _fb refers to fill-box
       integer jlo_fb, jhi_fb
       integer klo_fb, khi_fb
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
       real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
-     &                       jlo_grad_phi_gb:jhi_grad_phi_gb,
-     &                       klo_grad_phi_gb:khi_grad_phi_gb)
-      real phi_x_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_y_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_z_plus(
-     &                   ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
-     &                   jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
-     &                   klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_y_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
-      real phi_z_minus(
-     &                   ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
-     &                   jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
-     &                   klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_z_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb,
+     &                klo_grad_phi_plus_gb:khi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
+      real phi_z_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb,
+     &                 klo_grad_phi_minus_gb:khi_grad_phi_minus_gb)
       integer i,j,k
       real half
       parameter (half=0.5d0)

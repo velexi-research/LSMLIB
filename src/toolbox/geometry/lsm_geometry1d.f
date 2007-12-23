@@ -416,8 +416,7 @@ c     _ib refers to box to include in integral calculation
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer ilo_ib, ihi_ib
       real phi(ilo_phi_gb:ihi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
       real dx
       real epsilon
@@ -506,8 +505,7 @@ c     _ib refers to box to include in integral calculation
       integer ilo_control_vol_gb, ihi_control_vol_gb
       integer ilo_ib, ihi_ib
       real phi(ilo_phi_gb:ihi_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
       real dx
       real epsilon
@@ -601,8 +599,7 @@ c     _ib refers to box to include in integral calculation
       integer ilo_ib, ihi_ib
       real phi(ilo_phi_gb:ihi_phi_gb)
       real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb)
-      real control_vol(
-     &                     ilo_control_vol_gb:ihi_control_vol_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb)
       integer control_vol_sgn
       real dx
       real epsilon

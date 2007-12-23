@@ -72,10 +72,8 @@ c     _fb refers to fillbox
       real reinit_rhs(ilo_rhs_gb:ihi_rhs_gb)
       real phi(ilo_phi_gb:ihi_phi_gb)
       real phi0(ilo_phi0_gb:ihi_phi0_gb)
-      real phi_x_plus(
-     &                    ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
-      real phi_x_minus(
-     &                    ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb)
       real dx
       integer use_phi0_for_sgn
       real phi_cur
