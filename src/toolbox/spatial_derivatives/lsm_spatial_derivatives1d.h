@@ -1,6 +1,6 @@
 /*
  * File:        lsm_spatial_derivatives1d.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.17 $
  * Modified:    $Date: 2006/07/25 15:00:58 $
  * Description: Header file for Fortran 77 1D ENO/WENO routines.

@@ -1,18 +1,18 @@
 /*
  * File:        test_computeDistanceFunction3d.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/08/13 13:35:24 $
  * Description: Test program for the fast marching method functions
  */
 
 
-// System headers
+/* System headers */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-// Header for Fast Marching Method Algorithm class
+/* Header for Fast Marching Method Algorithm class */
 #include "lsm_fast_marching_method.h"
 
 /************************************************************************

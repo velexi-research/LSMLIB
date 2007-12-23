@@ -1,6 +1,6 @@
 /*
  * File:        COMPUTE_NORMAL_VELOCITY_TERM_FOR_LSE_RHS_2D.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.7 $
  * Modified:    $Date: 2006/09/18 16:19:27 $
  * Description: MATLAB MEX-file for adding the contribution from a

@@ -1,6 +1,6 @@
 /*
  * File:        OrthogonalizationAlgorithm.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.21 $
  * Modified:    $Date: 2006/10/05 15:03:45 $
  * Description: Header file for level set method orthogonalization algorithm 

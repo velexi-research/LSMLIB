@@ -1,6 +1,6 @@
 /*
  * File:        neumann_bc_ENO1_3d.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/10/01 17:45:05 $
  * Description: test program for the 2D homogeneous Neumann BCS using

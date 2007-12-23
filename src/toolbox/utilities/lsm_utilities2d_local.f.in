@@ -1,5 +1,16 @@
 c***********************************************************************
 c
+c  File:        lsm_utilities2d_local.f
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+c  Revision:    $Revision: 1.17 $
+c  Modified:    $Date: 2006/10/28 04:54:37 $
+c  Description: F77 routines for 2D level set method utility subroutines
+c               on narrow-bands
+c
+c***********************************************************************
+
+c***********************************************************************
+c
 c  lsm2dMaxNormDiffLOCAL() computes the max norm of the difference 
 c  between the two specified scalar fields.
 c  The routine loops only over local (narrow band) points. 

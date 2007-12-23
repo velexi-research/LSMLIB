@@ -1,6 +1,6 @@
 /*
  * File:        lsm_macros.h
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.5 $
  * Modified:    $Date: 2007/05/07 00:15:59 $
  * Description: Header file with helpful macros for manipulating data arrays

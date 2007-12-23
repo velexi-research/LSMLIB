@@ -1,6 +1,6 @@
 /*
  * File:        lsm_geometry3d_c.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.10 $
  * Modified:    $Date: 2007/04/20 16:39:27 $
  * Description: Implementation of 3D C geometry functions for level set method 

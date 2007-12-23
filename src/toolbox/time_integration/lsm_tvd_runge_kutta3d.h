@@ -1,6 +1,6 @@
 /*
  * File:        lsm_tvd_runge_kutta3d.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.8 $
  * Modified:    $Date: 2006/05/18 23:20:20 $
  * Description: Header file for Fortran 77 3D TVD Runge-Kutta routines

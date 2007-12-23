@@ -1,4 +1,14 @@
 c***********************************************************************
+c
+c  File:        lsm_localization3d.f
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+c  Revision:    $Revision: 1.8 $
+c  Modified:    $Date: 2006/01/24 21:46:42 $
+c  Description: F77 routines for 3D narrow-band level set calculations
+c
+c***********************************************************************
+
+c***********************************************************************
 c lsm3dMarkNarrowBandNeighbors() finds neighbors (iteratively +/-1 in each
 c coordinate direction, so-called 6-connectivity) of the level 0 narrow band
 c up to desired level.

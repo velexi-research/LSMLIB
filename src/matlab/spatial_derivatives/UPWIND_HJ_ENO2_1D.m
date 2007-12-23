@@ -21,8 +21,7 @@
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Author:     Kevin T. Chu
-% Copyright:  (c) 2005-2006, MAE Princeton University 
+% Copyright:  (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:   $Revision: 1.3 $
 % Modified:   $Date: 2006/04/24 00:52:39 $
 %

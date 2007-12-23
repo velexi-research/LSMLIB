@@ -1,6 +1,6 @@
 /*
  * File:        lsm_level_set_evolution3d.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.8 $
  * Modified:    $Date: 2006/10/28 05:09:39 $
  * Description: Header file for 3D Fortran 77 level set evolution equation

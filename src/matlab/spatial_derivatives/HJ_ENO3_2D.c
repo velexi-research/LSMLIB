@@ -1,6 +1,6 @@
 /*
  * File:        HJ_ENO3_2D.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.10 $
  * Modified:    $Date: 2006/09/18 20:27:31 $
  * Description: MATLAB MEX-file for 2d, third-order plus and minus HJ ENO 

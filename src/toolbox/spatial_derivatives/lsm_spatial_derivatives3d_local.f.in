@@ -1,5 +1,16 @@
 c***********************************************************************
 c
+c  File:        lsm_spatial_derivatives3d_local.f
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+c  Revision:    $Revision: 1.16 $
+c  Modified:    $Date: 2006/10/14 15:56:12 $
+c  Description: F77 routines for computing 3D ENO/WENO spatial 
+c               derivatives on narrow-bands
+c
+c***********************************************************************
+
+c***********************************************************************
+c
 c  lsm3dComputeDnLOCAL() computes the n-th undivided differences in the 
 c  specified direction given the (n-1)-th undivided differences.  The 
 c  subroutine assumes that valid data for the (n-1)-th undivided 

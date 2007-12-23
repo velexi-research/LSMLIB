@@ -1,7 +1,7 @@
 c***********************************************************************
 c
 c  File:        lsm_boundary_conditions2d.f
-c  Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.6 $
 c  Modified:    $Date: 2007/05/06 21:08:05 $
 c  Description: F77 routines for applying boundary conditions in 2D

@@ -1,5 +1,16 @@
 c***********************************************************************
 c
+c  File:        lsm_level_set_evolution3d_local.f
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+c  Revision:    $Revision: 1.6 $
+c  Modified:    $Date: 2007/05/06 23:47:29 $
+c  Description: F77 subroutines for 3D, narrow-band level set 
+c               evolution equation
+c
+c***********************************************************************
+
+c***********************************************************************
+c
 c  lsm3dZeroOutLevelSetEqnRHSLOCAL() zeros out the right-hand side of the
 c  level set equation when it is written in the form:
 c

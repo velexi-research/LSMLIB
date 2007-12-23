@@ -1,6 +1,6 @@
 /*
  * File:        solveEikonalEquation2d.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.4 $
  * Modified:    $Date: 2006/09/18 16:17:02 $
  * Description: MATLAB MEX-file for using the fast marching method to

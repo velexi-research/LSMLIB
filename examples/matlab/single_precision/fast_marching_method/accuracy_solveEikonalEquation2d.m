@@ -1,6 +1,6 @@
 %
 % File:        accuracy_solveEikonalEquation2d.m
-% Copyright:   (c) 2005-2008 Kevin T. Chu
+% Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.4 $
 % Modified:    $Date: 2006/08/13 15:45:27 $
 % Description: MATLAB test code for solveEikonalEquation2d MEX file

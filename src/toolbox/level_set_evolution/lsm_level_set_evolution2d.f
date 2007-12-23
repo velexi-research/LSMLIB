@@ -1,7 +1,7 @@
 c***********************************************************************
 c
 c  File:        lsm_level_set_evolution2d.f
-c  Copyright:   (c) 2005-2006 Kevin T. Chu
+c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 c  Revision:    $Revision: 1.5 $
 c  Modified:    $Date: 2007/05/06 23:47:28 $
 c  Description: F77 subroutines for 2D level set evolution equation

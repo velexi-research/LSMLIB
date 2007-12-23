@@ -1,3 +1,12 @@
+/*
+ * File:        lsm_reinitialization3d_local.h
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.12 $
+ * Modified:    $Date: 2006/05/18 23:20:13 $
+ * Description: Header file for Fortran 77 3D narrow-band 
+ *              reinitialization routines
+ */
+
 #ifndef INCLUDED_LSM_3D_REINITIALIZATION_3D_H_LOCAL
 #define INCLUDED_LSM_3D_REINITIALIZATION_3D_H_LOCAL
 

@@ -1,6 +1,6 @@
 /*
  * File:        lsm_options.h
- * Copyright:   (c) 2006 Masa Prodanovic 
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/12/05 20:49:28 $
  * Description: Header file for Options structure implentation functions.

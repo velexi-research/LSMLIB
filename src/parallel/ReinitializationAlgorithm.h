@@ -1,6 +1,6 @@
 /*
  * File:        ReinitializationAlgorithm.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.17 $
  * Modified:    $Date: 2006/10/05 15:03:46 $
  * Description: Header file for level set method reinitialization algorithm 

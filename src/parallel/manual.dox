@@ -1,11 +1,11 @@
 /*
-  File:        manual.dox
-  Package:     LSMLIB Doxygen manual
-  Copyright:   (c) 2005-2006 Kevin T. Chu
-  Revision:    $Revision: 1.8 $
-  Modified:    $Date: 2006/11/01 15:17:57 $
-  Description: Generation of LSMLIB Doxygen source code manual
-*/
+ * File:        manual.dox
+ * Package:     LSMLIB Doxygen manual
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+ * Revision:    $Revision: 1.8 $
+ * Modified:    $Date: 2006/11/01 15:17:57 $
+ * Description: Generation of LSMLIB Doxygen source code manual
+ */
 
 namespace LSMLIB {
 

@@ -1,3 +1,12 @@
+/*
+ * File:        lsm_reinitialization2d_local.h
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.12 $
+ * Modified:    $Date: 2006/05/18 23:20:12 $
+ * Description: Header file for Fortran 77 2D narrow-band 
+ *              reinitialization routines
+ */
+
 #ifndef INCLUDED_LSM_2D_REINITIALIZATION_2D_H_LOCAL
 #define INCLUDED_LSM_2D_REINITIALIZATION_2D_H_LOCAL
 

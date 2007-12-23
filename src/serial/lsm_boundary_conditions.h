@@ -1,6 +1,6 @@
 /*
  * File:        lsm_boundary_conditions.h
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.4 $
  * Modified:    $Date: 2006/12/04 13:26:55 $
  * Description: Header file for functions for imposing boundary conditions

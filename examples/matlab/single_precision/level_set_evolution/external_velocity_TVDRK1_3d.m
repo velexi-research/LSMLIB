@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % File:        external_velocity_TVDRK1_3d.m
-% Copyright:   (c) 2005-2006 Kevin T. Chu 
+% Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.1 $
 % Modified:    $Date: 2006/09/18 20:32:03 $
 % Description: MATLAB test program for level set evolution functions

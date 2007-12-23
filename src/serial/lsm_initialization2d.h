@@ -1,6 +1,6 @@
 /*
  * File:        lsm_initialization2d.h
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/05/25 19:41:22 $
  * Description: Header file for 2D initialization functions

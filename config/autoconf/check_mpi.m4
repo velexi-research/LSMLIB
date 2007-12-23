@@ -1,7 +1,6 @@
 #
 ## File:        check_mpi.m4
-## Copyright:   (c) 2005-2006 Princeton University
-## Authors:     Zhaoxuan Wu and Kevin T. Chu
+## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 ## Revision:    $Revision: 1.3 $
 ## Modified:    $Date: 2007/05/08 19:16:50 $
 ## Description: autoconf macro for checking mpi 

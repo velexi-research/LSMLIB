@@ -1,3 +1,12 @@
+/*
+ * File:        lsm_localization3d.h
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.27 $
+ * Modified:    $Date: 2006/10/05 15:03:45 $
+ * Description: Header file for 3D Fortran 77 narrow-band level set 
+ *              subroutines
+ */
+
 #ifndef INCLUDED_LSM_LOCALIZATION_3D_H
 #define INCLUDED_LSM_LOCALIZATION_3D_H
 

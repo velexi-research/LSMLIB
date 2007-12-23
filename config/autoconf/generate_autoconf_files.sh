@@ -1,10 +1,9 @@
 #!/bin/sh
 ##
 ## File:        generate_autoconf_files.m4
-## Copyright:   (c) 2005-2006 Princeton University
-## Authors:     Kevin T. Chu
-## Revision:    $$
-## Modified:    $$
+## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+## Revision:    $Revision: 1.3 $
+## Modified:    $Date: 2007/05/08 19:16:50 $
 ## Description: shell script for generating configure script using autoconf
 ##
 ## NOTES:

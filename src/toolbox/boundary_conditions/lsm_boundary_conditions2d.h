@@ -1,6 +1,6 @@
 /*
  * File:        lsm_boundary_conditions2d.h
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/10/01 17:42:19 $
  * Description: Header file for 2D boundary conditions functions 

@@ -1,8 +1,8 @@
-// System headers
+/* System headers */
 #include <stdio.h>
 #include <stdlib.h>
 
-//Headers for LSM evolution eqns
+/* Headers for LSM evolution eqns */
 #include "lsm_level_set_evolution2d.h"
 #include "lsm_spatial_derivatives2d.h"
 #include "lsm_utilities2d.h"

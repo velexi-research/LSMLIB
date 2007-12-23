@@ -1,5 +1,16 @@
 c***********************************************************************
 c
+c  File:        lsm_reinitialization3d_local.f
+c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+c  Revision:    $Revision: 1.12 $
+c  Modified:    $Date: 2006/04/02 12:59:44 $
+c  Description: F77 routines for narrow-band reinitialization of 
+c               3d level set functions
+c
+c***********************************************************************
+
+c***********************************************************************
+c
 c  lsm3dComputeReinitializationEqnRHSLOCAL() computes the right-hand side of 
 c  the reinitialization equation using a Godunov scheme to select the 
 c  numerical discretization of the sgn(phi) |grad(phi)| term.  

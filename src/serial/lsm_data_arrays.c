@@ -1,6 +1,6 @@
 /*
  * File:        lsm_data_arrays.c
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.5 $
  * Modified:    $Date: 2006/11/03 23:15:52 $
  * Description: Implementation file for LSM_DataArrays structure

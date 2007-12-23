@@ -1,6 +1,6 @@
 /*
  * File:        test_grid_management.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/12/05 21:16:17 $
  * Description: Test code for grid management functions.

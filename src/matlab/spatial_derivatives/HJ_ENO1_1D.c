@@ -1,6 +1,6 @@
 /*
  * File:        HJ_ENO1_1D.c
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.6 $
  * Modified:    $Date: 2006/04/24 00:52:37 $
  * Description: MATLAB MEX-file for 1d, first-order plus and minus HJ ENO 

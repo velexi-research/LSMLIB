@@ -1,6 +1,6 @@
 %
 % File:        test_computeExtensionFields2d.m
-% Copyright:   (c) 2005-2006 Kevin T. Chu
+% Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.8 $
 % Modified:    $Date: 2006/08/13 15:45:27 $
 % Description: MATLAB test code for computeExtensionFields2d MEX file
