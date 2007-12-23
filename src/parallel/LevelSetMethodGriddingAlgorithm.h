@@ -58,8 +58,9 @@
  *                                     Box arrays describing where 
  *                                     user-specified refinement is to occur 
  *                                     on Level ln.
- *     - times (OPTIONAL)           =  LSMLIB_REAL array specifying times at which 
- *                                     a particular box sequence is to be used.
+ *     - times (OPTIONAL)           =  LSMLIB_REAL array specifying times at 
+ *                                     which a particular box sequence is to 
+ *                                     be used.
  *     - cycles (OPTIONAL)          =  integer array specifying regrid cycles 
  *                                     at which a particular box seqence is 
  *                                     to be used.
@@ -286,7 +287,7 @@ public:
   virtual void initializeLevelData(
     const Pointer< BasePatchHierarchy<DIM> > hierarchy,
     const int level_number,
-    const LSMLIB_REAL init_data_time,
+    const double init_data_time,
     const bool can_be_refined,
     const bool initial_time,
     const Pointer< BasePatchLevel<DIM> > old_level = 
@@ -352,12 +353,12 @@ public:
   void tagCellsForRefinement(
     const Pointer< BasePatchHierarchy<DIM> > hierarchy,
     const int level_number,
-    const LSMLIB_REAL regrid_time,
+    const double regrid_time,
     const int tag_index,
     const bool initial_time,
     const bool coarsest_sync_level,
     const bool can_be_refined,
-    const LSMLIB_REAL regrid_start_time = 0);
+    const double regrid_start_time = 0);
 
   //! @}
 
