@@ -17,7 +17,7 @@
 
 /* Macro defined if double precision library is being built. */
 #ifndef LSMLIB_DOUBLE_PRECISION
-#define LSMLIB_DOUBLE_PRECISION
+#undef LSMLIB_DOUBLE_PRECISION
 #endif
 
 /* Floating-point precision for LSMLIB_REAL */
