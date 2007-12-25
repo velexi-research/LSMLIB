@@ -1,18 +1,19 @@
 /*
- * File:        TestLSM_2d_single_component_field_extension.cc
+ * File:        FieldExtension2d_field_extension.cc
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/05/18 01:09:35 $
- * Description: 2D test program for Level Set Method Classes
+ * Description: 2D example program for Level Set Method Classes
  */
 
 /*************************************************************************
  *
- * This test program demonstrates how to use the LSMLIB C++ classes
+ * This example program demonstrates how to use the LSMLIB C++ classes
  * to for a 2D problem to extend a field variable off of the zero
- * level set one component at a time.
+ * level set.
  *
  **************************************************************************/
+
 
 // SAMRAI Configuration 
 #include "SAMRAI_config.h"
@@ -52,11 +53,9 @@
 #include "LSMLIB_config.h"
 #include "LevelSetMethodAlgorithm.h"
 #include "FieldExtensionAlgorithm.h"
-#include "TestLSM_2d_VelocityFieldModule.h"
-#include "TestLSM_2d_PatchModule.h"
+#include "FieldExtension2d_VelocityFieldModule.h"
+#include "FieldExtension2d_PatchModule.h"
 
-
-// Classes for run-time plotting and autotesting.
 
 // namespaces
 using namespace std;
@@ -137,21 +136,21 @@ int main(int argc, char *argv[])
     new PatchHierarchy<2>(base_name+"::PatchHierarchy",
                              grid_geometry);
 
-  TestLSM_2d_VelocityFieldModule* testlsm_2d_velocity_field_module = 
-    new TestLSM_2d_VelocityFieldModule( 
-      input_db->getDatabase("TestLSM_2d_VelocityFieldModule"),
+  FieldExtension2d_VelocityFieldModule* fieldextension2d_velocity_field_module = 
+    new FieldExtension2d_VelocityFieldModule( 
+      input_db->getDatabase("FieldExtension2d_VelocityFieldModule"),
       patch_hierarchy,
       grid_geometry,
-      base_name+"::TestLSM_2d_VelocityFieldModule");
-  plog << "TestLSM_2d_VelocityFieldModule:" << endl;
-  testlsm_2d_velocity_field_module->printClassData(plog);
+      base_name+"::FieldExtension2d_VelocityFieldModule");
+  plog << "FieldExtension2d_VelocityFieldModule:" << endl;
+  fieldextension2d_velocity_field_module->printClassData(plog);
 
-  TestLSM_2d_PatchModule* testlsm_2d_patch_module = 
-    new TestLSM_2d_PatchModule(
-      input_db->getDatabase("TestLSM_2d_PatchModule"),
-      base_name+"::TestLSM_2d_PatchModule");
-  plog << "TestLSM_2d_PatchModule:" << endl;
-  testlsm_2d_patch_module->printClassData(plog);
+  FieldExtension2d_PatchModule* fieldextension2d_patch_module = 
+    new FieldExtension2d_PatchModule(
+      input_db->getDatabase("FieldExtension2d_PatchModule"),
+      base_name+"::FieldExtension2d_PatchModule");
+  plog << "FieldExtension2d_PatchModule:" << endl;
+  fieldextension2d_patch_module->printClassData(plog);
 
   int num_level_set_fcn_components = 1;
   int codimension = 1;
@@ -159,8 +158,8 @@ int main(int argc, char *argv[])
     new LevelSetMethodAlgorithm<2>( 
       input_db->getDatabase("LevelSetMethodAlgorithm"),
       patch_hierarchy,
-      testlsm_2d_patch_module,
-      testlsm_2d_velocity_field_module,
+      fieldextension2d_patch_module,
+      fieldextension2d_velocity_field_module,
       num_level_set_fcn_components,
       codimension,
       base_name+"::LevelSetMethodAlgorithm");
@@ -184,10 +183,8 @@ int main(int argc, char *argv[])
    * get PatchData handles
    */
   int phi_handle = lsm_algorithm->getPhiPatchDataHandle();
-  int velocity_handle = testlsm_2d_velocity_field_module
+  int velocity_handle = fieldextension2d_velocity_field_module
       ->getExternalVelocityFieldPatchDataHandle(0);
-  int control_volume_handle = 
-    lsm_algorithm->getControlVolumePatchDataHandle();
 
 
   /*
@@ -204,7 +201,7 @@ int main(int argc, char *argv[])
     }
 
     string visit_data_dirname = base_name + ".visit";
-    visit_data_writer = new VisItDataWriter<2>("TestLSM 2D VisIt Writer",
+    visit_data_writer = new VisItDataWriter<2>("VisIt Writer",
                                                visit_data_dirname,
                                                visit_number_procs_per_file);
 
@@ -226,12 +223,10 @@ int main(int argc, char *argv[])
    * Create FieldExtensionAlgorithm object
    */
   Pointer< FieldExtensionAlgorithm<2> > field_ext_alg = 
-    new FieldExtensionAlgorithm<2>(
+    lsm_algorithm->getFieldExtensionAlgorithm(
       input_db->getDatabase("FieldExtensionAlgorithm"),
-      patch_hierarchy,
       velocity_handle, 
-      phi_handle,
-      control_volume_handle);
+      LSMLIB::PHI);
  
   /*
    * Initialize level set method calculation
@@ -242,8 +237,7 @@ int main(int argc, char *argv[])
    * Extend the x and y components of the velocity off of the 
    * zero level set.
    */
-  field_ext_alg->computeExtensionFieldForSingleComponent(0);  // V_x
-  field_ext_alg->computeExtensionFieldForSingleComponent(1);  // V_y
+  field_ext_alg->computeExtensionField();
 
   /* 
    * write results to VisIt data 
@@ -255,8 +249,8 @@ int main(int argc, char *argv[])
   /*
    * At conclusion of simulation, deallocate objects and free memory.
    */
-  delete testlsm_2d_patch_module;
-  delete testlsm_2d_velocity_field_module;
+  delete fieldextension2d_patch_module;
+  delete fieldextension2d_velocity_field_module;
 
   SAMRAIManager::shutdown();
   tbox::MPI::finalize();

@@ -1,19 +1,19 @@
 /*
- * File:        TestLSM_2d_PatchModule.h
+ * File:        FieldExtension2d_PatchModule.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/05/18 01:09:35 $
  * Description: Header for concrete subclass of LevelSetMethodPatchStrategy 
  *              that computes the single patch numerical routines for the 2d 
- *              level set method test problem
+ *              level set method example problem
  */
 
-#ifndef included_TestLSM_2d_PatchModule
-#define included_TestLSM_2d_PatchModule
+#ifndef included_FieldExtension2d_PatchModule
+#define included_FieldExtension2d_PatchModule
 
 /*************************************************************************
  *
- * This TestLSM_2d_PatchModule class provides routines for initializing
+ * This FieldExtension2d_PatchModule class provides routines for initializing
  * the level set function.  It does not implement any boundary conditions
  * because it is assumed that periodic boundary conditions are used for
  * the level set function.
@@ -43,7 +43,7 @@ using namespace hier;
 using namespace tbox;
 using namespace LSMLIB;
 
-class TestLSM_2d_PatchModule:
+class FieldExtension2d_PatchModule:
   public LevelSetMethodPatchStrategy<2>
 {
 public:
@@ -64,14 +64,14 @@ public:
    * Return value:             none
    *
    */
-  TestLSM_2d_PatchModule(
+  FieldExtension2d_PatchModule(
     Pointer<Database> input_db,
-    const string& object_name = "TestLSM_2d_PatchModule");
+    const string& object_name = "FieldExtension2d_PatchModule");
 
   /*!
    * Empty destructor.
    */
-  virtual ~TestLSM_2d_PatchModule() {};
+  virtual ~FieldExtension2d_PatchModule() {};
 
 
   /****************************************************************
@@ -95,7 +95,7 @@ public:
    *
    */
   virtual void initializeLevelSetFunctionsOnPatch(Patch<2>& patch,
-                                                  const double data_time,
+                                                  const LSMLIB_REAL data_time,
                                                   const int phi_handle,
                                                   const int psi_handle);
 
@@ -105,7 +105,7 @@ public:
    */
   virtual void setLevelSetFunctionBoundaryConditions(
     Patch<2>& patch,
-    const double fill_time,
+    const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
     const IntVector<2>& ghost_width_to_fill);
@@ -141,13 +141,13 @@ protected:
   /*
    * other initial level set parameters
    */
-  double d_radius;
-  double d_center[2];
+  LSMLIB_REAL d_radius;
+  LSMLIB_REAL d_center[2];
 
   /*
    * class constants
    */
-  static const double s_default_radius;
+  static const LSMLIB_REAL s_default_radius;
 };
 
 #endif

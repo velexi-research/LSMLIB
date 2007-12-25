@@ -1,10 +1,10 @@
 c***********************************************************************
 c
-c  File:        testlsm_2d_velocityfield.f
+c  File:        advection2d_velocityfield.f
 c  Copyright:   (c) 2005-2006 Kevin T. Chu
-c  Revision:    $Revision: 1.1 $
-c  Modified:    $Date: 2006/05/18 01:09:37 $
-c  Description: F77 velocity field routines for 2d LSM test problem
+c  Revision:    $Revision: 1.2 $
+c  Modified:    $Date: 2006/01/24 21:45:57 $
+c  Description: F77 velocity field routines for 2d LSM example problem
 c
 c***********************************************************************
 c***********************************************************************
@@ -19,12 +19,10 @@ c***********************************************************************
 
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
-      double precision u(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
-      double precision v(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
+      real u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       integer i,j
-      double precision zero,one
+      real zero,one
       parameter (zero=0.0)
       parameter (one=1.0)
 
@@ -54,12 +52,10 @@ c***********************************************************************
 
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
-      double precision u(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
-      double precision v(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
+      real u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       integer i,j
-      double precision zero,one
+      real zero,one
       parameter (zero=0.0)
       parameter (one=1.0)
 
@@ -90,12 +86,10 @@ c***********************************************************************
 
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
-      double precision u(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
-      double precision v(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
+      real u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       integer i,j
-      double precision one
+      real one
       parameter (one=1.0)
 
 c     loop over box {
@@ -127,19 +121,17 @@ c***********************************************************************
 
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
-      double precision u(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
-      double precision v(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
+      real u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       integer i,j
-      double precision dx(0:1)
-      double precision x_lower(0:1)
-      double precision x,y
+      real dx(0:1)
+      real x_lower(0:1)
+      real x,y
 
 c     loop over box {
       do j=jlo_fb,jhi_fb
         do i=ilo_fb,ihi_fb
-
+ 
           x = x_lower(0) + dx(0)*(0.5+i-ilo_gb)
           y = x_lower(1) + dx(1)*(0.5+j-jlo_gb)
           u(i,j) = -y
@@ -170,18 +162,16 @@ c***********************************************************************
 
       integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
       integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
-      double precision u(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
-      double precision v(ilo_gb:ihi_gb,
-     &                   jlo_gb:jhi_gb)
+      real u(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real v(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
       integer i,j
-      double precision dx(0:1)
-      double precision x_lower(0:1)
-      double precision time
-      double precision speed
-      double precision omega
-      double precision x,y
-      double precision r
+      real dx(0:1)
+      real x_lower(0:1)
+      real time
+      real speed
+      real omega
+      real x,y
+      real r
 
 c     loop over box {
       do j=jlo_fb,jhi_fb

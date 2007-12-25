@@ -1,19 +1,19 @@
 /*
- * File:        TestLSM_2d_VelocityFieldModule.h
+ * File:        FieldExtension2d_VelocityFieldModule.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/05/18 01:09:35 $
  * Description: Header for class that computes the velocity field for
- *              the 2d level set method test program
+ *              the 2d level set method example program
  */
 
  
-#ifndef included_TestLSM_2d_VelocityFieldModule
-#define included_TestLSM_2d_VelocityFieldModule
+#ifndef included_FieldExtension2d_VelocityFieldModule
+#define included_FieldExtension2d_VelocityFieldModule
 
 /*************************************************************************
  *
- * The TestLSM_2d_VelocityFieldModule class provides several simple
+ * The FieldExtension2d_VelocityFieldModule class provides several simple
  * 2D external velocity fields to be used by the LevelSetMethodAlgorithm.
  * 
  *************************************************************************/
@@ -44,13 +44,13 @@ using namespace hier;
 using namespace tbox;
 using namespace LSMLIB;
 
-class TestLSM_2d_VelocityFieldModule:
+class FieldExtension2d_VelocityFieldModule:
   public LevelSetMethodVelocityFieldStrategy<2>
 {
 public:
 
   /*!
-   * The constructor for TestLSM_2d_VelocityFieldModule caches pointers
+   * The constructor for FieldExtension2d_VelocityFieldModule caches pointers
    * to the hierarchy and geometry objects that are to be used in the 
    * level set method computation and sets up the velocity field 
    * 
@@ -63,16 +63,16 @@ public:
    * Return value:             none
    * 
    */
-  TestLSM_2d_VelocityFieldModule(
+  FieldExtension2d_VelocityFieldModule(
     Pointer<Database> input_db,
     Pointer< PatchHierarchy<2> > patch_hierarchy,
     Pointer< CartesianGridGeometry<2> > grid_geometry,
-    const string& object_name = "TestLSM_2d_VelocityFieldModule");
+    const string& object_name = "FieldExtension2d_VelocityFieldModule");
 
   /*!
-   * The destructor for TestLSM_2d_VelocityFieldModule does nothing.
+   * The destructor for FieldExtension2d_VelocityFieldModule does nothing.
    */
-  virtual ~TestLSM_2d_VelocityFieldModule(){}
+  virtual ~FieldExtension2d_VelocityFieldModule(){}
 
 
   /****************************************************************
@@ -83,7 +83,7 @@ public:
 
   /*!
    * providesExternalVelocityField() always returns true because
-   * this test module provide an external velocity field.
+   * this example module provide an external velocity field.
    *
    * Arguments:     none
    *
@@ -96,7 +96,7 @@ public:
 
   /*!
    * providesNormalVelocityField() always returns false because
-   * this test module does not provide a normal velocity field.
+   * this example module does not provide a normal velocity field.
    *
    * Arguments:     none
    *
@@ -128,7 +128,7 @@ public:
 
   /*!
    * getNormalVelocityFieldPatchDataHandle() returns -1 (a bogus
-   * PatchData handle value) because this test module does not
+   * PatchData handle value) because this example module does not
    * provide a normal velocity field.
    *
    * Arguments:
@@ -163,7 +163,7 @@ public:
    * Return value:  none
    *
    */
-  virtual inline void setCurrentTime(const double time)
+  virtual inline void setCurrentTime(const LSMLIB_REAL time)
   {
     d_current_time = time;
   }
@@ -177,7 +177,7 @@ public:
    * Return value:  maximum acceptable (stable) time step
    *
    */
-  virtual inline double computeStableDt()
+  virtual inline LSMLIB_REAL computeStableDt()
   {
     return d_min_dt;
   }
@@ -198,7 +198,7 @@ public:
    *
    */
   virtual void computeVelocityField(
-    const double time,
+    const LSMLIB_REAL time,
     const int phi_handle,
     const int psi_handle,
     const int component);
@@ -209,7 +209,7 @@ public:
   virtual void initializeLevelData (
     const Pointer< PatchHierarchy<2> > hierarchy,
     const int level_number,
-    const double init_data_time,
+    const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
@@ -219,7 +219,7 @@ public:
     const bool allocate_data = true);
 
   /*!
-   * Print all data members for TestLSM_2d_VelocityFieldModule class.
+   * Print all data members for FieldExtension2d_VelocityFieldModule class.
    */
   void printClassData(ostream& os) const;
 
@@ -232,7 +232,7 @@ protected:
    */
   void computeVelocityFieldOnLevel(
     const Pointer< PatchLevel<2> > level, 
-    const double time);
+    const LSMLIB_REAL time);
 
   /*
    * These private member functions read data from input. 
@@ -261,7 +261,7 @@ protected:
   /*
    * current time
    */
-  double d_current_time;
+  LSMLIB_REAL d_current_time;
 
   /*
    * flag indicating if velocity has ever been computed
@@ -281,7 +281,7 @@ protected:
   /*
    * minimum time step size (read in from input file or set to default value)
    */
-  double d_min_dt;
+  LSMLIB_REAL d_min_dt;
 
 };
 

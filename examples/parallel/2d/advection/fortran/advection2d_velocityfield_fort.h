@@ -1,17 +1,19 @@
 /*
- * File:        lsmtest_2d_velocityfield.h
+ * File:        advection2d_velocityfield.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
- * Description: Header file for F77 velocity field routines for 2d LSM test 
+ * Description: Header file for F77 velocity field routines for 2d LSM example
  *              problem
  */
 
 
-#ifndef included_lsmtest_2d_velocityfield
-#define included_lsmtest_2d_velocityfield
+#ifndef included_advection2d_velocityfield
+#define included_advection2d_velocityfield
+
+#include "LSMLIB_config.h"
 
 void uniformvelx_(
-  double* u,
-  double* v,
+  LSMLIB_REAL* u,
+  LSMLIB_REAL* v,
   const int* ilo_gb, 
   const int* ihi_gb, 
   const int* jlo_gb, 
@@ -22,8 +24,8 @@ void uniformvelx_(
   const int* jhi_fb);
 
 void uniformvely_(
-  double* u,
-  double* v,
+  LSMLIB_REAL* u,
+  LSMLIB_REAL* v,
   const int* ilo_gb, 
   const int* ihi_gb, 
   const int* jlo_gb, 
@@ -34,8 +36,8 @@ void uniformvely_(
   const int* jhi_fb);
 
 void uniformvelxy_(
-  double* u,
-  double* v,
+  LSMLIB_REAL* u,
+  LSMLIB_REAL* v,
   const int* ilo_gb, 
   const int* ihi_gb, 
   const int* jlo_gb, 
@@ -46,8 +48,8 @@ void uniformvelxy_(
   const int* jhi_fb);
 
 void rotatingvel_(
-  double* u,
-  double* v,
+  LSMLIB_REAL* u,
+  LSMLIB_REAL* v,
   const int* ilo_gb, 
   const int* ihi_gb, 
   const int* jlo_gb, 
@@ -56,12 +58,12 @@ void rotatingvel_(
   const int* ihi_fb, 
   const int* jlo_fb, 
   const int* jhi_fb,
-  const double* dx,
-  const double* x_lower);
+  const LSMLIB_REAL* dx,
+  const LSMLIB_REAL* x_lower);
 
 void expandingvel_(
-  double* u,
-  double* v,
+  LSMLIB_REAL* u,
+  LSMLIB_REAL* v,
   const int* ilo_gb, 
   const int* ihi_gb, 
   const int* jlo_gb, 
@@ -70,10 +72,10 @@ void expandingvel_(
   const int* ihi_fb, 
   const int* jlo_fb, 
   const int* jhi_fb,
-  const double* dx,
-  const double* x_lower,
-  const double* speed,
-  const double* omega,
-  const double* time);
+  const LSMLIB_REAL* dx,
+  const LSMLIB_REAL* x_lower,
+  const LSMLIB_REAL* speed,
+  const LSMLIB_REAL* omega,
+  const LSMLIB_REAL* time);
 
 #endif

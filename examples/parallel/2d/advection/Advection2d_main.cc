@@ -1,14 +1,14 @@
 /*
- * File:        TestLSM_2d_main.cc
+ * File:        Advection2d_main.cc
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.7 $
  * Modified:    $Date: 2006/08/01 16:13:36 $
- * Description: Test program for LSMLIB Parallel Package
+ * Description: Example program for LSMLIB Parallel Package
  */
 
 /*************************************************************************
  *
- * This test program demonstrates how to use the LSMLIB C++ classes
+ * This example  program demonstrates how to use the LSMLIB C++ classes
  * to for a 2D problem where the motion of the level sets is determined
  * by an external velocity field (defined throughout the entire 
  * computational domain) is specified.
@@ -48,14 +48,12 @@
 // before any other LevelSetMethod header files
 #include "LSMLIB_config.h"
 #include "LevelSetMethodAlgorithm.h"
-#include "TestLSM_2d_VelocityFieldModule.h"
-#include "TestLSM_2d_PatchModule.h"
+#include "Advection2d_VelocityFieldModule.h"
+#include "Advection2d_PatchModule.h"
 
 // Header for data writers
 #include "VisItDataWriter.h"
 
-
-// Classes for run-time plotting and autotesting.
 
 // namespaces
 using namespace std;
@@ -170,21 +168,21 @@ int main(int argc, char *argv[])
     new PatchHierarchy<2>(base_name+"::PatchHierarchy",
                              grid_geometry);
 
-  TestLSM_2d_VelocityFieldModule* testlsm_2d_velocity_field_module = 
-    new TestLSM_2d_VelocityFieldModule( 
-      input_db->getDatabase("TestLSM_2d_VelocityFieldModule"),
+  Advection2d_VelocityFieldModule* advection2d_velocity_field_module = 
+    new Advection2d_VelocityFieldModule( 
+      input_db->getDatabase("Advection2d_VelocityFieldModule"),
       patch_hierarchy,
       grid_geometry,
-      base_name+"::TestLSM_2d_VelocityFieldModule");
-  plog << "TestLSM_2d_VelocityFieldModule:" << endl;
-  testlsm_2d_velocity_field_module->printClassData(plog);
+      base_name+"::Advection2d_VelocityFieldModule");
+  plog << "Advection2d_VelocityFieldModule:" << endl;
+  advection2d_velocity_field_module->printClassData(plog);
 
-  TestLSM_2d_PatchModule* testlsm_2d_patch_module = 
-    new TestLSM_2d_PatchModule(
-      input_db->getDatabase("TestLSM_2d_PatchModule"),
-      base_name+"::TestLSM_2d_PatchModule");
-  plog << "TestLSM_2d_PatchModule:" << endl;
-  testlsm_2d_patch_module->printClassData(plog);
+  Advection2d_PatchModule* advection2d_patch_module = 
+    new Advection2d_PatchModule(
+      input_db->getDatabase("Advection2d_PatchModule"),
+      base_name+"::Advection2d_PatchModule");
+  plog << "Advection2d_PatchModule:" << endl;
+  advection2d_patch_module->printClassData(plog);
 
   int num_level_set_fcn_components = 1;
   int codimension = 1;
@@ -192,8 +190,8 @@ int main(int argc, char *argv[])
     new LevelSetMethodAlgorithm<2>( 
       input_db->getDatabase("LevelSetMethodAlgorithm"),
       patch_hierarchy,
-      testlsm_2d_patch_module,
-      testlsm_2d_velocity_field_module,
+      advection2d_patch_module,
+      advection2d_velocity_field_module,
       num_level_set_fcn_components,
       codimension,
       base_name+"::LevelSetMethodAlgorithm");
@@ -244,13 +242,13 @@ int main(int argc, char *argv[])
   int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
   int psi_patch_data_handle = lsm_algorithm->getPsiPatchDataHandle();
   int velocity_patch_data_handle = 
-    testlsm_2d_velocity_field_module
+    advection2d_velocity_field_module
       ->getExternalVelocityFieldPatchDataHandle(0);
 
   Pointer<VisItDataWriter<2> > visit_data_writer = 0;
   if (use_visit) {
     string visit_data_dirname = base_name + ".visit";
-    visit_data_writer = new VisItDataWriter<2>("TestLSM 2D VisIt Writer",
+    visit_data_writer = new VisItDataWriter<2>("VisIt Writer",
                                                visit_data_dirname,
                                                visit_number_procs_per_file);
 
@@ -287,8 +285,8 @@ int main(int argc, char *argv[])
    */
   int count = 0;
   int max_num_time_steps = main_db->getInteger("max_num_time_steps");
-  double dt = 0;
-  double current_time = lsm_algorithm->getCurrentTime();
+  LSMLIB_REAL dt = 0;
+  LSMLIB_REAL current_time = lsm_algorithm->getCurrentTime();
   int cur_integrator_step = lsm_algorithm->numIntegrationStepsTaken();
 
   /* 
@@ -319,7 +317,7 @@ int main(int argc, char *argv[])
 
     // compute next time step
     dt = lsm_algorithm->computeStableDt();
-    double end_time = lsm_algorithm->getEndTime(); 
+    LSMLIB_REAL end_time = lsm_algorithm->getEndTime(); 
     if (end_time - current_time < dt) dt = end_time - current_time;
     pout << "  dt:  " << dt << endl;
 
@@ -381,8 +379,8 @@ int main(int argc, char *argv[])
   /*
    * At conclusion of simulation, deallocate objects.
    */
-  delete testlsm_2d_patch_module;
-  delete testlsm_2d_velocity_field_module;
+  delete advection2d_patch_module;
+  delete advection2d_velocity_field_module;
 
   SAMRAIManager::shutdown();
   tbox::MPI::finalize();

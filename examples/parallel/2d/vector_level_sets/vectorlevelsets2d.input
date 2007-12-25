@@ -1,15 +1,15 @@
 /*
- * File:        test_lsm_2d.input
+ * File:        vectorlevelsets2d.input
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.4 $
  * Modified:    $Date: 2006/10/13 13:53:15 $
- * Description: input file for 2d test problem
+ * Description: input file for 2d example problem
  */
 
 
 Main {
   // Base name for output files.
-  base_name = "TESTLSM_2D"
+  base_name = "VECTOR_LEVEL_SETS_2D"
   // Whether to log all nodes in a parallel run.
   log_all_nodes = TRUE
 
@@ -103,14 +103,14 @@ LevelSetMethodAlgorithm{
 } // end of LevelSetMethodAlgorithm database
 
 
-TestLSM_2d_VelocityFieldModule {
+VectorLevelSets2d_VelocityFieldModule {
   velocity_field_0 = 3
   velocity_field_1 = 4
 
   min_dt = 0.1
 }
 
-TestLSM_2d_PatchModule {
+VectorLevelSets2d_PatchModule {
   initial_level_set_0 = 0
   center_0 = 0.5, 0.0
   radius_0 = 0.2

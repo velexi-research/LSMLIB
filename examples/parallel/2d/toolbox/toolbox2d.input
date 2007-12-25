@@ -1,15 +1,15 @@
 /*
- * File:        test_lsm_2d.input
+ * File:        toolbox2d.input
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.4 $
  * Modified:    $Date: 2006/10/13 13:53:14 $
- * Description: input file for 2d test problem
+ * Description: input file for 2d example problem
  */
 
 
 Main {
   // Base name for output files.
-  base_name = "TESTLSM_2D"
+  base_name = "TOOLBOX_2D"
   // Whether to log all nodes in a parallel run.
   log_all_nodes = TRUE
 
@@ -104,12 +104,12 @@ LevelSetMethodAlgorithm{
 } // end of LevelSetMethodAlgorithm database
 
 
-TestLSM_2d_VelocityFieldModule {
+Toolbox2d_VelocityFieldModule {
   velocity_field = 0
   min_dt = 0.1
 }
 
-TestLSM_2d_PatchModule {
+Toolbox2d_PatchModule {
   initial_level_set = 0
   center = 0.4, 0.0
   radius = 0.5
