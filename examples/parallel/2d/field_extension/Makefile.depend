@@ -7,21 +7,20 @@
 ##              program
 ##
 
+main_multiple_components.o:          \
+        main_multiple_components.cc  \
+        PatchModule.h                 \
+        VelocityFieldModule.h
 
-FieldExtension2d_integrals.o:                          \
-	FieldExtension2d_integrals.cc                  \
-	FieldExtension2d_PatchModule.h                 \
-	FieldExtension2d_VelocityFieldModule.h
+main_single_components.o:             \
+        main_single_components.cc     \
+        PatchModule.h                 \
+        VelocityFieldModule.h
 
-FieldExtension2d_volumes.o:                            \
-	FieldExtension2d_volumes.cc                    \
-	FieldExtension2d_PatchModule.h                 \
-	FieldExtension2d_VelocityFieldModule.h
+PatchModule.o:                        \
+	PatchModule.h                 \
+	PatchModule.cc
 
-FieldExtension2d_PatchModule.o:                        \
-	FieldExtension2d_PatchModule.h                 \
-	FieldExtension2d_PatchModule.cc
-
-FieldExtension2d_VelocityFieldModule.o:                \
-	FieldExtension2d_VelocityFieldModule.h         \
-	FieldExtension2d_VelocityFieldModule.cc
+VelocityFieldModule.o:                \
+	VelocityFieldModule.h         \
+	VelocityFieldModule.cc

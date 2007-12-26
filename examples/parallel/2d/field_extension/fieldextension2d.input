@@ -1,6 +1,6 @@
 /*
  * File:        fieldextension2d.input
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/10/05 15:04:41 $
  * Description: input file for 2d example problem
@@ -102,12 +102,12 @@ LevelSetMethodAlgorithm{
 } // end of LevelSetMethodAlgorithm database
 
 
-FieldExtension2d_VelocityFieldModule {
+VelocityFieldModule {
   velocity_field = 3
   min_dt = 0.1
 }
 
-FieldExtension2d_PatchModule {
+PatchModule {
   initial_level_set = 0
   center = 0.0, 0.25
   radius = 0.5

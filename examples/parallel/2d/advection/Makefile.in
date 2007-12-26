@@ -20,21 +20,21 @@ include $(BUILD_DIR)/config/Makefile.config
 
 CPPFLAGS_EXTRA = -I$(FORTRAN)
 
-all: Advection2d_main
+all: main
 
-Advection2d_main:                                         \
-		Advection2d_main.o                        \
-		Advection2d_VelocityFieldModule.o         \
-		Advection2d_PatchModule.o                 \
-                advection2d_patchmodule_fort.o            \
-                advection2d_velocityfield_fort.o
+main:                                         \
+		main.o                        \
+		VelocityFieldModule.o         \
+		PatchModule.o                 \
+                patchmodule_fort.o            \
+                velocityfield_fort.o
 	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
-        $(LDLIBS) -o Advection2d_main
+        $(LDLIBS) -o main
      
 clean:
-		@RM@ Advection2d_main
+		@RM@ main
 		@RM@ *.o core 
 		@RM@ PI*
 
@@ -51,8 +51,8 @@ include Makefile.depend
 
 FORTRAN = fortran
 
-advection2d_patchmodule_fort.o: $(FORTRAN)/advection2d_patchmodule_fort.f
+patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
-advection2d_velocityfield_fort.o: $(FORTRAN)/advection2d_velocityfield_fort.f
+velocityfield_fort.o: $(FORTRAN)/velocityfield_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 

@@ -7,15 +7,20 @@
 ##
 
 
-Toolbox2d_integrals.o:                          \
-	Toolbox2d_integrals.cc                  \
-	Toolbox2d_PatchModule.h                 \
-	Toolbox2d_VelocityFieldModule.h
+main_integrals.o:                     \
+	main_integrals.cc             \
+	PatchModule.h                 \
+	VelocityFieldModule.h
 
-Toolbox2d_PatchModule.o:                        \
-	Toolbox2d_PatchModule.h                 \
-	Toolbox2d_PatchModule.cc
+main_volumes.o:                       \
+	main_volumes.cc               \
+	PatchModule.h                 \
+	VelocityFieldModule.h
 
-Toolbox2d_VelocityFieldModule.o:                \
-	Toolbox2d_VelocityFieldModule.h         \
-	Toolbox2d_VelocityFieldModule.cc
+PatchModule.o:                        \
+	PatchModule.h                 \
+	PatchModule.cc
+
+VelocityFieldModule.o:                \
+	VelocityFieldModule.h         \
+	VelocityFieldModule.cc

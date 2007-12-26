@@ -20,21 +20,21 @@ include $(BUILD_DIR)/config/Makefile.config
 
 CPPFLAGS_EXTRA = -I$(FORTRAN)
 
-all: NormalVelocityMotion2d_main
+all: main
 
-NormalVelocityMotion2d_main:                                         \
-		NormalVelocityMotion2d_main.o                        \
-		NormalVelocityMotion2d_VelocityFieldModule.o         \
-		NormalVelocityMotion2d_PatchModule.o                 \
-                normal_velocity_motion2d_patchmodule_fort.o            \
-                normal_velocity_motion2d_normalvelocityfield_fort.o
+main:                                         \
+		main.o                        \
+		VelocityFieldModule.o         \
+		PatchModule.o                 \
+                patchmodule_fort.o            \
+                velocityfield_fort.o
 	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
-        $(LDLIBS) -o NormalVelocityMotion2d_main
+        $(LDLIBS) -o main
      
 clean:
-		@RM@ NormalVelocityMotion2d_main
+		@RM@ main
 		@RM@ *.o core 
 		@RM@ PI*
 
@@ -51,10 +51,10 @@ include Makefile.depend
 
 FORTRAN = fortran
 
-normal_velocity_motion2d_patchmodule_fort.o: $(FORTRAN)/normal_velocity_motion2d_patchmodule_fort.f
+patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
-normal_velocity_motion2d_normalvelocityfield_fort.o:                \
-  $(FORTRAN)/normal_velocity_motion2d_normalvelocityfield_fort.f
+velocityfield_fort.o:                \
+  $(FORTRAN)/velocityfield_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 

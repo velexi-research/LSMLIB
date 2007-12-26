@@ -7,15 +7,15 @@
 ##
 
 
-VectorLevelSets2d_main.o:                               \
-	VectorLevelSets2d_main.cc                       \
-	VectorLevelSets2d_PatchModule.h                 \
-	VectorLevelSets2d_VelocityFieldModule.h
+main.o:                               \
+	main.cc                       \
+	PatchModule.h                 \
+	VelocityFieldModule.h
 
-VectorLevelSets2d_PatchModule.o:                        \
-	VectorLevelSets2d_PatchModule.h                 \
-	VectorLevelSets2d_PatchModule.cc
+PatchModule.o:                        \
+	PatchModule.h                 \
+	PatchModule.cc
 
-VectorLevelSets2d_VelocityFieldModule.o:                \
-	VectorLevelSets2d_VelocityFieldModule.h         \
-	VectorLevelSets2d_VelocityFieldModule.cc
+VelocityFieldModule.o:                \
+	VelocityFieldModule.h         \
+	VelocityFieldModule.cc

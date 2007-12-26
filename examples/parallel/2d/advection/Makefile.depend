@@ -7,15 +7,15 @@
 ##
 
 
-Advection2d_main.o:                               \
-	Advection2d_main.cc                       \
-	Advection2d_PatchModule.h                 \
-	Advection2d_VelocityFieldModule.h
+main.o:                               \
+	main.cc                       \
+	PatchModule.h                 \
+	VelocityFieldModule.h
 
-Advection2d_PatchModule.o:                        \
-	Advection2d_PatchModule.h                 \
-	Advection2d_PatchModule.cc
+PatchModule.o:                        \
+	PatchModule.h                 \
+	PatchModule.cc
 
-Advection2d_VelocityFieldModule.o:                \
-	Advection2d_VelocityFieldModule.h         \
-	Advection2d_VelocityFieldModule.cc
+VelocityFieldModule.o:                \
+	VelocityFieldModule.h         \
+	VelocityFieldModule.cc

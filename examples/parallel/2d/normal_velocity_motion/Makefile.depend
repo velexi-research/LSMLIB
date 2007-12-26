@@ -7,15 +7,15 @@
 ##
 
 
-NormalVelocityMotion2d_main.o:                               \
-	NormalVelocityMotion2d_main.cc                       \
-	NormalVelocityMotion2d_PatchModule.h                 \
-	NormalVelocityMotion2d_VelocityFieldModule.h
+main.o:                               \
+	main.cc                       \
+	PatchModule.h                 \
+	VelocityFieldModule.h
 
-NormalVelocityMotion2d_PatchModule.o:                        \
-	NormalVelocityMotion2d_PatchModule.h                 \
-	NormalVelocityMotion2d_PatchModule.cc
+PatchModule.o:                        \
+	PatchModule.h                 \
+	PatchModule.cc
 
-NormalVelocityMotion2d_VelocityFieldModule.o:                \
-	NormalVelocityMotion2d_VelocityFieldModule.h         \
-	NormalVelocityMotion2d_VelocityFieldModule.cc
+VelocityFieldModule.o:                \
+	VelocityFieldModule.h         \
+	VelocityFieldModule.cc

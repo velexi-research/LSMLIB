@@ -20,32 +20,32 @@ include $(BUILD_DIR)/config/Makefile.config
 
 CPPFLAGS_EXTRA = -I$(FORTRAN)
 
-PROGRAMS = Toolbox2d_integrals              \
-           Toolbox2d_volumes
+PROGRAMS = main_integrals              \
+           main_volumes
 
 all: $(PROGRAMS)
 
-Toolbox2d_integrals:                                         \
-		Toolbox2d_integrals.o                        \
-		Toolbox2d_VelocityFieldModule.o              \
-		Toolbox2d_PatchModule.o                      \
-                toolbox2d_patchmodule_fort.o                 \
-                toolbox2d_velocityfield_fort.o
+main_integrals:                                    \
+		main_integrals.o                   \
+		VelocityFieldModule.o              \
+		PatchModule.o                      \
+                patchmodule_fort.o                 \
+                velocityfield_fort.o
 	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
-        $(LDLIBS) -o Toolbox2d_integrals
+        $(LDLIBS) -o main_integrals
      
-Toolbox2d_volumes:                                           \
-		Toolbox2d_volumes.o                          \
-		Toolbox2d_VelocityFieldModule.o              \
-		Toolbox2d_PatchModule.o                      \
-                toolbox2d_patchmodule_fort.o                 \
-                toolbox2d_velocityfield_fort.o
+main_volumes:                                      \
+		main_volumes.o                     \
+		VelocityFieldModule.o              \
+		PatchModule.o                      \
+                patchmodule_fort.o                 \
+                velocityfield_fort.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^          \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)     \
-        $(LDLIBS) -o Toolbox2d_volumes
+        $(LDLIBS) -o main_volumes
      
 clean:
 		@RM@ $(PROGRAMS)
@@ -65,9 +65,9 @@ include Makefile.depend
 
 FORTRAN = fortran
 
-toolbox2d_patchmodule_fort.o: $(FORTRAN)/toolbox2d_patchmodule_fort.f
+patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
-toolbox2d_velocityfield_fort.o: $(FORTRAN)/toolbox2d_velocityfield_fort.f
+velocityfield_fort.o: $(FORTRAN)/velocityfield_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 

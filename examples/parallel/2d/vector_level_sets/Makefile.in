@@ -20,21 +20,21 @@ include $(BUILD_DIR)/config/Makefile.config
 
 CPPFLAGS_EXTRA = -I$(FORTRAN)
 
-all: VectorLevelSets2d_main
+all: main
 
-VectorLevelSets2d_main:                                         \
-		VectorLevelSets2d_main.o                        \
-		VectorLevelSets2d_VelocityFieldModule.o         \
-		VectorLevelSets2d_PatchModule.o                 \
-                vectorlevelsets2d_patchmodule_fort.o            \
-                vectorlevelsets2d_velocityfield_fort.o
+main:                                         \
+		main.o                        \
+		VelocityFieldModule.o         \
+		PatchModule.o                 \
+                patchmodule_fort.o            \
+                velocityfield_fort.o
 	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
-        $(LDLIBS) -o VectorLevelSets2d_main
+        $(LDLIBS) -o main
      
 clean:
-		@RM@ VectorLevelSets2d_main
+		@RM@ main
 		@RM@ *.o core 
 		@RM@ PI*
 
@@ -51,9 +51,9 @@ include Makefile.depend
 
 FORTRAN = fortran
 
-vectorlevelsets2d_patchmodule_fort.o: $(FORTRAN)/vectorlevelsets2d_patchmodule_fort.f
+patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
-vectorlevelsets2d_velocityfield_fort.o: $(FORTRAN)/vectorlevelsets2d_velocityfield_fort.f
+velocityfield_fort.o: $(FORTRAN)/velocityfield_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 

@@ -1,6 +1,6 @@
 /*
  * File:        toolbox2d.input
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.4 $
  * Modified:    $Date: 2006/10/13 13:53:14 $
  * Description: input file for 2d example problem
@@ -104,12 +104,12 @@ LevelSetMethodAlgorithm{
 } // end of LevelSetMethodAlgorithm database
 
 
-Toolbox2d_VelocityFieldModule {
+VelocityFieldModule {
   velocity_field = 0
   min_dt = 0.1
 }
 
-Toolbox2d_PatchModule {
+PatchModule {
   initial_level_set = 0
   center = 0.4, 0.0
   radius = 0.5
