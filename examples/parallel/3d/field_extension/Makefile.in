@@ -1,9 +1,9 @@
 ##
 ## File:        Makefile.in
-## Copyright:   (c) 2005-2006 Kevin T. Chu
+## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 ## Revision:    $Revision: 1.10 $
 ## Modified:    $Date: 2006/12/06 00:21:15 $
-## Description:	makefile for parallel 3d level set method test programs
+## Description:	makefile for parallel 3d level set method example programs
 ##
 
 BUILD_DIR = @top_builddir@
@@ -20,35 +20,35 @@ include $(BUILD_DIR)/config/Makefile.config
 
 CPPFLAGS_EXTRA = -I$(FORTRAN)
 
-TEST_PROGRAMS = TestLSM_3d_field_extension                       \
-                TestLSM_3d_single_component_field_extension
+PROGRAMS = main_multiple_components    \
+           main_single_component
 
-all: $(TEST_PROGRAMS)
+all: $(PROGRAMS)
 
-TestLSM_3d_field_extension:                                         \
-		TestLSM_3d_field_extension.o                        \
-		TestLSM_3d_VelocityFieldModule.o         \
-		TestLSM_3d_PatchModule.o                 \
-                testlsm_3d_patchmodule_fort.o            \
-                testlsm_3d_velocityfield_fort.o
+main_multiple_components:                     \
+		main_multiple_components.o    \
+		VelocityFieldModule.o         \
+		PatchModule.o                 \
+                patchmodule_fort.o            \
+                velocityfield_fort.o
 	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
-        $(LDLIBS) -o TestLSM_3d_field_extension
+        $(LDLIBS) -o main_multiple_components
      
-TestLSM_3d_single_component_field_extension:                       \
-		TestLSM_3d_single_component_field_extension.o      \
-		TestLSM_3d_VelocityFieldModule.o                   \
-		TestLSM_3d_PatchModule.o                           \
-                testlsm_3d_patchmodule_fort.o                      \
-                testlsm_3d_velocityfield_fort.o
+main_single_component:                                  \
+                main_single_component.o                 \
+		VelocityFieldModule.o                   \
+		PatchModule.o                           \
+                patchmodule_fort.o                      \
+                velocityfield_fort.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^          \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)     \
-        $(LDLIBS) -o TestLSM_3d_single_component_field_extension
+        $(LDLIBS) -o main_single_component
      
 clean:
-		@RM@ $(TEST_PROGRAMS)
+		@RM@ $(PROGRAMS)
 		@RM@ *.o core 
 
 cleanrun:
@@ -64,9 +64,9 @@ include Makefile.depend
 
 FORTRAN = fortran
 
-testlsm_3d_patchmodule_fort.o: $(FORTRAN)/testlsm_3d_patchmodule_fort.f
+patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
-testlsm_3d_velocityfield_fort.o: $(FORTRAN)/testlsm_3d_velocityfield_fort.f
+velocityfield_fort.o: $(FORTRAN)/velocityfield_fort.f
 	@F77@ @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^ 
 
