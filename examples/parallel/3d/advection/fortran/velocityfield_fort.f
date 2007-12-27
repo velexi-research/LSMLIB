@@ -1,7 +1,7 @@
 c***********************************************************************
 c
 c  File:        velocityfield_fort.f
-c  Copyright:   (c) 2005-2006 Kevin T. Chu
+c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 c  Revision:    $Revision: 1.3 $
 c  Modified:    $Date: 2006/02/11 04:15:35 $
 c  Description: F77 velocity field routines for 3d LSM example problem

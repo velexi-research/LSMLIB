@@ -1,6 +1,6 @@
 /*
  * File:        PatchModule.cc
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.5 $
  * Modified:    $Date: 2006/05/29 17:25:45 $
  * Description: Implementation for concrete subclass of 

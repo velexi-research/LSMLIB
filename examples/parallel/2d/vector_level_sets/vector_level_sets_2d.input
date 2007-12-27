@@ -1,15 +1,15 @@
 /*
- * File:        normal_velocity_motion2d.input
+ * File:        vector_level_sets_2d.input
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/10/13 13:53:13 $
+ * Revision:    $Revision: 1.4 $
+ * Modified:    $Date: 2006/10/13 13:53:15 $
  * Description: input file for 2d example problem
  */
 
 
 Main {
   // Base name for output files.
-  base_name = "NORMAL_VELOCITY_MOTION_2D"
+  base_name = "VECTOR_LEVEL_SETS_2D"
   // Whether to log all nodes in a parallel run.
   log_all_nodes = TRUE
 
@@ -39,8 +39,7 @@ CartesianGeometry {
   //                        domain is periodic.  Zero indicates not
   //                        periodic, non-zero value indicates periodicity.
   //                        [0]
-//  domain_boxes = [(0,0), (199,199)]
-  domain_boxes = [(0,0), (99,99)]
+  domain_boxes = [(0,0), (199,199)]
   x_lo         = -1, -1
   x_up         = 1, 1
 
@@ -52,7 +51,7 @@ LevelSetMethodAlgorithm{
 
   LevelSetFunctionIntegrator {
     start_time  = 0.0
-    end_time    = 5.0
+    end_time    = 1.0
   
     cfl_number               = 0.5
     spatial_derivative_type  = "WENO"
@@ -80,8 +79,7 @@ LevelSetMethodAlgorithm{
     }
 
     largest_patch_size {
-//      level_0 = 50,50
-      level_0 = 100,100
+      level_0 = 50,50
       // all finer levels will use same values as level_0...
     }
 
@@ -106,18 +104,18 @@ LevelSetMethodAlgorithm{
 
 
 VelocityFieldModule {
-//  normal_velocity_field = 0 // OSCILLATING EXPANSION VELOCITY
-  normal_velocity_field = 1 // MEAN-CURVATURE VELOCITY
-  speed = 0.1
-  omega = 3.0
+  velocity_field_0 = 3
+  velocity_field_1 = 4
+
   min_dt = 0.1
 }
 
 PatchModule {
-//  initial_level_set = 0 // CIRCLE
-  initial_level_set = 1 // LOBES
-//  center = 0.5, 0.0
-  center = 0.0, 0.0
-  radius = 0.3
-  num_lobes = 3
+  initial_level_set_0 = 0
+  center_0 = 0.5, 0.0
+  radius_0 = 0.2
+
+  initial_level_set_1 = 0
+  center_1 = 0.0, -0.25
+  radius_1 = 0.3
 }

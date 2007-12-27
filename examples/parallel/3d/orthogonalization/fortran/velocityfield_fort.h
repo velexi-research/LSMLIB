@@ -1,6 +1,6 @@
 /*
  * File:        velocityfield_fort.h
- * Copyright:   (c) 2005-2006 Kevin T. Chu
+ * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/04/10 15:25:52 $
  * Description: Header file for F77 velocity field routines for 3d LSM 

@@ -144,7 +144,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double* dx = patch_geom->getDx();
-    const doubl* x_lower = patch_geom->getXLower();
+    const double* x_lower = patch_geom->getXLower();
 #else
     const double* dx_double = patch_geom->getDx();
     const double* x_lower_double = patch_geom->getXLower();
