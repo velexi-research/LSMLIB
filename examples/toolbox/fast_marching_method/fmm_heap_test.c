@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "LSMLIB_config.h"
 #include "FMM_Heap.h"
 
 /************************************************************************
@@ -44,7 +45,7 @@ int main( int argc, char *argv[])
   printf("Inserting some nodes...\n");
   for (i = 0; i<N; i++) {
     for (j = 0; j<N; j++) {
-      double value;
+      LSMLIB_REAL value;
       int node_handle;
 
       grid_idx[0] = i;
@@ -60,7 +61,7 @@ int main( int argc, char *argv[])
   } 
 
   // extract some nodes
-  double prev_val = -1;
+  LSMLIB_REAL prev_val = -1;
   printf("\nExtracting some nodes...\n");
   for (i = 0; i < 2*N; i++) {
     FMM_HeapNode moved_node; 
@@ -93,7 +94,7 @@ int main( int argc, char *argv[])
   printf("\nInserting some more nodes...\n");
   for (i = 0; i<N; i++) {
     for (j = 0; j<N; j++) {
-      double value = 1.0*rand()/RAND_MAX;
+      LSMLIB_REAL value = 1.0*rand()/RAND_MAX;
       int node_handle = FMM_Heap_insertNode(fmm_heap,grid_idx,value);
 
       grid_idx[0] = i+N;
@@ -185,7 +186,7 @@ int main( int argc, char *argv[])
   // update some nodes
   printf("\nUpdating value of some nodes...\n");
   for (i = 0; i<N; i++) {
-    double value = i+1;
+    LSMLIB_REAL value = i+1;
     FMM_HeapNode node = FMM_Heap_getNode(fmm_heap,i);
     printf("Before:  \n");
     printf("   Node handle = %d, ", i);
@@ -206,7 +207,7 @@ int main( int argc, char *argv[])
       printf("ERROR: FMM_Heap_updateNode() failed!!!\n");
   }
   for (i = N; i<2*N; i++) {
-    double value = -i;
+    LSMLIB_REAL value = -i;
     FMM_HeapNode node = FMM_Heap_getNode(fmm_heap,i);
     printf("Before:  \n");
     printf("   Node handle = %d, ", i);

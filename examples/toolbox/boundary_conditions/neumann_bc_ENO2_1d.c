@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "LSMLIB_config.h"
 #include "lsm_boundary_conditions1d.h"
 #include "lsm_spatial_derivatives1d.h"
 
@@ -30,10 +31,10 @@
 
 int main( int argc, char *argv[])
 {
-  double *phi;
-  double *phi_x_plus;
-  double *phi_x_minus;
-  double *D1, *D2;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *phi_x_plus;
+  LSMLIB_REAL *phi_x_minus;
+  LSMLIB_REAL *D1, *D2;
   int ghostcell_width = 2;
   int box_lower[TEST_DIM];
   int box_upper[TEST_DIM];
@@ -42,9 +43,9 @@ int main( int argc, char *argv[])
   int ghostbox_upper[TEST_DIM];
   int ghostbox_dims[TEST_DIM];
   int i;
-  double dx;
-  double err_x_lower;
-  double err_x_upper;
+  LSMLIB_REAL dx;
+  LSMLIB_REAL err_x_lower;
+  LSMLIB_REAL err_x_upper;
   int bdry_location_idx;
 
   /* set index space extents */
@@ -59,16 +60,16 @@ int main( int argc, char *argv[])
   dx = 1.0/box_dims[0];
 
   /* allocate space for data */
-  phi         = malloc(sizeof(double)*ghostbox_dims[0]);
-  phi_x_plus  = malloc(sizeof(double)*ghostbox_dims[0]);
-  phi_x_minus = malloc(sizeof(double)*ghostbox_dims[0]);
-  D1          = malloc(sizeof(double)*ghostbox_dims[0]);
-  D2          = malloc(sizeof(double)*ghostbox_dims[0]);
+  phi         = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]);
+  phi_x_plus  = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]);
+  phi_x_minus = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]);
+  D1          = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]);
+  D2          = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]);
 
   /* set phi data in interior */
   for (i = 0; i < box_dims[0]; i++) {
     int idx = i+ghostcell_width;
-    double x = (i+0.5)*dx;
+    LSMLIB_REAL x = (i+0.5)*dx;
     phi[idx] = (x-0.47)*(x-0.47);
   }
  

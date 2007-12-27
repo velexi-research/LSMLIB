@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "LSMLIB_config.h"
 #include "lsm_boundary_conditions3d.h"
 #include "lsm_spatial_derivatives3d.h"
 
@@ -30,10 +31,10 @@
 
 int main( int argc, char *argv[])
 {
-  double *phi;
-  double *phi_x_plus, *phi_y_plus, *phi_z_plus;
-  double *phi_x_minus, *phi_y_minus, *phi_z_minus;
-  double *D1, *D2;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *phi_x_plus, *phi_y_plus, *phi_z_plus;
+  LSMLIB_REAL *phi_x_minus, *phi_y_minus, *phi_z_minus;
+  LSMLIB_REAL *D1, *D2;
   int ghostcell_width = 2;
   int box_lower[TEST_DIM];
   int box_upper[TEST_DIM];
@@ -43,13 +44,13 @@ int main( int argc, char *argv[])
   int ghostbox_dims[TEST_DIM];
   int grid_size;
   int i,j,k;
-  double dx, dy, dz;
-  double err_x_lower;
-  double err_x_upper;
-  double err_y_lower;
-  double err_y_upper;
-  double err_z_lower;
-  double err_z_upper;
+  LSMLIB_REAL dx, dy, dz;
+  LSMLIB_REAL err_x_lower;
+  LSMLIB_REAL err_x_upper;
+  LSMLIB_REAL err_y_lower;
+  LSMLIB_REAL err_y_upper;
+  LSMLIB_REAL err_z_lower;
+  LSMLIB_REAL err_z_upper;
   int bdry_location_idx;
 
   /* set index space extents */
@@ -77,15 +78,15 @@ int main( int argc, char *argv[])
 
   /* allocate space for data */
   grid_size = ghostbox_dims[0]*ghostbox_dims[1]*ghostbox_dims[2];
-  phi         = malloc(sizeof(double)*grid_size);
-  phi_x_plus  = malloc(sizeof(double)*grid_size);
-  phi_y_plus  = malloc(sizeof(double)*grid_size);
-  phi_z_plus  = malloc(sizeof(double)*grid_size);
-  phi_x_minus = malloc(sizeof(double)*grid_size);
-  phi_y_minus = malloc(sizeof(double)*grid_size);
-  phi_z_minus = malloc(sizeof(double)*grid_size);
-  D1          = malloc(sizeof(double)*grid_size);
-  D2          = malloc(sizeof(double)*grid_size);
+  phi         = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_x_plus  = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_y_plus  = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_z_plus  = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_x_minus = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_y_minus = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  phi_z_minus = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  D1          = malloc(sizeof(LSMLIB_REAL)*grid_size);
+  D2          = malloc(sizeof(LSMLIB_REAL)*grid_size);
 
   /* set phi data in interior */
   for (k = 0; k < box_dims[2]; k++) {
@@ -94,9 +95,9 @@ int main( int argc, char *argv[])
         int idx = (i+ghostcell_width) 
                 + (j+ghostcell_width)*ghostbox_dims[0]
                 + (k+ghostcell_width)*ghostbox_dims[0]*ghostbox_dims[1];
-        double x = (i+0.5)*dx;
-        double y = (j+0.5)*dy;
-        double z = (k+0.5)*dz;
+        LSMLIB_REAL x = (i+0.5)*dx;
+        LSMLIB_REAL y = (j+0.5)*dy;
+        LSMLIB_REAL z = (k+0.5)*dz;
 
         phi[idx] = (x-0.19)*(x-0.19) + 4*(y-0.58)*(y-0.58) 
                  + 0.25*(z-0.97)*(z-0.97) - 0.25;

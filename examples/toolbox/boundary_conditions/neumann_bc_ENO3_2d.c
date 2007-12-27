@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "LSMLIB_config.h"
 #include "lsm_boundary_conditions2d.h"
 #include "lsm_spatial_derivatives2d.h"
 
@@ -30,10 +31,10 @@
 
 int main( int argc, char *argv[])
 {
-  double *phi;
-  double *phi_x_plus, *phi_y_plus;
-  double *phi_x_minus, *phi_y_minus;
-  double *D1, *D2, *D3;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *phi_x_plus, *phi_y_plus;
+  LSMLIB_REAL *phi_x_minus, *phi_y_minus;
+  LSMLIB_REAL *D1, *D2, *D3;
   int ghostcell_width = 3;
   int box_lower[TEST_DIM];
   int box_upper[TEST_DIM];
@@ -42,11 +43,11 @@ int main( int argc, char *argv[])
   int ghostbox_upper[TEST_DIM];
   int ghostbox_dims[TEST_DIM];
   int i,j;
-  double dx, dy;
-  double err_x_lower;
-  double err_x_upper;
-  double err_y_lower;
-  double err_y_upper;
+  LSMLIB_REAL dx, dy;
+  LSMLIB_REAL err_x_lower;
+  LSMLIB_REAL err_x_upper;
+  LSMLIB_REAL err_y_lower;
+  LSMLIB_REAL err_y_upper;
   int bdry_location_idx;
 
   /* set index space extents */
@@ -66,22 +67,22 @@ int main( int argc, char *argv[])
   dy = 1.0/box_dims[1];
 
   /* allocate space for data */
-  phi         = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  phi_x_plus  = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  phi_y_plus  = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  phi_x_minus = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  phi_y_minus = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  D1          = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  D2          = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
-  D3          = malloc(sizeof(double)*ghostbox_dims[0]*ghostbox_dims[1]);
+  phi         = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  phi_x_plus  = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  phi_y_plus  = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  phi_x_minus = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  phi_y_minus = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  D1          = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  D2          = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
+  D3          = malloc(sizeof(LSMLIB_REAL)*ghostbox_dims[0]*ghostbox_dims[1]);
 
   /* set phi data in interior */
   for (j = 0; j < box_dims[1]; j++) {
     for (i = 0; i < box_dims[0]; i++) {
       int idx = (i+ghostcell_width) 
               + (j+ghostcell_width)*ghostbox_dims[0];
-      double x = (i+0.5)*dx;
-      double y = (j+0.5)*dy;
+      LSMLIB_REAL x = (i+0.5)*dx;
+      LSMLIB_REAL y = (j+0.5)*dy;
 
       phi[idx] = (x-0.43)*(x-0.43) + 4*(y-0.87)*(y-0.87) - 0.25;
 

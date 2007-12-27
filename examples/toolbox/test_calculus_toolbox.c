@@ -7,15 +7,16 @@
  */
 
 #include <stdio.h>
+#include "LSMLIB_config.h"
 #include "lsm_calculus_toolbox.h"
 
 int main(void)
 {
 
-  double h[20], d[20];
-  double x[20];
-  double d_phi;
-  double eps;
+  LSMLIB_REAL h[20], d[20];
+  LSMLIB_REAL x[20];
+  LSMLIB_REAL d_phi;
+  LSMLIB_REAL eps;
   int i;
 
   /* initialize d_phi and eps (smoothing width) */
