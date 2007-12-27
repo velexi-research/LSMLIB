@@ -44,7 +44,7 @@ int main( int argc, char *argv[])
   int grid_dims[2];
 
   /* numerical parameters */
-  int spatial_derivative_order = 1;
+  int spatial_derivative_order = 2;
 
   /* auxilliary variables */
   double x,y;
