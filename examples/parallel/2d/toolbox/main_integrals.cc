@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
   Pointer<VariableContext> plus_context = var_db->getContext("PLUS");
   Pointer<VariableContext> minus_context = var_db->getContext("MINUS");
   Pointer<VariableContext> scratch_context = 
-    var_db->getContext("TEST_SCRATCH");
+    var_db->getContext("SCRATCH");
   Pointer< CellVariable<2,LSMLIB_REAL> > phi_variable =
     new CellVariable<2,LSMLIB_REAL>("phi",1);
   Pointer< CellVariable<2,LSMLIB_REAL> > grad_phi_variable =

@@ -5,7 +5,7 @@
  * Modified:    $Date: 2006/03/23 14:00:03 $
  * Description: Header for concrete subclass of LevelSetMethodPatchStrategy 
  *              that computes the single patch numerical routines for the 
- *              level set method test problem
+ *              level set method example problem
  */
 
 #ifndef included_PatchModule

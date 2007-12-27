@@ -83,7 +83,7 @@ public:
 
   /*!
    * providesExternalVelocityField() always returns true because
-   * this test module provide an external velocity field.
+   * this example module provide an external velocity field.
    *
    * Arguments:     none
    *
@@ -96,7 +96,7 @@ public:
 
   /*!
    * providesNormalVelocityField() always returns false because
-   * this test module does not provide a normal velocity field.
+   * this example module does not provide a normal velocity field.
    *
    * Arguments:     none
    *
@@ -128,7 +128,7 @@ public:
 
   /*!
    * getNormalVelocityFieldPatchDataHandle() returns -1 (a bogus
-   * PatchData handle value) because this test module does not 
+   * PatchData handle value) because this example module does not 
    * provide a normal velocity field.
    * 
    * Arguments:
