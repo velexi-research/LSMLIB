@@ -13,6 +13,7 @@
 #include <math.h>
 
 /* Header for Fast Marching Method Algorithm class */
+#include "LSMLIB_config.h"
 #include "lsm_fast_marching_method.h"
 
 /************************************************************************
@@ -26,14 +27,14 @@
 int main( int argc, char *argv[])
 {
   /* field variables */
-  double *phi;
-  double *distance_function;
-  double *mask = 0;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *distance_function;
+  LSMLIB_REAL *mask = 0;
 
   /* grid parameters */
-  double X_lo[3] = {-1.0,-1.0,-1.0}; 
-  double X_hi[3] = {1.0,1.0,1.0}; 
-  double dx[3];
+  LSMLIB_REAL X_lo[3] = {-1.0,-1.0,-1.0}; 
+  LSMLIB_REAL X_hi[3] = {1.0,1.0,1.0}; 
+  LSMLIB_REAL dx[3];
   int N;
   int i,j,k;
   int idx;
@@ -44,8 +45,8 @@ int main( int argc, char *argv[])
   int spatial_derivative_order = 2;
 
   /* auxilliary variables */
-  double x,y,z;
-  double center[3], radius;
+  LSMLIB_REAL x,y,z;
+  LSMLIB_REAL center[3], radius;
 
   /* file pointer to output results */
   FILE *data_file;
@@ -60,8 +61,8 @@ int main( int argc, char *argv[])
   }
 
   /* allocate memory for field data */
-  phi = (double*) malloc(num_gridpts*sizeof(double));
-  distance_function = (double*) malloc(num_gridpts*sizeof(double));
+  phi = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+  distance_function = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
 
   /* initialize data */
   center[0] = 0.0; center[1] = 0.0; center[2] = 0.0; 

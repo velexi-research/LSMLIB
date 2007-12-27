@@ -5,6 +5,7 @@
 #include <time.h>
 
 /* LSMLIB headers */
+#include "LSMLIB_config.h"
 #include "lsm_level_set_evolution3d_local.h"
 #include "lsm_spatial_derivatives3d_local.h"
 #include "lsm_utilities3d_local.h"
@@ -45,16 +46,16 @@ void curvatureModelMedium3dLocalMainLoop(
      Grid             *grid,
      FILE             *fp_out)
 {
-  double   cfl_number = 0.5;
+  LSMLIB_REAL   cfl_number = 0.5;
   
   /* time variables */
-  double   t, dt, dt_sub, max_H, dt_corr;
-  double   tplot, dt_min, dt_max;
+  LSMLIB_REAL   t, dt, dt_sub, max_H, dt_corr;
+  LSMLIB_REAL   tplot, dt_min, dt_max;
   
-  double   max_abs_err, eps, eps_stop;
+  LSMLIB_REAL   max_abs_err, eps, eps_stop;
  
-  double   zero = 0.0;
-  double   vel_n, vol_phi, vol_max, vol_phi_prev, rel_vol_diff;
+  LSMLIB_REAL   zero = 0.0;
+  LSMLIB_REAL   vel_n, vol_phi, vol_max, vol_phi_prev, rel_vol_diff;
   int      i, nx, nxy;  
   
   int      bdry_location_idx = 9; /* extrapolate all boundaries */
@@ -69,10 +70,10 @@ void curvatureModelMedium3dLocalMainLoop(
   Options          *o = options;
    
   /* variables specific for localization */
-  double   beta, gamma;
+  LSMLIB_REAL   beta, gamma;
   int      nlo_index, nhi_index, level; 
   
-  double   frac_nb, last_reinit_time, grad_phi_ave;  
+  LSMLIB_REAL   frac_nb, last_reinit_time, grad_phi_ave;  
   int      nb_level0, nb_level1, nb_level2;
   int      reinit_trigger;
   
@@ -706,7 +707,7 @@ void curvatureModelMedium3dLocalMainLoop(
    nb_level0 = (d->n_hi)[0] - (d->n_lo)[0] + 1;
    nb_level1 = (d->n_hi)[1] - (d->n_lo)[1] + 1;
    nb_level2 = (d->n_hi)[2] - (d->n_lo)[2] + 1;
-   frac_nb = (nb_level0 + nb_level1 + nb_level2)/(double)g->num_gridpts;
+   frac_nb = (nb_level0 + nb_level1 + nb_level2)/(LSMLIB_REAL)g->num_gridpts;
    fprintf(fp_out,"narrow band level0 %8d all levels %d total frac %g\n",
              nb_level0,nb_level0+nb_level1+nb_level2,frac_nb);
    /* 
@@ -719,7 +720,7 @@ void curvatureModelMedium3dLocalMainLoop(
    fflush(stdout); fflush(fp_out);								  										  
   } /* outer loop */
    
-  ave_reinit_steps =ceil( (double)(ave_reinit_steps) / (double)(reinit_steps) );
+  ave_reinit_steps =ceil( (LSMLIB_REAL)(ave_reinit_steps) / (LSMLIB_REAL)(reinit_steps) );
   fprintf(fp_out,"\nTotal steps %d   Reinit. steps %d  (change sign %d, grad_phi_ave %d)",
          TOTAL_STEP, reinit_steps,change_sgn_steps,grad_phi_ave_steps);
   fprintf(fp_out,"\nReinitialized on average every %d steps.\n",ave_reinit_steps); 
@@ -747,10 +748,10 @@ void reinitializeMedium3dLocal(
      LSM_DataArrays *data_arrays,
      Grid           *grid,
      Options        *options,
-     double         tmax_r)
+     LSMLIB_REAL         tmax_r)
 {   
-    double cfl_number = 0.5;
-    double t_r, dt_r;
+    LSMLIB_REAL cfl_number = 0.5;
+    LSMLIB_REAL t_r, dt_r;
     
     int    use_phi0_for_sign = 0;
     int    nx, nxy;

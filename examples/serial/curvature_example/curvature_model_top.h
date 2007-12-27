@@ -10,6 +10,6 @@
 
 int    curvatureModelTop(Options *,char *,char *,char *);
 void   setArrayAllocationCurvatureModel(Options *, LSM_DataArrays *);
-Grid  *createMaskThroatFromSpheres3d(double**,Options *);
+Grid  *createMaskThroatFromSpheres3d(LSMLIB_REAL**,Options *);
 
 #endif

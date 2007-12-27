@@ -20,6 +20,7 @@ extern "C" {
  * LSMLIB provides reinitialization functions.
  */
 
+#include "LSMLIB_config.h"
 #include "lsm_grid.h"
 #include "lsm_data_arrays.h"
 #include "lsm_options.h"

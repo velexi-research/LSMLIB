@@ -20,8 +20,8 @@ void lsm2dReinitializationMedium(
   Grid *grid,
   Options *options)
 {   
-  double cfl_number = 0.5;
-  double tmax_r, t_r, dt_r;
+  LSMLIB_REAL cfl_number = 0.5;
+  LSMLIB_REAL tmax_r, t_r, dt_r;
 
   int    use_phi0_for_sign = 1;
   int    idx;

@@ -16,7 +16,7 @@
 #include "lsm_grid.h"
 
 
-#define DSZ sizeof(double)
+#define DSZ sizeof(LSMLIB_REAL)
 
 /*======== Helper Functions for Options structure manipulation ========*/
 /*!
@@ -110,7 +110,7 @@ Options *createOptionsFromInputFile(char *filename)
   Options *options;
 
   int     i, n, found, len, tmp1, cmp;
-  double  tmp;
+  LSMLIB_REAL  tmp;
 
   int N_accur_menu = sizeof(Accuracy_settings_menu)/
                      sizeof(Accuracy_settings_item);

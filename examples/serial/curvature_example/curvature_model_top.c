@@ -5,6 +5,7 @@
 #include <time.h>
 
 /* LSMLIB Headers */
+#include "LSMLIB_config.h"
 #include "lsm_initialization3d.h"
 
 /*LSMLIB Serial headers */
@@ -33,8 +34,8 @@ int  curvatureModelTop(
   char    fname[256];
   FILE    *fp_out; 
   
-  double    normalx, normaly, normalz;
-  double    pointx, pointy, pointz;
+  LSMLIB_REAL    normalx, normaly, normalz;
+  LSMLIB_REAL    pointx, pointy, pointz;
   
   time(&time0);
   
@@ -54,7 +55,7 @@ int  curvatureModelTop(
      pointx  = (grid->x_lo[0]) + 20 * (grid->dx)[0];
      pointy = pointz = 0.0; 
      
-     data_arrays->phi = (double *)calloc(grid->num_gridpts,sizeof(double));
+     data_arrays->phi = (LSMLIB_REAL *)calloc(grid->num_gridpts,sizeof(LSMLIB_REAL));
      createPlane(data_arrays->phi,normalx,normaly,normalz,pointx,pointy,
                                                                   pointz,grid);    					
      if(options->do_mask)
@@ -167,36 +168,36 @@ void setArrayAllocationCurvatureModel(
         
     if(options->b == 0)
     { /* Second order derivatives will (presumably) not be used */
-       data_arrays->phi_xx = data_arrays->phi_xy = data_arrays->phi_yy = (double *)NULL;
-       data_arrays->phi_zz = data_arrays->phi_xz = data_arrays->phi_yz = (double *)NULL;
+       data_arrays->phi_xx = data_arrays->phi_xy = data_arrays->phi_yy = (LSMLIB_REAL *)NULL;
+       data_arrays->phi_zz = data_arrays->phi_xz = data_arrays->phi_yz = (LSMLIB_REAL *)NULL;
     }
         
     if(options->a == 0)
     { /* Upwinding derivatives will (presumably) not be used */
-       data_arrays->phi_x_minus  = data_arrays->phi_x_plus = (double *)NULL;
-       data_arrays->phi_y_minus  = data_arrays->phi_y_plus = (double *)NULL;
-       data_arrays->phi_z_minus  = data_arrays->phi_z_plus = (double *)NULL;
+       data_arrays->phi_x_minus  = data_arrays->phi_x_plus = (LSMLIB_REAL *)NULL;
+       data_arrays->phi_y_minus  = data_arrays->phi_y_plus = (LSMLIB_REAL *)NULL;
+       data_arrays->phi_z_minus  = data_arrays->phi_z_plus = (LSMLIB_REAL *)NULL;
     }
 
     if( options->accuracy_id != 2 )
     { /* 3rd order differences used only for HJ ENO3 */
-       data_arrays->D3 = (double *)NULL;
+       data_arrays->D3 = (LSMLIB_REAL *)NULL;
     }
 
     if( options->accuracy_id <= MEDIUM )
     {
-       data_arrays->phi_stage2 = (double *)NULL;
+       data_arrays->phi_stage2 = (LSMLIB_REAL *)NULL;
     } 
 
     if( options->do_reinit == 0)
     {
-       data_arrays->phi0 = (double *)NULL;
+       data_arrays->phi0 = (LSMLIB_REAL *)NULL;
     }
 
     /* Curvature model does not assume external velocity */
-    data_arrays->external_velocity_x = (double *)NULL;
-    data_arrays->external_velocity_y = (double *)NULL;
-    data_arrays->external_velocity_z = (double *)NULL;
+    data_arrays->external_velocity_x = (LSMLIB_REAL *)NULL;
+    data_arrays->external_velocity_y = (LSMLIB_REAL *)NULL;
+    data_arrays->external_velocity_z = (LSMLIB_REAL *)NULL;
 }
 
 /*  createMaskThroatFromSpheres3d()
@@ -216,15 +217,15 @@ void setArrayAllocationCurvatureModel(
 *	   
 */
  Grid *createMaskThroatFromSpheres3d(
-      double  **pmask,
+      LSMLIB_REAL  **pmask,
       Options  *options)
  {
-      double  x_lo[3], x_hi[3];
+      LSMLIB_REAL  x_lo[3], x_hi[3];
       int     dim;
       Grid    *grid;
       
-      double  centerx[3], centery[3], centerz[3], radius[3];
-      double  *mask, r;
+      LSMLIB_REAL  centerx[3], centery[3], centerz[3], radius[3];
+      LSMLIB_REAL  *mask, r;
       int     n, inside_flag[3];
             
       dim = 3;
@@ -234,7 +235,7 @@ void setArrayAllocationCurvatureModel(
       x_lo[2] =  0;        x_hi[2] = r;
       grid = createGridSetDx(dim,options->dx,x_lo,x_hi,options->accuracy_id);
       	 
-      mask = (double*) malloc((grid->num_gridpts)*sizeof(double));   
+      mask = (LSMLIB_REAL*) malloc((grid->num_gridpts)*sizeof(LSMLIB_REAL));   
       
       n = 3; /* number of spheres */
       

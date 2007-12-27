@@ -5,6 +5,7 @@
 #include <time.h>
 
 /* LSMLIB headers */
+#include "LSMLIB_config.h"
 #include "lsm_level_set_evolution3d.h"
 #include "lsm_spatial_derivatives3d.h"
 #include "lsm_utilities3d.h"
@@ -32,17 +33,17 @@ void curvatureModelMedium3dMainLoop(
      Grid             *grid,
      FILE             *fp_out)
 {
-  double   cfl_number = 0.5;
+  LSMLIB_REAL   cfl_number = 0.5;
   
   /* time variables */
-  double   t, dt, dt_sub, max_H, dt_corr;
-  double   tplot, dt_min, dt_max;
-  double   tmax_r = 5*grid->dx[0]; /* max time for reinitialization */
+  LSMLIB_REAL   t, dt, dt_sub, max_H, dt_corr;
+  LSMLIB_REAL   tplot, dt_min, dt_max;
+  LSMLIB_REAL   tmax_r = 5*grid->dx[0]; /* max time for reinitialization */
   
-  double   max_abs_err, eps, eps_stop;
+  LSMLIB_REAL   max_abs_err, eps, eps_stop;
  
-  double   zero = 0.0;
-  double   vel_n, vol_phi, vol_max, vol_phi_prev, rel_vol_diff;
+  LSMLIB_REAL   zero = 0.0;
+  LSMLIB_REAL   vel_n, vol_phi, vol_max, vol_phi_prev, rel_vol_diff;
   int      nx, nxy;  
   
   int      bdry_location_idx = 9; /* extrapolate all boundaries */
@@ -446,7 +447,7 @@ void curvatureModelMedium3dMainLoop(
   
 
   /* Print out statistics on reinitialization */ 
-  ave_reinit_steps =ceil( (double)(ave_reinit_steps) / (double)(reinit_steps) );
+  ave_reinit_steps =ceil( (LSMLIB_REAL)(ave_reinit_steps) / (LSMLIB_REAL)(reinit_steps) );
   fprintf(fp_out,"\nTotal steps %d  Reinit. steps %d",TOTAL_STEP,reinit_steps);
   fprintf(fp_out,"\nReinitialized on average every %d steps.\n",ave_reinit_steps);
   
@@ -473,10 +474,10 @@ void reinitializeMedium3d(
      LSM_DataArrays *data_arrays,
      Grid           *grid,
      Options        *options,
-     double         tmax_r)
+     LSMLIB_REAL         tmax_r)
 {  
-    double cfl_number = 0.5;
-    double t_r, dt_r;
+    LSMLIB_REAL cfl_number = 0.5;
+    LSMLIB_REAL t_r, dt_r;
     
     int    use_phi0_for_sign = 0;    
     int    bdry_location_idx = 9; /* all boundaries */

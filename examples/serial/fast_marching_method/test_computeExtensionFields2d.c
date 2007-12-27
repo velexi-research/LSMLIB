@@ -13,6 +13,7 @@
 #include <math.h>
 
 /* Header for Fast Marching Method Algorithm class */
+#include "LSMLIB_config.h"
 #include "lsm_fast_marching_method.h"
 
 /************************************************************************
@@ -26,16 +27,16 @@
 int main( int argc, char *argv[])
 {
   /* field variables */
-  double *phi;
-  double *distance_function;
-  double **source_fields;
-  double **ext_fields;
-  double *mask = 0;
+  LSMLIB_REAL *phi;
+  LSMLIB_REAL *distance_function;
+  LSMLIB_REAL **source_fields;
+  LSMLIB_REAL **ext_fields;
+  LSMLIB_REAL *mask = 0;
 
   /* grid parameters */
-  double X_lo[2] = {-1.0,-1.0}; 
-  double X_hi[2] = {1.0,1.0}; 
-  double dx[2];
+  LSMLIB_REAL X_lo[2] = {-1.0,-1.0}; 
+  LSMLIB_REAL X_hi[2] = {1.0,1.0}; 
+  LSMLIB_REAL dx[2];
   int N[2];
   int i,j,k;
   int idx;
@@ -47,10 +48,10 @@ int main( int argc, char *argv[])
   int spatial_derivative_order = 2;
 
   /* auxilliary variables */
-  double x,y;
-  double dist1, dist2;
-  double center1[2], center2[2];
-  double radius1, radius2;
+  LSMLIB_REAL x,y;
+  LSMLIB_REAL dist1, dist2;
+  LSMLIB_REAL center1[2], center2[2];
+  LSMLIB_REAL radius1, radius2;
 
   /* file pointer to output results */
   FILE *data_file;
@@ -67,13 +68,13 @@ int main( int argc, char *argv[])
 
   /* allocate memory for field data */
   num_ext_fields = 2;
-  phi = (double*) malloc(num_gridpts*sizeof(double));
-  distance_function = (double*) malloc(num_gridpts*sizeof(double));
-  source_fields = (double**) malloc(num_ext_fields*sizeof(double*));
-  ext_fields = (double**) malloc(num_ext_fields*sizeof(double*));
+  phi = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+  distance_function = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+  source_fields = (LSMLIB_REAL**) malloc(num_ext_fields*sizeof(LSMLIB_REAL*));
+  ext_fields = (LSMLIB_REAL**) malloc(num_ext_fields*sizeof(LSMLIB_REAL*));
   for (i = 0; i < num_ext_fields; i++) {
-    source_fields[i] = (double*) malloc(num_gridpts*sizeof(double));
-    ext_fields[i] = (double*) malloc(num_gridpts*sizeof(double));
+    source_fields[i] = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+    ext_fields[i] = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
   }
 
   /* initialize data */

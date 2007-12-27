@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "LSMLIB_config.h"
 #include "lsm_data_arrays.h"
 #include "lsm_macros.h"
 #include "lsm_options.h"
@@ -70,7 +71,7 @@ void reinitializeTop(
    /* time parameters */
   time_t   time0, time1;
  
-  double one = 1.0;
+  LSMLIB_REAL one = 1.0;
   int    idx, tmp_grid_dims1[3], tmp_grid_dims2[3], i;
   char    filename[256];
   FILE    *fp_out;                               
@@ -84,8 +85,8 @@ void reinitializeTop(
   {
      /* set a default problem */
      int  num_gc = Accuracy_settings_menu[options->accuracy_id].num_ghostcells;
-     double x_lo[2], x_hi[2];
-     double centerx, centery, radius;
+     LSMLIB_REAL x_lo[2], x_hi[2];
+     LSMLIB_REAL centerx, centery, radius;
      int    dim, inside_flag, i;   
       
      dim = 2;
@@ -98,7 +99,7 @@ void reinitializeTop(
      
      centerx = 0.5; centery = 0.5; radius = 0.3;
      /* allocate memory for the level set function */
-     p->phi = (double *)malloc(g->num_gridpts*sizeof(double));
+     p->phi = (LSMLIB_REAL *)malloc(g->num_gridpts*sizeof(LSMLIB_REAL));
      
      /* set the level set function */
      inside_flag = -1; /* inside of the circle we'll have negative values */

@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include "LSMLIB_config.h"
 #include "lsm_grid.h"
 
 int main(void)
@@ -15,8 +16,8 @@ int main(void)
   int num_dims;
   int grid_dims[3];
   LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy_type;
-  double x_lo[3];
-  double x_hi[3];
+  LSMLIB_REAL x_lo[3];
+  LSMLIB_REAL x_hi[3];
 
 
   printf("\n************ Testing 2D Grid management functions ************\n\n");

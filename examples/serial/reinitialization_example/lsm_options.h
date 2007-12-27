@@ -21,6 +21,7 @@ extern "C" {
  *
  */
 
+#include "LSMLIB_config.h"
 #include "lsm_grid.h"
 
 
@@ -44,16 +45,16 @@ typedef struct _Options
    char   outfile[256]; /* output file name */
    char   path[256];    /* output file path, used internally */
      
-   double dx;           /* grid spacing - assumed same in all dimensions */
-   double tmax;         /* max running time */
+   LSMLIB_REAL dx;           /* grid spacing - assumed same in all dimensions */
+   LSMLIB_REAL tmax;         /* max running time */
    char   accuracy[20]; /* accuracy options: low, medium, high, very_high */
    int    accuracy_id;  /* internal accuracy identifier */
    
    /* Assuming phi_t + a |grad_phi| = b kappa |grad_phi|
       where kappa is mean curvature
    */   
-   double a;   /* normal velocity */
-   double b;   /* mean curvature term */
+   LSMLIB_REAL a;   /* normal velocity */
+   LSMLIB_REAL b;   /* mean curvature term */
    
    int    save_data;    /* save all data (1) or not (0); data saved in
                            the same directory as the  ouput file */
