@@ -162,20 +162,8 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
-    
-#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
-#else
-    const double *X_lower_double = d_grid_geometry->getXLower();
-    const double *X_upper_double = d_grid_geometry->getXUpper();
-    float X_lower[DIM];
-    float X_upper[DIM];
-    for (int i = 0; i < DIM; i++) {
-      X_lower[i] = (float) X_lower_double[i];
-      X_upper[i] = (float) X_upper_double[i];
-    }
-#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
