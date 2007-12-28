@@ -261,10 +261,6 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k
-      real zero
-      parameter (zero=0.0d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order
       parameter (order=1)
       integer x_dir, y_dir, z_dir
@@ -469,10 +465,8 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i, j, k
-      real zero, half
-      parameter (zero=0.0d0, half=0.5d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
+      real half
+      parameter (half=0.5d0)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
       integer x_dir, y_dir, z_dir
@@ -777,11 +771,9 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy, dz
       real inv_dx, inv_dy, inv_dz
       integer i,j,k 
-      real zero, half, third, sixth
-      parameter (zero=0.0d0, half=0.5d0, third=1.d0/3.d0)
+      real half, third, sixth
+      parameter (half=0.5d0, third=1.d0/3.d0)
       parameter (sixth=1.d0/6.d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order_1, order_2, order_3
       parameter (order_1=1,order_2=2,order_3=3)
       integer x_dir, y_dir, z_dir
@@ -1253,10 +1245,6 @@ c     variables for WENO calculation
       parameter (one_fourth=0.25d0)
 
       integer i,j,k
-      real zero
-      parameter (zero=0.0d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order_1
       parameter (order_1=1)
       integer x_dir, y_dir, z_dir
@@ -1707,7 +1695,7 @@ c     _fb refers to fill-box for grad_phi data
       real zero
       parameter (zero=0.0d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order
       parameter (order=1)
       integer x_dir, y_dir, z_dir
@@ -1941,7 +1929,7 @@ c     _fb refers to fill-box for grad_phi data
       real zero, half
       parameter (zero=0.0d0, half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
       integer x_dir, y_dir, z_dir
@@ -2272,7 +2260,7 @@ c     _fb refers to fill-box for grad_phi data
       parameter (zero=0.0d0, half=0.5d0, third=1.d0/3.d0)
       parameter (sixth=1.d0/6.d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1, order_2, order_3
       parameter (order_1=1,order_2=2,order_3=3)
       integer x_dir, y_dir, z_dir
@@ -2727,7 +2715,7 @@ c     variables for WENO calculation
       real zero
       parameter (zero=0.0d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1
       parameter (order_1=1)
       integer x_dir, y_dir, z_dir

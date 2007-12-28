@@ -44,6 +44,8 @@ extern "C" {
 #define LSM2D_LAPLACIAN_ORDER2       lsm2dlaplacianorder2_
 #define LSM2D_PHI_UPWIND_GRAD_F      lsm2dphiupwindgradf_
 #define LSM2D_AVERAGE_GRAD_PHI       lsm2daveragegradphi_
+#define LSM2D_GRADIENT_MAGNITUDE     lsm2dgradientmagnitude_
+#define LSM2D_DIVERGENCE_CENTRAL     lsm2ddivergencecentral_
 
 
 /*!
@@ -754,6 +756,61 @@ void LSM2D_AVERAGE_GRAD_PHI(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb);
+
+/*!
+ *
+ *  LSM2D_GRADIENT_MAGNITUDE() computes magnitude of the gradient of phi.
+ *
+ *  Arguments:
+ *    phi_* (in):          components of grad(phi)
+ *    grad_phi_mag (out):  gradient magnitude
+ *    *_gb (in):           index range for ghostbox
+ *    *_fb (in):           index range for fillbox
+ * 
+ */
+void LSM2D_GRADIENT_MAGNITUDE(
+  const REAL *phi_x,
+  const REAL *phi_y,
+  REAL *grad_phi_mag,
+  const int *ilo_grad_phi_gb,
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb,
+  const int *jhi_grad_phi_gb,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb);
+ 
+/*! 
+ *  LSM2D_DIVERGENCE_CENTRAL() computes the second-order, central,  
+ *  finite difference approximation to the divergence of a vector field.
+ *
+ *  Arguments:
+ *    divF* (out):  divergence of F
+ *    FX, FY(in):   x and y components of vector field F
+ *    dx, dy (in):  grid spacing
+ *    *_gb (in):    index range for ghostbox
+ *    *_fb (in):    index range for fillbox
+ * 
+ */
+void  LSM2D_DIVERGENCE_CENTRAL(
+  REAL *divF,
+  const int *ilo_divf_gb, 
+  const int *ihi_divf_gb,
+  const int *jlo_divf_gb,
+  const int *jhi_divf_gb,
+  const REAL *FX,
+  const REAL *FY,
+  const int *ilo_gb, 
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *ilo_fb, 
+  const int *ihi_fb,
+  const int *jlo_fb,  
+  const int *jhi_fb,
+  const REAL *dx,
+  const REAL *dy);
 
 #ifdef __cplusplus
 }

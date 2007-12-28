@@ -203,10 +203,6 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy
       real inv_dx, inv_dy
       integer i,j
-      real zero
-      parameter (zero=0.0d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order
       parameter (order=1)
       integer x_dir, y_dir
@@ -343,10 +339,8 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy
       real inv_dx, inv_dy
       integer i, j
-      real zero, half
-      parameter (zero=0.0d0, half=0.5d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
+      real half
+      parameter (half=0.5d0)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
       integer x_dir, y_dir
@@ -533,11 +527,9 @@ c     _fb refers to fill-box for grad_phi data
       real dx, dy
       real inv_dx, inv_dy
       integer i,j
-      real zero, half, third, sixth
-      parameter (zero=0.0d0, half=0.5d0, third=1.d0/3.d0)
+      real half, third, sixth
+      parameter (half=0.5d0, third=1.d0/3.d0)
       parameter (sixth=1.d0/6.d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order_1, order_2, order_3
       parameter (order_1=1,order_2=2,order_3=3)
       integer x_dir, y_dir
@@ -823,10 +815,6 @@ c     variables for WENO calculation
       parameter (one_fourth=0.25d0)
 
       integer i,j
-      real zero
-      parameter (zero=0.0d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order_1
       parameter (order_1=1)
       integer x_dir, y_dir
@@ -1118,7 +1106,7 @@ c     _fb refers to fill-box for grad_phi data
       real zero
       parameter (zero=0.0d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order
       parameter (order=1)
       integer x_dir, y_dir
@@ -1268,7 +1256,7 @@ c     _fb refers to fill-box for grad_phi data
       real zero, half
       parameter (zero=0.0d0, half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
       integer x_dir, y_dir
@@ -1476,7 +1464,7 @@ c     _fb refers to fill-box for grad_phi data
       parameter (zero=0.0d0, half=0.5d0, third=1.d0/3.d0)
       parameter (sixth=1.d0/6.d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1, order_2, order_3
       parameter (order_1=1,order_2=2,order_3=3)
       integer x_dir, y_dir
@@ -1769,7 +1757,7 @@ c     variables for WENO calculation
       real zero
       parameter (zero=0.0d0)
       real zero_tol
-      parameter (zero_tol=1.d-8)
+      parameter (zero_tol=@lsmlib_zero_tol@)
       integer order_1
       parameter (order_1=1)
       integer x_dir, y_dir
@@ -2379,6 +2367,121 @@ c     { begin loop over grid
      &                        + phi_x_minus(i,j) )
           phi_y(i,j) = half * ( phi_y_plus(i,j) 
      &                        + phi_y_minus(i,j) )
+
+        enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+c
+c  lsm2dGradientMagnitude() computes magnitude of the gradient of phi.
+c
+c  Arguments:
+c    phi_* (in):          components of grad(phi)
+c    grad_phi_mag (out):  gradient magnitude
+c    *_gb (in):           index range for ghostbox
+c    *_fb (in):           index range for fillbox
+c
+c***********************************************************************
+      subroutine lsm2dGradientMagnitude(
+     &  phi_x, phi_y, grad_phi_mag,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _grad_phi_gb refers to ghostbox for grad_phi data
+c     _fb refers to fill-box for grad_phi data
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real grad_phi_mag(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                  jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real phi_x_sq, phi_y_sq, zero_tol, zero, tmp
+      parameter (zero = 0.d0)
+      parameter (zero_tol=@lsmlib_zero_tol@)
+      integer i,j
+
+c     { begin loop over grid
+      do j=jlo_fb,jhi_fb
+        do i=ilo_fb,ihi_fb
+          
+          phi_x_sq = phi_x(i,j)*phi_x(i,j)
+          phi_y_sq = phi_y(i,j)*phi_y(i,j)
+          
+          if( phi_x_sq .lt. zero_tol) then
+              phi_x_sq = zero;
+          endif
+          
+          if( phi_y_sq .lt. zero_tol) then
+               phi_y_sq = zero;
+          endif
+          
+          tmp = sqrt( phi_x_sq + phi_y_sq )
+          if( tmp .lt. zero_tol ) then
+            grad_phi_mag(i,j) = zero
+          else
+            grad_phi_mag(i,j) = tmp
+          endif
+
+        enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+      subroutine lsm2dDivergenceCentral(
+     &  divF,
+     &  ilo_divf_gb, ihi_divf_gb,
+     &  jlo_divf_gb, jhi_divf_gb,
+     &  FX, FY,
+     &  ilo_gb, ihi_gb,jlo_gb, jhi_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
+     &  dx, dy)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox for data
+c     _fb refers to fill-box for data
+      integer ilo_divf_gb, ihi_divf_gb
+      integer jlo_divf_gb, jhi_divf_gb
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      real divF(ilo_divf_gb:ihi_divf_gb,
+     &          jlo_divf_gb:jhi_divf_gb)
+      real FX(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real FY(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real dx, dy
+      real dx_factor, dy_factor
+      integer i,j
+
+c     compute denominator values
+      dx_factor = 0.5d0/dx
+      dy_factor = 0.5d0/dy
+
+c     { begin loop over grid
+      do j=jlo_fb,jhi_fb
+        do i=ilo_fb,ihi_fb
+
+          divF(i,j) = (FX(i+1,j) - FX(i-1,j))*dx_factor +
+     &                (FY(i,j+1) - FY(i,j-1))*dy_factor
 
         enddo
       enddo

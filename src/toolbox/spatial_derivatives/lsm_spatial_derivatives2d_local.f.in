@@ -216,10 +216,6 @@ c     _fb refers to fill-box for grad_phi data
       
       real inv_dx, inv_dy
       integer i,j,l
-      real zero
-      parameter (zero=0.0d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
       integer order
       parameter (order=1)
       integer x_dir, y_dir
@@ -407,10 +403,8 @@ c     _fb refers to fill-box for grad_phi data
       
       real inv_dx, inv_dy
       integer i,j,l
-      real zero, half
-      parameter (zero=0.0d0, half=0.5d0)
-      real zero_tol
-      parameter (zero_tol=1.d-8)
+      real half
+      parameter (half=0.5d0)
       integer order_1, order_2
       parameter (order_1=1,order_2=2)
       integer x_dir, y_dir
