@@ -230,8 +230,8 @@ c { begin subroutine
       integer i,j,k
       real vel_n_cur
       real norm_grad_phi_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over grid
       do k=klo_fb,khi_fb
@@ -239,7 +239,7 @@ c     { begin loop over grid
           do i=ilo_fb,ihi_fb
 
             vel_n_cur = vel_n(i,j,k)
-            if (abs(vel_n_cur) .ge. tol) then
+            if (abs(vel_n_cur) .ge. zero_tol) then
 
 c             { begin Godunov selection of grad_phi
 
@@ -354,10 +354,10 @@ c { begin subroutine
       real vel_n
       integer i,j,k
       real norm_grad_phi_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
-      if (abs(vel_n) .ge. tol) then
+      if (abs(vel_n) .ge. zero_tol) then
 
 c       { begin loop over grid
         do k=klo_fb,khi_fb
@@ -489,8 +489,8 @@ c { begin subroutine
       
       integer i,j,k
       real grad_mag2, curv
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over grid
       do k=klo_fb, khi_fb
@@ -501,7 +501,7 @@ c           compute squared magnitude of gradient
             grad_mag2 = phi_x(i,j,k) * phi_x(i,j,k)
      &                + phi_y(i,j,k) * phi_y(i,j,k)
      &                + phi_z(i,j,k) * phi_z(i,j,k)
-            if (grad_mag2 .lt. tol) then
+            if (grad_mag2 .lt. zero_tol) then
               curv = 0.d0
             else
               curv = phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)  

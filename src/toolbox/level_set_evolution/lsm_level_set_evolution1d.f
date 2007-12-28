@@ -139,14 +139,14 @@ c { begin subroutine
       integer i
       real vel_n_cur
       real phi_x_sq_cur
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over grid
       do i=ilo_fb,ihi_fb
 
         vel_n_cur = vel_n(i)
-        if (abs(vel_n_cur) .ge. tol) then
+        if (abs(vel_n_cur) .ge. zero_tol) then
 
 c         { begin Godunov selection of grad_phi
 

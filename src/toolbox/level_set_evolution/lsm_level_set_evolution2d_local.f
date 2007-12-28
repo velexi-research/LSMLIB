@@ -232,8 +232,8 @@ c { begin subroutine
       integer i,j,l
       real vel_n_cur
       real norm_grad_phi_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
@@ -261,7 +261,7 @@ c         } end Godunov selection of grad_phi
 
 
 c         compute contribution to lse_rhs(i,j) 
-          if (abs(vel_n_cur) .ge. tol) then
+          if (abs(vel_n_cur) .ge. zero_tol) then
             lse_rhs(i,j) = lse_rhs(i,j) 
      &                   - vel_n_cur*sqrt(norm_grad_phi_sq)
           endif
@@ -348,8 +348,8 @@ c { begin subroutine
       integer*1 mark_fb  
       integer i,j,l
       real norm_grad_phi_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over indexed points
         do l=nlo_index, nhi_index      
@@ -376,7 +376,7 @@ c       } end Godunov selection of grad_phi
 
 
 c       compute contribution to lse_rhs(i,j) 
-        if (abs(vel_n) .ge. tol) then
+        if (abs(vel_n) .ge. zero_tol) then
           lse_rhs(i,j) = lse_rhs(i,j) 
      &                   - vel_n*sqrt(norm_grad_phi_sq)
         endif
@@ -466,8 +466,8 @@ c { begin subroutine
 c     local variables      
       integer i,j,l
       real grad_mag2, curv
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over indexed points
       do l= nlo_index, nhi_index      
@@ -479,7 +479,7 @@ c     { begin loop over indexed points
 c           compute squared magnitude of gradient
 	    grad_mag2 = phi_x(i,j) * phi_x(i,j) + 
      &	                phi_y(i,j) * phi_y(i,j)
-	    if(grad_mag2 .lt. tol) then
+	    if(grad_mag2 .lt. zero_tol) then
 	      curv = 0.d0
 	    else
 	      curv = phi_xx(i,j)*phi_y(i,j)*phi_y(i,j)  
