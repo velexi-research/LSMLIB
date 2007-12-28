@@ -57,7 +57,7 @@ c     _fb refers to fill-box for normal data
       real half
       parameter (half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.0d-13)
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over grid
       do j=jlo_fb,jhi_fb
@@ -150,7 +150,7 @@ c     _fb refers to fill-box for normal data
       real half
       parameter (half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.d-13)
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     set value of dx_sq to be square of max{dx,dy}
       dx_sq = max(dx,dy)

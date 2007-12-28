@@ -45,7 +45,7 @@ c     _fb refers to fill-box for normal data
       real half
       parameter (half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.0d-13)
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     compute unit normal by taking average of upwind and downwind 
 c     derivatives and normalizing
@@ -118,11 +118,10 @@ c     _fb refers to fill-box for normal data
       real norm_grad_phi_sq
       real dx_sq
       integer i
-      real zero, half
-      parameter (zero=0.d0, half=0.5d0)
+      real half
+      parameter (half=0.5d0)
       real zero_tol
-      parameter (zero_tol=1.d-13)
-
+      parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     compute dx_sq
       dx_sq = dx**2
