@@ -615,8 +615,6 @@ c { begin subroutine
 c     local variables      
       integer i,j,k,l
       real abs_phi_val, cut_off_coeff
-      real tol
-      parameter (tol=1.d-13)
 
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
