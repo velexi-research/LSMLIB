@@ -84,8 +84,8 @@ c     _fb refers to fillbox
       real sgn_phi
       real norm_grad_phi
       real dx_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
       real one
       parameter (one=1.d0)
 
@@ -126,7 +126,7 @@ c         } end Godunov selection of grad_phi
 
 
 c         compute reinit_rhs(i) using smoothed sgn(phi)
-          if (abs(phi_cur) .ge. tol) then
+          if (abs(phi_cur) .ge. zero_tol) then
             norm_grad_phi = abs(grad_phi_star)
             sgn_phi = phi_cur/sqrt( phi_cur*phi_cur 
      &                            + norm_grad_phi*norm_grad_phi*dx_sq)
@@ -166,7 +166,7 @@ c         { begin Godunov selection of grad_phi
 c         } end Godunov selection of grad_phi
 
 c         compute reinit_rhs(i) using smoothed sgn(phi)
-          if (abs(phi_cur) .ge. tol) then
+          if (abs(phi_cur) .ge. zero_tol) then
             norm_grad_phi = abs(grad_phi_star)
             sgn_phi = phi_cur / sqrt(phi_cur*phi_cur + dx_sq)
             reinit_rhs(i) = sgn_phi*(one - norm_grad_phi)

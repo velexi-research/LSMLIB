@@ -129,8 +129,8 @@ c     _fb refers to fillbox
       real sgn_phi
       real norm_grad_phi_sq
       real dx_sq
-      real tol
-      parameter (tol=1.d-13)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
       real one
       parameter (one=1.d0)
 
@@ -184,7 +184,7 @@ c             { begin Godunov selection of grad_phi
 c             } end Godunov selection of grad_phi
 
 c             compute reinit_rhs(i,j) using smoothed sgn(phi)
-              if (abs(phi_cur) .ge. tol) then
+              if (abs(phi_cur) .ge. zero_tol) then
                 norm_grad_phi_sq = grad_phi_star(1)*grad_phi_star(1)
      &                           + grad_phi_star(2)*grad_phi_star(2)
      &                           + grad_phi_star(3)*grad_phi_star(3)
@@ -242,7 +242,7 @@ c             { begin Godunov selection of grad_phi
 c             } end Godunov selection of grad_phi
 
 c             compute reinit_rhs(i,j) using smoothed sgn(phi)
-              if (abs(phi_cur) .ge. tol) then
+              if (abs(phi_cur) .ge. zero_tol) then
                 norm_grad_phi_sq = grad_phi_star(1)*grad_phi_star(1)
      &                           + grad_phi_star(2)*grad_phi_star(2)
      &                           + grad_phi_star(3)*grad_phi_star(3)
@@ -393,8 +393,9 @@ c     _fb refers to fillbox
       real norm_grad_psi
       real sgn_psi
       integer i,j,k
-      real psi_tol, grad_psi_tol
-      parameter (psi_tol=1.d-13,grad_psi_tol=1.d-8)
+      real psi_zero_tol, grad_psi_zero_tol
+      parameter (psi_zero_tol=@lsmlib_zero_tol@)
+      parameter (grad_psi_zero_tol=@lsmlib_zero_tol@)
       real one, half
       parameter (one=1.d0,half=0.5d0)
 
@@ -428,8 +429,8 @@ c           compute norm of grad(psi)
             norm_grad_psi = sqrt(norm_grad_psi)
 
 c           compute ortho_rhs(i,j,k) using upwinding on sgn_psi*grad(psi) 
-            if ( (abs(psi(i,j,k)) .gt. psi_tol) .and.
-     &           (norm_grad_psi .gt. grad_psi_tol) ) then
+            if ( (abs(psi(i,j,k)) .gt. psi_zero_tol) .and.
+     &           (norm_grad_psi .gt. grad_psi_zero_tol) ) then
 
 c             CASE: nontrivial psi and grad(psi) 
 
