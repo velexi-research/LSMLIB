@@ -1096,20 +1096,8 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
 
   } else {
 
-    fprintf(stderr,"ERROR: distance update - discriminant negative!!!\n");
-
-    if (phi_B < 0) { /* distance function of neighbors is positive */
-      fprintf(stderr,"       distance set to 'infinity'.\n");
-    } else { /* distance function of neighbors is negative */
-      dist_updated *= -1;
-      fprintf(stderr,"       distance set to '-infinity'.\n");
-    }
-    fprintf(stderr,"       discriminant = %g,", discriminant);
-    fprintf(stderr," grid_idx = ("); 
-    for (l = 0; l < FMM_NDIM-1; l++) { 
-      fprintf(stderr,"%d,", grid_idx[l]);
-    }
-    fprintf(stderr,"%d)\n",grid_idx[l]);
+    /* discriminant is negative ... hopefully this is not */
+    /* the last time the grid point will be updated.      */
 
   } /* end switch on value of discriminant */
 
@@ -1366,33 +1354,22 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
     } 
 
-  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) { 
-
-      dist_updated = -0.5*phi_B/phi_A;
-
-      /* KTC - comment back in when error reporting is set up */
-      /*
-      fprintf(stderr,"WARNING: distance update - discriminant slightly negative!!!\n");    
-      fprintf(stderr,"         distance updated with O(dx) error.\n");
-      */
+// KTC - TEMPORARILY REMOVE 
+//  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) { 
+//
+//      dist_updated = -0.5*phi_B/phi_A;
+//
+//      /* KTC - comment back in when error reporting is set up */
+//      /*
+//      fprintf(stderr,"WARNING: distance update - discriminant slightly negative!!!\n");    
+//      fprintf(stderr,"         distance updated with O(dx) error.\n");
+//      */
+//
 
   } else {
 
-    fprintf(stderr,"ERROR: distance update - discriminant negative!!!\n");
-
-    if (phi_B < 0) { /* distance function of neighbors is positive */
-      fprintf(stderr,"       distance set to 'infinity'.\n");
-    } else { /* distance function of neighbors is negative */
-      dist_updated *= -1;
-      fprintf(stderr,"       distance set to '-infinity'.\n");
-    }
-
-    fprintf(stderr,"       discriminant = %g,", discriminant);
-    fprintf(stderr," grid_idx = ("); 
-    for (l = 0; l < FMM_NDIM-1; l++) { 
-      fprintf(stderr,"%d,", grid_idx[l]);
-    }
-    fprintf(stderr,"%d)\n",grid_idx[l]);
+    /* discriminant is negative ... hopefully this is not */
+    /* the last time the grid point will be updated.      */
 
   } /* end switch on value of discriminant */
 

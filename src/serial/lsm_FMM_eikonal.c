@@ -428,14 +428,10 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   if (discriminant >= 0) {
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
   } else {
-    fprintf(stderr,"ERROR: phi update - discriminant negative!!!\n");
-    fprintf(stderr,"       phi set to 'infinity'.\n");
-    fprintf(stderr,"       discriminant = %g,", discriminant);
-    fprintf(stderr," grid_idx = (");
-    for (l = 0; l < FMM_NDIM-1; l++) { 
-      fprintf(stderr,"%d,", grid_idx[l]);
-    }
-    fprintf(stderr,"%d)\n",grid_idx[l]);
+
+    /* discriminant is negative ... hopefully this is not */
+    /* the last time the grid point will be updated.      */
+
   }
 
   /* set phi at current grid point */
@@ -623,26 +619,22 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
 
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
 
-  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) {
-
-      phi_updated = -0.5*phi_B/phi_A;
-
-      /* KTC - comment back in when error reporting is set up */
-      /* 
-      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
-      fprintf(stderr,"         phi updated with O(dx) error.\n");
-      */
+// KTC - TEMPORARILY REMOVE
+//  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) {
+//
+//      phi_updated = -0.5*phi_B/phi_A;
+//
+//      /* KTC - comment back in when error reporting is set up */
+//      /* 
+//      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
+//      fprintf(stderr,"         phi updated with O(dx) error.\n");
+//      */
+//
 
   } else {
 
-    fprintf(stderr,"ERROR: phi update - discriminant negative!!!\n");
-    fprintf(stderr,"       phi set to 'infinity'.\n");
-    fprintf(stderr,"       discriminant = %g,", discriminant);
-    fprintf(stderr," grid_idx = (");
-    for (l = 0; l < FMM_NDIM-1; l++) { 
-      fprintf(stderr,"%d,", grid_idx[l]);
-    }
-    fprintf(stderr,"%d)\n",grid_idx[l]);
+    /* discriminant is negative ... hopefully this is not */
+    /* the last time the grid point will be updated.      */
 
   }
 
