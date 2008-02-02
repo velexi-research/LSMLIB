@@ -22,6 +22,9 @@ case $target in
   *86*darwin*)
     AC_SUBST([arch],intel-darwin)
   ;;
+  *cygwin*)
+    AC_SUBST([arch],linux)
+  ;;
   *linux*)
     AC_SUBST([arch],linux)
   ;;
@@ -29,7 +32,8 @@ case $target in
     AC_SUBST([arch],bgl)
   ;;
   *)
-    AC_MSG_ERROR([m4_text_wrap([Unknown target architecture...])])
+    AC_SUBST([arch],linux)
+    AC_MSG_WARNING([m4_text_wrap([Unknown target architecture...assuming linux...])])
   ;;
 esac
 
@@ -257,8 +261,11 @@ AS_IF([test $enable_float = no],
       [AC_DEFINE(LSMLIB_REAL,double)],
       [AC_DEFINE(LSMLIB_REAL,float)])
 AS_IF([test $enable_float = no],
-      [AC_DEFINE(LSMLIB_ZERO_TOL,1.e-10)],
+      [AC_DEFINE(LSMLIB_ZERO_TOL,1.e-11)],
       [AC_DEFINE(LSMLIB_ZERO_TOL,1.e-5)])
+AS_IF([test $enable_float = no],
+      [AC_SUBST(lsmlib_zero_tol,1.d-11)],
+      [AC_SUBST(lsmlib_zero_tol,1.e-5)])
 AS_IF([test $enable_float = no],
       [AC_SUBST(tiny_nonzero_number,1.d-99)],
       [AC_SUBST(tiny_nonzero_number,1.d-35)])
@@ -335,10 +342,23 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/fast_marching_method/Makefile.depend
            src/toolbox/field_extension/Makefile
            src/toolbox/geometry/Makefile
+           src/toolbox/geometry/lsm_geometry1d.f
+           src/toolbox/geometry/lsm_geometry2d.f
+           src/toolbox/geometry/lsm_geometry3d_fort.f
            src/toolbox/geometry/test/Makefile
            src/toolbox/level_set_evolution/Makefile
+           src/toolbox/level_set_evolution/lsm_level_set_evolution1d.f
+           src/toolbox/level_set_evolution/lsm_level_set_evolution2d.f
+           src/toolbox/level_set_evolution/lsm_level_set_evolution2d_local.f
+           src/toolbox/level_set_evolution/lsm_level_set_evolution3d.f
+           src/toolbox/level_set_evolution/lsm_level_set_evolution3d_local.f
            src/toolbox/localization/Makefile
            src/toolbox/reinitialization/Makefile
+           src/toolbox/reinitialization/lsm_reinitialization1d.f
+           src/toolbox/reinitialization/lsm_reinitialization2d.f
+           src/toolbox/reinitialization/lsm_reinitialization2d_local.f
+           src/toolbox/reinitialization/lsm_reinitialization3d.f
+           src/toolbox/reinitialization/lsm_reinitialization3d_local.f
            src/toolbox/spatial_derivatives/Makefile
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f

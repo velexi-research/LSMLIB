@@ -312,7 +312,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os arch CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX CXXCPP F77 FFLAGS ac_ct_F77 LIB_DIR_EXTRA LIBS_EXTRA CP RM MV MKDIR AR XARGS SED AWK FIND MAKE INSTALL SET_MAKE RANLIB ac_ct_RANLIB samrai_dir samrai_inc samrai_lib MPICC MPICXX MPIF77 MPIF90 MPIRUN MPIBOOT MPIUNBOOT MPIEXEC mpi_dir mpi_include_dirs mpi_lib_dir mpi_libs PARALLEL_PACKAGE LSMLIB_PARALLEL matlab_dir mex_flags mex_extension matlab_install_dir CPP EGREP tiny_nonzero_number LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os arch CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX CXXCPP F77 FFLAGS ac_ct_F77 LIB_DIR_EXTRA LIBS_EXTRA CP RM MV MKDIR AR XARGS SED AWK FIND MAKE INSTALL SET_MAKE RANLIB ac_ct_RANLIB samrai_dir samrai_inc samrai_lib MPICC MPICXX MPIF77 MPIF90 MPIRUN MPIBOOT MPIUNBOOT MPIEXEC mpi_dir mpi_include_dirs mpi_lib_dir mpi_libs PARALLEL_PACKAGE LSMLIB_PARALLEL matlab_dir mex_flags mex_extension matlab_install_dir CPP EGREP lsmlib_zero_tol tiny_nonzero_number LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -5959,13 +5959,21 @@ fi
 
 if test $enable_float = no; then
   cat >>confdefs.h <<\_ACEOF
-#define LSMLIB_ZERO_TOL 1.e-10
+#define LSMLIB_ZERO_TOL 1.e-11
 _ACEOF
 
 else
   cat >>confdefs.h <<\_ACEOF
 #define LSMLIB_ZERO_TOL 1.e-5
 _ACEOF
+
+fi
+
+if test $enable_float = no; then
+  lsmlib_zero_tol=1.d-11
+
+else
+  lsmlib_zero_tol=1.e-5
 
 fi
 
@@ -6715,7 +6723,7 @@ done
 # Generate the output files.
 #=======================================================================
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ac_config_files="$ac_config_files config/Makefile.config config/Makefile.config.MATLAB Makefile src/Makefile src/matlab/Makefile src/matlab/fast_marching_method/Makefile src/matlab/level_set_evolution/Makefile src/matlab/reinitialization/Makefile src/matlab/spatial_derivatives/Makefile src/matlab/time_integration/Makefile src/parallel/Makefile src/parallel/Makefile.depend src/parallel/fortran/Makefile src/parallel/templates/Makefile src/parallel/templates/Makefile.depend src/serial/Makefile src/serial/Makefile.depend src/toolbox/Makefile src/toolbox/boundary_conditions/Makefile src/toolbox/fast_marching_method/Makefile src/toolbox/fast_marching_method/Makefile.depend src/toolbox/field_extension/Makefile src/toolbox/geometry/Makefile src/toolbox/geometry/test/Makefile src/toolbox/level_set_evolution/Makefile src/toolbox/localization/Makefile src/toolbox/reinitialization/Makefile src/toolbox/spatial_derivatives/Makefile src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d_local.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d_local.f src/toolbox/time_integration/Makefile src/toolbox/utilities/Makefile src/toolbox/utilities/lsm_utilities1d.f src/toolbox/utilities/lsm_utilities2d.f src/toolbox/utilities/lsm_utilities3d.f src/toolbox/utilities/lsm_utilities2d_local.f src/toolbox/utilities/lsm_utilities3d_local.f examples/Makefile examples/parallel/Makefile examples/parallel/2d/Makefile examples/parallel/2d/advection/Makefile examples/parallel/2d/field_extension/Makefile examples/parallel/2d/normal_velocity_motion/Makefile examples/parallel/2d/toolbox/Makefile examples/parallel/2d/vector_level_sets/Makefile examples/parallel/3d/Makefile examples/parallel/3d/advection/Makefile examples/parallel/3d/field_extension/Makefile examples/parallel/3d/normal_velocity_motion/Makefile examples/parallel/3d/orthogonalization/Makefile examples/parallel/3d/toolbox/Makefile examples/serial/Makefile examples/serial/curvature_example/Makefile examples/serial/fast_marching_method/Makefile examples/serial/reinitialization_example/Makefile examples/toolbox/Makefile examples/toolbox/boundary_conditions/Makefile examples/toolbox/fast_marching_method/Makefile"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ac_config_files="$ac_config_files config/Makefile.config config/Makefile.config.MATLAB Makefile src/Makefile src/matlab/Makefile src/matlab/fast_marching_method/Makefile src/matlab/level_set_evolution/Makefile src/matlab/reinitialization/Makefile src/matlab/spatial_derivatives/Makefile src/matlab/time_integration/Makefile src/parallel/Makefile src/parallel/Makefile.depend src/parallel/fortran/Makefile src/parallel/templates/Makefile src/parallel/templates/Makefile.depend src/serial/Makefile src/serial/Makefile.depend src/toolbox/Makefile src/toolbox/boundary_conditions/Makefile src/toolbox/fast_marching_method/Makefile src/toolbox/fast_marching_method/Makefile.depend src/toolbox/field_extension/Makefile src/toolbox/geometry/Makefile src/toolbox/geometry/lsm_geometry1d.f src/toolbox/geometry/lsm_geometry2d.f src/toolbox/geometry/lsm_geometry3d_fort.f src/toolbox/geometry/test/Makefile src/toolbox/level_set_evolution/Makefile src/toolbox/level_set_evolution/lsm_level_set_evolution1d.f src/toolbox/level_set_evolution/lsm_level_set_evolution2d.f src/toolbox/level_set_evolution/lsm_level_set_evolution2d_local.f src/toolbox/level_set_evolution/lsm_level_set_evolution3d.f src/toolbox/level_set_evolution/lsm_level_set_evolution3d_local.f src/toolbox/localization/Makefile src/toolbox/reinitialization/Makefile src/toolbox/reinitialization/lsm_reinitialization1d.f src/toolbox/reinitialization/lsm_reinitialization2d.f src/toolbox/reinitialization/lsm_reinitialization2d_local.f src/toolbox/reinitialization/lsm_reinitialization3d.f src/toolbox/reinitialization/lsm_reinitialization3d_local.f src/toolbox/spatial_derivatives/Makefile src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d_local.f src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d_local.f src/toolbox/time_integration/Makefile src/toolbox/utilities/Makefile src/toolbox/utilities/lsm_utilities1d.f src/toolbox/utilities/lsm_utilities2d.f src/toolbox/utilities/lsm_utilities3d.f src/toolbox/utilities/lsm_utilities2d_local.f src/toolbox/utilities/lsm_utilities3d_local.f examples/Makefile examples/parallel/Makefile examples/parallel/2d/Makefile examples/parallel/2d/advection/Makefile examples/parallel/2d/field_extension/Makefile examples/parallel/2d/normal_velocity_motion/Makefile examples/parallel/2d/toolbox/Makefile examples/parallel/2d/vector_level_sets/Makefile examples/parallel/3d/Makefile examples/parallel/3d/advection/Makefile examples/parallel/3d/field_extension/Makefile examples/parallel/3d/normal_velocity_motion/Makefile examples/parallel/3d/orthogonalization/Makefile examples/parallel/3d/toolbox/Makefile examples/serial/Makefile examples/serial/curvature_example/Makefile examples/serial/fast_marching_method/Makefile examples/serial/reinitialization_example/Makefile examples/toolbox/Makefile examples/toolbox/boundary_conditions/Makefile examples/toolbox/fast_marching_method/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -7263,10 +7271,23 @@ do
   "src/toolbox/fast_marching_method/Makefile.depend" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/fast_marching_method/Makefile.depend" ;;
   "src/toolbox/field_extension/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/field_extension/Makefile" ;;
   "src/toolbox/geometry/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/geometry/Makefile" ;;
+  "src/toolbox/geometry/lsm_geometry1d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/geometry/lsm_geometry1d.f" ;;
+  "src/toolbox/geometry/lsm_geometry2d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/geometry/lsm_geometry2d.f" ;;
+  "src/toolbox/geometry/lsm_geometry3d_fort.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/geometry/lsm_geometry3d_fort.f" ;;
   "src/toolbox/geometry/test/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/geometry/test/Makefile" ;;
   "src/toolbox/level_set_evolution/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/Makefile" ;;
+  "src/toolbox/level_set_evolution/lsm_level_set_evolution1d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/lsm_level_set_evolution1d.f" ;;
+  "src/toolbox/level_set_evolution/lsm_level_set_evolution2d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/lsm_level_set_evolution2d.f" ;;
+  "src/toolbox/level_set_evolution/lsm_level_set_evolution2d_local.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/lsm_level_set_evolution2d_local.f" ;;
+  "src/toolbox/level_set_evolution/lsm_level_set_evolution3d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/lsm_level_set_evolution3d.f" ;;
+  "src/toolbox/level_set_evolution/lsm_level_set_evolution3d_local.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/level_set_evolution/lsm_level_set_evolution3d_local.f" ;;
   "src/toolbox/localization/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/localization/Makefile" ;;
   "src/toolbox/reinitialization/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/Makefile" ;;
+  "src/toolbox/reinitialization/lsm_reinitialization1d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/lsm_reinitialization1d.f" ;;
+  "src/toolbox/reinitialization/lsm_reinitialization2d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/lsm_reinitialization2d.f" ;;
+  "src/toolbox/reinitialization/lsm_reinitialization2d_local.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/lsm_reinitialization2d_local.f" ;;
+  "src/toolbox/reinitialization/lsm_reinitialization3d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/lsm_reinitialization3d.f" ;;
+  "src/toolbox/reinitialization/lsm_reinitialization3d_local.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/reinitialization/lsm_reinitialization3d_local.f" ;;
   "src/toolbox/spatial_derivatives/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/spatial_derivatives/Makefile" ;;
   "src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f" ;;
   "src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f" ) CONFIG_FILES="$CONFIG_FILES src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f" ;;
@@ -7452,6 +7473,7 @@ s,@mex_extension@,$mex_extension,;t t
 s,@matlab_install_dir@,$matlab_install_dir,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
+s,@lsmlib_zero_tol@,$lsmlib_zero_tol,;t t
 s,@tiny_nonzero_number@,$tiny_nonzero_number,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
