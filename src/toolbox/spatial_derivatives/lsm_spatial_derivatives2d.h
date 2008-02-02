@@ -769,9 +769,9 @@ void LSM2D_AVERAGE_GRAD_PHI(
  * 
  */
 void LSM2D_GRADIENT_MAGNITUDE(
-  const REAL *phi_x,
-  const REAL *phi_y,
-  REAL *grad_phi_mag,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  LSMLIB_REAL *grad_phi_mag,
   const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
   const int *jlo_grad_phi_gb,
@@ -794,13 +794,13 @@ void LSM2D_GRADIENT_MAGNITUDE(
  * 
  */
 void  LSM2D_DIVERGENCE_CENTRAL(
-  REAL *divF,
+  LSMLIB_REAL *divF,
   const int *ilo_divf_gb, 
   const int *ihi_divf_gb,
   const int *jlo_divf_gb,
   const int *jhi_divf_gb,
-  const REAL *FX,
-  const REAL *FY,
+  const LSMLIB_REAL *FX,
+  const LSMLIB_REAL *FY,
   const int *ilo_gb, 
   const int *ihi_gb,
   const int *jlo_gb,
@@ -809,8 +809,8 @@ void  LSM2D_DIVERGENCE_CENTRAL(
   const int *ihi_fb,
   const int *jlo_fb,  
   const int *jhi_fb,
-  const REAL *dx,
-  const REAL *dy);
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
 
 #ifdef __cplusplus
 }
