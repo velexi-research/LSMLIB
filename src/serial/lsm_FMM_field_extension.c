@@ -490,118 +490,123 @@ void FMM_INITIALIZE_FRONT_ORDER1(
       extension_fields_sum_div_dist_sq[m] = 0;
     }
   
-    /* loop over neighbors */
-    for (dir = 0; dir < FMM_NDIM; dir++) {
+    /* check if current grid point is on the zero level set. */
+    /* if so, there is no need compute the distance to the   */
+    /* zero level set.                                       */
+    if (LSM_FMM_ABS(phi_cur) < LSMLIB_ZERO_TOL) {
 
-      /* check if current grid point is on the zero level set. */
-      /* if so, there is no need to check other directions,    */
-      /* so break out of loop.                                 */
-      if (LSM_FMM_ABS(phi_cur) < LSMLIB_ZERO_TOL) {
-        on_interface = LSM_FMM_TRUE; 
-        break;
-      }
+      on_interface = LSM_FMM_TRUE; 
 
-      for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-        offset[l] = 0; 
-      }
+    } else {
 
-      /* reset plus and minus distances */
-      dist_plus = LSMLIB_REAL_MAX;
-      dist_minus = LSMLIB_REAL_MAX;
+      /* loop over directions */
+      for (dir = 0; dir < FMM_NDIM; dir++) {
 
-      /* reset plus and minus extension field values */
-      for (m = 0; m < num_extension_fields; m++) {
-        extension_fields_minus[m] = 0;
-        extension_fields_plus[m] = 0;
-      }
-
-      /* calculate distance to interface in minus direction */
-      offset[dir] = -1;
-      for (l = 0; l < FMM_NDIM; l++) {
-        neighbor[l] = grid_idx[l] + offset[l];
-      }
-      LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,neighbor,grid_dims);
-      if (!grid_idx_out_of_bounds) {
-        LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
-        phi_minus = phi[idx_neighbor];
-        if (phi_minus*phi_cur <= 0) {
-
-          /* locate zero level set using linear interpolant */
-          dist_minus = phi_cur/(phi_cur-phi_minus);
-
-          /* use linear interpolation for value of source field */
-          /* at interface                                       */
-          for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_minus[m] = extension_fields_cur[m] 
-              + dist_minus*(source_fields[m][idx_neighbor]
-                           -extension_fields_cur[m]);
-          }
-
-          /* multiply back in the units for dist_minus */
-          dist_minus *= dx[dir];
+        for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
+          offset[l] = 0; 
         }
-      }
+
+        /* reset plus and minus distances */
+        dist_plus = LSMLIB_REAL_MAX;
+        dist_minus = LSMLIB_REAL_MAX;
+
+        /* reset plus and minus extension field values */
+        for (m = 0; m < num_extension_fields; m++) {
+          extension_fields_minus[m] = 0;
+          extension_fields_plus[m] = 0;
+        }
+
+        /* calculate distance to interface in minus direction */
+        offset[dir] = -1;
+        for (l = 0; l < FMM_NDIM; l++) {
+          neighbor[l] = grid_idx[l] + offset[l];
+        }
+        LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,neighbor,grid_dims);
+        if (!grid_idx_out_of_bounds) {
+          LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
+          phi_minus = phi[idx_neighbor];
+          if (phi_minus*phi_cur <= 0) {
+
+            /* locate zero level set using linear interpolant */
+            dist_minus = phi_cur/(phi_cur-phi_minus);
+
+            /* use linear interpolation for value of source field */
+            /* at interface                                       */
+            for (m = 0; m < num_extension_fields; m++) {
+              extension_fields_minus[m] = extension_fields_cur[m] 
+                + dist_minus*(source_fields[m][idx_neighbor]
+                             -extension_fields_cur[m]);
+            }
+
+            /* multiply back in the units for dist_minus */
+            dist_minus *= dx[dir];
+          }
+        }
       
-      /* calculate distance to interface in plus direction */
-      offset[dir] = 1;
-      for (l = 0; l < FMM_NDIM; l++) {
-        neighbor[l] = grid_idx[l] + offset[l];
-      }
-      LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,neighbor,grid_dims);
-      if (!grid_idx_out_of_bounds) {
-        LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
-        phi_plus = phi[idx_neighbor];
-        if (phi_plus*phi_cur <= 0) {
-
-          /* locate zero level set using linear interpolant */
-          dist_plus = phi_cur/(phi_cur-phi_plus);
-
-          /* use linear interpolation for value of source field */
-          /* at interface                                       */
-          for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_plus[m] = extension_fields_cur[m] 
-              + dist_plus*(source_fields[m][idx_neighbor]
-                          -extension_fields_cur[m]);
-          }
-
-          /* multiply back in the units for dist_plus */
-          dist_plus *= dx[dir];
+        /* calculate distance to interface in plus direction */
+        offset[dir] = 1;
+        for (l = 0; l < FMM_NDIM; l++) {
+          neighbor[l] = grid_idx[l] + offset[l];
         }
-      }
+        LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,neighbor,grid_dims);
+        if (!grid_idx_out_of_bounds) {
+          LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
+          phi_plus = phi[idx_neighbor];
+          if (phi_plus*phi_cur <= 0) {
 
-      /* check if current grid point borders the interface */
-      if ( (dist_plus < LSMLIB_REAL_MAX) || (dist_minus < LSMLIB_REAL_MAX) ) {
+            /* locate zero level set using linear interpolant */
+            dist_plus = phi_cur/(phi_cur-phi_plus);
 
-        borders_interface = LSM_FMM_TRUE; 
+            /* use linear interpolation for value of source field */
+            /* at interface                                       */
+            for (m = 0; m < num_extension_fields; m++) {
+              extension_fields_plus[m] = extension_fields_cur[m] 
+                + dist_plus*(source_fields[m][idx_neighbor]
+                            -extension_fields_cur[m]);
+            }
 
-        if (dist_plus < dist_minus) {
-          dist_dir = dist_plus;
-          use_plus = LSM_FMM_TRUE;
-        } else {
-          dist_dir = dist_minus;
-          use_plus = LSM_FMM_FALSE;
-        }
-
-        /* update 1/dist^2 and ext_field/dist^2 values with */
-        /* information from current coordinate direction    */
-        dist_inv_sq_dir = 1/dist_dir/dist_dir;
-        sum_dist_inv_sq += dist_inv_sq_dir; 
-
-        if (use_plus) {
-          for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_sum_div_dist_sq[m] += 
-              extension_fields_plus[m]*dist_inv_sq_dir;
-          }
-        } else {
-          for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_sum_div_dist_sq[m] += 
-              extension_fields_minus[m]*dist_inv_sq_dir;
+            /* multiply back in the units for dist_plus */
+            dist_plus *= dx[dir];
           }
         }
 
-      } /* end cases: current grid point on or borders interface */
+        /* check if current grid point borders the interface */
+        if (  (dist_plus < LSMLIB_REAL_MAX) 
+           || (dist_minus < LSMLIB_REAL_MAX) ) {
 
-    } /* end loop over neighbors */
+          borders_interface = LSM_FMM_TRUE; 
+
+          if (dist_plus < dist_minus) {
+            dist_dir = dist_plus;
+            use_plus = LSM_FMM_TRUE;
+          } else {
+            dist_dir = dist_minus;
+            use_plus = LSM_FMM_FALSE;
+          }
+
+          /* update 1/dist^2 and ext_field/dist^2 values with */
+          /* information from current coordinate direction    */
+          dist_inv_sq_dir = 1/dist_dir/dist_dir;
+          sum_dist_inv_sq += dist_inv_sq_dir; 
+
+          if (use_plus) {
+            for (m = 0; m < num_extension_fields; m++) {
+              extension_fields_sum_div_dist_sq[m] += 
+                extension_fields_plus[m]*dist_inv_sq_dir;
+            }
+          } else {
+            for (m = 0; m < num_extension_fields; m++) {
+              extension_fields_sum_div_dist_sq[m] += 
+                extension_fields_minus[m]*dist_inv_sq_dir;
+            }
+          }
+
+        } /* end cases: current grid point on or borders interface */
+
+      } /* end loop over directions */
+
+    } /* end case:  abs(phi_cur) >= LSMLIB_ZERO_TOL */
+
 
     /* set distance function and extension field of grid points */
     /* on or bordering the zero level set                       */
@@ -610,9 +615,9 @@ void FMM_INITIALIZE_FRONT_ORDER1(
       /* Set distance function.  We ensure the correct sign */
       /* by introducing a very small error.                 */
       if (phi_cur > 0) 
-        distance_function[idx] = LSMLIB_REAL_MIN;
-      else
-        distance_function[idx] = -LSMLIB_REAL_MIN;
+        distance_function[idx] = LSMLIB_ZERO_TOL;
+      else 
+        distance_function[idx] = -LSMLIB_ZERO_TOL;
 
       /* compute extension field value */
       for (m = 0; m < num_extension_fields; m++) {
@@ -747,7 +752,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
       extension_fields_sum_div_dist_sq[m] = 0;
     }
   
-    /* loop over neighbors */
+    /* loop over directions */
     for (dir = 0; dir < FMM_NDIM; dir++) {
 
       /* check if current grid point is on the zero level set. */
@@ -897,7 +902,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
 
       } /* end cases: current grid point on or borders interface */
 
-    } /* end loop over neighbors */
+    } /* end loop over directions */
 
     /* set distance function and extension field of grid points */
     /* on or bordering the zero level set                       */
