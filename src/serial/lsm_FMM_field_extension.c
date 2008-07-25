@@ -74,25 +74,25 @@
  */
 #ifndef FMM_NDIM
 #error "lsm_FMM_field_extension: required macro FMM_NDIM not defined!"
-#endif FMM_NDIM
+#endif
 #ifndef FMM_COMPUTE_DISTANCE_FUNCTION
 #error "lsm_FMM_field_extension: required macro FMM_COMPUTE_DISTANCE_FUNCTION not defined!"
-#endif FMM_COMPUTE_DISTANCE_FUNCTION
+#endif
 #ifndef FMM_COMPUTE_EXTENSION_FIELDS
 #error "lsm_FMM_field_extension: required macro FMM_COMPUTE_EXTENSION_FIELDS not defined!"
-#endif FMM_COMPUTE_EXTENSION_FIELDS
+#endif
 #ifndef FMM_INITIALIZE_FRONT_ORDER1
 #error "lsm_FMM_field_extension: required macro FMM_INITIALIZE_FRONT_ORDER1 not defined!"
-#endif FMM_INITIALIZE_FRONT_ORDER1
+#endif
 #ifndef FMM_INITIALIZE_FRONT_ORDER2
 #error "lsm_FMM_field_extension: required macro FMM_INITIALIZE_FRONT_ORDER2 not defined!"
-#endif FMM_INITIALIZE_FRONT_ORDER2
+#endif
 #ifndef FMM_UPDATE_GRID_POINT_ORDER1
 #error "lsm_FMM_field_extension: required macro FMM_UPDATE_GRID_POINT_ORDER1 not defined!"
-#endif FMM_UPDATE_GRID_POINT_ORDER1
+#endif
 #ifndef FMM_UPDATE_GRID_POINT_ORDER2
 #error "lsm_FMM_field_extension: required macro FMM_UPDATE_GRID_POINT_ORDER2 not defined!"
-#endif FMM_UPDATE_GRID_POINT_ORDER2
+#endif
 
 
 /*=============== lsm_FMM_field_extension Data Structures =============*/

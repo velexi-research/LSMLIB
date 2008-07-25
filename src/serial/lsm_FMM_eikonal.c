@@ -60,19 +60,23 @@
  */
 #ifndef FMM_NDIM
 #error "lsm_FMM_eikonal: required macro FMM_NDIM not defined!"
-#endif FMM_NDIM
+#endif
 #ifndef FMM_EIKONAL_SOLVE_EIKONAL_EQUATION
 #error "lsm_FMM_eikonal: required macro FMM_EIKONAL_SOLVE_EIKONAL_EQUATION not defined!"
-#endif FMM_EIKONAL_SOLVE_EIKONAL_EQUATION 
+#endif
 #ifndef FMM_EIKONAL_INITIALIZE_FRONT
 #error "lsm_FMM_eikonal: required macro FMM_EIKONAL_INITIALIZE_FRONT not defined!"
-#endif FMM_EIKONAL_INITIALIZE_FRONT 
+#endif
 #ifndef FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1
 #error "lsm_FMM_eikonal: required macro FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1 not defined!"
-#endif FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1 
+#endif
 #ifndef FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2
 #error "lsm_FMM_eikonal: required macro FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2 not defined!"
-#endif FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2 
+#endif
+
+
+/*==================== lsm_FMM_eikonal Constants ====================*/
+#define LSM_FMM_DISCRIMINANT_TOL (1.0e-3)
 
 
 /*================== lsm_FMM_eikonal Data Structures ================*/
@@ -426,7 +430,18 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
   phi_updated = LSMLIB_REAL_MAX;
   if (discriminant >= 0) {
+
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
+
+  } else if (discriminant > -LSM_FMM_DISCRIMINANT_TOL*phi_B*phi_B) {
+
+    phi_updated = -0.5*phi_B/phi_A;
+      /* TODO - KTC - comment back in when error reporting is set up */
+      /* 
+      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
+      fprintf(stderr,"         phi updated with O(dx) error.\n");
+      */
+
   } else {
 
     /* discriminant is negative ... hopefully this is not */
@@ -619,17 +634,14 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
 
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
 
-// KTC - TEMPORARILY REMOVE
-//  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) {
-//
-//      phi_updated = -0.5*phi_B/phi_A;
-//
-//      /* KTC - comment back in when error reporting is set up */
-//      /* 
-//      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
-//      fprintf(stderr,"         phi updated with O(dx) error.\n");
-//      */
-//
+  } else if (discriminant > -LSM_FMM_DISCRIMINANT_TOL*phi_B*phi_B) {
+
+    phi_updated = -0.5*phi_B/phi_A;
+      /* TODO - KTC - comment back in when error reporting is set up */
+      /* 
+      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
+      fprintf(stderr,"         phi updated with O(dx) error.\n");
+      */
 
   } else {
 
