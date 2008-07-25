@@ -274,7 +274,7 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
 
   /* unused function parameters */
   (void) num_dims;
-
+  (void) dx;
 
   /*
    * loop through cells in grid and initialize points on the boundary

@@ -56,7 +56,7 @@ struct FMM_Heap {
  * The amount of memory allocated is dynamically adjusted
  * to accomodate the number of nodes in the heap.
  */
-void FMM_Heap_makeNewHeap(FMM_Heap* heap, int heap_mem_size);
+static void FMM_Heap_makeNewHeap(FMM_Heap* heap, int heap_mem_size);
 
 /*
  * FMM_Heap_growHeap() increases the amount of the memory allocated for
@@ -67,19 +67,19 @@ void FMM_Heap_makeNewHeap(FMM_Heap* heap, int heap_mem_size);
  *        "back-pointers" from the grid must be updated to reflect
  *        the new locations of the FMM_HeapNodes.
  */
-void FMM_Heap_growHeap(FMM_Heap* heap);
+static void FMM_Heap_growHeap(FMM_Heap* heap);
 
 /*
  * FMM_Heap_upHeap() bubbles the specified position up the heap until
  * the value of the corresponding node is greater than its parent.
  */
-void FMM_Heap_upHeap(FMM_Heap* heap, int heap_pos);
+static void FMM_Heap_upHeap(FMM_Heap* heap, int heap_pos);
 
 /*
  * FMM_Heap_downHeap() bubbles the specified position down the heap
  * until the value of the corresponding node is smaller than its parent.
  */
-void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos);
+static void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos);
 
 /*===================================================================*/
 
@@ -439,7 +439,7 @@ void FMM_Heap_downHeap(FMM_Heap* heap, int heap_pos)
 
 
 /* ****** DEBUGGING ******** */
-void FMM_Heap_checkHeap(FMM_Heap* heap)
+static void FMM_Heap_checkHeap(FMM_Heap* heap)
 {
   int *d_heap = heap->d_heap;
   FMM_HeapNode* d_nodes = heap->d_nodes;

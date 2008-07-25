@@ -50,12 +50,12 @@
  */
 #define LSM_FMM_IDX(idx, grid_idx, grid_dims)                            \
 {                                                                        \
-  int dir;                                                               \
+  int lsm_fmm_dir;                                                       \
   int grid_size_lower_dims = 1;                                          \
   idx = 0;                                                               \
-  for (dir = 0; dir < FMM_NDIM; dir++) {                                 \
-    idx += grid_idx[dir]*grid_size_lower_dims;                           \
-    grid_size_lower_dims *= grid_dims[dir];                              \
+  for (lsm_fmm_dir = 0; lsm_fmm_dir < FMM_NDIM; lsm_fmm_dir++) {         \
+    idx += grid_idx[lsm_fmm_dir]*grid_size_lower_dims;                   \
+    grid_size_lower_dims *= grid_dims[lsm_fmm_dir];                      \
   }                                                                      \
 }
 
@@ -75,10 +75,11 @@
  */
 #define LSM_FMM_IDX_OUT_OF_BOUNDS(result, grid_idx, grid_dims)           \
 {                                                                        \
-  int dir;                                                               \
+  int lsm_fmm_dir;                                                       \
   result = 0;                                                            \
-  for (dir = 0; dir < FMM_NDIM; dir++) {                                 \
-    if ( (grid_idx[dir]<0) || (grid_idx[dir]>grid_dims[dir]-1) ) {       \
+  for (lsm_fmm_dir = 0; lsm_fmm_dir < FMM_NDIM; lsm_fmm_dir++) {         \
+    if (  (grid_idx[lsm_fmm_dir]<0)                                      \
+       || (grid_idx[lsm_fmm_dir]>grid_dims[lsm_fmm_dir]-1) ) {           \
       result = 1;                                                        \
       break;                                                             \
     }                                                                    \

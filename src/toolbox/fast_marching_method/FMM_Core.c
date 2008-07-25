@@ -56,6 +56,7 @@
  * FMM_Core_updateNeighbors() updates the neighbors of the specified
  * grid point.
  */
+static 
 void FMM_Core_updateNeighbors(FMM_CoreData *fmm_core_data, int *grid_idx); 
 
 
@@ -242,7 +243,7 @@ void FMM_Core_initializeFront(FMM_CoreData *fmm_core_data)
   /* clean up memory */
   FMM_Heap_destroyHeap(known_points);
   fmm_core_data->known_points = FMM_CORE_NULL;
-};
+}
 
 
 /*
