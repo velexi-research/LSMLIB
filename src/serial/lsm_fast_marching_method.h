@@ -10,6 +10,7 @@
 #define included_fast_marching_method_h
 
 #include "LSMLIB_config.h"
+#include "FMM_Core.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -206,6 +207,11 @@ int computeDistanceFunction2d(
  *                                        negative value.
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
+ *  - initial_front_mode (in):            integer indicating whether the values
+ *                                        on the initial front (i.e. boundary
+ *                                        data) are immutable or may be updated
+ *                                        during the FMM computation.  Valid 
+ *                                        values are defined in FMM_Core.h.
  *  - grid_dims (in):                     array of index space extents for all 
  *                                        fields 
  *  - dx (in):                            array of grid cell sizes in each 
@@ -249,6 +255,7 @@ int solveEikonalEquation2d(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
+  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx);
 
@@ -407,6 +414,11 @@ int computeDistanceFunction3d(
  *                                        negative value.
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
+ *  - initial_front_mode (in):            integer indicating whether the values
+ *                                        on the initial front (i.e. boundary
+ *                                        data) are immutable or may be updated
+ *                                        during the FMM computation.  Valid 
+ *                                        values are defined in FMM_Core.h.
  *  - grid_dims (in):                     array of index space extents for all 
  *                                        fields 
  *  - dx (in):                            array of grid cell sizes in each 
@@ -450,6 +462,7 @@ int solveEikonalEquation3d(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
+  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx);
 

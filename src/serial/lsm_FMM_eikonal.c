@@ -75,10 +75,6 @@
 #endif
 
 
-/*==================== lsm_FMM_eikonal Constants ====================*/
-#define LSM_FMM_DISCRIMINANT_TOL (1.0e-3)
-
-
 /*================== lsm_FMM_eikonal Data Structures ================*/
 struct FMM_FieldData {
   LSMLIB_REAL *phi;         /* solution to Eikonal equation */
@@ -144,6 +140,7 @@ int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
+  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx)
 {
@@ -195,7 +192,8 @@ int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
     grid_dims,
     dx,
     initializeFront,
-    updateGridPoint);
+    updateGridPoint,
+    initial_front_mode);
   if (!fmm_core_data) return LSM_FMM_ERR_FMM_DATA_CREATION_ERROR;
 
   /********************************************
@@ -393,8 +391,6 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
          * choosing the upwind direction to be the direction
          * with the smaller abs(phi) value gives a consistent 
          * solution to the "upwind" Eikonal equation.
-         * NOTE: to avoid having to use the C math library,
-         *       we define our own ABS macro
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind)) {
           phi_upwind = phi_plus;
@@ -433,19 +429,19 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER1(
 
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
 
-  } else if (discriminant > -LSM_FMM_DISCRIMINANT_TOL*phi_B*phi_B) {
-
-    phi_updated = -0.5*phi_B/phi_A;
-      /* TODO - KTC - comment back in when error reporting is set up */
-      /* 
-      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
-      fprintf(stderr,"         phi updated with O(dx) error.\n");
-      */
-
   } else {
 
-    /* discriminant is negative ... hopefully this is not */
-    /* the last time the grid point will be updated.      */
+    /* discriminant is negative ... set phi_updated to the    */
+    /* value of phi at the current grid point so that the     */
+    /* solution to the Eikonal equation is not corrupted by   */
+    /* infinities if it has already been assigned a value     */
+    /* based on a different set of KNOWN neighbors.           */
+    /* This situation occurs when the boundary data are not   */
+    /* completely self-consistent from the perspective of the */
+    /* discretized Eikonal equation.  Using the previously    */
+    /* computed value does not introduce any significant      */
+    /* errors into the numerical solution.                    */
+    phi_updated = phi[idx_cur_gridpoint]; 
 
   }
 
@@ -486,7 +482,6 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   LSMLIB_REAL phi_C = 0;
   LSMLIB_REAL discriminant;
   LSMLIB_REAL phi_updated;
-  LSMLIB_REAL max_dx;
 
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
@@ -562,8 +557,6 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
          * choosing the upwind direction to be the direction
          * with the smaller abs(phi) value gives a consistent 
          * solution to the "upwind" Eikonal equation.
-         * NOTE: to avoid having to use the C math library,
-         *       we define our own ABS macro
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind1)) {
           phi_upwind1 = phi_plus;
@@ -626,27 +619,23 @@ LSMLIB_REAL FMM_EIKONAL_UPDATE_GRID_POINT_ORDER2(
   /* compute phi by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
   phi_updated = LSMLIB_REAL_MAX;
-  max_dx = dx[0];
-  for (dir = 1; dir < FMM_NDIM; dir++) {
-    max_dx = (max_dx > dx[dir]) ? max_dx : dx[dir];
-  }
   if (discriminant >= 0) {
 
     phi_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
 
-  } else if (discriminant > -LSM_FMM_DISCRIMINANT_TOL*phi_B*phi_B) {
-
-    phi_updated = -0.5*phi_B/phi_A;
-      /* TODO - KTC - comment back in when error reporting is set up */
-      /* 
-      fprintf(stderr,"WARNING: phi update - discriminant slightly negative!!!\n");
-      fprintf(stderr,"         phi updated with O(dx) error.\n");
-      */
-
   } else {
 
-    /* discriminant is negative ... hopefully this is not */
-    /* the last time the grid point will be updated.      */
+    /* discriminant is negative ... set phi_updated to the    */
+    /* value of phi at the current grid point so that the     */
+    /* solution to the Eikonal equation is not corrupted by   */
+    /* infinities if it has already been assigned a value     */
+    /* based on a different set of KNOWN neighbors.           */
+    /* This situation occurs when the boundary data are not   */
+    /* completely self-consistent from the perspective of the */
+    /* discretized Eikonal equation.  Using the previously    */
+    /* computed value does not introduce any significant      */
+    /* errors into the numerical solution.                    */
+    phi_updated = phi[idx_cur_gridpoint]; 
 
   }
 

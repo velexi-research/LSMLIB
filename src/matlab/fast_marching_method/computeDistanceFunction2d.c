@@ -1,5 +1,4 @@
 /*
- * File:        computeDistanceFunction2d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.12 $
  * Modified:    $Date: 2006/09/18 16:17:01 $
@@ -47,14 +46,13 @@
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
-#define PHI	                   (prhs[0])
-#define DX                         (prhs[1])
-#define MASK	                   (prhs[2])
-#define SPATIAL_DERIVATIVE_ORDER   (prhs[3])
+#define PHI	                      (prhs[0])
+#define DX                        (prhs[1])
+#define MASK                      (prhs[2])
+#define SPATIAL_DERIVATIVE_ORDER  (prhs[3])
 
 /* Output Arguments */
-#define DISTANCE_FUNCTION          (plhs[0])
-
+#define DISTANCE_FUNCTION         (plhs[0])
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {

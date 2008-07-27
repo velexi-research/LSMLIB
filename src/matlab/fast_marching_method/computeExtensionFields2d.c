@@ -50,17 +50,15 @@
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
-#define PHI	                   (prhs[0])
-#define SOURCE_FIELDS              (prhs[1])
-#define DX                         (prhs[2])
-#define MASK                       (prhs[3])
-#define SPATIAL_DERIVATIVE_ORDER   (prhs[4])
-
+#define PHI	                      (prhs[0])
+#define SOURCE_FIELDS             (prhs[1])
+#define DX                        (prhs[2])
+#define MASK                      (prhs[3])
+#define SPATIAL_DERIVATIVE_ORDER  (prhs[4])
 
 /* Output Arguments */
-#define DISTANCE_FUNCTION          (plhs[0])
-#define EXTENSION_FIELDS           (plhs[1])
-
+#define DISTANCE_FUNCTION         (plhs[0])
+#define EXTENSION_FIELDS          (plhs[1])
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {

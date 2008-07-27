@@ -32,6 +32,9 @@
 
 
 /*======================= Helper Functions ==========================*/
+/* LSM_FMM_ABS() computes the absolute value of its argument.        */
+/* This macro is defined so that LSMLIB does not have to rely on the */
+/* C math library.                                                   */
 #define LSM_FMM_ABS(x)            ((x) > 0 ? (x) : -1.0*(x))
 
 /*

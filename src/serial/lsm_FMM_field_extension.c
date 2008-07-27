@@ -222,7 +222,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
   /* auxiliary variables */
   int num_gridpoints;       /* number of grid points */
   int i, j, idx;            /* loop variables */
-  LSMLIB_REAL *ptr;              /* pointer to field data */
+  LSMLIB_REAL *ptr;         /* pointer to field data */
 
 
   /******************************************************
@@ -313,7 +313,8 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
     grid_dims,
     dx,
     initializeFront,
-    updateGridPoint);
+    updateGridPoint,
+    INITIAL_FRONT_KNOWN);
   if (!fmm_core_data) return LSM_FMM_ERR_FMM_DATA_CREATION_ERROR;
 
   /* mark grid points outside of domain */
@@ -1047,8 +1048,6 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
          * choosing the upwind direction to be the direction
          * with the smaller abs(phi) value gives a consistent 
          * solution to the "upwind" Eikonal equation.
-         * NOTE: to avoid having to use the C math library,
-         *       we define our own ABS macro
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind[dir])) {
           phi_upwind[dir] = phi_plus;
@@ -1101,8 +1100,17 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
 
   } else {
 
-    /* discriminant is negative ... hopefully this is not */
-    /* the last time the grid point will be updated.      */
+    /* discriminant is negative ... set dist_updated to the   */
+    /* value of distance_function at the current grid point   */
+    /* so that the distance function is not corrupted by      */
+    /* infinities if it has already been assigned a value     */
+    /* based on a different set of KNOWN neighbors.           */
+    /* This situation occurs when the boundary data are not   */
+    /* completely self-consistent from the perspective of the */
+    /* discretized Eikonal equation.  Using the previously    */
+    /* computed value does not introduce any significant      */
+    /* errors into the numerical solution.                    */
+    dist_updated = distance_function[idx_cur_gridpoint]; 
 
   } /* end switch on value of discriminant */
 
@@ -1192,7 +1200,6 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   LSMLIB_REAL phi_C = 0;
   LSMLIB_REAL discriminant;
   LSMLIB_REAL dist_updated;
-  LSMLIB_REAL max_dx;
 
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
@@ -1275,8 +1282,6 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
          * choosing the upwind direction to be the direction
          * with the smaller abs(phi) value gives a consistent 
          * solution to the "upwind" Eikonal equation.
-         * NOTE: to avoid having to use the C math library,
-         *       we define our own ABS macro
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind1[dir])) {
           phi_upwind1[dir] = phi_plus;
@@ -1342,10 +1347,6 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   /* compute updated distance function by solving quadratic equation */
   discriminant = phi_B*phi_B - 4.0*phi_A*phi_C;
   dist_updated = LSMLIB_REAL_MAX;
-  max_dx = dx[0];
-  for (dir = 1; dir < FMM_NDIM; dir++) {
-    max_dx = (max_dx > dx[dir]) ? max_dx : dx[dir];
-  }
   if (discriminant >= 0) {
 
     if (phi_B == 0) { 
@@ -1359,22 +1360,19 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
     } 
 
-// KTC - TEMPORARILY REMOVE 
-//  } else if (discriminant >= -4.0*max_dx*max_dx*phi_A*phi_A) { 
-//
-//      dist_updated = -0.5*phi_B/phi_A;
-//
-//      /* KTC - comment back in when error reporting is set up */
-//      /*
-//      fprintf(stderr,"WARNING: distance update - discriminant slightly negative!!!\n");    
-//      fprintf(stderr,"         distance updated with O(dx) error.\n");
-//      */
-//
-
   } else {
 
-    /* discriminant is negative ... hopefully this is not */
-    /* the last time the grid point will be updated.      */
+    /* discriminant is negative ... set dist_updated to the   */
+    /* value of distance_function at the current grid point   */
+    /* so that the distance function is not corrupted by      */
+    /* infinities if it has already been assigned a value     */
+    /* based on a different set of KNOWN neighbors.           */
+    /* This situation occurs when the boundary data are not   */
+    /* completely self-consistent from the perspective of the */
+    /* discretized Eikonal equation.  Using the previously    */
+    /* computed value does not introduce any significant      */
+    /* errors into the numerical solution.                    */
+    dist_updated = distance_function[idx_cur_gridpoint]; 
 
   } /* end switch on value of discriminant */
 
@@ -1404,7 +1402,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
         if (second_order_switch[dir] == 1) {
 
           LSMLIB_REAL grad_dist = 1.5*dist_updated - 2.0*phi_upwind1[dir] 
-                           + 0.5*phi_upwind2[dir]; 
+                                + 0.5*phi_upwind2[dir]; 
 
           for (k = 0; k < num_extension_fields; k++) {
   

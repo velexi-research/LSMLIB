@@ -62,15 +62,14 @@
 #include "lsm_fast_marching_method.h" 
 
 /* Input Arguments */
-#define BOUNDARY_DATA	           (prhs[0])
-#define SPEED	                   (prhs[1])
-#define DX                         (prhs[2])
-#define MASK                       (prhs[3])
-#define SPATIAL_DERIVATIVE_ORDER   (prhs[4])
+#define BOUNDARY_DATA             (prhs[0])
+#define SPEED                     (prhs[1])
+#define DX                        (prhs[2])
+#define MASK                      (prhs[3])
+#define SPATIAL_DERIVATIVE_ORDER  (prhs[4])
 
 /* Output Arguments */
-#define PHI                        (plhs[0])
-
+#define PHI                       (plhs[0])
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
@@ -181,6 +180,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                  speed,
                  mask,
                  spatial_discretization_order,
+                 INITIAL_FRONT_KNOWN,
                  (int*) grid_dims_phi,
                  dX_matlab_order);
 

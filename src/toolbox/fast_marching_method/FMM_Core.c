@@ -24,15 +24,15 @@
 /*======================= FMM_Core Macros =========================*/
 #define FMM_CORE_ABS(x)       ((x) > 0 ? (x) : -1.0*(x))
 
-#define FMM_CORE_IDX(idx, num_dims, grid_idx, grid_dims)           \
-{                                                                  \
-  int macro_i;                         /* loop variable */         \
-  int macro_num_gridpts_per_grid_idx = 1;                          \
-  idx = 0;                                                         \
-  for (macro_i = 0; macro_i < num_dims; macro_i++) {               \
-    idx += macro_num_gridpts_per_grid_idx*grid_idx[macro_i];       \
-    macro_num_gridpts_per_grid_idx *= grid_dims[macro_i];          \
-  }                                                                \
+#define FMM_CORE_IDX(idx, num_dims, grid_idx, grid_dims)                   \
+{                                                                          \
+  int macro_i;                         /* loop variable */                 \
+  int macro_num_gridpts_per_grid_idx = 1;                                  \
+  idx = 0;                                                                 \
+  for (macro_i = 0; macro_i < num_dims; macro_i++) {                       \
+    idx += macro_num_gridpts_per_grid_idx*grid_idx[macro_i];               \
+    macro_num_gridpts_per_grid_idx *= grid_dims[macro_i];                  \
+  }                                                                        \
 }
 
 #define FMM_CORE_IDX_OUT_OF_BOUNDS(out_of_bounds, num_dims, grid_idx,     \
@@ -78,7 +78,12 @@ struct FMM_CoreData {
   int* gridpoint_status;
   FMM_Heap* trial_points;
   FMM_Heap* known_points;
-
+  int initial_front_mode;  /* flag whether initial front may be overwritten  */
+                           /* INITIAL_FRONT_KNOWN:  values on initial front  */
+                           /*                       are immutable            */
+                           /* INITIAL_FRONT_TRIAL:  values on initial front  */
+                           /*                       may be updated during    */
+                           /*                       FMM calculation          */
 };
 
 
@@ -90,7 +95,8 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   int *grid_dims,
   LSMLIB_REAL *dx,
   initializeFrontFuncPtr initializeFront,
-  updateGridPointFuncPtr updateGridPoint)
+  updateGridPointFuncPtr updateGridPoint,
+  InitialFrontMode initial_front_mode)
 {
   FMM_CoreData *fmm_core_data;     /* pointer to new FMM_CoreData */
   int num_gridpoints;              /* number of grid points */
@@ -120,6 +126,15 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   fmm_core_data->fmm_field_data = fmm_field_data;
   fmm_core_data->initializeFront = initializeFront;
   fmm_core_data->updateGridPoint = updateGridPoint;
+
+  if (  (initial_front_mode == INITIAL_FRONT_KNOWN) 
+     || (initial_front_mode == INITIAL_FRONT_TRIAL) ) {
+    fmm_core_data->initial_front_mode = initial_front_mode;
+  } else {
+    fprintf(stderr,
+    "ERROR: Invalid initial_front_mode specified.  Valid values for\ninitial_front_mode are INITIAL_FRONT_KNOWN and INITIAL_FRONT_TRIAL");
+    exit(-1);
+  }
 
   /* initialize grid_dims and dx to zero */
   for (i = 0; i < FMM_CORE_MAX_NDIM; i++) {
@@ -259,6 +274,7 @@ void FMM_Core_setInitialFrontPoint(
 {
   int num_dims = fmm_core_data->num_dims; 
   int *grid_dims = fmm_core_data->grid_dims;
+  int initial_front_mode = fmm_core_data->initial_front_mode;
   int *gridpoint_status = fmm_core_data->gridpoint_status; 
   int grid_idx_local[FMM_CORE_MAX_NDIM];     /* local copy of grid_idx */
 
@@ -274,12 +290,20 @@ void FMM_Core_setInitialFrontPoint(
     grid_idx_local[i] = 0;
   }
 
-  /* set grid point status to KNOWN */
+  /* Set status of grid point based on InitialFrontMode and add */
+  /* it to the appropriate heap.                                */
   FMM_CORE_IDX(idx, num_dims, grid_idx_local, grid_dims);
-  gridpoint_status[idx] = KNOWN;
+  if (initial_front_mode == INITIAL_FRONT_KNOWN) {
 
-  /* insert grid point into known_points heap */
-  FMM_Heap_insertNode(fmm_core_data->known_points,grid_idx_local,value);
+    gridpoint_status[idx] = KNOWN;
+    FMM_Heap_insertNode(fmm_core_data->known_points,grid_idx_local,value);
+
+  } else if (initial_front_mode == INITIAL_FRONT_TRIAL) {
+
+    gridpoint_status[idx] = TRIAL;
+    FMM_Heap_insertNode(fmm_core_data->trial_points,grid_idx_local,value);
+
+  }
 }
 
 /*

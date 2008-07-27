@@ -61,6 +61,13 @@ typedef struct FMM_CoreData FMM_CoreData;
 typedef struct FMM_FieldData FMM_FieldData;
 
 /*!
+ * InitialFrontMode is an enumerated type that indicates whether the
+ * values on the initial front are immutable or may be updated during 
+ * the Fast Marching Method computation.
+ */
+typedef enum { INITIAL_FRONT_KNOWN, INITIAL_FRONT_TRIAL } InitialFrontMode;
+
+/*!
  * PointStatus is an enumerated type that represents the status of a
  * grid point during the Fast Marching Method computation.
  */
@@ -115,6 +122,9 @@ typedef LSMLIB_REAL (*updateGridPointFuncPtr)(
  *                                  during the FMM algorithm
  *                                  (see @ref FMM_Callback_API.h for more 
  *                                  details)
+ *  - initial_front_mode (in):      integer indicating whether the values
+ *                                  on the initial front are immutable or 
+ *                                  may be updated during the FMM computation.
  *
  * Return value:                    pointer to new FMM_CoreData structure
  *                                  containing the relevant information
@@ -137,7 +147,8 @@ FMM_CoreData* FMM_Core_createFMM_CoreData(
   int *grid_dims,
   LSMLIB_REAL *dx,
   initializeFrontFuncPtr initializeFront,
-  updateGridPointFuncPtr updateGridPoint);
+  updateGridPointFuncPtr updateGridPoint,
+  InitialFrontMode initial_front_mode);
 
 /*!
  * FMM_Core_destroyFMM_CoreData() frees the memory associated with an 
