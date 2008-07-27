@@ -7,7 +7,7 @@
 # INITIALIZATION
 #===========================================================================
 AC_PREREQ(2.57)
-AC_INIT([LSMLIB], 1.0.0, [ktchu@princeton.edu])
+AC_INIT([LSMLIB], 1.0.0, [kevin.t.chu@gmail.com])
 AC_REVISION($Revision: 1.31 $)
 AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.cc])
 AC_CONFIG_HEADER([config/LSMLIB_config.h])
@@ -17,10 +17,10 @@ AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 case $target in
   *powerpc*darwin* | *ppc*darwin*)
-    AC_SUBST([arch],ppc-darwin)
+    AC_SUBST([arch],darwin)
   ;;
   *86*darwin*)
-    AC_SUBST([arch],intel-darwin)
+    AC_SUBST([arch],darwin86)
   ;;
   *cygwin*)
     AC_SUBST([arch],linux)
@@ -33,7 +33,7 @@ case $target in
   ;;
   *)
     AC_SUBST([arch],linux)
-    AC_MSG_WARNING([m4_text_wrap([Unknown target architecture...assuming linux...])])
+    AC_MSG_WARN([m4_text_wrap([Unknown target architecture...assuming linux...])])
   ;;
 esac
 
@@ -151,10 +151,10 @@ AC_SUBST(mex_flags)
 # set mex-file suffix if library configured with MATLAB
 AS_IF([! test -z "$matlab_dir"],
       [case $arch in
-         ppc-darwin)
+         darwin)
            AC_SUBST([mex_extension],mexmac)
          ;;
-         intel-darwin)
+         darwin86)
            AC_SUBST([mex_extension],mexmaci)
          ;;
          linux)
