@@ -134,7 +134,7 @@ text(20,1e-4,order_str);
 xlabel('N');
 ylabel('Error');
 
-% plot solution at finest grid resolution and points with largest errors
+% plot error at finest grid resolution and points with largest errors
 figure(3); clf;
 pcolor(X,Y,abs(err));
 shading flat;
@@ -266,7 +266,7 @@ text(20,1e-4,order_str);
 xlabel('N');
 ylabel('Error');
 
-% plot solution at finest grid resolution and points with largest errors
+% plot error at finest grid resolution and points with largest errors
 figure(6); clf;
 pcolor(X,Y,abs(err));
 shading flat;

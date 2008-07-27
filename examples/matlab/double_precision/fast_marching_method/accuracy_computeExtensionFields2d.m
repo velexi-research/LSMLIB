@@ -307,7 +307,7 @@ text(200,1e-5,order_str);
 xlabel('N');
 ylabel('Error');
 
-% plot solution at finest grid resolution and points with largest errors
+% plot error at finest grid resolution and points with largest errors
 figure(9); clf;
 pcolor(X,Y,abs(err_ext_field2));
 pcolor(X,Y,err_ext_field2);
