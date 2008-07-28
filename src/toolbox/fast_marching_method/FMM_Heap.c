@@ -172,10 +172,15 @@ FMM_HeapNode FMM_Heap_extractMin(FMM_Heap* heap, FMM_HeapNode* moved_node,
 
   } else {
 
+    int i;
+
     /* set position occupied by root node to invalid state */
     d_nodes[root_handle].value = LSMLIB_REAL_MAX;
     
     /* set moved_node and moved_handle to invalid state */
+    for (i = 0; i < FMM_HEAP_MAX_NDIM; i++) {
+      moved_node_local.grid_idx[i] = -1;
+    }
     moved_node_local.value = LSMLIB_REAL_MAX;
     moved_node_local.heap_pos = -1;
     moved_handle_local = -1;
