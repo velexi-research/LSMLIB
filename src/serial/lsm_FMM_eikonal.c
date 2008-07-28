@@ -263,6 +263,9 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
   int *grid_dims,
   LSMLIB_REAL *dx)
 {
+  /* Grid point status */
+  int *gridpoint_status = FMM_Core_getGridPointStatusDataArray(fmm_core_data);
+
   /* FMM Field Data variables */
   LSMLIB_REAL *phi   = fmm_field_data->phi;
 
@@ -297,11 +300,12 @@ void FMM_EIKONAL_INITIALIZE_FRONT(
     }
 
     /* set grid points on the initial front */
-    if (phi[idx] > -LSMLIB_ZERO_TOL) {
+    if (   (phi[idx] > -LSMLIB_ZERO_TOL) 
+        && (gridpoint_status[idx] != OUTSIDE_DOMAIN) ) {
 
       /* the value for phi(i,j) has already been provided */
-      FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx,
-                                    phi[idx]);
+      FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx, phi[idx]);
+
     }
 
   }  /* end loop over grid */
