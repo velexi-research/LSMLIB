@@ -134,7 +134,7 @@ int FMM_Heap_insertNode(FMM_Heap* heap, int *grid_idx, LSMLIB_REAL value);
  *  - heap (in):           pointer to heap 
  *  - moved_node (out):    FMM_HeapNode of node in the heap that was moved
  *                         (if a node was actually moved)
- *  - moved_handle (out):  integer handle for FMM_HeapNode that was 
+ *  - moved_handle (out):  integer handle for FMM_HeapNode that was moved
  *                         (if a node was actually moved)
  *
  * Return value:           FMM_HeapNode possessing minimum value
