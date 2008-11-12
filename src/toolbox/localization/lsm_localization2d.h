@@ -12,10 +12,6 @@
 
 #include "LSMLIB_config.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*! \file lsm_localization2d.h
  *
  * \brief 
@@ -159,4 +155,4 @@ extern "C" {
 }
 #endif
  
- #endif
+#endif
