@@ -20,9 +20,6 @@
 %
 % In this code, reinitialization is done using WENO5 and TVD RK3. 
 %
-% Kevin Chu
-% MAE, Princeton University
-% Sept 2006
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

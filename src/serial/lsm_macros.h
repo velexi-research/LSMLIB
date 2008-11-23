@@ -1,8 +1,8 @@
 /*
  * File:        lsm_macros.h
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2007/05/07 00:15:59 $
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.1 $
+ * Modified:    $Date: 2006/05/19 15:07:49 $
  * Description: Header file with helpful macros for manipulating data arrays
  */
 
@@ -10,7 +10,6 @@
 #define included_lsm_macros_h
 
 #include <float.h>
-
 #include "LSMLIB_config.h"
 
 #ifdef __cplusplus
@@ -111,17 +110,36 @@ extern "C" {
    if(grid->num_dims == 3)                                                   \
      for(l = (p->n_lo)[0]; l < (p->n_hi)[0]; l++)                            \
      {                                                                       \
-	idx = (p->index_x)[l] + (p->index_y)[l]*nx + (p->index_z)[l]*nxy;    \
+  idx = (p->index_x)[l] + (p->index_y)[l]*nx + (p->index_z)[l]*nxy;          \
         phi_masked[idx] = (mask[idx] > phi[idx]) ? mask[idx] : phi[idx];     \
      }                                                                       \
    else                                                                      \
      for(l = (p->n_lo)[0]; l < (p->n_hi)[0]; l++)                            \
      {                                                                       \
-	idx = (p->index_x)[l] + (p->index_y)[l]*nx;                          \
+  idx = (p->index_x)[l] + (p->index_y)[l]*nx;                                \
         phi_masked[idx] = (mask[idx] > phi[idx]) ? mask[idx] : phi[idx];     \
      }                                                                       \
 }
 
+ 
+ /* IMPOSE_MIN(phi_min, phi1, phi2, grid) computes minimum of two (level set)
+ * functions. Note that the set described by (phi_min < 0) is union of
+ * (phi1 < 0) and (phi2 < 0)
+ *
+ * Arguments:
+ *  - phi_min(out):  output array, phi_min = min(phi1,phi2)
+ *  - phi1 (in):     array containing 
+ *  - phi2 (in):     array containing
+ *  - grid (in):     pointer to Grid
+*/  
+#define IMPOSE_MIN(phi_min, phi1, phi2, grid)                            \
+{                                                                        \
+  int idx;                                                               \
+  for(idx = 0; idx < grid->num_gridpts; idx++)                           \
+  {                                                                      \
+    phi_min[idx] = (phi1[idx] < phi2[idx]) ? phi1[idx] : phi2[idx];      \
+  }                                                                      \
+}
 
 /*!
  * COPY_DATA() copies values from data_src into data_dst.
@@ -157,7 +175,7 @@ extern "C" {
 {                                                                          \
   int idx;                                                                 \
   LSMLIB_REAL min_err, max_err, err1, err2, err;                           \
-  min_err = LSMLIB_REAL_MAX; max_err = 0.0;                                \
+  min_err = FLT_MAX; max_err = 0.0;                                        \
   for(idx = 0; idx < grid->num_gridpts; idx++)                             \
   {                                                                        \
     err = data1[idx] - data2[idx];                                         \
@@ -183,7 +201,7 @@ extern "C" {
 {                                                                          \
   int idx;                                                                 \
   LSMLIB_REAL min_err, max_err, err1, err2, err;                           \
-  min_err = LSMLIB_REAL_MAX; max_err = 0.0;                                \
+  min_err = FLT_MAX; max_err = 0.0;                                        \
   for(idx = 0; idx < grid->num_gridpts; idx++)                             \
   {                                                                        \
     err = data[idx];                                                       \
@@ -208,8 +226,8 @@ extern "C" {
 #define EXAMINE_ARRAY(name,data,g)                                         \
 {                                                                          \
   int idx;                                                                 \
-  LSMLIB_REAL min = LSMLIB_REAL_MAX, max = -LSMLIB_REAL_MAX;               \
-  LSMLIB_REAL abs_min = LSMLIB_REAL_MAX, abs_val;                          \
+  LSMLIB_REAL min = FLT_MAX, max = -FLT_MAX;                               \
+  LSMLIB_REAL abs_min = FLT_MAX, abs_val;                                  \
   for(idx=0; idx < g->num_gridpts; idx++)                                  \
   {                                                                        \
     if (isnan(data[idx])) printf("\nNaN at position %d",idx);              \
@@ -217,8 +235,7 @@ extern "C" {
     if( data[idx] < min) min = data[idx];                                  \
     if( data[idx] > max) max = data[idx];                                  \
     abs_val = fabs(data[idx]);                                             \
-    if( abs_val < abs_min && abs_val > LSMLIB_REAL_EPSILON)                \
-      abs_min = abs_val;                                                   \
+    if( abs_val < abs_min && abs_val > DBL_EPSILON) abs_min = abs_val;     \
   }                                                                        \
   printf("\n%s min %g max %g min(|array|) %g",name,min,max,abs_min);       \
   fflush(stdout);                                                          \
@@ -234,12 +251,12 @@ extern "C" {
  *  - grid (in):  pointer to Grid 
  *
  */
-#define PRINT_ARRAY_2D(data, grid)                                    \
+#define PRINT_ARRAY_2D(data, grid)                                         \
 {                                                                          \
   int i,j;                                                                 \
-  for(j = grid->jhi_gb; j >= grid->jlo_gb; j--)                              \
+  for(j = grid->jhi_gb; j >= grid->jlo_gb; j--)                            \
   {                                                                        \
-    for(i = grid->ilo_gb; i <= grid->ihi_gb; i++)                            \
+    for(i = grid->ilo_gb; i <= grid->ihi_gb; i++)                          \
     {                                                                      \
       idx = i + j*(grid->grid_dims)[0];                                    \
       printf("%g ", data[idx]);                                            \

@@ -1,6 +1,6 @@
 /*
  * File:        lsm_initialization3d.c
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/06/02 02:36:52 $
  * Description: Implementation file for 3D initialization functions
@@ -9,7 +9,6 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
-#include "LSMLIB_config.h"
 #include "lsm_initialization3d.h"
 #include "lsm_macros.h"
 
@@ -54,7 +53,7 @@ void createIntersectionOfHalfSpaces3d(
         x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
-        max = -LSMLIB_REAL_MAX;
+        max = -FLT_MAX;
 
         for (l = 0; l < num_half_spaces; l++)
         { 
@@ -141,7 +140,7 @@ void createIntersectionOfSpheres(
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
     
-        max = -LSMLIB_REAL_MAX;
+        max = -FLT_MAX;
 
         for (l = 0; l < num_spheres; l++)
         {
@@ -217,7 +216,7 @@ void createIntersectionOfCylinders(
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
     
-        max = -LSMLIB_REAL_MAX;
+        max = -FLT_MAX;
         for (l = 0; l < num_cylinders; l++)
         {
           LSMLIB_REAL signed_dist_to_cylinder;
@@ -303,12 +302,12 @@ void createIntersectionOfHyperboloids(
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
       
-        max = -LSMLIB_REAL_MAX;
+        max = -FLT_MAX;
         for (l = 0; l < num_hyperboloids; l++)
         {
           LSMLIB_REAL level_set_function_value;
           LSMLIB_REAL norm_sq_x_minus_center;
-          LSMLIB_REAL dist_to_axis;
+          LSMLIB_REAL sq_dist_to_axis;
           LSMLIB_REAL dist_along_axis;
 
           norm_sq_x_minus_center = (x - center_x[l])*(x - center_x[l])
@@ -322,12 +321,12 @@ void createIntersectionOfHyperboloids(
                                  + tangent_y[l]*tangent_y[l]
                                  + tangent_z[l]*tangent_z[l]);
 
-          dist_to_axis = 
-              sqrt(norm_sq_x_minus_center - dist_along_axis*dist_along_axis);
+          sq_dist_to_axis = 
+              norm_sq_x_minus_center - dist_along_axis*dist_along_axis;
 
           level_set_function_value = 
             - dist_along_axis*dist_along_axis/alpha[l]/alpha[l]
-            + dist_to_axis*dist_to_axis/beta[l]/beta[l] - 1;
+            + sq_dist_to_axis/beta[l]/beta[l] - 1;
 
           if (inside_flag[l] >= 0) {
             level_set_function_value = -level_set_function_value;
@@ -394,7 +393,7 @@ void createIntersectionOfCones(
         y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
         z = (grid->x_lo_ghostbox)[2] + (grid->dx)[2]*k;
       
-        max = -LSMLIB_REAL_MAX;
+        max = -FLT_MAX;
         for (l = 0; l < num_cones; l++)
         {
           LSMLIB_REAL level_set_function_value;
@@ -435,17 +434,15 @@ void createIntersectionOfCones(
 }
 
 
-void createCuboid(
+void createBox(
   LSMLIB_REAL *phi,
   LSMLIB_REAL corner_x, LSMLIB_REAL corner_y, LSMLIB_REAL corner_z,
-  LSMLIB_REAL side_length_x, 
-  LSMLIB_REAL side_length_y, 
-  LSMLIB_REAL side_length_z,
+  LSMLIB_REAL side_length_x, LSMLIB_REAL side_length_y, LSMLIB_REAL side_length_z,
   int inside_flag,
   Grid *grid)
 {
-  /* use createIntersectionOfCuboids() */
-  createIntersectionOfCuboids(
+  /* use createIntersectionOfBoxes() */
+  createIntersectionOfBoxes(
    phi, 1,
    &corner_x, &corner_y, &corner_z,
    &side_length_x, &side_length_y, &side_length_z,
@@ -453,13 +450,11 @@ void createCuboid(
 }     
 
 
-void createIntersectionOfCuboids(
+void createIntersectionOfBoxes(
   LSMLIB_REAL *phi,
   int num_cuboids,   
   LSMLIB_REAL *corner_x, LSMLIB_REAL *corner_y, LSMLIB_REAL *corner_z,
-  LSMLIB_REAL *side_length_x, 
-  LSMLIB_REAL *side_length_y, 
-  LSMLIB_REAL *side_length_z,
+  LSMLIB_REAL *side_length_x, LSMLIB_REAL *side_length_y, LSMLIB_REAL *side_length_z,
   int *inside_flag,
   Grid *grid)
 {   

@@ -1,6 +1,6 @@
 /*
  * File:        lsm_initialization3d.h
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/05/25 19:41:22 $
  * Description: Header file for 3D initialization functions
@@ -508,7 +508,7 @@ void createIntersectionOfCones(
 
 
 /*!
- * createCuboid() sets phi to be a level set function corresponding to 
+ * createBox() sets phi to be a level set function corresponding to 
  * a cuboid with its rectangular faces parallel to the coordinate axes. 
  * The cuboid is represented by coordinates of its lower corner and 
  * lengths of its sides.
@@ -542,18 +542,16 @@ void createIntersectionOfCones(
  *   has been allocated. 
  *
  */
-void createCuboid(
+void createBox(
   LSMLIB_REAL *phi,
   LSMLIB_REAL corner_x, LSMLIB_REAL corner_y, LSMLIB_REAL corner_z,
-  LSMLIB_REAL side_length_x, 
-  LSMLIB_REAL side_length_y, 
-  LSMLIB_REAL side_length_z,
+  LSMLIB_REAL side_length_x, LSMLIB_REAL side_length_y, LSMLIB_REAL side_length_z,
   int inside_flag,
   Grid *grid);
 
 
 /*!
- * createIntersectionOfCuboids() sets phi to be a level set function 
+ * createIntersectionOfBoxes() sets phi to be a level set function 
  * corresponding to intersection of the num_cuboids cuboids with rectangular
  * faces parallel to coordinate axes.  Each cuboid is represented 
  * by coordinates of its lower corner and length of its sides.
@@ -594,7 +592,7 @@ void createCuboid(
  *   has been allocated. 
  *
  */
-void  createIntersectionOfCuboids(
+void  createIntersectionOfBoxes(
   LSMLIB_REAL *phi,
   int num_cuboids,   
   LSMLIB_REAL *corner_x, LSMLIB_REAL *corner_y, LSMLIB_REAL *corner_z,

@@ -79,11 +79,6 @@ void lsm2dReinitializationMedium(
 
     /* boundary conditions */	  
     signedLinearExtrapolationBC(l->phi_stage1, g, ALL_BOUNDARIES);
-/*    LSM2D_SIGNED_LINEAR_EXTRAPOLATION(l->phi_stage1,
-             &(g->ilo_gb), &(g->ihi_gb), &(g->jlo_gb), &(g->jhi_gb),
-             &(g->ilo_fb), &(g->ihi_fb), &(g->jlo_fb), &(g->jhi_fb));
-*/
-
 
     LSM2D_HJ_ENO2(l->phi_x_plus, l->phi_y_plus,
              &(g->ilo_gb), &(g->ihi_gb), &(g->jlo_gb), &(g->jhi_gb),
@@ -125,11 +120,6 @@ void lsm2dReinitializationMedium(
 
     /* boundary conditions */	   
     signedLinearExtrapolationBC(l->phi_next, g, ALL_BOUNDARIES);
-/*
-    LSM2D_SIGNED_LINEAR_EXTRAPOLATION(l->phi_next,
-             &(g->ilo_gb), &(g->ihi_gb), &(g->jlo_gb), &(g->jhi_gb),
-             &(g->ilo_fb), &(g->ihi_fb), &(g->jlo_fb), &(g->jhi_fb));
-*/
 
      /* update l->phi */ 
     if( o->do_mask ) 

@@ -4,7 +4,7 @@ Level Set Method Library (LSMLIB) Installation Instructions
 -----------------------------------------------------------
 
 Kevin T. Chu
-Dept. of Mechanical and Aerospace Engineering, Princeton University
+Serendipity Research
 
 and 
 
@@ -55,6 +55,10 @@ Installation Procedure
       * Installation options
         --prefix=<directory in which to install LSMLIB>
  
+      * Option for building a single precision version of the library
+        (by default, a double precision version of the library is built). 
+        --enable-float
+
       * Optimization options
         --enable-opt
         --enable-debug

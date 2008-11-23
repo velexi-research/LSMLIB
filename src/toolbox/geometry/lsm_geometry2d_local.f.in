@@ -1,0 +1,247 @@
+c***********************************************************************
+c
+c  File:        lsm_geometry2d_local.f
+c  Copyright:   (c) 2005-2006 Kevin T. Chu
+c  Revision:    $Revision: 1.10 $
+c  Modified:    $Date: 2006/09/30 18:17:22 $
+c  Description:  F77 routines 2D level set method geometry subroutines for
+c                narrow-band computations.
+c
+c***********************************************************************
+
+c***********************************************************************
+c
+c  lsm2dComputeUnitNormalLocal() computes the unit normal vector to the 
+c  interface from grad(phi). 
+c
+c  This expression avoids division by zero in computing the unit
+c  normal vector.
+c
+c  Arguments:
+c    normal_* (out):  components of unit normal vector
+c    phi_* (in):      components of grad(phi) 
+c    dx, dy (in):     grid spacing
+c    *_gb (in):       index range for ghostbox
+c    index_[xy](in):    [xy] coordinates of local (narrow band) points
+c    n*_index(in):      index range of points to loop over in index_*
+c    narrow_band(in):   array that marks voxels outside desired fillbox
+c    mark_fb(in):       upper limit narrow band value for voxels in 
+c                       fillbox
+c
+c***********************************************************************
+      subroutine lsm2dComputeUnitNormalLocal(
+     &  normal_x, normal_y,
+     &  ilo_normal_gb, ihi_normal_gb,
+     &  jlo_normal_gb, jhi_normal_gb,
+     &  phi_x, phi_y,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  dx, dy,
+     &  index_x, index_y,
+     &  nlo_index, nhi_index,
+     &  narrow_band,
+     &  ilo_nb_gb, ihi_nb_gb, 
+     &  jlo_nb_gb, jhi_nb_gb, 
+     &  mark_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostboxes 
+c     _fb refers to fill-box for normal data
+
+      integer ilo_normal_gb, ihi_normal_gb
+      integer jlo_normal_gb, jhi_normal_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      real normal_x(ilo_normal_gb:ihi_normal_gb,
+     &                          jlo_normal_gb:jhi_normal_gb)
+      real normal_y(ilo_normal_gb:ihi_normal_gb,
+     &                          jlo_normal_gb:jhi_normal_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                       jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real dx, dy
+      integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer ilo_nb_gb, ihi_nb_gb
+      integer jlo_nb_gb, jhi_nb_gb
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
+     &                      jlo_nb_gb:jhi_nb_gb)
+      integer*1 mark_fb
+      
+      
+      real norm_grad_phi, inv_norm_grad_phi
+      integer i,j,l
+      real half
+      parameter (half=0.5d0)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
+
+c     { begin loop over indexed points
+      do l=nlo_index, nhi_index      
+        i=index_x(l)
+        j=index_y(l)
+
+c       include only fill box points (marked appropriately)
+        if( narrow_band(i,j) .le. mark_fb ) then
+c         compute unit normal 
+
+          norm_grad_phi = sqrt( phi_x(i,j)*phi_x(i,j)
+     &                        + phi_y(i,j)*phi_y(i,j) )
+
+          if (norm_grad_phi .ge. zero_tol) then
+            inv_norm_grad_phi = 1.0d0/norm_grad_phi
+            normal_x(i,j) = phi_x(i,j)*inv_norm_grad_phi
+            normal_y(i,j) = phi_y(i,j)*inv_norm_grad_phi
+          else
+            normal_x(i,j) = 1.0d0
+            normal_y(i,j) = 0.0d0
+          endif
+
+        endif
+
+      enddo
+c     } end loop over indexed points
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+c
+c  lsm2dComputeSignedUnitNormalLocal() computes the signed unit normal 
+c  vector to the interface from grad(phi) using the following smoothed 
+c  sgn function 
+c
+c    sgn(phi) = phi/sqrt( phi^2 + |grad(phi)|^2 * dx^2 )
+c
+c  This expression avoids division by zero in computing the unit
+c  normal vector.
+c
+c  Arguments:
+c    normal_* (out):     components of unit normal vector
+c    phi_* (in):         components of grad(phi) 
+c    phi (in):           level set function
+c    dx, dy (in):        grid spacing
+c    *_gb (in):          index range for ghostbox
+c    index_[xy](in):    [xy] coordinates of local (narrow band) points
+c    n*_index(in):      index range of points to loop over in index_*
+c    narrow_band(in):   array that marks voxels outside desired fillbox
+c    mark_fb(in):       upper limit narrow band value for voxels in 
+c                       fillbox
+c
+c***********************************************************************
+      subroutine lsm2dComputeSignedUnitNormalLocal(
+     &  normal_x, normal_y, 
+     &  ilo_normal_gb, ihi_normal_gb,
+     &  jlo_normal_gb, jhi_normal_gb,
+     &  phi_x, phi_y,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  phi,
+     &  ilo_phi_gb, ihi_phi_gb,
+     &  jlo_phi_gb, jhi_phi_gb,
+     &  dx, dy,
+     &  index_x, index_y,
+     &  nlo_index, nhi_index,
+     &  narrow_band,
+     &  ilo_nb_gb, ihi_nb_gb, 
+     &  jlo_nb_gb, jhi_nb_gb, 
+     &  mark_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostboxes 
+c     _fb refers to fill-box for normal data
+
+      integer ilo_normal_gb, ihi_normal_gb
+      integer jlo_normal_gb, jhi_normal_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer ilo_phi_gb, ihi_phi_gb
+      integer jlo_phi_gb, jhi_phi_gb
+      real normal_x(ilo_normal_gb:ihi_normal_gb,
+     &              jlo_normal_gb:jhi_normal_gb)
+      real normal_y(ilo_normal_gb:ihi_normal_gb,
+     &              jlo_normal_gb:jhi_normal_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real phi(ilo_phi_gb:ihi_phi_gb,
+     &         jlo_phi_gb:jhi_phi_gb)
+      real dx, dy
+      integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer ilo_nb_gb, ihi_nb_gb
+      integer jlo_nb_gb, jhi_nb_gb
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
+     &                      jlo_nb_gb:jhi_nb_gb)
+      integer*1 mark_fb
+      
+      
+      real phi_cur
+      real sgn_phi
+      real norm_grad_phi_sq, inv_norm_grad_phi
+      real dx_sq
+      integer i,j,l
+      real half
+      parameter (half=0.5d0)
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
+
+c     set value of dx_sq to be square of max{dx,dy}
+      dx_sq = max(dx,dy)
+      dx_sq = dx_sq*dx_sq
+
+c     { begin loop over indexed points
+      do l=nlo_index, nhi_index      
+        i=index_x(l)
+        j=index_y(l)
+
+c       include only fill box points (marked appropriately)
+        if( narrow_band(i,j) .le. mark_fb ) then
+c         cache phi_cur
+          phi_cur = phi(i,j)
+
+c         compute sgn(phi)*normal
+          if (abs(phi_cur) .gt. zero_tol) then
+
+            norm_grad_phi_sq = phi_x(i,j)*phi_x(i,j)
+     &                       + phi_y(i,j)*phi_y(i,j)
+
+            if (norm_grad_phi_sq .ge. zero_tol) then
+              sgn_phi = phi_cur
+     &                / sqrt(phi_cur*phi_cur + norm_grad_phi_sq*dx_sq)
+
+              inv_norm_grad_phi = 1.d0/sqrt(norm_grad_phi_sq)
+
+              normal_x(i,j) = sgn_phi*phi_x(i,j)*inv_norm_grad_phi
+              normal_y(i,j) = sgn_phi*phi_y(i,j)*inv_norm_grad_phi
+            else
+              normal_x(i,j) = 1.0d0
+              normal_y(i,j) = 0.0d0
+            endif
+
+          else
+
+            normal_x(i,j) = 0.0d0
+            normal_y(i,j) = 0.0d0
+
+          endif
+
+        endif
+
+      enddo
+c     } end loop over indexed points
+
+      return
+      end
+c } end subroutine
+c***********************************************************************

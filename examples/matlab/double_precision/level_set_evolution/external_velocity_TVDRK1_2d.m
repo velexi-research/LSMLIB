@@ -26,8 +26,6 @@
 %   is stored at index (j,i).  This affects the dimensions of the velocity
 %   arrays and how the ghostcell values are set.
 %
-% Kevin Chu
-% MAE, Princeton University
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -7,7 +7,7 @@
 # INITIALIZATION
 #===========================================================================
 AC_PREREQ(2.57)
-AC_INIT([LSMLIB], 1.0.0, [kevin.t.chu@gmail.com])
+AC_INIT([LSMLIB], 1.0.0, [ktchu@serendipityresearch.org])
 AC_REVISION($Revision: 1.31 $)
 AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.cc])
 AC_CONFIG_HEADER([config/LSMLIB_config.h])
@@ -344,6 +344,7 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/geometry/Makefile
            src/toolbox/geometry/lsm_geometry1d.f
            src/toolbox/geometry/lsm_geometry2d.f
+           src/toolbox/geometry/lsm_geometry2d_local.f
            src/toolbox/geometry/lsm_geometry3d_fort.f
            src/toolbox/geometry/test/Makefile
            src/toolbox/level_set_evolution/Makefile
@@ -467,4 +468,4 @@ echo ""
 echo "If you are happy with the above configuration, type 'make' "
 echo "to compile the LSMLIB library followed by 'make install' to "
 echo "install the LSMLIB library. Please send comments or bugs "
-echo "to <ktchuATprincetonDOTedu>"
+echo "to <ktchu AT serendipityresearch DOT org>"

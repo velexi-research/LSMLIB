@@ -1,18 +1,15 @@
 /*
  * File:        lsm_data_arrays.c
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/11/03 23:15:52 $
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.3 $
+ * Modified:    $Date: 2006/05/25 19:53:02 $
  * Description: Implementation file for LSM_DataArrays structure
  */
 
 /*****************************************************************
  * TO DO:
- *   The data array I/O routines are quite simple at this point. 
  *   Having the following would be nice.
  *
- *   - check if the file exists
- *   - check if the file is zipped and unzip if needed
  *   - have endian information and bite-swap id needed
  *
  *****************************************************************/
@@ -44,6 +41,7 @@ LSM_DataArrays *allocateLSMDataArrays(void)
   lsm_data_arrays->phi_next = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->phi0 = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->phi_prev = LSMLIB_SERIAL_dummy_pointer;
+  lsm_data_arrays->phi_extra = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->mask = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->lse_rhs = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->phi_x_plus = LSMLIB_SERIAL_dummy_pointer;
@@ -71,7 +69,7 @@ LSM_DataArrays *allocateLSMDataArrays(void)
   lsm_data_arrays->index_y = LSMLIB_SERIAL_dummy_pointer_int;
   lsm_data_arrays->index_z = LSMLIB_SERIAL_dummy_pointer_int;
   lsm_data_arrays->num_index_pts = 0;
-  for(i=0; i < 6; i++)
+  for(i=0; i < 10; i++)
   {
     lsm_data_arrays->n_lo[i] = lsm_data_arrays->n_hi[i] = 0;
   }
@@ -80,6 +78,20 @@ LSM_DataArrays *allocateLSMDataArrays(void)
   lsm_data_arrays->num_alloc_index_outer_pts = 0;
   lsm_data_arrays->nlo_outer_plus = lsm_data_arrays->nhi_outer_plus = 0;
   lsm_data_arrays->nlo_outer_minus = lsm_data_arrays->nhi_outer_minus = 0;
+  
+  lsm_data_arrays->solid_narrow_band = LSMLIB_SERIAL_dummy_pointer_uchar;
+  lsm_data_arrays->solid_index_x = LSMLIB_SERIAL_dummy_pointer_int;
+  lsm_data_arrays->solid_index_y = LSMLIB_SERIAL_dummy_pointer_int;
+  lsm_data_arrays->solid_index_z = LSMLIB_SERIAL_dummy_pointer_int;
+  lsm_data_arrays->solid_num_index_pts = 0;
+  for(i=0; i < 10; i++)
+  {
+    lsm_data_arrays->solid_n_lo[i] = lsm_data_arrays->solid_n_hi[i] = 0;
+  }
+  
+  lsm_data_arrays->solid_normal_x = LSMLIB_SERIAL_dummy_pointer;
+  lsm_data_arrays->solid_normal_y = LSMLIB_SERIAL_dummy_pointer;
+  lsm_data_arrays->solid_normal_z = LSMLIB_SERIAL_dummy_pointer;
   
   lsm_data_arrays->D1 = LSMLIB_SERIAL_dummy_pointer;
   lsm_data_arrays->D2 = LSMLIB_SERIAL_dummy_pointer;
@@ -125,7 +137,10 @@ void  allocateMemoryForLSMDataArrays(
   
   if( lsm_data_arrays->phi_prev  == LSMLIB_SERIAL_dummy_pointer ) 
     lsm_data_arrays->phi_prev = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
-    
+  
+  if( lsm_data_arrays->phi_extra  == LSMLIB_SERIAL_dummy_pointer ) 
+    lsm_data_arrays->phi_extra = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);
+   
   if( lsm_data_arrays->mask  == LSMLIB_SERIAL_dummy_pointer )
     lsm_data_arrays->mask = (LSMLIB_REAL*) calloc(grid->num_gridpts,DSZ);  
     
@@ -245,6 +260,40 @@ void  allocateMemoryForLSMDataArrays(
     lsm_data_arrays->num_alloc_index_outer_pts = grid->num_gridpts;
   }  
     
+    
+  if( lsm_data_arrays->solid_narrow_band == LSMLIB_SERIAL_dummy_pointer_uchar )  
+    lsm_data_arrays->solid_narrow_band = (unsigned char*) malloc(grid->num_gridpts*UCSZ);
+    
+  if( lsm_data_arrays->solid_index_x == LSMLIB_SERIAL_dummy_pointer_int )
+    lsm_data_arrays->solid_index_x = (int*) malloc(grid->num_gridpts*ISZ); 
+  
+  if( lsm_data_arrays->solid_index_y == LSMLIB_SERIAL_dummy_pointer_int )
+    lsm_data_arrays->solid_index_y = (int*) malloc(grid->num_gridpts*ISZ);
+  
+  if(grid->num_dims == 3)
+  { 
+    if( lsm_data_arrays->solid_index_z == LSMLIB_SERIAL_dummy_pointer_int )
+      lsm_data_arrays->solid_index_z = (int*) malloc(grid->num_gridpts*ISZ);
+  }
+  else  lsm_data_arrays->solid_index_z = (int*) NULL;
+  
+  
+  
+  if( lsm_data_arrays->solid_normal_x  == LSMLIB_SERIAL_dummy_pointer )  
+    lsm_data_arrays->solid_normal_x = 
+      (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
+   
+  if( lsm_data_arrays->solid_normal_y  == LSMLIB_SERIAL_dummy_pointer )  
+    lsm_data_arrays->solid_normal_y = 
+      (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);
+    
+  if(grid->num_dims == 3)
+  {
+    if( lsm_data_arrays->solid_normal_z  == LSMLIB_SERIAL_dummy_pointer )  
+      lsm_data_arrays->solid_normal_z = 
+        (LSMLIB_REAL*) malloc(grid->num_gridpts*DSZ);	
+  }
+  else lsm_data_arrays->solid_normal_z = (LSMLIB_REAL *)NULL;  
 }     
 
 
@@ -259,7 +308,8 @@ void  freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_data_arrays)
   
   free(lsm_data_arrays->phi0);      
   free(lsm_data_arrays->phi_prev);
-
+  free(lsm_data_arrays->phi_extra);
+  
   free(lsm_data_arrays->mask); 
   
   free(lsm_data_arrays->lse_rhs);
@@ -293,13 +343,22 @@ void  freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_data_arrays)
 
   free(lsm_data_arrays->index_outer_pts);
   
+  free(lsm_data_arrays->solid_narrow_band);
+  free(lsm_data_arrays->solid_index_x);
+  free(lsm_data_arrays->solid_index_y);
+  free(lsm_data_arrays->solid_index_z);
+  
+  free(lsm_data_arrays->solid_normal_x);
+  free(lsm_data_arrays->solid_normal_y);
+  free(lsm_data_arrays->solid_normal_z);
+  
   free(lsm_data_arrays->D1);
   free(lsm_data_arrays->D2);
-  free(lsm_data_arrays->D3);
+  free(lsm_data_arrays->D3);  
 }
    
 
-void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name)
+void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name,int zip_status)
 {
    FILE *fp;
    
@@ -312,35 +371,50 @@ void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name)
    fwrite(data, DSZ, grid->num_gridpts, fp);
 
    fclose(fp);
+   zipFile(file_name,zip_status);
 }
 
 
 LSMLIB_REAL *readDataArray(int *grid_dims_ghostbox,char *file_name)
 {
-   FILE *fp;
-   int  num_gridpts;
-   LSMLIB_REAL *data;
+   FILE    *fp;
+   int     zip_status;
+   int     num_gridpts;
+   LSMLIB_REAL    *data = NULL;
+   char    *file_base;
    
-   fp = fopen(file_name,"r");
+   checkUnzipFile(file_name,&zip_status,&file_base);
+   
+   fp = fopen(file_base,"r");
 
-   /* read grid dimensions */
-   fread(grid_dims_ghostbox, sizeof(int), 3, fp); 
+   if( fp != NULL)
+   {
+     /* read grid dimensions */
+     fread(grid_dims_ghostbox, sizeof(int), 3, fp); 
   
-   /* allocate memory for data array */ 
-   num_gridpts = grid_dims_ghostbox[0] * grid_dims_ghostbox[1]
+     /* allocate memory for data array */ 
+     num_gridpts = grid_dims_ghostbox[0] * grid_dims_ghostbox[1]
                * grid_dims_ghostbox[2];
-   data = (LSMLIB_REAL *) malloc(num_gridpts*DSZ);
+     data = (LSMLIB_REAL *) malloc(num_gridpts*DSZ);
 
-   /* read data array */ 
-   fread(data, DSZ, num_gridpts, fp);
+     /* read data array */ 
+     fread(data, DSZ, num_gridpts, fp);
 
-   fclose(fp);
-   
+     fclose(fp);
+     
+     zipFile(file_base,zip_status);
+   }
+   else
+   {
+      printf("\nCould not open file %s",file_name);
+   }
+   free(file_base);
    return data;
 }
 
 
-void writeDataArray1d(LSMLIB_REAL *data, int num_elements, char *file_name)
+void writeDataArray1d(LSMLIB_REAL *data, int num_elements, char *file_name,
+                      int zip_status)
 {
    FILE *fp;
    
@@ -353,27 +427,41 @@ void writeDataArray1d(LSMLIB_REAL *data, int num_elements, char *file_name)
    fwrite(data, DSZ, num_elements, fp);
 
    fclose(fp);
+   zipFile(file_name,zip_status);
 }
 
 
 LSMLIB_REAL *readDataArray1d(int *num_elements, char *file_name)
 {
-   FILE *fp;
-   LSMLIB_REAL *data;
+   FILE    *fp;
+   LSMLIB_REAL  *data;
+   char    *file_base;
+   int     zip_status;
    
-   fp = fopen(file_name,"r");
-
-   /* read number of elements */
-   fread(num_elements, sizeof(int), 1, fp); 
+   checkUnzipFile(file_name,&zip_status,&file_base);
    
-   /* allocate memory for data*/
-   data = (LSMLIB_REAL *)malloc((*num_elements)*DSZ);
+   fp = fopen(file_base,"r");
 
-   /* read data array */
-   fread(data ,DSZ, *num_elements, fp);
-
-   fclose(fp);
+   if(fp)
+   {
+     /* read number of elements */
+     fread(num_elements, sizeof(int), 1, fp); 
    
+     /* allocate memory for data*/
+     data = (LSMLIB_REAL *)malloc((*num_elements)*DSZ);
+
+     /* read data array */
+     fread(data ,DSZ, *num_elements, fp);
+
+     fclose(fp);
+     zipFile(file_base,zip_status);
+   }
+   else
+   {
+      printf("\nCould not open file %s",file_name);
+   }
+   
+   free(file_base);
    return data;
 }
 

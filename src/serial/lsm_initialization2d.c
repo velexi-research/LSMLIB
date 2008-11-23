@@ -1,6 +1,6 @@
 /*
  * File:        lsm_initialization2d.c
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/06/02 02:36:52 $
  * Description: Implementation file for 2D initialization functions
@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <float.h>
-#include "LSMLIB_config.h"
+
 #include "lsm_initialization2d.h"
 #include "lsm_macros.h"
 
@@ -47,7 +47,7 @@ void createIntersectionOfHalfSpaces2d(
       x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
       y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
 
-      max = -LSMLIB_REAL_MAX;
+      max = -FLT_MAX;
 
       for (l = 0; l < num_half_spaces; l++)
       { 
@@ -74,6 +74,50 @@ void createPolyhedron2d(
   /* use createIntersectionOfHalfSpaces2d() */
   createIntersectionOfHalfSpaces2d(
     phi, num_sides, normal_x, normal_y, point_x, point_y, grid);
+}
+
+
+void createIntersectionOfPolyhedra2d(
+  LSMLIB_REAL *phi,
+  int num_polyhedra,
+  int *idx_start,
+  int *idx_end, 
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
+  int *inside_flag,
+  Grid *grid)
+{   
+  int i, l, num_sides, start, end;
+     
+  LSMLIB_REAL  *phi1 
+    = (LSMLIB_REAL *)malloc(grid->num_gridpts*sizeof(LSMLIB_REAL)); 
+        
+  for(l = 0; l < num_polyhedra; l++) 
+  {
+    /* Each polyhedron is the intersection of a number of half spaces 
+       Info on half spaces (sides) is stored consecutively 
+       from idx_start[l] through idx_end[l] in normal_*
+       and point_* arrays
+    */
+    start = idx_start[l];
+    end = idx_end[l];
+    num_sides = idx_end[l] - idx_start[l] + 1;
+   
+    createIntersectionOfHalfSpaces2d(phi1, num_sides,
+                                     (normal_x+start), (normal_y+start),
+                                     (point_x +start), (point_y +start),
+                                     grid);
+    
+    if (inside_flag[l] >= 1) 
+    { 
+      NEGATE_DATA(phi1,grid)
+    }
+      
+    if (l == 0 ) COPY_DATA(phi,phi1,grid)
+    else         IMPOSE_MASK(phi,phi1,phi,grid)              
+  }
+    
+  free(phi1);
 }
 
 
@@ -113,7 +157,7 @@ void createIntersectionOfCircles(
       x = (grid->x_lo_ghostbox)[0] + (grid->dx)[0]*i;
       y = (grid->x_lo_ghostbox)[1] + (grid->dx)[1]*j;
     
-      max = -LSMLIB_REAL_MAX;
+      max = -FLT_MAX;
 
       for (l = 0; l < num_circles; l++)
       {
@@ -204,4 +248,3 @@ void createIntersectionOfRectangles(
     
   free(phi1);
 }
-

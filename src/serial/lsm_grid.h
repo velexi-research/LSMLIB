@@ -1,8 +1,8 @@
 /*
  * File:        lsm_grid.h
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2007/05/06 21:07:47 $
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.3 $
+ * Modified:    $Date: 2006/06/02 13:16:01 $
  * Description: Header file for grid data structures that support serial
  *              LSMLIB calculations
  */
@@ -10,13 +10,12 @@
 #ifndef included_lsm_grid_h
 #define included_lsm_grid_h
 
+#include <stdio.h>
 #include "LSMLIB_config.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdio.h>
 
 
 /*! \file lsm_grid.h
@@ -91,7 +90,7 @@ typedef struct _Grid {
   LSMLIB_REAL beta, gamma;
   
   
- } Grid;
+} Grid;
  
  
 /*! \enum LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE
@@ -119,18 +118,18 @@ typedef enum { LOW = 0, MEDIUM = 1, HIGH = 2, VERY_HIGH = 3 }
  *  is specified by the user.
  *
  * Arguments:
- *  - num_dims (in):  desired spatial dimension for problem (2 or 3)
- *  - dx (in):        desired grid spacing (same in all dim's)
- *  - x_lo (in):      physical/geometric coordinates of the lower
- *                    corner of the interior of the computational 
- *                    domain (i.e. without ghostcells)
- *  - x_hi (in):      physical/geometric coordinates of the upper
- *                    corner of the interior of the computational 
- *                    domain (i.e. without ghostcells)
- *  - accuracy (in):  desired accuracy ("LOW","MEDIUM","HIGH" or
- *                    "VERY_HIGH")
+ *  - num_dims (in):        desired spatial dimension for problem (2 or 3)
+ *  - dx (in):              desired grid spacing (same in all dim's)
+ *  - x_lo (in):            physical/geometric coordinates of the lower
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - x_hi (in):            physical/geometric coordinates of the upper
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - accuracy (in):        desired accuracy ("LOW","MEDIUM","HIGH" or
+ *                          "VERY_HIGH")
  *
- * Return value:      pointer to the newly created Grid structure
+ * Return value:            pointer to the newly created Grid structure
  *
  * NOTES: 
  * - x_hi may be reset to ensure that (x_hi-x_lo) is an integer 
@@ -145,7 +144,38 @@ Grid *createGridSetDx(int num_dims, LSMLIB_REAL dx,
                       LSMLIB_REAL *x_lo, LSMLIB_REAL *x_hi,
                       LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 
-
+/*!
+ *  createGridSetDxDyDz() allocates and defines the elements in the Grid 
+ *  structure for problems in 2D or 3D when the grid spacing, dx,
+ *  is specified by the user.
+ *
+ * Arguments:
+ *  - num_dims (in):        desired spatial dimension for problem (2 or 3)
+ *  - dx,dy,dz (in):        desired grid spacing for x,y and z direction
+ *  - x_lo (in):            physical/geometric coordinates of the lower
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - x_hi (in):            physical/geometric coordinates of the upper
+ *                          corner of the interior of the computational 
+ *                          domain (i.e. without ghostcells)
+ *  - accuracy (in):        desired accuracy ("LOW","MEDIUM","HIGH" or
+ *                          "VERY_HIGH")
+ *
+ * Return value:            pointer to the newly created Grid structure
+ *
+ * NOTES: 
+ * - x_hi may be reset to ensure that (x_hi-x_lo) is an integer 
+ *   multiple of dx.
+ * 
+ * - The size of the x_lo and x_hi arrays should be equal to the
+ *   number of dimensions.
+ *
+ */
+ 
+Grid *createGridSetDxDyDz(int num_dims, 
+                          LSMLIB_REAL dx, LSMLIB_REAL dy, LSMLIB_REAL dz,
+                          LSMLIB_REAL *x_lo, LSMLIB_REAL *x_hi,
+                          LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 /*!
  * createGridSetGridDims() allocates and defines the elements in the Grid 
  * structure for problems in 2D or 3D when the grid dimensions, grid_dims,
@@ -163,7 +193,7 @@ Grid *createGridSetDx(int num_dims, LSMLIB_REAL dx,
  *                          corner of the interior of the computational 
  *                          domain (i.e. without ghostcells)
  *  - accuracy (in):        desired accuracy ("LOW","MEDIUM","HIGH" or
- *                         "VERY_HIGH")
+ *                          "VERY_HIGH")
  *
  * Return value:            pointer to the newly created Grid structure
  *
@@ -177,16 +207,13 @@ Grid *createGridSetGridDims(int num_dims, int *grid_dims,
                             LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy);
 
 /*! 
- * copyGrid() copies existing Grid structure into a new one.
+ * copyGrid() acopies existant Grid structure into a new one (memory for the
+ * new structure allocated within the function
  *
  * Arguments
  *  - grid (in):  pointer to Grid structure to be copied
  *
- * Return value:  pointer to the newly created Grid structure
- *
- * NOTES:
- * - Memory for the new structure is allocated within the function.
- *
+ * Return value:            pointer to the newly created Grid structure
  */
 Grid *copyGrid(Grid *grid);
 
@@ -227,7 +254,8 @@ void printGrid(Grid *grid, FILE *fp);
  * Arguments
  *  - grid (in):       pointer to Grid structure
  *  - file_name (in):  name of output file
- *
+ *  - zip_status(in):  integer indicating compression of the file 
+ *                     (NO_ZIP,GZIP,BZIP2)
  * Return value:       none
  *
  * NOTES:
@@ -238,7 +266,7 @@ void printGrid(Grid *grid, FILE *fp);
  *   overwritten.
  *
  */
-void writeGridToAsciiFile(Grid *grid, char *file_name);
+void writeGridToAsciiFile(Grid *grid, char *file_name, int zip_status);
  
 
 /*!
@@ -256,6 +284,8 @@ void writeGridToAsciiFile(Grid *grid, char *file_name);
  * - To avoid memory leaks, the grid returned by readGridFromAsciiFile() 
  *   should be destroyed using destroyGrid() when it is no longer needed.
  *
+ * - Function recognizes if the file name contains .gz or .bz2 extention
+ *   and uncompresses the file accordingly
  */
 Grid *readGridFromAsciiFile(char *file_name);
  
@@ -266,7 +296,8 @@ Grid *readGridFromAsciiFile(char *file_name);
  * Arguments:
  *  - grid (in):       pointer to Grid structure 
  *  - file_name (in):  name of output file
- *
+ *  - zip_status(in):  integer indicating compression of the file 
+ *                     (NO_ZIP,GZIP,BZIP2)
  * Return value:       none
  *
  * NOTES:
@@ -277,7 +308,7 @@ Grid *readGridFromAsciiFile(char *file_name);
  *   overwritten.
  *
  */
-void writeGridToBinaryFile(Grid *grid, char *file_name);
+void writeGridToBinaryFile(Grid *grid, char *file_name, int zip_status);
 
 
 /*!
@@ -296,30 +327,31 @@ void writeGridToBinaryFile(Grid *grid, char *file_name);
  * - To avoid memory leaks, the grid returned by readGridFromBinaryFile() 
  *   should be destroyed using destroyGrid() when it is no longer needed.
  *
+ * - Function recognizes if the file name contains .gz or .bz2 extention
+ *   and uncompresses the file accordingly
+ *
  */
 Grid *readGridFromBinaryFile(char *file_name);
  
-
+ 
 /*!
- * setIndexSpaceLimits() defines limits in Grid structure for problems 
- * in 2D or 3D.
+ *  setIndexSpaceLimits() defines limits in Grid structure for problems in 2D or 3D.
  *
  * Arguments:
  *  - accuracy (in):  desired accuracy ("LOW","MEDIUM","HIGH" or
  *                    "VERY_HIGH")
  *  - grid (in/out):  Grid data structure containing grid configuration
  *
- * Return value:      none
- *
+ * 
  * NOTES:
  * - Grid elements other than index space limits assumed pre-set
- * 
- */
+*/
 void setIndexSpaceLimits(LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy, 
    Grid *grid);
-
+   
 
 /*! @} */
+
 
 #ifdef __cplusplus
 }

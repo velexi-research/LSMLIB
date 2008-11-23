@@ -1,8 +1,8 @@
 /*
  * File:        lsm_data_arrays.h
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.6 $
- * Modified:    $Date: 2007/05/06 21:07:46 $
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.3 $
+ * Modified:    $Date: 2006/07/06 22:22:43 $
  * Description: Header file for LSM_DataArrays data structure and functions
  *              that support serial LSMLIB calculations
  */
@@ -26,6 +26,7 @@ extern "C" {
  */
 
 #include "lsm_grid.h"
+#include "lsm_file.h"
 
 /*!
  * Structure 'LSM_DataArrays' stores pointers for all arrays needed in a
@@ -41,6 +42,9 @@ typedef struct _LSM_DataArrays
 
   /* extra storage for previous step functions */
   LSMLIB_REAL  *phi_prev;  
+   
+  /* extra storage for application specific purposes */
+  LSMLIB_REAL  *phi_extra;  
   
   /* mask is the level set function that defines restricted domains */
   LSMLIB_REAL  *mask;
@@ -144,6 +148,19 @@ void freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_arrays);
 
 
 /*!
+ * destroysMemoryForLSMDataArrays() frees ALL memory allocated for the data 
+ * arrays contained within the LSM_DataArrays structure as well as the structure
+ * itself.
+ *   
+ * Arguments:
+ *  - lsm_data_arrays(in):  pointer to LSM_DataArrays 
+ *   
+ * Return value:            none
+ *   
+ */
+void destroyLSMDataArrays(LSM_DataArrays *lsm_data_arrays);
+
+/*!
  * writeDataArray() writes the specified data array out to a binary file.
  *
  * The data is output in the following order:
@@ -153,7 +170,9 @@ void freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_arrays);
  * Arguments:
  *  - data (in):       data array to be output to file
  *  - grid (in):       pointer to Grid 
- *  - file_name (in):  name of output file 
+ *  - file_name (in):  name of output file
+ *  - zip_status(in):  integer indicating compression of the file 
+ *                     (NO_ZIP,GZIP,BZIP2) 
  *   
  * Return value:       none
  *   
@@ -166,7 +185,8 @@ void freeMemoryForLSMDataArrays(LSM_DataArrays *lsm_arrays);
  *   overwritten.
  *
  */   
-void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name);
+void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name,
+                    int zip_status);
 
 
 /*!
@@ -188,6 +208,8 @@ void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name);
  * - readDataArray() is used for 2d and 3d data arrays.  For 2d
  *   data, the third grid dimension is set to 1.
  *
+ * - Function recognizes if the file name contains .gz or .bz2 extention
+ *   and uncompresses the file accordingly.
  */   
 LSMLIB_REAL *readDataArray(int *grid_dims, char *file_name);
 
@@ -202,7 +224,9 @@ LSMLIB_REAL *readDataArray(int *grid_dims, char *file_name);
  * Arguments:
  *  - data (in):          data array to be output to file
  *  - num_elements (in):  number of elements in the array
- *  - file_name (in):     name of output file 
+ *  - file_name (in):     name of output file
+ *  - zip_status(in):     integer indicating compression of the file 
+ *                        (NO_ZIP,GZIP,BZIP2)
  *   
  * Return value:         none
  *
@@ -211,7 +235,8 @@ LSMLIB_REAL *readDataArray(int *grid_dims, char *file_name);
  *   overwritten.
  *
  */   
-void writeDataArray1d(LSMLIB_REAL *data, int num_gridpts, char *file_name);
+void writeDataArray1d(LSMLIB_REAL *data, int num_gridpts, char *file_name,
+                      int  zip_status);
 
 
 /*!
@@ -220,7 +245,7 @@ void writeDataArray1d(LSMLIB_REAL *data, int num_gridpts, char *file_name);
  *   
  * Arguments:
  *  - num_elements (out):  number of elements in the array (read from file)
- *  - file_name (in):      name of input file 
+ *  - file_name (in):      name of input file
  *   
  * Return value:           none
  *
@@ -230,7 +255,8 @@ void writeDataArray1d(LSMLIB_REAL *data, int num_gridpts, char *file_name);
  *
  * - The memory for num_elements is assumed to be allocated by the user.
  *
- *
+ * - Function recognizes if the file name contains .gz or .bz2 extention
+ *   and uncompresses the file accordingly.
  */   
 LSMLIB_REAL *readDataArray1d(int *num_elements, char *file_name);
 

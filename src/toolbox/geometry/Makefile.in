@@ -19,10 +19,12 @@ all:  includes library
 includes:  
 	@CP@ $(SRC_DIR)/lsm_geometry1d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_geometry2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_geometry2d_local.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_geometry3d.h $(BUILD_DIR)/include/
 
 library:  lsm_geometry1d.o       \
           lsm_geometry2d.o       \
+          lsm_geometry2d_local.o \
           lsm_geometry3d_fort.o  \
           lsm_geometry3d_c.o     \
 

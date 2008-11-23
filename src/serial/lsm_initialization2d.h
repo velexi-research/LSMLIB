@@ -1,6 +1,6 @@
 /*
  * File:        lsm_initialization2d.h
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/05/25 19:41:22 $
  * Description: Header file for 2D initialization functions
@@ -154,6 +154,63 @@ void createPolyhedron2d(
   Grid *grid);
 
 
+/*!
+ * createIntersectionOfPolyhedra2d() sets phi to be a level set function 
+ * corresponding to an intersection of 2D-polyhedra, each possibly unbounded,
+ * and with different number of sides (half spaces). The i-th half-space in
+ * each polyhedron is assumed to be represented in the form:
+ *
+ *   normal_x[i] * (x - point_x[i]) + normal_y[i] * (y - point_y[i]) < 0.
+ *  (if inside_flag[i] is negative, reversed if positive.)
+ *
+ * Arguments
+ *  - phi (out):       level set function
+ *  - num_polyhedra (in):  number of sides of polyhedron
+ *  - idx_start(in):   start indices in below arrays for each polyhedron
+ *  - idx_end(in):     end indices in below arrays for each polyhedrion
+ *  - normal_x (in):   array containing the x-coordinates for vectors normal 
+ *                     to the lines defining the sides of the polyhedron
+ *                     l-th polyhedron is represented with
+ *                     normal_x[i], where i=idx_start[l],...,idx_end[l]
+ *                     Same is true for all other arrays.
+ *  - normal_y (in):   array containing the y-coordinates for vectors normal 
+ *                     to the lines defining the sides of the polyhedron
+ *  - point_x (in):    array containing the x-coordinates of points that lie 
+ *                     on the lines defining the sides of the polyhedron
+ *  - point_y (in):    array containing the y-coordinates of points that lie 
+ *                     on the lines defining the sides of the polyhedron
+ *  - inside_flag(in): array containing the num_polyhedra flags indicating 
+ *                     whether the inside or outside of each polyhedron should be the
+ *                     region associated with negative values of the 
+ *                     level set function.  If inside_flag[l] is negative,
+ *                     then phi on the inside of the l-th polyhedron is 
+ *                     negative.  The reverse is true if inside_flag[l] 
+ *                     is nonnegative.
+ *  - grid (in):       pointer to Grid data structure 
+ *
+ * Return value:       none
+ *
+ * NOTES: 
+ * - phi is approximately a signed distance function.  Within the
+ *   polyhedron (phi < 0), it is equal to the signed distance function.  
+ *   Outside of the polyhedron (phi > 0), it is a signed distance function 
+ *   except for regions where phi > 0 simultaneously for multiple half-spaces.
+ *
+ * - Is it the user's responsibility to ensure that memory for phi
+ *   has been allocated.
+ *
+ */
+void createIntersectionOfPolyhedra2d(
+  LSMLIB_REAL *phi,
+  int num_polyhedra,
+  int *idx_start,
+  int *idx_end, 
+  LSMLIB_REAL *normal_x, LSMLIB_REAL *normal_y,
+  LSMLIB_REAL *point_x, LSMLIB_REAL *point_y,
+  int *inside_flag,
+  Grid *grid);
+ 
+  
 /*!
  * createCircle() sets phi to be a level set function corresponding to a 
  * circle.

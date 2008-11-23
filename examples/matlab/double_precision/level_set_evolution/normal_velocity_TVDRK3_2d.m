@@ -25,8 +25,6 @@
 %   is stored at index (j,i).  This affects how the ghostcell values are 
 %   set.
 %
-% Kevin Chu
-% MAE, Princeton University
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

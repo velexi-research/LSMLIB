@@ -1,8 +1,8 @@
 /*
  * File:        lsm_grid.c
- * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.6 $
- * Modified:    $Date: 2007/05/06 21:07:47 $
+ * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Revision:    $Revision: 1.4 $
+ * Modified:    $Date: 2006/07/18 14:46:37 $
  * Description: Implementation file for grid data structures that support 
  *              serial LSMLIB calculations
  */
@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
+#include "lsm_file.h"
 #include "lsm_grid.h"
 
 /*======== Helper Functions for Grid structure manipulation ========*/
@@ -68,7 +70,7 @@ Grid *createGridSetDx(
     printf("\nInvalid grid dimension %d, set to default 2.\n", num_dims);
     g->num_dims = 2;
   }  
-  
+    
   /* set up grid */
   g->num_gridpts = 1;
 
@@ -102,12 +104,84 @@ Grid *createGridSetDx(
     (g->grid_dims_ghostbox)[2] = 1;
     (g->dx)[2] = 0;
   }
+ 
   
   setIndexSpaceLimits(accuracy,g);
   
   return g;
 }
 
+Grid *createGridSetDxDyDz(
+      int    num_dims,
+      LSMLIB_REAL dx,
+      LSMLIB_REAL dy,
+      LSMLIB_REAL dz,
+      LSMLIB_REAL *x_lo,
+      LSMLIB_REAL *x_hi,
+      LSMLIB_SPATIAL_DERIVATIVE_ACCURACY_TYPE accuracy)
+{
+  int     i;
+  LSMLIB_REAL  diff;
+
+  Grid    *g;
+  
+  int num_ghostcells = lsmlib_num_ghostcells[accuracy];
+  
+  g = allocateGrid();
+  
+  if( (num_dims == 2) || (num_dims == 3) )
+  {
+    g->num_dims = num_dims;
+  }
+  else
+  {
+    printf("\nInvalid grid dimension %d, set to default 2.\n", num_dims);
+    g->num_dims = 2;
+  }  
+    
+  /* set up grid */
+  g->num_gridpts = 1;
+
+  g->dx[0] = dx;
+  g->dx[1] = dy;
+  g->dx[2] = dz;
+  
+  for(i = 0; i < g->num_dims; i++)
+  {
+    
+
+    /* compute grid dimensions */
+    diff = ( x_hi[i] - x_lo[i] );
+    g->grid_dims[i] = rint( diff/(g->dx[i]) );
+
+    /* set x_lo and x_hi consistent with dx and grid_dims */
+    g->x_lo[i] = x_lo[i];
+    g->x_hi[i] = x_lo[i] + (g->grid_dims)[i]*(g->dx)[i];
+
+    /* add 'num_ghostcells' layers of voxels on each side */
+    (g->grid_dims_ghostbox)[i] =  (g->grid_dims)[i] + 2*num_ghostcells;
+    (g->x_lo_ghostbox)[i]= (g->x_lo)[i] - num_ghostcells*((g->dx)[i]);
+    (g->x_hi_ghostbox)[i]= (g->x_hi)[i] + num_ghostcells*((g->dx)[i]);
+
+    (g->num_gridpts) *= (g->grid_dims_ghostbox)[i];
+  } 
+
+  if( g->num_dims == 2 )
+  {  /* put fake values for the third dimension */
+    (g->x_lo)[2] = 0;
+    (g->x_hi)[2] = 0;
+    (g->x_lo_ghostbox)[2] = 0;
+    (g->x_hi_ghostbox)[2] = 0;
+    (g->grid_dims)[2] = 1;
+    (g->grid_dims_ghostbox)[2] = 1;
+    (g->dx)[2] = 0;
+  }
+ 
+  
+  setIndexSpaceLimits(accuracy,g);
+  
+  return g;
+}
 
 Grid *createGridSetGridDims(
   int     num_dims,
@@ -369,11 +443,15 @@ Grid *readGridFromAsciiFile(char *file_name)
   FILE *fp;
   float x_lo_float[3], x_hi_float[3];
   float x_lo_ghostbox_float[3], x_hi_ghostbox_float[3];
-  float dx_float[3];
+  float dx_float[3], beta_float, gamma_float;
   char   *line[80];
-  
+  char   *file_base;
+  int    zip_status;
+   
+  checkUnzipFile(file_name,&zip_status,&file_base);
+   
   /* open file and allocate Grid */
-  fp = fopen(file_name,"r");
+  fp = fopen(file_base,"r");
   grid = allocateGrid();
 
   fscanf(fp, "Number of dimensions: %d\n", &(grid->num_dims));
@@ -508,24 +586,29 @@ Grid *readGridFromAsciiFile(char *file_name)
 	  &(grid->mark_D3),&(grid->mark_fb)); 
   fscanf(fp,
           "Narrow band width (local method) beta(inner) %g gamma(outer) %g\n",
-	  grid->beta, grid->gamma);	  		    	    
+	  &beta_float, &gamma_float);
+          grid->beta = beta_float; grid->gamma = gamma_float;	  		    	    
 
   fclose(fp);
-
+  zipFile(file_base,zip_status);
+  free(file_base); 
+ 
   return grid;
 }
 
-void writeGridToAsciiFile(Grid *grid, char *file_name)
+void writeGridToAsciiFile(Grid *grid, char *file_name, int zip_status)
 {
   FILE *fp = fopen(file_name,"w");
 
   printGrid(grid, fp);
  
   fclose(fp);
+  zipFile(file_name,zip_status);
+  
 }
 
 
-void writeGridToBinaryFile(Grid *grid, char *file_name)
+void writeGridToBinaryFile(Grid *grid, char *file_name, int zip_status)
 {
   FILE *fp;
     
@@ -587,75 +670,92 @@ void writeGridToBinaryFile(Grid *grid, char *file_name)
   fwrite(&(grid->gamma),  sizeof(LSMLIB_REAL), 1, fp);
   
   fclose(fp);
+  zipFile(file_name,zip_status);
 }
- 
+
 
 Grid *readGridFromBinaryFile(char *file_name)
 {
   FILE *fp;
   Grid *grid;
+  char   *file_base;
+  int    zip_status;
+   
+  checkUnzipFile(file_name,&zip_status,&file_base);
   
  /* open file and allocate Grid */
-  fp = fopen(file_name,"r");
+  fp = fopen(file_base,"r");
   grid = allocateGrid();
-
-  fread(&(grid->num_dims), sizeof(int), 1, fp);
-  fread(grid->x_lo, sizeof(LSMLIB_REAL), 3, fp);
-  fread(grid->x_hi, sizeof(LSMLIB_REAL), 3, fp);
-  fread(grid->x_lo_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
-  fread(grid->x_hi_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
-  fread(grid->grid_dims, sizeof(int), 3, fp); 
-  fread(grid->grid_dims_ghostbox, sizeof(int), 3, fp); 
-  fread(grid->dx, sizeof(LSMLIB_REAL), 3, fp);
-  fread(&(grid->num_gridpts), sizeof(int), 1, fp);
-
-  fread(&(grid->ilo_gb), sizeof(int), 1, fp);
-  fread(&(grid->ihi_gb), sizeof(int), 1, fp);
-  fread(&(grid->jlo_gb), sizeof(int), 1, fp);
-  fread(&(grid->jhi_gb), sizeof(int), 1, fp);  
-  fread(&(grid->klo_gb), sizeof(int), 1, fp);
-  fread(&(grid->khi_gb), sizeof(int), 1, fp);
  
-  fread(&(grid->ilo_fb), sizeof(int), 1, fp);
-  fread(&(grid->ihi_fb), sizeof(int), 1, fp);
-  fread(&(grid->jlo_fb), sizeof(int), 1, fp);
-  fread(&(grid->jhi_fb), sizeof(int), 1, fp);  
-  fread(&(grid->klo_fb), sizeof(int), 1, fp);
-  fread(&(grid->khi_fb), sizeof(int), 1, fp);
-  
-  fread(&(grid->ilo_D1_fb), sizeof(int), 1, fp);
-  fread(&(grid->ihi_D1_fb), sizeof(int), 1, fp);
-  fread(&(grid->jlo_D1_fb), sizeof(int), 1, fp);
-  fread(&(grid->jhi_D1_fb), sizeof(int), 1, fp);  
-  fread(&(grid->klo_D1_fb), sizeof(int), 1, fp);
-  fread(&(grid->khi_D1_fb), sizeof(int), 1, fp);
-  
-  fread(&(grid->ilo_D2_fb), sizeof(int), 1, fp);
-  fread(&(grid->ihi_D2_fb), sizeof(int), 1, fp);
-  fread(&(grid->jlo_D2_fb), sizeof(int), 1, fp);
-  fread(&(grid->jhi_D2_fb), sizeof(int), 1, fp);  
-  fread(&(grid->klo_D2_fb), sizeof(int), 1, fp);
-  fread(&(grid->khi_D2_fb), sizeof(int), 1, fp);
-  
-  fread(&(grid->ilo_D3_fb), sizeof(int), 1, fp);
-  fread(&(grid->ihi_D3_fb), sizeof(int), 1, fp);
-  fread(&(grid->jlo_D3_fb), sizeof(int), 1, fp);
-  fread(&(grid->jhi_D3_fb), sizeof(int), 1, fp);  
-  fread(&(grid->klo_D3_fb), sizeof(int), 1, fp);
-  fread(&(grid->khi_D3_fb), sizeof(int), 1, fp);
+  if( fp != NULL)
+  {
+    fread(&(grid->num_dims), sizeof(int), 1, fp);
+    
+    fread(grid->x_lo, sizeof(LSMLIB_REAL), 3, fp);
+    fread(grid->x_hi, sizeof(LSMLIB_REAL), 3, fp);
+    fread(grid->x_lo_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
+    fread(grid->x_hi_ghostbox, sizeof(LSMLIB_REAL), 3, fp);
+    
+    fread(grid->grid_dims, sizeof(int), 3, fp); 
+    fread(grid->grid_dims_ghostbox, sizeof(int), 3, fp);
+     
+    fread(grid->dx, sizeof(LSMLIB_REAL), 3, fp);
+    
+    fread(&(grid->num_gridpts), sizeof(int), 1, fp);
 
-  fread(&(grid->num_nb_levels), sizeof(int), 1, fp);
-  fread(&(grid->mark_gb), sizeof(unsigned char), 1, fp);
-  fread(&(grid->mark_D1), sizeof(unsigned char), 1, fp);
-  fread(&(grid->mark_D2), sizeof(unsigned char), 1, fp);
-  fread(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
-  fread(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
-  
-  fread(&(grid->beta),   sizeof(LSMLIB_REAL), 1, fp);
-  fread(&(grid->gamma),  sizeof(LSMLIB_REAL), 1, fp);
-  
-  fclose(fp);
-  
+    fread(&(grid->ilo_gb), sizeof(int), 1, fp);
+    fread(&(grid->ihi_gb), sizeof(int), 1, fp);
+    fread(&(grid->jlo_gb), sizeof(int), 1, fp);
+    fread(&(grid->jhi_gb), sizeof(int), 1, fp);  
+    fread(&(grid->klo_gb), sizeof(int), 1, fp);
+    fread(&(grid->khi_gb), sizeof(int), 1, fp);
+
+    fread(&(grid->ilo_fb), sizeof(int), 1, fp);
+    fread(&(grid->ihi_fb), sizeof(int), 1, fp);
+    fread(&(grid->jlo_fb), sizeof(int), 1, fp);
+    fread(&(grid->jhi_fb), sizeof(int), 1, fp);  
+    fread(&(grid->klo_fb), sizeof(int), 1, fp);
+    fread(&(grid->khi_fb), sizeof(int), 1, fp);
+
+    fread(&(grid->ilo_D1_fb), sizeof(int), 1, fp);
+    fread(&(grid->ihi_D1_fb), sizeof(int), 1, fp);
+    fread(&(grid->jlo_D1_fb), sizeof(int), 1, fp);
+    fread(&(grid->jhi_D1_fb), sizeof(int), 1, fp);  
+    fread(&(grid->klo_D1_fb), sizeof(int), 1, fp);
+    fread(&(grid->khi_D1_fb), sizeof(int), 1, fp);
+
+    fread(&(grid->ilo_D2_fb), sizeof(int), 1, fp);
+    fread(&(grid->ihi_D2_fb), sizeof(int), 1, fp);
+    fread(&(grid->jlo_D2_fb), sizeof(int), 1, fp);
+    fread(&(grid->jhi_D2_fb), sizeof(int), 1, fp);  
+    fread(&(grid->klo_D2_fb), sizeof(int), 1, fp);
+    fread(&(grid->khi_D2_fb), sizeof(int), 1, fp);
+
+    fread(&(grid->ilo_D3_fb), sizeof(int), 1, fp);
+    fread(&(grid->ihi_D3_fb), sizeof(int), 1, fp);
+    fread(&(grid->jlo_D3_fb), sizeof(int), 1, fp);
+    fread(&(grid->jhi_D3_fb), sizeof(int), 1, fp);  
+    fread(&(grid->klo_D3_fb), sizeof(int), 1, fp);
+    fread(&(grid->khi_D3_fb), sizeof(int), 1, fp);
+
+    fread(&(grid->num_nb_levels), sizeof(int), 1, fp);
+    fread(&(grid->mark_gb), sizeof(unsigned char), 1, fp);
+    fread(&(grid->mark_D1), sizeof(unsigned char), 1, fp);
+    fread(&(grid->mark_D2), sizeof(unsigned char), 1, fp);
+    fread(&(grid->mark_D3), sizeof(unsigned char), 1, fp);
+    fread(&(grid->mark_fb), sizeof(unsigned char), 1, fp);
+
+    fread(&(grid->beta),   sizeof(LSMLIB_REAL), 1, fp);
+    fread(&(grid->gamma),  sizeof(LSMLIB_REAL), 1, fp);
+
+    fclose(fp);
+    zipFile(file_base,zip_status);
+    free(file_base);
+  }
+  else
+  {
+      printf("\nCould not open file %s",file_base);
+  }
   return grid;
 }
 

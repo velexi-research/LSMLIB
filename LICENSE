@@ -1,12 +1,12 @@
-
 ============================================================================
 
                              COPYRIGHT NOTICE                   
 
 ============================================================================
 
-Copyright (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-All rights reserved.
+Copyright (c) 2005, The Trustees of Princeton University and Board of 
+Regents of the University of Texas, all rights reserved.
+Copyright (c) 2008, Kevin T. Chu, all rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -18,13 +18,11 @@ modification, are permitted provided that the following conditions are met:
     and/or other materials provided with the distribution.
   * Redistribution and use of the software (in either source code or
     binary form) must be for research or instructional use.
-  * Neither the name of the Department of Mathematics at the Massachusetts 
-    Institute of Technology, the Department of Mechanical and Aerospace
-    Engineering at Princeton University, the Institute for Computational 
-    Engineering and Sciences at the University of Texas at Austin, nor 
-    the names of its contributors may be used to endorse or promote 
-    products derived from this software without specific prior written 
-    permission.
+  * Neither the name of the Department of Mechanical and Aerospace Engineering 
+    at Princeton University, the Institute for Computational Engineering and 
+    Sciences at the University of Texas at Austin nor the names of its 
+    contributors may be used to endorse or promote products derived from this 
+    software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
@@ -46,19 +44,15 @@ POSSIBILITY OF SUCH DAMAGE.
 ============================================================================
 
 This software is intended for research and instructional purposes only.
-Commercialization of this product is prohibited without notifying the
-authors.
+To use this software for commercial purposes, please contact:
 
-Kevin T. Chu
-Department of Mechanical and Aerospace Engineering
+William H. Gowen
+Office of Technology Licensing and Intellectual Property
 Princeton University
-ktchu@princeton.edu
-http://www.princeton.edu/~ktchu/
-
-Masa Prodanovic
-Institute for Computational Engineering and Sciences
-University of Texas at Austin
-masha@ices.utexas.edu
-http://www.ices.utexas.edu/~masha
+4 New South Building
+Princeton, NJ 08544-0036
+(609) 258-6762
+(609) 258-1159 fax
+wgowen@princeton.edu
 
 ============================================================================

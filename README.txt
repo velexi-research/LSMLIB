@@ -4,7 +4,7 @@ Level Set Method Library (LSMLIB)
 ---------------------------------
 
 Kevin T. Chu
-Dept. of Mechanical and Aerospace Engineering, Princeton University
+Serendipity Research
 
 and
 
@@ -34,8 +34,9 @@ include:
     mixed-language programming (e.g. C++/Fortran77, MATLAB/C/Fortran77);
   * Support for serial and parallel computation;
   * Support for vector level set method calculations;
-  * Restart capabilities;
-  * Adapative mesh refinement (NOT YET IMPLEMENTED). 
+  * Support for narrow-band; 
+  * Support for adaptive mesh refinement (NOT YET IMPLEMENTED);
+  * Restart capabilities.
 
 Software Dependencies
 ---------------------
@@ -49,9 +50,9 @@ IMPORTANT NOTES:
 
   * This library is still under development and has not been thoroughly 
     tested. If you find a bug or have a suggestion, please send me an email 
-    at ktchu AT princeton DOT edu, and I will make an attempt to incorporate 
-    the appropriate change into the next release of the library. Thank you 
-    for your patience during the development process.
+    at ktchu AT serendipityresearch DOT org, and I will make an attempt to 
+    incorporate the appropriate change into the next release of the library. 
+    Thank you for your patience during the development process.
 
   * We are happy to have other researchers use the LSMLIB software in their 
     work (either through collaborations or independently). We merely ask that 
@@ -159,27 +160,6 @@ Computational Science Graduate Fellowship Program of the Office of Science
 and National Nuclear Security Administration in the Department of Energy 
 under contract DE-FG02-97ER25308, the National Science Foundation, and the 
 Air Force Office for Scientific Research.
-
-We would also like to thank the following individuals:
-
-  * Professor David J. Srolovitz - support and encouragement in developing 
-    LSMLIB
-  * Zhaoxuan Wu - autoconf system for building LSMLIB 
-  * Beta testers:  Youngjean Jung, Xiaohai Wan, Daniel Thorpe, Anatoliy Kats,
-                   Yi Li
-
-
-============================================================================
-
-Interested in a Collaboration?
-------------------------------
-
-We are always seeking new and exciting applications of the level set method! 
-If you are interested in working with level set methods, but are not familiar 
-with level set methods, parallel computing, etc., we would be happy to 
-collaborate with you on your research projects. To discuss potential 
-collaborative efforts, please send email to Kevin T. Chu at ktchu AT 
-princeton DOT edu
 
 
 ============================================================================

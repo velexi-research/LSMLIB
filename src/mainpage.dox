@@ -12,7 +12,7 @@
 
   <center>
   Kevin T. Chu <br>
-  Dept. of Mechanical and Aerospace Engineering, Princeton University <br>
+  Serendipity Research <br>
 
   and<br>
 
@@ -63,9 +63,10 @@
 
   <h2> IMPORTANT NOTE:  </h2>
   This library is still under development and has not been thoroughly tested.  
-  If you find a bug, please send me a bug report at ktchu@princeton.edu, and 
-  we will make an attempt to fix it in the next release of the library.  Thank 
-  you for your patience during the development process.
+  If you find a bug, please send me a bug report at 
+  ktchu@serendipityresearch.org, and we will make an attempt to fix it in 
+  the next release of the library.  Thank you for your patience during the 
+  development process.
 
   <hr> 
   <a name="packages">
@@ -147,27 +148,5 @@
   and National Nuclear Security Administration in the Department of Energy
   under contract DE-FG02-97ER25308, the National Science Foundation and 
   the Air Force Office for Scientific Research.
-
-  <p>
-  We would also like to thank the following individuals: 
-
-  <ul>
-  <li>
-    Professor David J. Srolovitz - support and encouragement in 
-      developing LSMLIB
-  </li>
-  <li>
-    Zhaoxuan Wu - autoconf system for building LSMLIB
-  </li>
-  <li>Beta testers:
-    <a href="http://www.princeton.edu/~yjjung/">Youngjean Jung</a>,
-    <a href="http://www4.ncsu.edu/~xwan">Xiaohai Wan</a>,
-    <a href="http://www.ecs.soton.ac.uk/people/dt05r">Daniel Thorpe</a>,
-    <a href="http://www.ifm.eng.cam.ac.uk/people/msg30/">Markus Gross</a>,
-    Anatoliy Kats (akats AT gdrs DOT com),
-    <a href="http://www.sfu.ca/~liyi/">Yi Li</a>
-  </li>
-  </ul>
-
 
 */
