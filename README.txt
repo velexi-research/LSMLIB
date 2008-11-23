@@ -9,7 +9,7 @@ Serendipity Research
 and
 
 Masa Prodanovic
-Institute for Computational Engineering and Sciences, Univ. Texas Austin
+University of Texas at Austin
 
 
 ============================================================================
