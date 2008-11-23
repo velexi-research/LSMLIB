@@ -313,8 +313,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
     grid_dims,
     dx,
     initializeFront,
-    updateGridPoint,
-    INITIAL_FRONT_KNOWN);
+    updateGridPoint);
   if (!fmm_core_data) return LSM_FMM_ERR_FMM_DATA_CREATION_ERROR;
 
   /* mark grid points outside of domain */

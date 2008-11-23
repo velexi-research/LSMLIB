@@ -197,7 +197,7 @@ int computeDistanceFunction2d(
  *
  *
  * Arguments:
- *  - phi (in):                           pointer to solution to Eikonal 
+ *  - phi (in/out):                       pointer to solution to Eikonal 
  *                                        equation phi must be initialized as 
  *                                        specified in the NOTES below. 
  *  - speed (in):                         pointer to speed field
@@ -207,11 +207,6 @@ int computeDistanceFunction2d(
  *                                        negative value.
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
- *  - initial_front_mode (in):            integer indicating whether the values
- *                                        on the initial front (i.e. boundary
- *                                        data) are immutable or may be updated
- *                                        during the FMM computation.  Valid 
- *                                        values are defined in FMM_Core.h.
  *  - grid_dims (in):                     array of index space extents for all 
  *                                        fields 
  *  - dx (in):                            array of grid cell sizes in each 
@@ -255,7 +250,6 @@ int solveEikonalEquation2d(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
-  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx);
 
@@ -414,11 +408,6 @@ int computeDistanceFunction3d(
  *                                        negative value.
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
- *  - initial_front_mode (in):            integer indicating whether the values
- *                                        on the initial front (i.e. boundary
- *                                        data) are immutable or may be updated
- *                                        during the FMM computation.  Valid 
- *                                        values are defined in FMM_Core.h.
  *  - grid_dims (in):                     array of index space extents for all 
  *                                        fields 
  *  - dx (in):                            array of grid cell sizes in each 
@@ -462,7 +451,6 @@ int solveEikonalEquation3d(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
-  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx);
 

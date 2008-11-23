@@ -140,7 +140,6 @@ int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
   LSMLIB_REAL *speed,
   LSMLIB_REAL *mask,
   int spatial_discretization_order,
-  InitialFrontMode initial_front_mode,
   int *grid_dims,
   LSMLIB_REAL *dx)
 {
@@ -192,8 +191,7 @@ int FMM_EIKONAL_SOLVE_EIKONAL_EQUATION(
     grid_dims,
     dx,
     initializeFront,
-    updateGridPoint,
-    initial_front_mode);
+    updateGridPoint);
   if (!fmm_core_data) return LSM_FMM_ERR_FMM_DATA_CREATION_ERROR;
 
   /********************************************
