@@ -14,10 +14,6 @@
 % - set points to check
 % - run script
 %
-% Kevin T. Chu
-% MAE, Princeton University
-% May 2005
-%
 
 % clear workspace
 clear;

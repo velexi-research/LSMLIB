@@ -13,16 +13,6 @@
  * of the endpoints computed by the LSM3D_findLineInTetrahedron() function 
  * for all possible cases of intersection of a line with a tetrahedron.
  *
- * Kevin T. Chu
- * MAE, Princeton University
- *
- * =================================
- *
- * CHANGE_LOG
- * ----------
- * 2005/12: original version of code
- * 2005/05/22: error checks more automated
- *
  */
 
 #include <stdio.h>

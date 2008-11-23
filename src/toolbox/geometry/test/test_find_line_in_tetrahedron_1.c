@@ -23,10 +23,6 @@
  *       (2)  the point on the {phi=0,psi=0} line
  *       (3)  the direction of the {phi=0,psi=0} line
  *
- * Kevin T. Chu
- * MAE, Princeton University
- * December 2005
- *
  */
 
 #include <stdio.h>
