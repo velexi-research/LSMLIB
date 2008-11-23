@@ -19,20 +19,20 @@
  *
  * Arguments:
  * - phi:                           level set function to use in 
- *                                    computing distance function
+ *                                  computing distance function
  * - source_fields:                 field variables that are to
- *                                    be extended off of the zero
- *                                    level set
+ *                                  be extended off of the zero
+ *                                  level set
  * - dX:                            array containing the grid spacing
- *                                    in each coordinate direction
+ *                                  in each coordinate direction
  * - mask:                          mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a
- *                                    negative value
- *                                    (default = [])
+ *                                  grid points outside of the domain
+ *                                  of the problem should be set to a
+ *                                  negative value
+ *                                  (default = [])
  * - spatial_discretization_order:  order of discretization for 
- *                                    spatial derivatives
- *                                    (default = 2)
+ *                                  spatial derivatives
+ *                                  (default = 2)
  *
  * Return values:
  * - distance_function:             distance function

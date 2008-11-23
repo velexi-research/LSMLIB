@@ -20,22 +20,22 @@
  *
  * Arguments:
  * - boundary_data:                 data array containing boundary data and
- *                                    domain information.  The value at grid
- *                                    points adjacent to the boundary of the
- *                                    domain should be set to the desired
- *                                    positive values; the value at all other
- *                                    grid points should be negative.
+ *                                  domain information.  The value at grid
+ *                                  points adjacent to the boundary of the
+ *                                  domain should be set to the desired
+ *                                  positive values; the value at all other
+ *                                  grid points should be negative.
  * - speed:                         speed function in Eikonal equation
  * - dX:                            array containing the grid spacing
- *                                    in each coordinate direction
+ *                                  in each coordinate direction
  * - mask:                          mask for domain of problem;
- *                                    grid points outside of the domain
- *                                    of the problem should be set to a
- *                                    negative value
- *                                    (default = [])
+ *                                  grid points outside of the domain
+ *                                  of the problem should be set to a
+ *                                  negative value
+ *                                  (default = [])
  * - spatial_discretization_order:  order of discretization for 
- *                                    spatial derivatives
- *                                    (default = 2)
+ *                                  spatial derivatives
+ *                                  (default = 2)
  *
  * Return value:
  * - phi:                           solution to Eikonal equation
@@ -179,7 +179,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                  speed,
                  mask,
                  spatial_discretization_order,
-                 INITIAL_FRONT_KNOWN,
                  (int*) grid_dims_phi,
                  dX_matlab_order);
 
