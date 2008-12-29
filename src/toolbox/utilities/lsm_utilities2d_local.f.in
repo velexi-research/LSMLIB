@@ -9,23 +9,7 @@ c               on narrow-bands
 c
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm2dMaxNormDiffLOCAL() computes the max norm of the difference 
-c  between the two specified scalar fields.
-c  The routine loops only over local (narrow band) points. 
-c
-c  Arguments:
-c    max_norm_diff (out):  max norm of the difference between the fields
-c    field1 (in):          scalar field 1
-c    field2 (in):          scalar field 2
-c    index_[xy](in):      [xy] coordinates of local (narrow band) points
-c    n*_index(in):         index range of points in index_*
-c    *_gb (in):            index range for ghostbox
-c    narrow_band(in):    array that marks voxels outside desired fillbox
-c    mark_fb(in):        upper limit narrow band value for voxels in 
-c                        fillbox
-c
+
 c***********************************************************************
       subroutine lsm2dMaxNormDiffLOCAL(
      &  max_norm_diff,
@@ -72,9 +56,7 @@ c     local variables
 
 
 c     initialize max_norm_diff
-      i=index_x( nlo_index )
-      j=index_y( nlo_index )
-      max_norm_diff = abs( field1(i,j) - field2(i,j))
+      max_norm_diff = 0.d0 
 
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index              
@@ -97,22 +79,86 @@ c     } end loop over indexed points
 c } end subroutine
 c***********************************************************************
 
+
 c***********************************************************************
-c
-c  lsm2dComputeStableAdvectionDtLOCAL() computes the stable time step size 
-c  for an advection term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_* (in):            components of velocity at t = t_cur
-c    *_gb (in):             index range for ghostbox
-c    dx, dy (in):           grid spacing
-c    index_[xy](in):       [xy] coordinates of local (narrow band) points
-c    n*_index(in):         index range of points in index_*
-c    narrow_band(in):    array that marks voxels outside desired fillbox
-c    mark_fb(in):        upper limit narrow band value for voxels in 
-c                        fillbox
-c
+      subroutine lsm2dAveAbsDiffLOCAL(
+     &  ave_abs_diff,
+     &  field1,
+     &  ilo_field1_gb, ihi_field1_gb,
+     &  jlo_field1_gb, jhi_field1_gb,
+     &  field2,
+     &  ilo_field2_gb, ihi_field2_gb,
+     &  jlo_field2_gb, jhi_field2_gb,
+     &  index_x,
+     &  index_y,
+     &  nlo_index, nhi_index, 
+     &  narrow_band,
+     &  ilo_nb_gb, ihi_nb_gb, 
+     &  jlo_nb_gb, jhi_nb_gb, 
+     &  mark_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      real ave_abs_diff
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_field1_gb, ihi_field1_gb
+      integer jlo_field1_gb, jhi_field1_gb
+      integer ilo_field2_gb, ihi_field2_gb
+      integer jlo_field2_gb, jhi_field2_gb
+      real field1(ilo_field1_gb:ihi_field1_gb,
+     &                        jlo_field1_gb:jhi_field1_gb)
+      real field2(ilo_field2_gb:ihi_field2_gb,
+     &                        jlo_field2_gb:jhi_field2_gb)
+      integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer ilo_nb_gb, ihi_nb_gb
+      integer jlo_nb_gb, jhi_nb_gb
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
+     &                      jlo_nb_gb:jhi_nb_gb)
+      integer*1 mark_fb
+      
+c     local variables      
+      real sum_abs_diff, num_pts, next_diff
+      real zero, hundred
+      parameter (zero=0.d0, hundred=100.d0)
+      integer i,j,l
+
+c     initialize max_norm_diff
+      sum_abs_diff = zero
+      num_pts = zero
+
+c     { begin loop over indexed points
+       do l=nlo_index, nhi_index      
+         i=index_x(l)
+	 j=index_y(l)
+
+c         include only fill box points (marked appropriately)
+          if( narrow_band(i,j) .le. mark_fb ) then
+
+	      next_diff = abs(field1(i,j) - field2(i,j))	      	      
+              sum_abs_diff = sum_abs_diff + next_diff
+              num_pts = num_pts + 1
+	      
+          endif
+        enddo
+c       } end loop over indexed points
+      
+      if( num_pts .gt. zero) then
+         ave_abs_diff = sum_abs_diff / num_pts
+      else 
+         ave_abs_diff = zero
+      endif
+      	 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+
 c***********************************************************************
       subroutine lsm2dComputeStableAdvectionDtLOCAL(
      &  dt,
@@ -193,32 +239,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm2dComputeStableNormalVelDtLOCAL() computes the stable time step 
-c  size for a normal velocity term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_n (in):            normal velocity at t = t_cur
-c    phi_*_plus (in):       components of forward approx to grad(phi) at 
-c                           t = t_cur
-c    phi_*_minus (in):      components of backward approx to grad(phi) at
-c                           t = t_cur
-c    *_gb (in):             index range for ghostbox
-c    dx, dy(in):            grid spacing
-c    index_[xy](in):       [xy] coordinates of local (narrow band) points
-c    n*_index(in):         index range of points in index_*
-c    narrow_band(in):      array that marks voxels outside desired fillbox
-c    mark_fb(in):          upper limit narrow band value for voxels in 
-c                          fillbox
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm2dComputeStableNormalVelDtLOCAL(
      &  dt,
@@ -332,32 +353,7 @@ c } end subroutine
 c***********************************************************************
 
 
-c***********************************************************************
-c
-c  lsm2dComputeStableConstNormalVelDtLOCAL() computes the stable time step 
-c  size for a normal velocity term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):          step size
-c    vel_n (in):        normal velocity at t = t_cur, constant for all pts
-c    phi_*_plus (in):   components of forward approx to grad(phi) at 
-c                       t = t_cur
-c    phi_*_minus (in):  components of backward approx to grad(phi) at
-c                       t = t_cur
-c    index_[xy](in):    [xy] coordinates of local (narrow band) points
-c    n*_index(in):      index range of points in index_*
-c    narrow_band(in):   array that marks voxels outside desired fillbox
-c    mark_fb(in):       upper limit narrow band value for voxels in 
-c                       fillbox
-c    *_gb (in):         index range for ghostbox
-c    dx (in):           grid spacing
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm2dComputeStableConstNormalVelDtLOCAL(
      &  dt,
@@ -424,7 +420,7 @@ c     compute max_dx_sq
       max_dx_sq = max_dx_sq * max_dx_sq
 
 c     initialize max_H_over_dX to -1
-      max_H_over_dX = -1
+      max_H_over_dX = -1.0d0
 
 c     compute inv_dx, ind_dy
       inv_dx = 1.d0/dx
@@ -444,9 +440,9 @@ c     { begin loop over indexed points
 
         H_over_dX_cur = abs(vel_n) 
      &               / sqrt( phi_x_cur*phi_x_cur 
-     &                     + phi_y_cur*phi_y_cur)
+     &                     + phi_y_cur*phi_y_cur + max_dx_sq)
      &                   * ( phi_x_cur*inv_dx
-     &                     + phi_y_cur*inv_dy  + max_dx_sq )
+     &                     + phi_y_cur*inv_dy   )
 
         if (H_over_dX_cur .gt. max_H_over_dX) then
             max_H_over_dX = H_over_dX_cur  

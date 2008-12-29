@@ -32,6 +32,8 @@ extern "C" {
  *      ----------                     ------------
  */
 #define LSM2D_MAX_NORM_DIFF_LOCAL            lsm2dmaxnormdifflocal_
+#define LSM2D_AVE_ABS_DIFF_LOCAL             lsm2daveabsdifflocal_
+
 #define LSM2D_COMPUTE_STABLE_ADVECTION_DT_LOCAL                         \
                                        lsm2dcomputestableadvectiondtlocal_
 #define LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL                        \
@@ -39,6 +41,24 @@ extern "C" {
 #define LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_LOCAL                  \
                                         lsm2dcomputestableconstnormalveldtlocal_
 
+/*!
+*
+*  LSM2D_MAX_NORM_DIFF_LOCAL() computes the max norm of the difference 
+*  between the two specified scalar fields.
+*  The routine loops only over local (narrow band) points. 
+*
+*  Arguments:
+*    max_norm_diff (out):  max norm of the difference between the fields
+*    field1 (in):          scalar field 1
+*    field2 (in):          scalar field 2
+*    index_[xy](in):      [xy] coordinates of local (narrow band) points
+*    n*_index(in):         index range of points in index_*
+*    *_gb (in):            index range for ghostbox
+*    narrow_band(in):    array that marks voxels outside desired fillbox
+*    mark_fb(in):        upper limit narrow band value for voxels in 
+*                        fillbox
+*
+*/
 void LSM2D_MAX_NORM_DIFF_LOCAL(
   LSMLIB_REAL *max_norm_diff,
   const LSMLIB_REAL *field1,
@@ -62,6 +82,65 @@ void LSM2D_MAX_NORM_DIFF_LOCAL(
   const int *jhi_nb_gb,
   const unsigned char *mark_fb);
 
+/*!
+*
+*  LSM2D_AVE_ABS_DIFF_LOCAL() computes the average pointwise abs. difference 
+*  between the two specified scalar fields. 
+*
+*  Arguments:
+*    ave_abs_diff (out):    average of the difference between the fields
+*    field1 (in):           scalar field 1
+*    field2 (in):           scalar field 2
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*    index_[xy](in):       [xy] coordinates of local (narrow band) points
+*    n*_index(in):         index range of points in index_*
+*    narrow_band(in):      array that marks voxels outside desired fillbox
+*    mark_fb(in):          upper limit narrow band value for voxels in 
+*                          fillbox
+*
+*/ 
+void LSM2D_AVE_ABS_DIFF_LOCAL(
+  LSMLIB_REAL *ave_abs_diff,
+  const LSMLIB_REAL *field1,
+  const int *ilo_field1_gb, 
+  const int *ihi_field1_gb,
+  const int *jlo_field1_gb, 
+  const int *jhi_field1_gb,
+  const LSMLIB_REAL *field2,
+  const int *ilo_field2_gb, 
+  const int *ihi_field2_gb,
+  const int *jlo_field2_gb, 
+  const int *jhi_field2_gb, 
+  const int *index_x,
+  const int *index_y,
+  const int *nlo_index,
+  const int *nhi_index,
+  const unsigned char *narrow_band,
+  const int *ilo_nb_gb,
+  const int *ihi_nb_gb,
+  const int *jlo_nb_gb,
+  const int *jhi_nb_gb,
+  const unsigned char *mark_fb);  
+
+/*!
+*
+*  LSM2D_COMPUTE_STABLE_ADVECTION_DT_LOCAL() computes the stable time step size 
+*  for an advection term based on a CFL criterion.
+*  
+*  Arguments:
+*    dt (out):           step size
+*    vel_* (in):         components of velocity at t = t_cur
+*    *_gb (in):          index range for ghostbox
+*    dx, dy (in):        grid spacing
+*    index_[xy](in):     [xy] coordinates of local (narrow band) points
+*    n*_index(in):       index range of points in index_*
+*    narrow_band(in):    array that marks voxels outside desired fillbox
+*    mark_fb(in):        upper limit narrow band value for voxels in 
+*                        fillbox
+*
+*/
 void LSM2D_COMPUTE_STABLE_ADVECTION_DT_LOCAL(
   LSMLIB_REAL *dt,
   const LSMLIB_REAL *vel_x,
@@ -83,7 +162,35 @@ void LSM2D_COMPUTE_STABLE_ADVECTION_DT_LOCAL(
   const int *jlo_nb_gb,
   const int *jhi_nb_gb,  
   const unsigned char *mark_fb);
-
+  
+  
+/*!
+*
+*  LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL() computes the stable time step 
+*  size for a normal velocity term based on a CFL criterion.
+*  
+*  Arguments:
+*    dt (out):              step size
+*    vel_n (in):            normal velocity at t = t_cur
+*    phi_*_plus (in):       components of forward approx to grad(phi) at 
+*                           t = t_cur
+*    phi_*_minus (in):      components of backward approx to grad(phi) at
+*                           t = t_cur
+*    *_gb (in):             index range for ghostbox
+*    dx, dy(in):            grid spacing
+*    index_[xy](in):       [xy] coordinates of local (narrow band) points
+*    n*_index(in):         index range of points in index_*
+*    narrow_band(in):      array that marks voxels outside desired fillbox
+*    mark_fb(in):          upper limit narrow band value for voxels in 
+*                          fillbox
+*
+*  NOTES:
+*   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
+*     used in the time step size calculation.  This may be more 
+*     conservative than necessary for Godunov's method, but it is 
+*     cheaper to compute.
+*
+*/
 void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL(
   LSMLIB_REAL *dt,
   const LSMLIB_REAL *vel_n,
@@ -116,7 +223,35 @@ void LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT_LOCAL(
   const int *jlo_nb_gb,
   const int *jhi_nb_gb,  
   const unsigned char *mark_fb);
-    
+
+
+/*!
+*
+* LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_LOCAL() computes the stable time step 
+* size for a normal velocity term based on a CFL criterion.
+*  
+*  Arguments:
+*    dt (out):          step size
+*    vel_n (in):        normal velocity at t = t_cur, constant for all pts
+*    phi_*_plus (in):   components of forward approx to grad(phi) at 
+*                       t = t_cur
+*    phi_*_minus (in):  components of backward approx to grad(phi) at
+*                       t = t_cur
+*    index_[xy](in):    [xy] coordinates of local (narrow band) points
+*    n*_index(in):      index range of points in index_*
+*    narrow_band(in):   array that marks voxels outside desired fillbox
+*    mark_fb(in):       upper limit narrow band value for voxels in 
+*                       fillbox
+*    *_gb (in):         index range for ghostbox
+*    dx (in):           grid spacing
+*
+*  NOTES:
+*   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
+*     used in the time step size calculation.  This may be more 
+*     conservative than necessary for Godunov's method, but it is 
+*     cheaper to compute.
+*
+*/   
 void LSM2D_COMPUTE_STABLE_CONST_NORMAL_VEL_DT_LOCAL(
   LSMLIB_REAL *dt,
   const LSMLIB_REAL *vel_n,
