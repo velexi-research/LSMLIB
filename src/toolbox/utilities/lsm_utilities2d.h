@@ -31,7 +31,11 @@ extern "C" {
  *      C/C++ code                     Fortran code
  *      ----------                     ------------
  */
-#define LSM2D_MAX_NORM_DIFF            lsm2dmaxnormdiff_
+#define LSM2D_MAX_NORM_DIFF                   lsm2dmaxnormdiff_
+#define LSM2D_AVE_ABS_DIFF                    lsm2daveabsdiff_
+#define LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO   lsm2dvoxelcountgreaterthanzero_
+#define LSM2D_VOXEL_COUNT_LESS_THAN_ZERO      lsm2dvoxelcountlessthanzero_
+
 #define LSM2D_COMPUTE_STABLE_ADVECTION_DT                                     \
                                        lsm2dcomputestableadvectiondt_
 #define LSM2D_COMPUTE_STABLE_NORMAL_VEL_DT                                    \
@@ -43,7 +47,8 @@ extern "C" {
 #define LSM2D_VOLUME_INTEGRAL_PHI_GREATER_THAN_ZERO                           \
                                        lsm2dvolumeintegralphigreaterthanzero_
 #define LSM2D_SURFACE_INTEGRAL         lsm2dsurfaceintegral_
-
+#define LSM2D_SURFACE_INTEGRAL_DELTA                            \
+                       lsm2dsurfaceintegralprecomputeddelta_
 
 #define LSM2D_MAX_NORM_DIFF_CONTROL_VOLUME                                    \
                        lsm2dmaxnormdiffcontrolvolume_
@@ -59,8 +64,13 @@ extern "C" {
                        lsm2dvolumeintegralphigreaterthanzerocontrolvolume_
 #define LSM2D_SURFACE_INTEGRAL_CONTROL_VOLUME                                 \
                        lsm2dsurfaceintegralcontrolvolume_
-
-
+#define LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME \
+                                   lsm2dvoxelcountgreaterthanzerocontrolvolume_
+#define LSM2D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME  \
+                                   lsm2dvoxelcountlessthanzerocontrolvolume_
+#define LSM2D_SURFACE_INTEGRAL_DELTA_CONTROL_VOLUME              \
+                       lsm2dsurfaceintegralprecomputeddeltacontrolvolume_
+		       
 /*!
  * LSM2D_MAX_NORM_DIFF() computes the max norm of the difference
  * between the two specified scalar fields.
@@ -92,6 +102,89 @@ void LSM2D_MAX_NORM_DIFF(
   const int *jlo_ib, 
   const int *jhi_ib);
 
+/*!
+*
+*  LSM2D_AVE_ABS_DIFF() computes the average pointwise abs. difference 
+*  between two scalar fields. 
+*
+*  Arguments:
+*    ave_abs_diff (out):    average of the difference between the fields
+*    field1 (in):           scalar field 1
+*    field2 (in):           scalar field 2
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in 
+*                           calculation
+*
+*/
+void LSM2D_AVE_ABS_DIFF(
+  LSMLIB_REAL *ave_abs_diff,
+  const LSMLIB_REAL *field1,
+  const int *ilo_field1_gb, 
+  const int *ihi_field1_gb,
+  const int *jlo_field1_gb, 
+  const int *jhi_field1_gb,
+  const LSMLIB_REAL *field2,
+  const int *ilo_field2_gb, 
+  const int *ihi_field2_gb,
+  const int *jlo_field2_gb, 
+  const int *jhi_field2_gb,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib);
+  
+  
+/*!
+*
+*  LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO() computes number of voxels whose phi
+*  value is greater than zero.
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb);
+  
+  
+/*!
+*
+*  LSM2D_VOXEL_COUNT_LESS_THAN_ZERO() computes number of voxels whose phi
+*  value is less than zero.
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM2D_VOXEL_COUNT_LESS_THAN_ZERO(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb);  
+  
 
 /*!
  * LSM2D_COMPUTE_STABLE_ADVECTION_DT() computes the stable time step size
@@ -346,7 +439,48 @@ void LSM2D_SURFACE_INTEGRAL(
   const LSMLIB_REAL *dy,
   const LSMLIB_REAL *epsilon);
 
-
+/*!
+ * LSM2D_SURFACE_INTEGRAL_DELTA() computes the surface integral 
+ * of the specified function over the region of the computational domain
+ * where the level set function equals 0, assuming delta function has been
+ * precomputed. 
+ *     
+ * Arguments:
+ *  - int_F (out):           value of integral of F over the region where 
+ *                           \f$ \phi = 0 \f$
+ *  - F (in):                function to be integrated
+ *  - delta_phi (in):        delta function for the zero level set
+ *  - grad_phi_mag (in):     gradient magnitude
+ *  - d* (in):               grid spacing
+ *  - *_gb (in):             index range for ghostbox
+ *  - *_ib (in):             index range for interior box
+ * 
+ * Return value:             none
+ */  
+void LSM2D_SURFACE_INTEGRAL_DELTA(
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
+  const int *ilo_F_gb, 
+  const int *ihi_F_gb,
+  const int *jlo_F_gb, 
+  const int *jhi_F_gb,
+  const LSMLIB_REAL *delta_phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb,
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb, 
+  const LSMLIB_REAL *grad_phi_mag,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
+  
 /*!
  * LSM2D_MAX_NORM_DIFF_CONTROL_VOLUME() computes the max norm of the 
  * difference between the two specified scalar fields in the region
@@ -713,7 +847,122 @@ void LSM2D_SURFACE_INTEGRAL_CONTROL_VOLUME(
   const LSMLIB_REAL *dx,
   const LSMLIB_REAL *dy,
   const LSMLIB_REAL *epsilon);
-
+  
+/*!
+*
+*  LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME() computes number of voxels whose phi
+*  value is less than zero in the given control volume
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM2D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb);
+  
+/*!
+*
+*  LSM2D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME() computes number of voxels whose phi
+*  value is less than zero in the given control volume
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM2D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb);
+  
+/*!
+ * LSM2D_SURFACE_INTEGRAL_DELTA_CONTROL_VOLUME() computes the surface integral 
+ * of the specified function over the region of the computational domain
+ * where the level set function equals 0, assuming delta function has been
+ * precomputed.  The computational domain contains only those cells that 
+ * are included by the control volume data.
+ *     
+ * Arguments:
+ *  - int_F (out):           value of integral of F over the region where 
+ *                           \f$ \phi = 0 \f$
+ *  - F (in):                function to be integrated
+ *  - delta_phi (in):        delta function for the zero level set
+ *  - grad_phi_mag (in):     gradient magnitude
+ *  - control_vol (in):      control volume data (used to exclude cells
+ *                           from the integral)
+ *  - control_vol_sgn (in):  1 (-1) if positive (negative) control volume
+ *                           points should be used
+ *  - d* (in):               grid spacing
+ *  - *_gb (in):             index range for ghostbox
+ *  - *_ib (in):             index range for interior box
+ * 
+ * Return value:             none
+ */  
+void LSM2D_SURFACE_INTEGRAL_DELTA_CONTROL_VOLUME(
+  LSMLIB_REAL *int_F,
+  const LSMLIB_REAL *F,
+  const int *ilo_F_gb, 
+  const int *ihi_F_gb,
+  const int *jlo_F_gb, 
+  const int *jhi_F_gb,
+  const LSMLIB_REAL *delta_phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb,
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb, 
+  const LSMLIB_REAL *grad_phi_mag,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
+  
 #ifdef __cplusplus
 }
 #endif
