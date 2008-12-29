@@ -532,6 +532,87 @@ c } end subroutine
 c***********************************************************************
 
 c***********************************************************************
+      subroutine lsm3dSurfaceAreaZeroLevelSetDelta(
+     &  area,
+     &  delta_phi,
+     &  ilo_phi_gb, ihi_phi_gb,
+     &  jlo_phi_gb, jhi_phi_gb,
+     &  klo_phi_gb, khi_phi_gb,
+     &  phi_x, phi_y, phi_z,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib,
+     &  dx, dy, dz)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      real area
+
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in integral calculation
+      integer ilo_phi_gb, ihi_phi_gb
+      integer jlo_phi_gb, jhi_phi_gb
+      integer klo_phi_gb, khi_phi_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real delta_phi(ilo_phi_gb:ihi_phi_gb,
+     &               jlo_phi_gb:jhi_phi_gb,
+     &               klo_phi_gb:khi_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real dx,dy,dz
+      integer i,j,k
+      real norm_grad_phi
+      real dV
+      
+
+c     compute dV = dx * dy * dz
+      dV = dx * dy * dz
+
+c     initialize area to zero
+      area = 0.0d0
+
+c       loop over included cells {
+        do k=klo_ib,khi_ib
+          do j=jlo_ib,jhi_ib
+            do i=ilo_ib,ihi_ib
+
+             if( delta_phi(i,j,k) .gt. 0.d0) then
+              norm_grad_phi = sqrt(
+     &                phi_x(i,j,k)*phi_x(i,j,k)
+     &              + phi_y(i,j,k)*phi_y(i,j,k)
+     &              + phi_z(i,j,k)*phi_z(i,j,k) )
+
+              area = area + delta_phi(i,j,k)*norm_grad_phi*dV
+      
+             endif
+            enddo
+          enddo
+        enddo
+c       } end loop over grid
+      
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
 c
 c  lsm3dVolumeRegionPhiLessThanZeroControlVolume() computes the volume 
 c  of the region of the computational domain where the level set
@@ -974,6 +1055,131 @@ c             negative control volume
 
                   area = area + delta*norm_grad_phi*dV
                 endif
+
+              endif
+        
+            enddo
+          enddo
+        enddo
+c       } end loop over grid
+      
+      endif
+      
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm3dSurfaceAreaZeroLevelSetDeltaControlVolume(
+     &  area,
+     &  delta_phi,
+     &  ilo_phi_gb, ihi_phi_gb,
+     &  jlo_phi_gb, jhi_phi_gb,
+     &  klo_phi_gb, khi_phi_gb,
+     &  phi_x, phi_y, phi_z,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  control_vol,
+     &  ilo_control_vol_gb, ihi_control_vol_gb,
+     &  jlo_control_vol_gb, jhi_control_vol_gb,
+     &  klo_control_vol_gb, khi_control_vol_gb,
+     &  control_vol_sgn,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib,
+     &  dx, dy, dz)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      real area
+
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in integral calculation
+      integer ilo_phi_gb, ihi_phi_gb
+      integer jlo_phi_gb, jhi_phi_gb
+      integer klo_phi_gb, khi_phi_gb
+      integer ilo_control_vol_gb, ihi_control_vol_gb
+      integer jlo_control_vol_gb, jhi_control_vol_gb
+      integer klo_control_vol_gb, khi_control_vol_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real delta_phi(ilo_phi_gb:ihi_phi_gb,
+     &               jlo_phi_gb:jhi_phi_gb,
+     &               klo_phi_gb:khi_phi_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
+      integer control_vol_sgn
+      real dx,dy,dz
+      integer i,j,k
+      real norm_grad_phi
+      real dV
+      
+
+c     compute dV = dx * dy * dz
+      dV = dx * dy * dz
+
+c     initialize area to zero
+      area = 0.0d0
+
+      if (control_vol_sgn .gt. 0) then
+c       loop over included cells {
+        do k=klo_ib,khi_ib
+          do j=jlo_ib,jhi_ib
+            do i=ilo_ib,ihi_ib
+
+c             only include cell in max norm calculation if it has a 
+c             positive control volume
+              if ((control_vol(i,j,k) .gt. 0.d0) .and.
+     &            (delta_phi(i,j,k) .gt. 0.d0)) then
+ 
+                  norm_grad_phi = sqrt(
+     &                phi_x(i,j,k)*phi_x(i,j,k)
+     &              + phi_y(i,j,k)*phi_y(i,j,k)
+     &              + phi_z(i,j,k)*phi_z(i,j,k) )
+
+                  area = area + delta_phi(i,j,k)*norm_grad_phi*dV
+                endif
+       
+            enddo
+          enddo
+        enddo
+c       } end loop over grid
+
+      else
+c       loop over included cells {
+        do k=klo_ib,khi_ib
+          do j=jlo_ib,jhi_ib
+            do i=ilo_ib,ihi_ib
+
+c             only include cell in max norm calculation if it has a 
+c             negative control volume
+              if ((control_vol(i,j,k) .lt. 0.d0) .and.
+     &	            (delta_phi(i,j,k) .gt. 0.d0)) then
+
+                  norm_grad_phi = sqrt(
+     &                phi_x(i,j,k)*phi_x(i,j,k)
+     &              + phi_y(i,j,k)*phi_y(i,j,k)
+     &              + phi_z(i,j,k)*phi_z(i,j,k) )
+
+                  area = area + delta_phi(i,j,k)*norm_grad_phi*dV
 
               endif
         

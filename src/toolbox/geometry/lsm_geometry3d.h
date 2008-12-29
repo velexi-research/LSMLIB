@@ -40,14 +40,18 @@ extern "C" {
                                        lsm3dvolumeregionphigreaterthanzero_
 #define LSM3D_SURFACE_AREA_ZERO_LEVEL_SET                                    \
                                        lsm3dsurfaceareazerolevelset_
-
+#define LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA                                    \
+                                       lsm3dsurfaceareazerolevelsetdelta_
+				       
 #define LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME                \
                           lsm3dvolumeregionphilessthanzerocontrolvolume_
 #define LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME             \
                           lsm3dvolumeregionphigreaterthanzerocontrolvolume_
 #define LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME                     \
                           lsm3dsurfaceareazerolevelsetcontrolvolume_
-
+#define LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA_CONTROL_VOLUME                     \
+                          lsm3dsurfaceareazerolevelsetdeltacontrolvolume_
+			  
 /*!
  * LSM3D_COMPUTE_UNIT_NORMAL() computes the unit normal vector to the
  * interface from \f$ \nabla \phi \f$.
@@ -276,6 +280,49 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET(
   const LSMLIB_REAL *dz,
   const LSMLIB_REAL *epsilon);
 
+/*!
+ * LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA() computes the surface area of the
+ * surface defined by the zero level set.
+ *
+ * Arguments:
+ *  - area (out):            area of the surface defined by the zero level
+ *                           set
+ *  - delta_phi (in):        delta function (precomputed)
+ *  - phi_* (in):            components of \f$ \nabla \phi \f$
+ *  - dx, dy, dz (in):       grid spacing
+ *  - *_gb (in):             index range for ghostbox
+ *  - *_ib (in):             index range for interior box
+ *
+ * Return value:         none
+ *
+ */
+void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA(
+  LSMLIB_REAL *surface_area,
+  const LSMLIB_REAL *delta_phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb,
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb,
+  const int *klo_phi_gb, 
+  const int *khi_phi_gb,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const int *klo_grad_phi_gb, 
+  const int *khi_grad_phi_gb,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib,
+  const int *klo_ib, 
+  const int *khi_ib,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz);
 
 /*!
  * LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME() computes the 
@@ -441,6 +488,62 @@ void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_CONTROL_VOLUME(
   const LSMLIB_REAL *epsilon);
 
 
+/*!
+ * LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA_CONTROL_VOLUME() computes the surface area of the
+ * surface defined by the zero level set.
+ *
+ * Arguments:
+ *  - area (out):            area of the surface defined by the zero level
+ *                           set
+ *  - delta_phi (in):        externally computed delta function
+ *  - phi_* (in):            components of \f$ \nabla \phi \f$
+ *  - control_vol (in):      control volume data (used to exclude cells
+ *                           from the integral calculation)
+ *  - control_vol_sgn (in):  1 (-1) if positive (negative) control volume
+ *                           points should be used
+ *  - dx, dy, dz (in):       grid spacing
+ *  - delta_phi (in):        externally computed delta function
+ *  - *_gb (in):             index range for ghostbox
+ *  - *_ib (in):             index range for interior box
+ *
+ * Return value:         none
+ *
+ */
+void LSM3D_SURFACE_AREA_ZERO_LEVEL_SET_DELTA_CONTROL_VOLUME(
+  LSMLIB_REAL *surface_area,
+  const LSMLIB_REAL *delta_phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb,
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb,
+  const int *klo_phi_gb, 
+  const int *khi_phi_gb,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const int *klo_grad_phi_gb, 
+  const int *khi_grad_phi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb, 
+  const int *klo_control_vol_gb, 
+  const int *khi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib,
+  const int *klo_ib, 
+  const int *khi_ib,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz);
 
 /*!
  * LSM3D_findLineInTetrahedron() determines if there is an intersection
