@@ -44,6 +44,7 @@ extern "C" {
 #define LSM3D_LAPLACIAN_ORDER2       lsm3dlaplacianorder2_
 #define LSM3D_PHI_UPWIND_GRAD_F      lsm3dphiupwindgradf_
 #define LSM3D_AVERAGE_GRAD_PHI       lsm3daveragegradphi_
+#define LSM3D_GRADIENT_MAGNITUDE     lsm3dgradientmagnitude_
 
 
 /*!
@@ -921,6 +922,36 @@ void LSM3D_AVERAGE_GRAD_PHI(
   const int *jhi_fb,
   const int *klo_fb,
   const int *khi_fb);
+  
+/*!
+ *
+ *  LSM3D_GRADIENT_MAGNITUDE() computes magnitude of the gradient.
+ *
+ *  Arguments:
+ *    phi_* (in):           components of grad(phi) 
+ *    grad_phi_mag (out):   gradient magnitude
+ *    *_gb (in):           index range for ghostbox
+ *    *_fb (in):           index range for fillbox
+ *
+ */
+void LSM3D_GRADIENT_MAGNITUDE(
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
+  const LSMLIB_REAL *grad_phi_mag,
+  const int *ilo_grad_phi_gb,
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb,
+  const int *jhi_grad_phi_gb,
+  const int *klo_grad_phi_gb,
+  const int *khi_grad_phi_gb,
+  const int *ilo_grad_phi_fb,
+  const int *ihi_grad_phi_fb,
+  const int *jlo_grad_phi_fb,
+  const int *jhi_grad_phi_fb,
+  const int *klo_grad_phi_fb,
+  const int *khi_grad_phi_fb);
+  
 
 #ifdef __cplusplus
 }

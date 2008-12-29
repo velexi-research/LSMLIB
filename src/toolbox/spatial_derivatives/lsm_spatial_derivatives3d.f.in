@@ -674,7 +674,7 @@ c    phi_*_minus (out):  components of grad(phi) in minus direction
 c    phi (in):           phi
 c    D1 (in):            scratch space for holding undivided first-differences
 c    D2 (in):            scratch space for holding undivided second-differences
-c    D2 (in):            scratch space for holding undivided third-differences
+c    D3 (in):            scratch space for holding undivided third-differences
 c    dx, dy, dz (in):    grid spacing
 c    *_gb (in):          index range for ghostbox
 c    *_fb (in):          index range for fillbox
@@ -3562,6 +3562,94 @@ c     { begin loop over grid
 
           enddo
         enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+c
+c  lsm3dGradientMagnitude() computes magnitude of the gradient of phi.
+c
+c  Arguments:
+c    phi_* (in):           components of grad(phi) 
+c    grad_phi_mag (out):   gradient magnitude
+c    *_gb (in):           index range for ghostbox
+c    *_fb (in):           index range for fillbox
+
+c***********************************************************************
+      subroutine lsm3dGradientMagnitude(
+     &  phi_x, phi_y, phi_z, grad_phi_mag,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  ilo_grad_phi_fb, ihi_grad_phi_fb,
+     &  jlo_grad_phi_fb, jhi_grad_phi_fb,
+     &  klo_grad_phi_fb, khi_grad_phi_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _grad_phi_gb refers to ghostbox for grad_phi data
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real grad_phi_mag(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                  jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                  klo_grad_phi_gb:khi_grad_phi_gb)
+      
+      integer ilo_grad_phi_fb, ihi_grad_phi_fb
+      integer jlo_grad_phi_fb, jhi_grad_phi_fb
+      integer klo_grad_phi_fb, khi_grad_phi_fb
+
+c     local variables      
+      real phi_x_sq, phi_y_sq, phi_z_sq
+      real tol, zero, tmp
+      parameter (tol=1.d-8, zero = 0.d0)
+      integer i,j,k
+
+c     { begin loop over grid
+      do k=klo_grad_phi_fb,khi_grad_phi_fb
+        do j=jlo_grad_phi_fb,jhi_grad_phi_fb
+          do i=ilo_grad_phi_fb,ihi_grad_phi_fb
+		
+            phi_x_sq = phi_x(i,j,k)*phi_x(i,j,k)
+            phi_y_sq = phi_y(i,j,k)*phi_y(i,j,k)
+	    phi_z_sq = phi_z(i,j,k)*phi_z(i,j,k)
+
+            if( phi_x_sq .lt. tol) then
+		phi_x_sq = zero;
+	    endif    
+
+            if( phi_y_sq .lt. tol) then
+		 phi_y_sq = zero;
+	    endif 
+
+	    if( phi_z_sq .lt. tol) then
+		 phi_z_sq = zero;
+	    endif   
+
+            tmp = sqrt( phi_x_sq + phi_y_sq + phi_z_sq)
+	    if( tmp .lt. tol ) then
+              grad_phi_mag(i,j,k) = zero
+	    else
+	      grad_phi_mag(i,j,k) = tmp
+	    endif
+	     
+         enddo
+       enddo
       enddo
 c     } end loop over grid
 
