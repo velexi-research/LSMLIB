@@ -383,3 +383,225 @@ c     } end loop over grid
       end
 c } end subroutine
 c***********************************************************************
+
+
+c***********************************************************************
+
+      subroutine lsm2dComputeDistanceForSubcellFix(
+     &  distance0,
+     &  phi0,
+     &  ilo_phi0_gb, ihi_phi0_gb, jlo_phi0_gb, jhi_phi0_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
+     &  dx, dy)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox 
+c     _fb refers to fillbox 
+      integer ilo_phi0_gb, ihi_phi0_gb, jlo_phi0_gb, jhi_phi0_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      real distance0(ilo_phi0_gb:ihi_phi0_gb,
+     &               jlo_phi0_gb:jhi_phi0_gb)
+      real phi0(ilo_phi0_gb:ihi_phi0_gb,
+     &          jlo_phi0_gb:jhi_phi0_gb)
+      real dx, dy, max_dx
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
+      real large_distance_flag,  zero
+      parameter (zero=0.d0)
+      real near_plus_x, near_minus_x
+      real near_plus_y, near_minus_y
+      logical near
+      real d1, d2, d3, delta
+      integer i,j
+      
+      max_dx = max(dx,dy);
+      large_distance_flag = -1000.d0*max_dx;
+      
+c       { begin loop over grid
+        do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
+
+c           determine whether we're near the interface
+c           dumb/quick way to do it - this should be
+c           computed once and provided to the function
+            near_plus_x = phi0(i+1,j)*phi0(i,j);
+            near_minus_x = phi0(i-1,j)*phi0(i,j);
+	    near_plus_y = phi0(i,j+1)*phi0(i,j);
+            near_minus_y = phi0(i,j-1)*phi0(i,j);
+
+            near = (near_plus_x  .lt. zero) .or. 
+     &             (near_minus_x .lt. zero) .or.
+     &             (near_plus_y  .lt. zero) .or. 
+     &             (near_minus_y .lt. zero);
+             
+	   if( near .eqv. .false. ) then
+	     distance0(i,j) = large_distance_flag;
+	   else        
+              d1 = abs(phi0(i+1,j) - phi0(i-1,j));
+	      d2 = abs(phi0(i+1,j) - phi0(i,j));
+	      d3 = abs(phi0(i,j) - phi0(i-1,j));
+	      delta = max(d1,d2,d3,zero_tol);
+	      
+	      d1 = abs(phi0(i,j+1) - phi0(i,j-1));
+	      d2 = abs(phi0(i,j+1) - phi0(i,j));
+	      d3 = abs(phi0(i,j) - phi0(i,j-1));
+	      delta = max(d1,d2,d3,delta);
+	                
+              distance0(i,j) = 2*phi0(i,j)/delta;     
+	   endif
+	   
+	 enddo
+        enddo
+c       } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm2dComputeReinitializationEqnRHSSubcellFixOrder1(
+     &  reinit_rhs,
+     &  ilo_rhs_gb, ihi_rhs_gb, jlo_rhs_gb, jhi_rhs_gb,
+     &  phi,
+     &  ilo_phi_gb, ihi_phi_gb, jlo_phi_gb, jhi_phi_gb,
+     &  phi0, distance0,
+     &  ilo_phi0_gb, ihi_phi0_gb, jlo_phi0_gb, jhi_phi0_gb,
+     &  phi_x_plus, phi_y_plus,
+     &  ilo_grad_phi_plus_gb, ihi_grad_phi_plus_gb, 
+     &  jlo_grad_phi_plus_gb, jhi_grad_phi_plus_gb,
+     &  phi_x_minus, phi_y_minus,
+     &  ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb, 
+     &  jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
+     &  dx, dy)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox 
+c     _fb refers to fillbox 
+      integer ilo_rhs_gb, ihi_rhs_gb, jlo_rhs_gb, jhi_rhs_gb
+      integer ilo_phi_gb, ihi_phi_gb, jlo_phi_gb, jhi_phi_gb
+      integer ilo_phi0_gb, ihi_phi0_gb, jlo_phi0_gb, jhi_phi0_gb
+      integer ilo_grad_phi_plus_gb, ihi_grad_phi_plus_gb
+      integer jlo_grad_phi_plus_gb, jhi_grad_phi_plus_gb
+      integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
+      integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      real reinit_rhs(ilo_rhs_gb:ihi_rhs_gb,
+     &                            jlo_rhs_gb:jhi_rhs_gb)
+      real phi(ilo_phi_gb:ihi_phi_gb,
+     &         jlo_phi_gb:jhi_phi_gb)
+      real phi0(ilo_phi0_gb:ihi_phi0_gb,
+     &          jlo_phi0_gb:jhi_phi0_gb) 
+      real distance0(ilo_phi0_gb:ihi_phi0_gb,
+     &              jlo_phi0_gb:jhi_phi0_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real dx, dy, max_dx
+      real phi_cur
+      integer DIM
+      parameter (DIM=2)
+      real grad_phi_plus_cur(1:DIM)
+      real grad_phi_minus_cur(1:DIM)
+      real grad_phi_star(1:DIM)
+      integer i,j
+      integer dir
+      real sgn_phi0
+      real norm_grad_phi_sq
+      real dx_sq
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
+      real one, zero, large_distance_flag
+      parameter (one=1.d0,  zero=0.d0)
+
+c     set value of dx_sq to be square of max{dx,dy}
+      max_dx = max(dx,dy)
+      large_distance_flag = -1000.d0*max_dx;
+      
+      dx_sq = max_dx*max_dx
+
+c----------------------------------------------------
+c      compute RHS of reinitialization equation
+c      using Godunov's method with subcell fix near interface
+c----------------------------------------------------
+
+
+c       { begin loop over grid
+        do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
+
+	    if (abs(phi0(i,j)) .gt. zero_tol) then
+	    sgn_phi0 = sign(one,phi0(i,j));
+	   else
+	    sgn_phi0 = zero;
+	   endif
+     
+           if( distance0(i,j) .eq. large_distance_flag ) then   
+c           Away from interface we do standard Godunov choice of gradient	    
+c           cache phi and spatial derivative approximations
+              phi_cur = phi(i,j)
+              grad_phi_plus_cur(1) = phi_x_plus(i,j)
+              grad_phi_plus_cur(2) = phi_y_plus(i,j)
+              grad_phi_minus_cur(1) = phi_x_minus(i,j)
+              grad_phi_minus_cur(2) = phi_y_minus(i,j)
+
+c           { begin Godunov selection of grad_phi
+              do dir=1,DIM
+
+               if (phi_cur .gt. 0.d0) then
+                grad_phi_plus_cur(dir) = max(-grad_phi_plus_cur(dir),
+     &                                       0.d0)
+                grad_phi_minus_cur(dir) = max(grad_phi_minus_cur(dir),
+     &                                        0.d0)
+               else
+                grad_phi_plus_cur(dir) = max(grad_phi_plus_cur(dir),
+     &                                       0.d0)
+                grad_phi_minus_cur(dir) = max(-grad_phi_minus_cur(dir),
+     &                                        0.d0)
+               endif
+
+        	grad_phi_star(dir) = max(grad_phi_plus_cur(dir),
+     &                                 grad_phi_minus_cur(dir)) 
+
+              enddo
+c           } end Godunov selection of grad_phi
+
+c           compute reinit_rhs(i,j) - no need for smoothing since
+c           we're away from the interface
+              if (abs(phi_cur) .gt. zero_tol) then 
+        	norm_grad_phi_sq = grad_phi_star(1)*grad_phi_star(1)
+     &                           + grad_phi_star(2)*grad_phi_star(2)
+        	reinit_rhs(i,j) = sgn_phi0*(one - 
+     & 		                            sqrt(norm_grad_phi_sq))
+              else
+        	reinit_rhs(i,j) = 0.d0
+              endif
+         else
+	 
+c        Close to the interface make sure you don't use information from
+c        the opposite side of the interface (Russo/Smereka 2000. subcell fix)
+	    
+	  reinit_rhs(i,j) = distance0(i,j) - 
+     &                        sgn_phi0*abs(phi(i,j))/ max_dx;
+	 endif
+	 
+	 
+          enddo
+        enddo
+c       } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************

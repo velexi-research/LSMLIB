@@ -31,11 +31,15 @@ extern "C" {
  *      C/C++ code                   Fortran code
  *      ----------                   ------------
  */
-#define LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS                               \
+#define LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS                              \
                                      lsm2dcomputereinitializationeqnrhs_
 #define LSM2D_COMPUTE_ORTHOGONALIZATION_EQN_RHS                             \
                                      lsm2dcomputeorthogonalizationeqnrhs_
-
+#define LSM2D_COMPUTE_DISTANCE_FOR_SUBCELL_FIX                              \
+                                       lsm2dcomputedistanceforsubcellfix_	
+#define LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS_SUBCELL_FIX_ORDER1                  \
+                      lsm2dcomputereinitializationeqnrhssubcellfixorder1_
+	
 
 /*!
  * LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS() computes the right-hand side 
@@ -182,6 +186,110 @@ void LSM2D_COMPUTE_ORTHOGONALIZATION_EQN_RHS(
   const LSMLIB_REAL *dx, 
   const LSMLIB_REAL *dy);
 
+
+/*!
+*  LSM2D_COMPUTE_DISTANCE_FOR_SUBCELL_FIX  determines whether each 
+*  gridpoint is close to the interface (within one cell) and if so, 
+*  computes the distance that is used in subcell fix to reinitialization. 
+*  Following Russo, Smereka: "A Remark on Computing Distance Functions", 
+*  J Comp Phys, 2000.
+*
+*  This ought to be done only once for phi0 and provided to routine
+*  LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS_SUBCELL_FIX_ORDER1
+*  Implementation note: still not sure if it's worth storing another array
+*  for this or recompute every time... 
+*
+*  Distance of functions away from the interface is set to a large negative 
+*  number.
+*
+*  Arguments
+*    distance0(out):         distance computed for phi0
+*    phi0 (in):              level set function at initial iteration
+*                            iteration of reinitialization process
+*    *_gb (in):              index range for ghostbox
+*    *_fb (in):              index range for fillbox
+*    d* (in):                grid spacing
+*/
+
+ void LSM2D_COMPUTE_DISTANCE_FOR_SUBCELL_FIX(
+  LSMLIB_REAL* distance0, 
+  const LSMLIB_REAL* phi0,
+  const int *ilo_phi0_gb, 
+  const int *ihi_phi0_gb, 
+  const int *jlo_phi0_gb, 
+  const int *jhi_phi0_gb,
+  const int *ilo_fb,   
+  const int *ihi_fb,
+  const int *jlo_fb,   
+  const int *jhi_fb,
+  const LSMLIB_REAL *dx, 
+  const LSMLIB_REAL *dy);  
+
+/*!
+*  LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS_SUBCELL_FIX_ORDER1() computes the right-hand 
+*  side of the reinitialization equation.  Following 
+*  Russo, Smereka: "A Remark on Computing Distance Functions", J Comp Phys,
+*  2000.
+*  1) Away from the interface 
+*     It is using a Godunov scheme to select the 
+*     numerical discretization of the sgn(phi) |grad(phi)| term.
+*     Forward (plus) and backward (minus) spatial derivatives used in 
+*     the Godunov calculation must be supplied by the user.
+*  2) Near interface a correction (of first order) is made in order
+*     not to use the information from the opposite side of the interface.
+* 
+*
+*  Arguments:
+*    reinit_rhs (out):       right-hand side of reinitialization 
+*                            equation
+*    phi (in):               level set function at current iteration
+*                            of reinitialization process
+*    phi0 (in):              level set function at initial iteration
+*                            iteration of reinitialization process
+*    distance0(in):           distance computed by lsm2dComputeDistanceSubcellFix
+*                            at the beginning of reinitialization process
+*    phi_*_plus (in):        forward spatial derivatives for grad(phi)
+*    phi_*_minus (in):       backward spatial derivatives for grad(phi)
+*    *_gb (in):              index range for ghostbox
+*    *_fb (in):              index range for fillbox
+*    d* (in):                grid spacing
+*/
+  void LSM2D_COMPUTE_REINITIALIZATION_EQN_RHS_SUBCELL_FIX_ORDER1(
+  LSMLIB_REAL *reinit_rhs,
+  const int *ilo_rhs_gb, 
+  const int *ihi_rhs_gb, 
+  const int *jlo_rhs_gb, 
+  const int *jhi_rhs_gb,
+  const LSMLIB_REAL* phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb, 
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb,
+  const LSMLIB_REAL* phi0,
+  const LSMLIB_REAL* distance0,
+  const int *ilo_phi0_gb, 
+  const int *ihi_phi0_gb, 
+  const int *jlo_phi0_gb, 
+  const int *jhi_phi0_gb,
+  const LSMLIB_REAL *phi_x_plus, 
+  const LSMLIB_REAL *phi_y_plus,
+  const int *ilo_grad_phi_plus_gb,   
+  const int *ihi_grad_phi_plus_gb,
+  const int *jlo_grad_phi_plus_gb,   
+  const int *jhi_grad_phi_plus_gb,
+  const LSMLIB_REAL *phi_x_minus, 
+  const LSMLIB_REAL *phi_y_minus,
+  const int *ilo_grad_phi_minus_gb,   
+  const int *ihi_grad_phi_minus_gb,
+  const int *jlo_grad_phi_minus_gb,   
+  const int *jhi_grad_phi_minus_gb,
+  const int *ilo_fb,   
+  const int *ihi_fb,
+  const int *jlo_fb,   
+  const int *jhi_fb,
+  const LSMLIB_REAL *dx, 
+  const LSMLIB_REAL *dy);
+  
 #ifdef __cplusplus
 }
 #endif
