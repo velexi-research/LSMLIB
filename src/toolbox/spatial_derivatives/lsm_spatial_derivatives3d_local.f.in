@@ -152,7 +152,7 @@ c    phi (in):           phi
 c    D1 (in):            scratch space for holding undivided first-differences
 c    dx, dy, dz (in):    grid spacing
 c    *_gb (in):          index range for ghostbox
-c    index_[xyz](in):    [xyz] coordinates of local (narrow band) points
+c    index_*(in):        coordinates of local (narrow band) points
 c    n*_index[01](in):   index range of points in index_* that are in
 c                        level [01] of the narrow band
 c    narrow_band(in):    array that marks voxels outside desired fillbox
@@ -396,7 +396,7 @@ c    D1 (in):            scratch space for holding undivided first-differences
 c    D2 (in):            scratch space for holding undivided second-differences
 c    dx, dy, dz (in):    grid spacing
 c    *_gb (in):          index range for ghostbox
-c    index_[xyz](in):    [xyz] coordinates of local (narrow band) points
+c    index_*(in):        coordinates of local (narrow band) points
 c    n*_index[012](in):  index range of points in index_* that are in
 c                        level [012] of the narrow band
 c    narrow_band(in):    array that marks voxels outside desired fillbox
@@ -406,7 +406,7 @@ c
 c  NOTES:
 c   - it is assumed that BOTH the plus and minus derivatives have
 c     the same fillbox
-c   - index_[xyz] arrays range at minimum from nlo_index0 to nhi_index2
+c   - index_* arrays range at minimum from nlo_index0 to nhi_index2
 c
 c***********************************************************************
       subroutine lsm3dHJENO2LOCAL(
@@ -1166,3 +1166,116 @@ c     } end loop over indexed points
       end
 c } end subroutine
 c***********************************************************************
+
+c***********************************************************************
+c
+c  lsm3dGradientMagnitudeLocal() computes magnitude of the gradient of phi.
+c
+c  Arguments:
+c    phi_* (in):         components of grad(phi) 
+c    grad_phi_mag (out): gradient magnitude
+c    *_gb (in):          index range for ghostbox
+c    index_*(in):        coordinates of local (narrow band) points
+c    n*_index(in):       index range of points to loop over in index_*
+c    narrow_band(in):    array that marks voxels outside desired fillbox
+c    mark_fb(in):        upper limit narrow band value for voxels in 
+c                        fillbox
+c
+c***********************************************************************
+      subroutine lsm3dGradientMagnitudeLocal(
+     &  phi_x, phi_y, phi_z, grad_phi_mag,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  index_x,
+     &  index_y,
+     &  index_z,
+     &  nlo_index, nhi_index, 
+     &  narrow_band,
+     &  ilo_nb_gb, ihi_nb_gb, 
+     &  jlo_nb_gb, jhi_nb_gb,     
+     &  klo_nb_gb, khi_nb_gb,
+     &  mark_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _grad_phi_gb refers to ghostbox for grad_phi data
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+       real phi_x(
+     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                    klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(
+     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                    klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(
+     &                    ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                    jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                    klo_grad_phi_gb:khi_grad_phi_gb)
+      real grad_phi_mag(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                              jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                              klo_grad_phi_gb:khi_grad_phi_gb)
+      
+       integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer index_z(nlo_index:nhi_index)
+      integer ilo_nb_gb, ihi_nb_gb
+      integer jlo_nb_gb, jhi_nb_gb
+      integer klo_nb_gb, khi_nb_gb
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
+     &                      jlo_nb_gb:jhi_nb_gb,
+     &                      klo_nb_gb:khi_nb_gb)
+      integer*1 mark_fb
+
+c     local variables      
+      real phi_x_sq, phi_y_sq, phi_z_sq
+      real zero_tol, zero, tmp
+      parameter (zero_tol=@lsmlib_zero_tol@, zero = 0.d0)
+      integer i,j,k,l
+
+c     { begin loop over indexed points
+       do l=nlo_index, nhi_index      
+        i=index_x(l)
+	j=index_y(l)
+	k=index_z(l)
+
+c       include only fill box points (marked appropriately)
+        if( narrow_band(i,j,k) .le. mark_fb ) then
+		
+          phi_x_sq = phi_x(i,j,k)*phi_x(i,j,k)
+          phi_y_sq = phi_y(i,j,k)*phi_y(i,j,k)
+	  phi_z_sq = phi_z(i,j,k)*phi_z(i,j,k)
+
+          if( phi_x_sq .lt. zero_tol) then
+	      phi_x_sq = zero;
+	  endif    
+
+          if( phi_y_sq .lt. zero_tol) then
+	       phi_y_sq = zero;
+	  endif 
+	  
+	  if( phi_z_sq .lt. zero_tol) then
+	       phi_z_sq = zero;
+	  endif   
+ 
+          tmp = sqrt( phi_x_sq + phi_y_sq + phi_z_sq)
+	  if( tmp .lt. zero_tol ) then
+            grad_phi_mag(i,j,k) = zero
+	  else
+	    grad_phi_mag(i,j,k) = tmp
+	  endif
+	     
+        endif
+      enddo
+c     } end loop over indexed points 
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
