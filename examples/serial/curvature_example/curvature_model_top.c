@@ -107,11 +107,11 @@ int  curvatureModelTop(
   if( options->save_data )
   {
     sprintf(fname,"%s/data_init",options->path);
-    writeDataArray(data_arrays->phi,grid,fname);
+    writeDataArray(data_arrays->phi,grid,fname,GZIP);
     sprintf(fname,"%s/grid",options->path);
-    writeGridToBinaryFile(grid,fname);
+    writeGridToBinaryFile(grid,fname,GZIP);
     sprintf(fname,"%s/mask",options->path);
-    writeDataArray(data_arrays->mask,grid,fname);
+    writeDataArray(data_arrays->mask,grid,fname,GZIP);
   }
   
   setArrayAllocationCurvatureModel(options,data_arrays);
@@ -130,7 +130,7 @@ int  curvatureModelTop(
   if( options->save_data )
   {
     sprintf(fname,"%s/data_final",options->path);
-    writeDataArray(data_arrays->phi,grid,fname);    
+    writeDataArray(data_arrays->phi,grid,fname,GZIP);    
   }  
  
   /* Clean up memory */

@@ -27,9 +27,9 @@ clean:
 	$(RM) $(PROGS)
 
 spotless:  clean
-	@RM@ data_final
-	@RM@ data_init
-	@RM@ grid
-	@RM@ mask
-	@RM@ out_file
+	@RM@ data_final*
+	@RM@ data_init*
+	@RM@ grid*
+	@RM@ mask*
+	@RM@ out_file*
 

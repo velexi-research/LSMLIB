@@ -28,3 +28,10 @@ lsm_reinitialize: $(OBJLIST)
 clean:
 	rm -f *.o
 	rm -f $(PROGS)
+	
+spotless:  clean
+	@RM@ data_final*
+	@RM@ data_init*
+	@RM@ grid*
+	@RM@ mask*
+	@RM@ out_file*

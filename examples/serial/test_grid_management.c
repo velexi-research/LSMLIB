@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "LSMLIB_config.h"
+#include "lsm_file.h"
 #include "lsm_grid.h"
 
 int main(void)
@@ -34,13 +35,13 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"test_grid_2d.ascii");
+  writeGridToAsciiFile(g_original,"test_grid_2d.ascii",NO_ZIP);
   g_from_ascii_file = readGridFromAsciiFile("test_grid_2d.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"test_grid_2d.binary");
+  writeGridToBinaryFile(g_original,"test_grid_2d.binary",GZIP);
   g_from_binary_file = readGridFromBinaryFile("test_grid_2d.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
@@ -63,13 +64,13 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"test_grid_3d.ascii");
+  writeGridToAsciiFile(g_original,"test_grid_3d.ascii",NO_ZIP);
   g_from_ascii_file = readGridFromAsciiFile("test_grid_3d.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"test_grid_3d.binary");
+  writeGridToBinaryFile(g_original,"test_grid_3d.binary",GZIP);
   g_from_binary_file = readGridFromBinaryFile("test_grid_3d.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);

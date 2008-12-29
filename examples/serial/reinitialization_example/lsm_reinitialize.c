@@ -164,11 +164,11 @@ void reinitializeTop(
   if( options->save_data )
   {
     sprintf(filename,"%sdata_init",options->path);
-    writeDataArray(p->phi,g,filename);
+    writeDataArray(p->phi,g,filename,GZIP);
     fprintf(fp_out,"\nInitial level set function output to binary file %s",
                                                                      filename);
     sprintf(filename,"%sgrid",options->path);
-    writeGridToBinaryFile(g,filename);
+    writeGridToBinaryFile(g,filename,GZIP);
     fprintf(fp_out,"\nGrid structure output to binary file named %s",
                                                                      filename);
   }  
@@ -179,13 +179,13 @@ void reinitializeTop(
   if( options->save_data )
   {
     sprintf(filename,"%sdata_final",options->path);
-    writeDataArray(p->phi,g,filename);
+    writeDataArray(p->phi,g,filename,GZIP);
     fprintf(fp_out,"\nFinal level set function output to binary file %s",
                                                                      filename);
     if(options->do_mask)
     {
       sprintf(filename,"%smask",options->path);
-      writeDataArray(p->mask,g,filename);
+      writeDataArray(p->mask,g,filename,GZIP);
       fprintf(fp_out,"\nMask level set function output to binary file %s",
                                                                      filename);
     }  
