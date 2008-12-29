@@ -14,13 +14,21 @@ include $(BUILD_DIR)/config/Makefile.config
 all:  includes library
 
 includes:  
+	@CP@ $(SRC_DIR)/lsm_curvature2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_curvature2d_local.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_curvature3d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_curvature3d_local.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_spatial_derivatives1d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_spatial_derivatives2d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_spatial_derivatives2d_local.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_spatial_derivatives3d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_spatial_derivatives3d_local.h $(BUILD_DIR)/include/
 
-library:  lsm_spatial_derivatives1d.o       \
+library:  lsm_curvature2d.o                 \
+	  lsm_curvature2d_local.o           \
+	  lsm_curvature3d.o                 \
+	  lsm_curvature3d_local.o           \
+	  lsm_spatial_derivatives1d.o       \
           lsm_spatial_derivatives2d.o       \
           lsm_spatial_derivatives2d_local.o \
           lsm_spatial_derivatives3d.o       \
