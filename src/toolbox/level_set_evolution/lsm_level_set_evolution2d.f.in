@@ -8,17 +8,8 @@ c  Description: F77 subroutines for 2D level set evolution equation
 c
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm2dZeroOutLevelSetEqnRHS() zeros out the right-hand side of the
-c  level set equation when it is written in the form:
-c
-c    phi_t = ...
-c
-c  Arguments:
-c    lse_rhs (in/out):  right-hand of level set equation
-c    *_gb (in):         index range for ghostbox
-c
+
+
 c***********************************************************************
       subroutine lsm2dZeroOutLevelSetEqnRHS(
      &  lse_rhs,
@@ -49,21 +40,7 @@ c     } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm2dAddAdvectionTermToLSERHS adds the contribution of an advection
-c  term (external vector velocity field) to the right-hand side of the 
-c  level set equation when it is written in the form:
-c
-c    phi_t = -vel dot grad(phi) + ...
-c
-c  Arguments:
-c    lse_rhs (in/out):  right-hand
-c    phi_* (in):        components of grad(phi) at t = t_cur
-c    vel_* (in):        components of velocity at t = t_cur
-c    *_gb (in):         index range for ghostbox
-c    *_fb (in):         index range for fillbox
-c
+
 c***********************************************************************
       subroutine lsm2dAddAdvectionTermToLSERHS(
      &  lse_rhs,
@@ -117,24 +94,7 @@ c     } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm2dAddNormalVelTermToLSERHS() adds the contribution of a normal 
-c  (scalar) velocity term to the right-hand side of the level set 
-c  equation when it is written in the form:
-c
-c    phi_t = -V_n |grad(phi)| + ...
-c
-c  Arguments:
-c    lse_rhs (in/out):  right-hand of level set equation
-c    phi_*_plus (in):   components of forward approx to grad(phi) at 
-c                       t = t_cur
-c    phi_*_minus (in):  components of backward approx to grad(phi) at 
-c                       t = t_cur
-c    vel_n (in):        normal velocity at t = t_cur
-c    *_gb (in):         index range for ghostbox
-c    *_fb (in):         index range for fillbox
-c
+
 c***********************************************************************
       subroutine lsm2dAddNormalVelTermToLSERHS(
      &  lse_rhs,
@@ -224,24 +184,6 @@ c***********************************************************************
 
 
 c***********************************************************************
-c
-c  lsm2dAddConstNormalVelTermToLSERHS() adds the contribution of a normal 
-c  (scalar, constant for all grid points) velocity term to the right-hand 
-c  side of the level set equation when it is written in the form:
-c
-c    phi_t = -V_n |grad(phi)| + ...
-c
-c  Arguments:
-c    lse_rhs (in/out):  right-hand of level set equation
-c    phi_*_plus (in):   components of forward approx to grad(phi) at 
-c                       t = t_cur
-c    phi_*_minus (in):  components of backward approx to grad(phi) at 
-c                       t = t_cur
-c    vel_n (in):        normal velocity at t = t_cur, a scalar value
-c    *_gb (in):         index range for ghostbox
-c    *_fb (in):         index range for fillbox
-c
-c***********************************************************************
       subroutine lsm2dAddConstNormalVelTermToLSERHS(
      &  lse_rhs,
      &  ilo_lse_rhs_gb, ihi_lse_rhs_gb,
@@ -326,24 +268,6 @@ c***********************************************************************
 
 
 c***********************************************************************
-c
-c  lsm2dAddConstCurvTermToLSERHS() adds the contribution of a curvature 
-c  term to the right-hand side of the level set equation when it is 
-c  written in the form:
-c
-c    phi_t = b*kappa*|grad(phi)| + ...
-c  
-c  kappa (mean curvature, div ( grad*(phi) / |grad(phi)| ) will be computed 
-c  from second order derivatives.
-c
-c  Arguments:
-c    lse_rhs (in/out):  right-hand of level set equation
-c    phi_*      (in):   derivatives (the 1st and 2nd order)   
-c    b     (in):        scalar curvature term component 
-c    *_gb (in):         index range for ghostbox
-c    *_fb (in):         index range for fillbox
-c
-c***********************************************************************
       subroutine lsm2dAddConstCurvTermToLSERHS(
      &  lse_rhs,
      &  ilo_lse_rhs_gb, ihi_lse_rhs_gb,
@@ -409,6 +333,187 @@ c         compute squared magnitude of gradient
         enddo 
       enddo 
 c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+      subroutine lsm2dAddConstPrecomputedCurvTermToLSERHS(
+     &  lse_rhs,
+     &  ilo_rhs_gb, ihi_rhs_gb,
+     &  jlo_rhs_gb, jhi_rhs_gb,
+     &  kappa,
+     &  ilo_kappa_gb, ihi_kappa_gb,
+     &  jlo_kappa_gb, jhi_kappa_gb,
+     &  grad_phi_mag,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  b,
+     &  ilo_rhs_fb, ihi_rhs_fb, 
+     &  jlo_rhs_fb, jhi_rhs_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer ilo_kappa_gb, ihi_kappa_gb
+      integer jlo_kappa_gb, jhi_kappa_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer ilo_rhs_gb, ihi_rhs_gb
+      integer jlo_rhs_gb, jhi_rhs_gb
+      real kappa(ilo_kappa_gb:ihi_kappa_gb,
+     &           jlo_kappa_gb:jhi_kappa_gb)
+      real grad_phi_mag(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                  jlo_grad_phi_gb:jhi_grad_phi_gb)
+      real lse_rhs(ilo_rhs_gb:ihi_rhs_gb,
+     &             jlo_rhs_gb:jhi_rhs_gb)   
+     
+      integer ilo_rhs_fb, ihi_rhs_fb
+      integer jlo_rhs_fb, jhi_rhs_fb
+      
+      real b
+c     local variables      
+      integer i,j
+         
+c     { begin loop over fillbox points
+        do j =  jlo_rhs_fb,jhi_rhs_gb
+          do i = ilo_rhs_gb, ihi_rhs_gb
+            lse_rhs(i,j)=lse_rhs(i,j) + 
+     &	                  b*kappa(i,j)*grad_phi_mag(i,j)
+	  enddo
+        enddo  
+c     } end loop over fillbox points
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+
+      subroutine lsm2dAddExternalAndNormalVelTermToLSERHS(
+     &  lse_rhs,
+     &  ilo_rhs_gb, ihi_rhs_gb,
+     &  jlo_rhs_gb, jhi_rhs_gb,
+     &  phi_x_plus, phi_y_plus,
+     &  ilo_grad_phi_plus_gb, ihi_grad_phi_plus_gb,
+     &  jlo_grad_phi_plus_gb, jhi_grad_phi_plus_gb,
+     &  phi_x_minus, phi_y_minus,
+     &  ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb,
+     &  jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb,
+     &  vel_n,
+     &  vel_x, vel_y,
+     &  ilo_vel_gb, ihi_vel_gb,
+     &  jlo_vel_gb, jhi_vel_gb,
+     &  ilo_rhs_fb, ihi_rhs_fb,
+     &  jlo_rhs_fb, jhi_rhs_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer ilo_rhs_gb, ihi_rhs_gb
+      integer jlo_rhs_gb, jhi_rhs_gb
+      integer ilo_grad_phi_plus_gb, ihi_grad_phi_plus_gb
+      integer jlo_grad_phi_plus_gb, jhi_grad_phi_plus_gb
+      integer ilo_grad_phi_minus_gb, ihi_grad_phi_minus_gb
+      integer jlo_grad_phi_minus_gb, jhi_grad_phi_minus_gb
+      integer ilo_vel_gb, ihi_vel_gb
+      integer jlo_vel_gb, jhi_vel_gb
+      real lse_rhs(ilo_rhs_gb:ihi_rhs_gb,
+     &             jlo_rhs_gb:jhi_rhs_gb)
+      real phi_x_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_y_plus(ilo_grad_phi_plus_gb:ihi_grad_phi_plus_gb,
+     &                jlo_grad_phi_plus_gb:jhi_grad_phi_plus_gb)
+      real phi_x_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real phi_y_minus(ilo_grad_phi_minus_gb:ihi_grad_phi_minus_gb,
+     &                 jlo_grad_phi_minus_gb:jhi_grad_phi_minus_gb)
+      real vel_n(ilo_vel_gb:ihi_vel_gb,
+     &           jlo_vel_gb:jhi_vel_gb)
+      real vel_x(ilo_vel_gb:ihi_vel_gb,
+     &           jlo_vel_gb:jhi_vel_gb)
+      real vel_y(ilo_vel_gb:ihi_vel_gb,
+     &           jlo_vel_gb:jhi_vel_gb)
+      integer ilo_rhs_fb, ihi_rhs_fb
+      integer jlo_rhs_fb, jhi_rhs_fb
+      
+c     local variables      
+      integer i,j,l
+      real    vel_n_cur, vel_x_cur, vel_y_cur
+      real    H1_x_minus, H1_x_plus, phi_x
+      real    H1_y_minus, H1_y_plus, phi_y
+      real    norm_grad_phi_sq
+      real    zero_tol, zero 
+      parameter (zero_tol=@lsmlib_zero_tol@, zero=0.d0)
+
+c     { begin loop over indexed points
+      do j=jlo_rhs_fb,jhi_rhs_fb
+       do i=ilo_rhs_fb,ihi_rhs_fb
+       
+           vel_n_cur = vel_n(i,j)
+	   vel_x_cur = vel_x(i,j)
+	   vel_y_cur = vel_y(i,j)
+	   
+c         { begin Godunov selection of phi_x
+           H1_x_plus =  vel_x_cur + vel_n_cur*phi_x_plus(i,j)
+	   H1_x_minus = vel_x_cur + vel_n_cur*phi_x_minus(i,j)
+	  
+          if( H1_x_plus .gt. zero) then
+	      if(H1_x_minus .gt. zero ) then
+	        phi_x = phi_x_minus(i,j);
+	      else
+	        phi_x = - vel_x_cur / vel_n_cur
+              endif
+	  else
+	      if(H1_x_minus .lt. zero ) then
+	        phi_x = phi_x_plus(i,j);
+	      else  
+                if( abs(H1_x_plus) .gt. abs(H1_x_minus) ) then
+	           phi_x = phi_x_plus(i,j)
+	        else
+	           phi_x = phi_x_minus(i,j)
+	        endif
+	      endif
+	  endif
+
+c         { begin Godunov selection of phi_y
+          H1_y_plus =  vel_y_cur + vel_n_cur*phi_y_plus(i,j)
+	  H1_y_minus = vel_y_cur + vel_n_cur*phi_y_minus(i,j)
+	  
+          if( H1_y_plus .gt. zero) then
+	      if(H1_y_minus .gt. zero ) then
+	        phi_y = phi_y_minus(i,j);
+	      else
+	        phi_y = - vel_y_cur / vel_n_cur
+              endif
+	  else
+	      if(H1_y_minus .lt. zero ) then
+	        phi_y = phi_y_plus(i,j);
+	      else  
+                if( abs(H1_y_plus) .gt. abs(H1_y_minus) ) then
+	           phi_y = phi_y_plus(i,j)
+	        else
+	           phi_y = phi_y_minus(i,j)
+	        endif
+	      endif
+	  endif   
+	  norm_grad_phi_sq = phi_x*phi_x + phi_y*phi_y      
+          
+
+c         compute contribution to lse_rhs(i,j) 
+          if (abs(vel_n_cur) .ge. zero_tol) then
+            lse_rhs(i,j) = lse_rhs(i,j) 
+     &	                  - vel_x_cur*phi_x - vel_y_cur*phi_y
+     &                    - vel_n_cur*sqrt(norm_grad_phi_sq)
+          endif
+     
+        enddo
+      enddo 
+c     } end loop over indexed points
 
       return
       end

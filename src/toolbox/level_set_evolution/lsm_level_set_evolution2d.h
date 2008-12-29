@@ -38,7 +38,10 @@ extern "C" {
 #define LSM2D_ADD_CONST_NORMAL_VEL_TERM_TO_LSE_RHS   \
                                           lsm2daddconstnormalveltermtolserhs_
 #define LSM2D_ADD_CONST_CURV_TERM_TO_LSE_RHS   lsm2daddconstcurvtermtolserhs_
-
+#define LSM2D_ADD_CONST_PRECOMPUTED_CURV_TERM_TO_LSE_RHS \
+                                     lsm2daddconstprecomputedcurvtermtolserhs_	
+#define LSM2D_ADD_EXTERNAL_AND_NORMAL_VEL_TERM_TO_LSE_RHS \
+                                    lsm2daddexternalandnormalveltermtolserhs_				
 
 /*!
  * LSM2D_ZERO_OUT_LEVEL_SET_EQN_RHS() zeros out the right-hand side of 
@@ -259,7 +262,109 @@ void   LSM2D_ADD_CONST_CURV_TERM_TO_LSE_RHS(
   const int *ihi_fb,
   const int *jlo_fb,
   const int *jhi_fb);  
-  
+
+/*!
+*
+*  LSM2D_ADD_CONST_PRECOMPUTED_CURV_TERM_TO_LSE_RHS() adds the contribution of 
+*  a curvature term to the right-hand side of the level set equation 
+*  when it is  written in the form:
+*
+* \f[
+*   
+*    \phi_t = -b kappa |\nabla \phi| + ... 
+*   
+* \f]
+*  Arguments:
+*    lse_rhs (in/out):  right-hand of level set equation
+*    kappa (in):       curvature data array (assumed precomputed)
+*    grad_phi_mag(in): gradient magnitude data_array
+*    b     (in):        scalar curvature term component 
+*    *_gb (in):         index range for ghostbox
+*    *_fb (in):         index range for fillbox
+*/
+
+ void LSM2D_ADD_CONST_PRECOMPUTED_CURV_TERM_TO_LSE_RHS(
+  const LSMLIB_REAL *lse_rhs,
+  const int *ilo_rhs_gb, 
+  const int *ihi_rhs_gb,
+  const int *jlo_rhs_gb, 
+  const int *jhi_rhs_gb,
+  LSMLIB_REAL *kappa,
+  const int *ilo_kappa_gb, 
+  const int *ihi_kappa_gb,
+  const int *jlo_kappa_gb, 
+  const int *jhi_kappa_gb,
+  const LSMLIB_REAL *grad_mag_phi,
+  const int *ilo_phi_gb, 
+  const int *ihi_phi_gb,
+  const int *jlo_phi_gb, 
+  const int *jhi_phi_gb, 
+  const LSMLIB_REAL *b, 
+  const int *ilo_rhs_fb,
+  const int *ihi_rhs_fb,
+  const int *jlo_rhs_fb,
+  const int *jhi_rhs_fb);
+   
+/*!
+*
+*  LSERHSLSM2D_ADD_EXTERNAL_AND_NORMAL_VEL_TERM_TO_LSE_RHS() adds the contribution 
+*  of a normal (scalar) velocity term AND advective term to the right-hand 
+*  side of the level set equation when it is written in the form:
+*
+*   \f[
+*    \phi_t = (- V  -  V_n \nabla \phi/|\nabla \phi|) . \nabla \phi
+*   i.e.
+*   \phi_t = - V . \nabla \phi - V_n |\nabla \phi|
+*
+*  \f]
+*
+*  Note that the upwinding selection is made assuming \f$ \nabla \phi \f$ is 1 
+*  which should be a reasonable choice if \f$ \phi \f$ is close to a signed 
+*  distance function.
+*  See discussion 'Adding an External Velocity field' on Pg 59, Osher/Fedkiw 
+*  book.
+*
+*  Arguments:
+*    lse_rhs (in/out):  right-hand of level set equation
+*    phi_*_plus (in):   components of forward approx to \f$ \nabla \phi \f$ at 
+*                       t = t_cur
+*    phi_*_minus (in):  components of backward approx to \f$ \nabla \phi \f$at 
+*                       t = t_cur
+*    vel_n (in):        normal velocity at t = t_cur
+*    vel_[xy]:          external velocity (advective), V = (vel_x, vel_y)
+*    *_gb (in):         index range for ghostbox
+*    *_fb (in):         index range for fillbox
+*
+*/  
+void LSM2D_ADD_EXTERNAL_AND_NORMAL_VEL_TERM_TO_LSE_RHS(
+  LSMLIB_REAL *lse_rhs,
+  const int *ilo_rhs_gb, 
+  const int *ihi_rhs_gb,
+  const int *jlo_rhs_gb, 
+  const int *jhi_rhs_gb,
+  const LSMLIB_REAL *phi_x_plus, 
+  const LSMLIB_REAL *phi_y_plus,
+  const int *ilo_grad_phi_plus_gb, 
+  const int *ihi_grad_phi_plus_gb,
+  const int *jlo_grad_phi_plus_gb, 
+  const int *jhi_grad_phi_plus_gb,
+  const LSMLIB_REAL *phi_x_minus, 
+  const LSMLIB_REAL *phi_y_minus,
+  const int *ilo_grad_phi_minus_gb, 
+  const int *ihi_grad_phi_minus_gb,
+  const int *jlo_grad_phi_minus_gb, 
+  const int *jhi_grad_phi_minus_gb,
+  const LSMLIB_REAL *vel_n,
+  const LSMLIB_REAL *vel_x,
+  const LSMLIB_REAL *vel_y,
+  const int *ilo_vel_gb, 
+  const int *ihi_vel_gb,
+  const int *jlo_vel_gb, 
+  const int *jhi_vel_gb,
+  const int *ilo_rhs_fb, 
+  const int *ihi_rhs_fb,
+  const int *jlo_rhs_fb, 
+  const int *jhi_rhs_fb);
 #ifdef __cplusplus
 }
 #endif
