@@ -9,6 +9,8 @@ c
 c***********************************************************************
 
 c***********************************************************************
+c FUNCTION INTERNAL TO THIS FILE- DO NOT DELETE THIS DOCUMENTATION!
+c
 c lsm3dMarkNarrowBandNeighbors() finds neighbors (iteratively +/-1 in each
 c coordinate direction, so-called 6-connectivity) of the level 0 narrow band
 c up to desired level.
@@ -19,7 +21,6 @@ c                          (needed for correct computation of derivatives
 c                          at the actual narrow band voxels) 
 c
 c Arguments:
-c    phi(in):          level set functions (assumed signed distance function)
 c    narrow_band(out): array with values L+1 for narrow band level L voxels
 c                      and 0 otherwise
 c    index_[xyz](out): array with [xyz] coordinates of narrow band voxels
@@ -43,10 +44,6 @@ c    near volume boundary
 c
 c***********************************************************************
       subroutine lsm3dMarkNarrowBandNeighbors(
-     &  phi,
-     &  ilo_gb, ihi_gb,
-     &  jlo_gb, jhi_gb,
-     &  klo_gb, khi_gb,
      &  narrow_band,
      &  ilo_nb_gb, ihi_nb_gb,
      &  jlo_nb_gb, jhi_nb_gb,
@@ -61,13 +58,9 @@ c***********************************************************************
 c { begin subroutine
       implicit none
       
-      integer ilo_gb, ihi_gb
-      integer jlo_gb, jhi_gb
-      integer klo_gb, khi_gb
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
       integer nlo_index, nhi_index
@@ -84,7 +77,7 @@ c { begin subroutine
       count = n_hi(0)+1
       start_level = 1
       
-c     { begin loop over all levels      
+c     { begin loop over all narrow band levels      
       do l=start_level,level
 
         mark = l+1
@@ -94,8 +87,9 @@ c       { begin examine points from one level less
 	  j=index_y(m)
 	  k=index_z(m)
 
-c         check upper x-coordinate neighbor	  
-	  if( (i .lt. ihi_gb) .and. (narrow_band(i+1,j,k) .eq. 0) ) then
+c         check upper x-coordinate neighbor 
+	  if( (i .lt. ihi_nb_gb) .and. 
+     &        (narrow_band(i+1,j,k) .eq. 0) ) then
 	    index_x(count) = i+1
 	    index_y(count) = j
 	    index_z(count) = k
@@ -103,8 +97,9 @@ c         check upper x-coordinate neighbor
 	    count = count+1
 	  endif
 
-c         check lower x-coordinate neighbor	  
-	  if( (i .gt. ilo_gb) .and. (narrow_band(i-1,j,k) .eq. 0) ) then
+c         check lower x-coordinate neighbor  
+	  if( (i .gt. ilo_nb_gb) .and. 
+     &        (narrow_band(i-1,j,k) .eq. 0) ) then
 	    index_x(count) = i-1
 	    index_y(count) = j
 	    index_z(count) = k
@@ -112,8 +107,9 @@ c         check lower x-coordinate neighbor
 	    count = count+1
 	  endif
 
-c         check upper y-coordinate neighbor	  
-	  if( (j .lt. jhi_gb) .and. (narrow_band(i,j+1,k) .eq. 0) ) then
+c         check upper y-coordinate neighbor
+	  if( (j .lt. jhi_nb_gb) .and. 
+     &       (narrow_band(i,j+1,k) .eq. 0) ) then
 	    index_x(count) = i
 	    index_y(count) = j+1
 	    index_z(count) = k
@@ -121,8 +117,9 @@ c         check upper y-coordinate neighbor
 	    count = count+1
 	  endif
 
-c         check lower y-coordinate neighbor	  
-	  if( (j .gt. jlo_gb) .and. (narrow_band(i,j-1,k) .eq. 0) ) then
+c         check lower y-coordinate neighbor  
+	  if( (j .gt. jlo_nb_gb) .and.
+     &        (narrow_band(i,j-1,k) .eq. 0) ) then
 	    index_x(count) = i
 	    index_y(count) = j-1
 	    index_z(count) = k
@@ -130,8 +127,9 @@ c         check lower y-coordinate neighbor
 	    count = count+1
 	  endif
 
-c         check upper z-coordinate neighbor	  
-	  if( (k .lt. khi_gb) .and. (narrow_band(i,j,k+1) .eq. 0) ) then
+c         check upper z-coordinate neighbor  
+	  if( (k .lt. khi_nb_gb) .and. 
+     &        (narrow_band(i,j,k+1) .eq. 0) ) then
 	    index_x(count) = i
 	    index_y(count) = j
 	    index_z(count) = k+1
@@ -139,18 +137,19 @@ c         check upper z-coordinate neighbor
 	    count = count+1
 	  endif
 
-c         check lower z-coordinate neighbor	  
-	  if( (k .gt. klo_gb) .and. (narrow_band(i,j,k-1) .eq. 0) ) then
+c         check lower z-coordinate neighbor  
+	  if( (k .gt. klo_nb_gb) .and.
+     &        (narrow_band(i,j,k-1) .eq. 0) ) then
 	    index_x(count) = i
 	    index_y(count) = j
 	    index_z(count) = k-1
 	    narrow_band(i,j,k-1) = mark
 	    count = count+1
 	  endif
-	  	  	  
+	 
         enddo
 c       } end examine points one level less
-		
+	
 	if( count .gt. ( n_hi(l-1) + 1 ) ) then 
 	  n_lo(l) = n_hi(l-1) + 1
 	  n_hi(l) = count - 1
@@ -168,44 +167,7 @@ c } end subroutine
 c*********************************************************************** 
 
 
-c***********************************************************************
-c
-c  lsm3dDetermineNarrowBand() finds the narrow band voxels around the zero
-c  level set of the specified width. Narrow band neighbors (up to the desired
-c  level) are marked as well.
-c  Narrow band of level 0 - actual narrow band voxels
-c  Narrow band of level L - voxels +/-L voxels in x-, y- or z- direction
-c                         (needed for correct computation of derivatives
-c                         at the actual narrow band voxels) 
-c
-c  Arguments:
-c    phi(in):          level set functions (assumed signed distance function)
-c    narrow_band(out): array with values L+1 for narrow band level L voxels
-c                      and 0 otherwise
-c    index_[xyz](out): array with [xyz] coordinates of narrow band voxels
-c                      indices of level L narrow band stored consecutively
-c    n*_index(in):     (allocated) index range of index_[xyz] arrays 
-c    n_lo(out):        array, n_lo[L] is starting index of the level L narrow
-c                      band voxels
-c    n_hi(out):        array, n_hi[L] is ending index of the level L narrow
-c                      band voxels  
-c    level(in):        number of narrow band levels to mark
-c    width(in):        narrow band width (distance to the zero level set)
-c    width_inner(in):  inner narrow band width
-c    index_outer(out): indices of the narrow band voxels such that 
-c                      width_inner <= abs(phi) < width
-c    n*_plus(out):     index range of 'index_outer'  elements for which
-c                      phi values satisfy  0 < width_inner <= phi < width  
-c    n*_minus(out):    index range of 'index_outer'  elements for which
-c                      phi values satisfy  0> -width_inner >= phi > -width 
-c    *_gb (in):        index range for ghostbox
-c
-c    Notes:
-c    - narrow_band, index_[xyz], index_outer arrays assumed allocated beforehand
-c    - index_outer stores indices of points in narrow band with positive and
-c     negative phi values separately in order to be able to identify change
-c     of signs for phi (i.e. when zero level set crosses into the outer layer),
-c     see lsm3dCheckOuterNarrowBandLayer() 
+
 c***********************************************************************
       subroutine lsm3dDetermineNarrowBand(
      &  phi,
@@ -295,7 +257,7 @@ c     begin loop over grid
 		      count_outer_plus = count_outer_plus-1
 		  endif     
 	       
-	       endif	   
+	       endif 
 	       
 	       count = count+1       
 	    else
@@ -307,42 +269,34 @@ c     begin loop over grid
       enddo
 c      } end loop over grid 
 
-      n_hi(0) = count-1
-      nhi_outer_minus = count_outer_minus - 1
-      nlo_outer_plus  = count_outer_plus  + 1
+      if( count .gt. nlo_index ) then
+      
+         n_hi(0) = count-1
+         nhi_outer_minus = count_outer_minus - 1
+         nlo_outer_plus  = count_outer_plus  + 1
   
-      if(level .gt. 0) then    
-        call  lsm3dMarkNarrowBandNeighbors(phi,
-     &  ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb, 
-     &  narrow_band,
-     &  ilo_nb_gb, ihi_nb_gb, jlo_nb_gb, jhi_nb_gb, 
-     &  klo_nb_gb, khi_nb_gb,
-     &  index_x, index_y, index_z,
-     &  nlo_index, nhi_index,
-     &  n_lo, n_hi,
-     &  level)
+         call  lsm3dMarkNarrowBandNeighbors(
+     &   narrow_band,
+     &   ilo_nb_gb, ihi_nb_gb, jlo_nb_gb, jhi_nb_gb, 
+     &   klo_nb_gb, khi_nb_gb,
+     &   index_x, index_y, index_z,
+     &   nlo_index, nhi_index,
+     &   n_lo, n_hi,
+     &   level)
+         
+      else
+        n_hi(0) = count;
+        nhi_outer_minus = count_outer_minus
+        nlo_outer_plus  = count_outer_plus 
       endif
+       
           
       return
       end     
 c } end subroutine
 c***********************************************************************      
-  
-      
-c***********************************************************************
-c lsm3dMarkNarrowBandBoundaryLayer() marks planes x = ilo_fb, x = ihi_fb,
-c y = jlo_fb, y = jhi_fb, z = klo_fb and z = khi_fb in narrow band array 
-c with the specified mark. Potentially used for identification of voxel
-c layers near the volume boundary.
-c
-c  Arguments:
-c    narrow_band(out): array with values L+1 for narrow band level L voxels
-c                      and 0 otherwise
-c    *_gb (in):        index range for ghostbox
-c    *_fb (in):        index range for fillbox
-c    mark_boundary_layer  distinctive mark (>=120 or so) for boundary layer
-c                      i.e. ghost box voxels that do not belong to fill box
-c
+ 
+
 c***********************************************************************
       subroutine lsm3dMarkNarrowBandBoundaryLayer(
      &  narrow_band,
@@ -423,45 +377,14 @@ c } end subroutine
 c***********************************************************************
 
 
-c***********************************************************************
-c
-c  lsm3dDetermineNarrowBandFromMask() initializes the narrow band voxels as 
-c  either positive of negative phase of array mask. Narrow band neighbors 
-c  (up to the desired level) are marked as well.
-c  Narrow band of level 0 - actual narrow band voxels
-c  Narrow band of level L - voxels +/-L voxels in x-, y- or z- direction
-c                         (needed for correct computation of derivatives
-c                         at the actual narrow band voxels) 
-c
-c  Arguments:
-c    phi(in):          level set functions (assumed signed distance function)
-c    mask(in):         level set function one phase of which will determine
-c                      narrow band
-c    narrow_band(out): array with values L+1 for narrow band level L voxels
-c                      and 0 otherwise
-c    index_[xyz](out): array with [xyz] coordinates of narrow band voxels
-c                      indices of level L narrow band stored consecutively
-c    nlo_index, nhi_index: (allocated) index range of index_[xyz] arrays 
-c    n_lo(out):        array, n_lo[L] is starting index of the level L narrow
-c                      band voxels
-c    n_hi(out):        array, n_hi[L] is ending index of the level L narrow
-c                      band voxels
-c    level(in):        number of narrow band levels to mark
-c    width(in):        narrow band width (distance to the zero level set)
-c    *_gb (in):        index range for ghostbox
-c    use_mask_sign     1 or -1 depending if positive or negative phase of 
-c                      mask to be used to initialize the narrow band
-c
-c    Notes:
-c    - narrow_band and index_[xyz] arrays assumed allocated beforehand
-c
+
+
 c***********************************************************************
       subroutine lsm3dDetermineNarrowBandFromMask(
-     &  phi,
      &  mask,
-     &  ilo_gb, ihi_gb,
-     &  jlo_gb, jhi_gb,
-     &  klo_gb, khi_gb,
+     &  ilo_mask_gb, ihi_mask_gb,
+     &  jlo_mask_gb, jhi_mask_gb,
+     &  klo_mask_gb, khi_mask_gb,
      &  narrow_band,
      &  ilo_nb_gb, ihi_nb_gb,
      &  jlo_nb_gb, jhi_nb_gb,
@@ -477,16 +400,17 @@ c***********************************************************************
 c { begin subroutine
       implicit none
       
-        integer ilo_gb, ihi_gb
-      integer jlo_gb, jhi_gb
-      integer klo_gb, khi_gb
+      integer ilo_mask_gb, ihi_mask_gb
+      integer jlo_mask_gb, jhi_mask_gb
+      integer klo_mask_gb, khi_mask_gb
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
       integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
-      real mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real mask(ilo_mask_gb:ihi_mask_gb,
+     &          jlo_mask_gb:jhi_mask_gb,
+     &          klo_mask_gb:khi_mask_gb)
       integer nlo_index, nhi_index
       integer index_x(nlo_index:nhi_index)
       integer index_y(nlo_index:nhi_index)
@@ -503,12 +427,12 @@ c     get level 0 narrow band points
       n_lo(0) = nlo_index
       
 c     begin loop over grid      
-      do k=klo_gb,khi_gb
-	do j=jlo_gb,jhi_gb
-          do i=ilo_gb,ihi_gb  
+      do k=klo_mask_gb,khi_mask_gb
+	do j=jlo_mask_gb,jhi_mask_gb
+          do i=ilo_mask_gb,ihi_mask_gb  
 	     
 	    if( use_mask_sign .gt. 0 ) then
-	      if (mask(i,j,k) .gt. 0)  then
+	      if (mask(i,j,k) .ge. 0)  then
 		 index_x(count) = i
 		 index_y(count) = j
 		 index_z(count) = k
@@ -518,7 +442,7 @@ c     begin loop over grid
 		 narrow_band(i,j,k) = 0   
 	      endif
 	    else
-	       if (mask(i,j,k) .lt. 0) then
+	       if (mask(i,j,k) .le. 0) then
 		 index_x(count) = i
 		 index_y(count) = j
 		 index_z(count) = k
@@ -536,10 +460,7 @@ c     } end loop over grid
 
       n_hi(0) = count-1
 
-c      write(*,*) level
-       
-       call  lsm3dMarkNarrowBandNeighbors(phi,
-     &  ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb, 
+       call  lsm3dMarkNarrowBandNeighbors(
      &  narrow_band,
      &  ilo_nb_gb, ihi_nb_gb, jlo_nb_gb, jhi_nb_gb, 
      &  klo_nb_gb, khi_nb_gb,
@@ -554,24 +475,7 @@ c } end subroutine
 c***********************************************************************      
 
 
-c***********************************************************************
-c
-c  lsm3dMultiplyCutOffLSERHSLOCAL() multiplies the right hand side of
-c  the level set method equation with the cut off function described in
-c  Peng at al. '99.
-c    phi_t = ...
-c
-c  Arguments:
-c    phi:               level set method function
-c    lse_rhs (in/out):  right-hand of level set equation         
-c    index_[xyz](out):  array with [xyz] coordinates of narrow band voxels
-c                       indices
-c    narrow_band(in):    array that marks voxels outside desired fillbox
-c    mark_fb(in):        upper limit narrow band value for voxels in 
-c                        fillbox
-c    nlo_index, nhi_index: index range of index_[xyz] arrays
-c    *_gb (in):         index range for ghostbox
-c
+
 c***********************************************************************
       subroutine lsm3dMultiplyCutOffLSERHSLOCAL(
      &  phi,
@@ -608,36 +512,42 @@ c { begin subroutine
       integer ilo_nb_gb, ihi_nb_gb
       integer jlo_nb_gb, jhi_nb_gb
       integer klo_nb_gb, khi_nb_gb
-      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,jlo_nb_gb:jhi_nb_gb,
+      integer*1 narrow_band(ilo_nb_gb:ihi_nb_gb,
+     &                      jlo_nb_gb:jhi_nb_gb,
      &                      klo_nb_gb:khi_nb_gb)
       integer*1 mark_fb
       
 c     local variables      
       integer i,j,k,l
       real abs_phi_val, cut_off_coeff
-
+      real gb_const1, gb_const2, temp
+      real tol
+      parameter (tol=1.d-13)
+      
+      gb_const1 = gamma - 3*beta;
+      gb_const2 = (gamma - beta);
+      gb_const2 = gb_const2*gb_const2*gb_const2;
+      
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
         i=index_x(l)
 	j=index_y(l)
 	k=index_z(l)        
 	
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
 
 	    abs_phi_val = abs(phi(i,j,k))
-	      
+	      	      
 	    if( abs_phi_val .le. beta ) then
 	       cut_off_coeff = 1
 	    else if( abs_phi_val .le. gamma ) then
-	       cut_off_coeff =  
-     &              ((abs_phi_val - gamma)*(abs_phi_val - gamma)
-     &             *(2*abs_phi_val + gamma - 3*beta)) / 
-     &              ((gamma - beta)*(gamma - beta)*
-     &                              (gamma - beta))		 
+	       temp = (abs_phi_val - gamma);
+	       cut_off_coeff = ( temp * temp
+     &               *(2*abs_phi_val + gb_const1) ) / gb_const2
 	    else 
 	       cut_off_coeff = 0
-	    endif	 
-		 		 	   
+	    endif
+	    
             lse_rhs(i,j,k) = cut_off_coeff*lse_rhs(i,j,k)
 	endif
 	    
@@ -650,77 +560,8 @@ c     } end loop over indexed points
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dImposeMaxPhiMaskLocal() 
-c
-c  Arguments:
-c    phi(in):          level set functions (assumed signed distance function)
-c    mask(in):         masking level set function
-c    index_[xyz](out): array with [xyz] coordinates of narrow band voxels
-c                      indices of level L narrow band stored consecutively
-c    nlo_index, nhi_index: (allocated) index range of index_[xyz] arrays 
-c    *_gb (in):        index range for ghostbox
-c
-c***********************************************************************
-      subroutine lsm3dImposeMaskLocal(
-     &  phi,
-     &  mask,
-     &  ilo_gb, ihi_gb,
-     &  jlo_gb, jhi_gb,
-     &  klo_gb, khi_gb,
-     &  index_x,
-     &  index_y, 
-     &  index_z,
-     &  nlo_index, nhi_index)
-c***********************************************************************
-c { begin subroutine
-      implicit none
-      
-      integer ilo_gb, ihi_gb
-      integer jlo_gb, jhi_gb
-      integer klo_gb, khi_gb
-      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
-      real mask(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
-      integer nlo_index, nhi_index
-      integer index_x(nlo_index:nhi_index)
-      integer index_y(nlo_index:nhi_index)
-      integer index_z(nlo_index:nhi_index)
-            
-c     local variables      
-      integer i,j,k,l
 
-c     { begin loop over indexed points
-      do l=nlo_index, nhi_index      
-        i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)        
-	    	      
-	if( mask(i,j,k) .gt. phi(i,j,k) ) then
-	   phi(i,j,k) = mask(i,j,k)
-	endif
-	   
-      enddo 
-c     } end loop over indexed points
-    
-      return
-      end
-c } end subroutine
-c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dCheckOuterNarrowBandLayer() checks outer narrow band voxels for changes
-c  in the sign of level set function phi values (indicates that the interface
-c  represented by the zero level set has crossed over into the outer layer.
-c
-c  Arguments:
-c    phi(in):          level set functions (assumed signed distance function)
-c    index_[xyz](out): array with [xyz] coordinates of narrow band voxels
-c                      indices of level L narrow band stored consecutively
-c    n*_index(in):     index range of points to loop over of index_[xy] arrays 
-c    *_gb (in):        index range for ghostbox
-c
 c***********************************************************************
       subroutine lsm3dCheckOuterNarrowBandLayer(
      &  change_sign, 
@@ -768,7 +609,7 @@ c     { begin loop over indexed points
 	i=index_x(l)
 	j=index_y(l)
 	k=index_z(l)
-	      	    	      
+	        
 	if( phi(i,j,k) .gt. 0d0 ) then
 	   sign_plus = 1
 	else 
@@ -779,7 +620,7 @@ c     { begin loop over indexed points
 	   change_sign = 1
 	   exit
         endif
-			     
+	    
       enddo
       
       if(change_sign .eq. 0 ) then
@@ -790,7 +631,7 @@ c     { begin loop over indexed points
 	  i=index_x(l)
 	  j=index_y(l)
 	  k=index_z(l)
-	    	    	      
+	         
 	  if( phi(i,j,k) .gt. 0d0 ) then
 	     sign_plus = 1
 	  else 
@@ -801,12 +642,133 @@ c     { begin loop over indexed points
 	     change_sign = 1
 	     exit
           endif 
-	  	     
+	     
         enddo
       endif                
 c     } end loop over indexed points     
 	        
       return
       end     
+c } end subroutine
+c***********************************************************************
+
+
+
+c***********************************************************************
+      subroutine lsm3dImposeMaskLocal(
+     &  dest,
+     &  ilo_dest_gb, ihi_dest_gb,
+     &  jlo_dest_gb, jhi_dest_gb,
+     &  klo_dest_gb, khi_dest_gb,
+     &  src,
+     &  ilo_src_gb, ihi_src_gb,
+     &  jlo_src_gb, jhi_src_gb,
+     &  klo_src_gb, khi_src_gb,
+     &  mask,
+     &  ilo_mask_gb, ihi_mask_gb,
+     &  jlo_mask_gb, jhi_mask_gb,
+     &  klo_mask_gb, khi_mask_gb,
+     &  index_x,
+     &  index_y, 
+     &  index_z,
+     &  nlo_index, nhi_index)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+      
+      integer ilo_dest_gb, ihi_dest_gb
+      integer jlo_dest_gb, jhi_dest_gb
+      integer klo_dest_gb, khi_dest_gb
+      integer ilo_src_gb,  ihi_src_gb
+      integer jlo_src_gb,  jhi_src_gb
+      integer klo_src_gb,  khi_src_gb
+      integer ilo_mask_gb, ihi_mask_gb
+      integer jlo_mask_gb, jhi_mask_gb
+      integer klo_mask_gb, khi_mask_gb
+      real dest(ilo_dest_gb:ihi_dest_gb,
+     &                      jlo_dest_gb:jhi_dest_gb,
+     &                      klo_dest_gb:khi_dest_gb)
+      real src(ilo_src_gb:ihi_src_gb,
+     &                     jlo_src_gb:jhi_src_gb,
+     &                     klo_src_gb:khi_src_gb)
+      real mask(ilo_mask_gb:ihi_mask_gb,
+     &                      jlo_mask_gb:jhi_mask_gb,     
+     &                      klo_mask_gb:khi_mask_gb)
+      integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer index_z(nlo_index:nhi_index)
+            
+c     local variables      
+      integer i,j,k,l
+
+c     { begin loop over indexed points
+      do l=nlo_index, nhi_index      
+        i=index_x(l)
+	j=index_y(l)
+	k=index_z(l)        
+	   
+	dest(i,j,k) = max(mask(i,j,k),src(i,j,k))
+	   
+      enddo 
+c     } end loop over indexed points
+    
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm3dCopyDataLocal(
+     &  dest,
+     &  ilo_dest_gb, ihi_dest_gb,
+     &  jlo_dest_gb, jhi_dest_gb,
+     &  klo_dest_gb, khi_dest_gb,
+     &  src,
+     &  ilo_src_gb, ihi_src_gb,
+     &  jlo_src_gb, jhi_src_gb,
+     &  klo_src_gb, khi_src_gb,
+     &  index_x,
+     &  index_y,
+     &  index_z,
+     &  nlo_index, nhi_index)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox
+      integer ilo_dest_gb, ihi_dest_gb
+      integer jlo_dest_gb, jhi_dest_gb
+      integer klo_dest_gb, khi_dest_gb
+      integer ilo_src_gb, ihi_src_gb
+      integer jlo_src_gb, jhi_src_gb
+      integer klo_src_gb, khi_src_gb
+      real dest(ilo_dest_gb:ihi_dest_gb,
+     &                      jlo_dest_gb:jhi_dest_gb,
+     &                      klo_dest_gb:khi_dest_gb)
+      real src(ilo_src_gb:ihi_src_gb,
+     &                     jlo_src_gb:jhi_src_gb,
+     &                     klo_src_gb:khi_src_gb)
+      integer nlo_index, nhi_index
+      integer index_x(nlo_index:nhi_index)
+      integer index_y(nlo_index:nhi_index)
+      integer index_z(nlo_index:nhi_index)
+      
+c     local variables      
+      integer i,j,k,l
+
+c     { begin loop over indexed points
+       do l=nlo_index, nhi_index      
+         i=index_x(l)
+	 j=index_y(l)
+         k=index_z(l)
+         dest(i,j,k) = src(i,j,k)
+
+        enddo
+c       } end loop over indexed points
+      
+      return
+      end
 c } end subroutine
 c***********************************************************************
