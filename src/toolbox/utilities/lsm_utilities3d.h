@@ -32,6 +32,11 @@ extern "C" {
  *      ----------                     ------------
  */
 #define LSM3D_MAX_NORM_DIFF            lsm3dmaxnormdiff_
+#define LSM3D_AVE_ABS_DIFF             lsm3daveabsdiff_
+#define LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO \
+                                       lsm3dvoxelcountgreaterthanzero_
+#define LSM3D_VOXEL_COUNT_LESS_THAN_ZERO    \
+                                       lsm3dvoxelcountlessthanzero_
 #define LSM3D_COMPUTE_STABLE_ADVECTION_DT                                   \
                                        lsm3dcomputestableadvectiondt_
 #define LSM3D_COMPUTE_STABLE_NORMAL_VEL_DT                                  \
@@ -58,8 +63,10 @@ extern "C" {
                        lsm3dvolumeintegralphigreaterthanzerocontrolvolume_
 #define LSM3D_SURFACE_INTEGRAL_CONTROL_VOLUME                               \
                        lsm3dsurfaceintegralcontrolvolume_
-
-
+#define LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME \
+                                   lsm3dvoxelcountgreaterthanzerocontrolvolume_
+#define LSM3D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME  \
+                                   lsm3dvoxelcountlessthanzerocontrolvolume_
 /*!
  * LSM3D_MAX_NORM_DIFF() computes the max norm of the difference
  * between the two specified scalar fields.
@@ -98,7 +105,103 @@ void LSM3D_MAX_NORM_DIFF(
   const int *klo_ib, 
   const int *khi_ib);
 
+/*!
+*
+*  LSM3D_AVE_ABS_DIFF() computes the average pointwise abs. difference 
+*  between two scalar fields. 
+*
+*  Arguments:
+*    ave_abs_diff (out):    average of the difference between the fields
+*    field1 (in):           scalar field 1
+*    field2 (in):           scalar field 2
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in 
+*                           calculation
+*
+*/
+void LSM3D_AVE_ABS_DIFF(
+  LSMLIB_REAL *ave_abs_diff,
+  const LSMLIB_REAL *field1,
+  const int *ilo_field1_gb, 
+  const int *ihi_field1_gb,
+  const int *jlo_field1_gb, 
+  const int *jhi_field1_gb,
+  const int *klo_field1_gb, 
+  const int *khi_field1_gb,
+  const LSMLIB_REAL *field2,
+  const int *ilo_field2_gb, 
+  const int *ihi_field2_gb,
+  const int *jlo_field2_gb, 
+  const int *jhi_field2_gb,
+  const int *klo_field2_gb, 
+  const int *khi_field2_gb,
+  const int *ilo_ib, 
+  const int *ihi_ib,
+  const int *jlo_ib, 
+  const int *jhi_ib,
+  const int *klo_ib, 
+  const int *khi_ib);
 
+/*!
+*
+*  LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO() computes number of voxels whose phi
+*  value is greater than zero.
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *klo_gb,
+  const int *khi_gb,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb,
+  const int *klo_fb,
+  const int *khi_fb); 
+  
+  
+/*!
+*
+*  LSM3D_VOXEL_COUNT_LESS_THAN_ZERO() computes number of voxels whose phi
+*  value is less than zero.
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM3D_VOXEL_COUNT_LESS_THAN_ZERO(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *klo_gb,
+  const int *khi_gb,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb,
+  const int *klo_fb,
+  const int *khi_fb);  
+  
+  
 /*!
  * LSM3D_COMPUTE_STABLE_ADVECTION_DT() computes the stable time step size
  * for an advection term based on a CFL criterion.
@@ -847,6 +950,80 @@ void LSM3D_SURFACE_INTEGRAL_CONTROL_VOLUME(
   const LSMLIB_REAL *dz,
   const LSMLIB_REAL *epsilon);
 
+
+/*!
+*
+*  LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME() computes number of voxels whose phi
+*  value is less than zero in the given control volume
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM3D_VOXEL_COUNT_GREATER_THAN_ZERO_CONTROL_VOLUME(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *klo_gb,
+  const int *khi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb,
+  const int *klo_control_vol_gb, 
+  const int *khi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb,
+  const int *klo_fb,
+  const int *khi_fb);
+
+/*!
+*
+*  LSM3D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME() computes number of voxels whose phi
+*  value is less than zero in the given control volume
+*
+*  Arguments:
+*    count (out):           number of voxels where phi < 0
+*    phi (in):              scalar field
+*    *_gb (in):             index range for ghostbox
+*    *_ib (in):             index range for box to include in
+*                           calculation
+*
+*/  
+void LSM3D_VOXEL_COUNT_LESS_THAN_ZERO_CONTROL_VOLUME(
+  int *count,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb,
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *klo_gb,
+  const int *khi_gb,
+  const LSMLIB_REAL *control_vol,
+  const int *ilo_control_vol_gb, 
+  const int *ihi_control_vol_gb,
+  const int *jlo_control_vol_gb, 
+  const int *jhi_control_vol_gb,
+  const int *klo_control_vol_gb, 
+  const int *khi_control_vol_gb,
+  const int *control_vol_sgn,
+  const int *ilo_fb,
+  const int *ihi_fb,
+  const int *jlo_fb,
+  const int *jhi_fb,
+  const int *klo_fb,
+  const int *khi_fb); 
 #ifdef __cplusplus
 }
 #endif

@@ -8,19 +8,8 @@ c  Description: F77 routines for 3D level set method utility subroutines
 c
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dMaxNormDiff() computes the max norm of the difference 
-c  between the two specified scalar fields. 
-c
-c  Arguments:
-c    max_norm_diff (out):   max norm of the difference between the fields
-c    field1 (in):           scalar field 1
-c    field2 (in):           scalar field 2
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include in norm 
-c                           calculation
-c
+
+
 c***********************************************************************
       subroutine lsm3dMaxNormDiff(
      &  max_norm_diff,
@@ -85,18 +74,179 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
+
 c***********************************************************************
-c
-c  lsm3dComputeStableAdvectionDt() computes the stable time step size 
-c  for an advection term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_* (in):            components of velocity at t = t_cur
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx, dy, dz (in):       grid spacing
-c
+      subroutine lsm3dAveAbsDiff(
+     &  ave_abs_diff,
+     &  field1,
+     &  ilo_field1_gb, ihi_field1_gb,
+     &  jlo_field1_gb, jhi_field1_gb,
+     &  klo_field1_gb, khi_field1_gb,
+     &  field2,
+     &  ilo_field2_gb, ihi_field2_gb,
+     &  jlo_field2_gb, jhi_field2_gb,
+     &  klo_field2_gb, khi_field2_gb,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      real ave_abs_diff
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_field1_gb, ihi_field1_gb
+      integer jlo_field1_gb, jhi_field1_gb
+      integer klo_field1_gb, khi_field1_gb
+      integer ilo_field2_gb, ihi_field2_gb
+      integer jlo_field2_gb, jhi_field2_gb
+      integer klo_field2_gb, khi_field2_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib   
+      real field1(ilo_field1_gb:ihi_field1_gb,
+     &            jlo_field1_gb:jhi_field1_gb,
+     &            klo_field1_gb:khi_field1_gb)
+      real field2(ilo_field2_gb:ihi_field2_gb,
+     &            jlo_field2_gb:jhi_field2_gb,
+     &            klo_field2_gb:khi_field2_gb)
+      
+c     local variables      
+      real sum_abs_diff, num_pts, next_diff
+      real zero, one
+      parameter (zero=0.d0, one=1.d0)
+      integer i,j,k
+
+c     initialize max_norm_diff
+      sum_abs_diff = zero
+      num_pts = zero
+
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	      next_diff = abs(field1(i,j,k) - field2(i,j,k))	      	      
+              sum_abs_diff = sum_abs_diff + next_diff
+              num_pts = num_pts + one
+	      
+          enddo
+	 enddo 
+        enddo
+c       } end loop over grid 
+      
+      if( num_pts .gt. zero) then
+         ave_abs_diff = sum_abs_diff / num_pts
+      else 
+         ave_abs_diff = zero
+      endif
+      	 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm3dVoxelCountGreaterThanZero(
+     &  count,
+     &  phi,
+     &  ilo_gb, ihi_gb,
+     &  jlo_gb, jhi_gb,
+     &  klo_gb, khi_gb,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer count
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      
+c     local variables      
+      integer i,j,k
+
+      count = 0
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .gt. 0.d0) then
+	       count = count + 1
+	     endif
+	     
+	  enddo       
+         enddo
+        enddo
+c       } end loop over grid     
+      	 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm3dVoxelCountLessThanZero(
+     &  count,
+     &  phi,
+     &  ilo_gb, ihi_gb,
+     &  jlo_gb, jhi_gb,
+     &  klo_gb, khi_gb,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer count
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      
+c     local variables      
+      integer i,j,k
+      
+      count = 0
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .lt. 0.d0) then
+	       count = count + 1
+	     endif
+	        
+          enddo
+	 enddo 
+        enddo
+c       } end loop over grid     
+      	 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+
 c***********************************************************************
       subroutine lsm3dComputeStableAdvectionDt(
      &  dt,
@@ -175,28 +325,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dComputeStableNormalVelDt() computes the stable time step 
-c  size for a normal velocity term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_n (in):            normal velocity at t = t_cur
-c    phi_*_plus (in):       components of forward approx to grad(phi) at 
-c                           t = t_cur
-c    phi_*_minus (in):      components of backward approx to grad(phi) at
-c                           t = t_cur
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx (in):               grid spacing
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm3dComputeStableNormalVelDt(
      &  dt,
@@ -319,29 +448,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dComputeStableConstNormalVelDt() computes the stable time step 
-c  size for a constant normal velocity term based on a CFL criterion.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_n (in):            normal velocity at t = t_cur, constant for all 
-c                           points
-c    phi_*_plus (in):       components of forward approx to grad(phi) at 
-c                           t = t_cur
-c    phi_*_minus (in):      components of backward approx to grad(phi) at
-c                           t = t_cur
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx, dy (in):           grid spacing in x, y directions
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm3dComputeStableConstNormalVelDt(
      &  dt,
@@ -400,7 +507,7 @@ c     _ib refers to box to include in dt calculation
       real max_dx_sq
       real cfl_number
       integer i,j,k
-      real max_H_over_dX
+      real max_H_over_dX, abs_vel_n, norm_grad_phi
       real H_over_dX_cur
       real phi_x_cur, phi_y_cur, phi_z_cur
       real small_number
@@ -417,6 +524,8 @@ c     compute inv_dx, inv_dy, inv_dz
       inv_dx = 1.d0/dx
       inv_dy = 1.d0/dy
       inv_dz = 1.d0/dz
+      
+      abs_vel_n = abs(vel_n)
 
 c       loop over included cells {
         do k=klo_ib,khi_ib
@@ -430,13 +539,15 @@ c       loop over included cells {
                 phi_z_cur = max(abs(phi_z_plus(i,j,k)),
      &	                        abs(phi_z_minus(i,j,k)))
 
-                H_over_dX_cur = abs(vel_n) 
-     &                    / sqrt( phi_x_cur*phi_x_cur 
-     &                          + phi_y_cur*phi_y_cur 
-     &                          + phi_z_cur*phi_z_cur )
-     &                    * ( phi_x_cur*inv_dx 
-     &                      + phi_y_cur*inv_dy 
-     &                      + phi_z_cur*inv_dz + max_dx_sq )
+                norm_grad_phi = sqrt( phi_x_cur*phi_x_cur 
+     &                              + phi_y_cur*phi_y_cur 
+     &                              + phi_z_cur*phi_z_cur + max_dx_sq )
+
+                H_over_dX_cur = abs_vel_n / norm_grad_phi
+     &                        * ( phi_x_cur*inv_dx 
+     &                          + phi_y_cur*inv_dy 
+     &                          + phi_z_cur*inv_dz )
+     
   
                 if (H_over_dX_cur .gt. max_H_over_dX) then
                   max_H_over_dX = H_over_dX_cur  
@@ -455,23 +566,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dVolumeIntegralPhiLessThanZero() computes the volume integral of 
-c  the specified function over the region where the level set function 
-c  is less than 0.  
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the region 
-c                           where phi < 0
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for 
-c                           Heaviside function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dVolumeIntegralPhiLessThanZero(
      &  int_F,
@@ -557,23 +652,7 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dVolumeIntegralPhiGreaterThanZero() computes the volume integral 
-c  of the specified function over the region where the level set 
-c  function is greater than 0.  
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the region 
-c                           where phi < 0
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for Heaviside 
-c                           function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dVolumeIntegralPhiGreaterThanZero(
      &  int_F,
@@ -659,23 +738,7 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dSurfaceIntegral() computes the surface integral of the specified 
-c  function over the zero level set.
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the surface defined
-c                           by the zero level set
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    phi_* (in):            components of grad(phi)
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for 
-c                           delta-function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dSurfaceIntegral(
      &  int_F,
@@ -782,24 +845,7 @@ c } end subroutine
 c***********************************************************************
 
 
-c***********************************************************************
-c
-c  lsm3dMaxNormDiffControlVolume() computes the max norm of the 
-c  difference between the two specified scalar fields in the region 
-c  of the computational domain included by the control volume data.
-c
-c  Arguments:
-c    max_norm_diff (out):   max norm of the difference between the fields
-c    field1 (in):           scalar field 1
-c    field2 (in):           scalar field 2
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the max norm calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include in norm 
-c                           calculation
-c
+
 c***********************************************************************
       subroutine lsm3dMaxNormDiffControlVolume(
      &  max_norm_diff,
@@ -907,24 +953,7 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dComputeStableAdvectionDtControlVolume() computes the stable 
-c  time step size for an advection term based on a CFL criterion for 
-c  grid cells within the computational domain included by the control
-c  volume data.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_* (in):            components of velocity at t = t_cur
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx, dy, dz (in):       grid spacing
-c
+
 c***********************************************************************
       subroutine lsm3dComputeStableAdvectionDtControlVolume(
      &  dt,
@@ -1044,34 +1073,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dComputeStableNormalVelDtControlVolume() computes the stable 
-c  time step size for a normal velocity term based on a CFL criterion
-c  for grid cells within the computational domain included by the
-c  control volume data.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_n (in):            normal velocity at t = t_cur
-c    phi_*_plus (in):       components of forward approx to grad(phi) at 
-c                           t = t_cur
-c    phi_*_minus (in):      components of backward approx to grad(phi) at
-c                           t = t_cur
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx (in):               grid spacing
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm3dComputeStableNormalVelDtControlVolume(
      &  dt,
@@ -1246,35 +1248,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dComputeStableConstNormalVelDtControlVolume() computes the 
-c  stable time step size for a constant normal velocity term based on 
-c  a CFL criterion for grid cells within the computational domain 
-c  included by the control volume data.
-c  
-c  Arguments:
-c    dt (out):              step size
-c    vel_n (in):            normal velocity at t = t_cur, constant for all 
-c                           points
-c    phi_*_plus (in):       components of forward approx to grad(phi) at 
-c                           t = t_cur
-c    phi_*_minus (in):      components of backward approx to grad(phi) at
-c                           t = t_cur
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for box to include dt calculation
-c    dx, dy (in):           grid spacing in x, y directions
-c
-c  NOTES:
-c   - max(phi_*_plus , phi_*_minus) is the value of phi_* that is 
-c     used in the time step size calculation.  This may be more 
-c     conservative than necessary for Godunov's method, but it is 
-c     cheaper to compute.
-c
+
 c***********************************************************************
       subroutine lsm3dComputeStableConstNormalVelDtControlVolume(
      &  dt,
@@ -1382,10 +1356,10 @@ c             positive control volume
                 H_over_dX_cur = abs(vel_n) 
      &                    / sqrt( phi_x_cur*phi_x_cur 
      &                          + phi_y_cur*phi_y_cur 
-     &                          + phi_z_cur*phi_z_cur )
+     &                          + phi_z_cur*phi_z_cur + max_dx_sq )
      &                    * ( phi_x_cur*inv_dx 
      &                      + phi_y_cur*inv_dy 
-     &                      + phi_z_cur*inv_dz + max_dx_sq )
+     &                      + phi_z_cur*inv_dz  )
   
                 if (H_over_dX_cur .gt. max_H_over_dX) then
                   max_H_over_dX = H_over_dX_cur  
@@ -1415,10 +1389,10 @@ c             negative control volume
                 H_over_dX_cur = abs(vel_n) 
      &                    / sqrt( phi_x_cur*phi_x_cur 
      &                          + phi_y_cur*phi_y_cur 
-     &                          + phi_z_cur*phi_z_cur )
+     &                          + phi_z_cur*phi_z_cur + max_dx_sq )
      &                    * ( phi_x_cur*inv_dx 
      &                      + phi_y_cur*inv_dy 
-     &                      + phi_z_cur*inv_dz + max_dx_sq )
+     &                      + phi_z_cur*inv_dz )
 
                 if (H_over_dX_cur .gt. max_H_over_dX) then
                   max_H_over_dX = H_over_dX_cur  
@@ -1439,29 +1413,7 @@ c     set dt
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dVolumeIntegralPhiLessThanZeroControlVolume() computes the 
-c  volume integral of the specified function over the region of the
-c  computational domain where the level set function is less than 0.  
-c  The computational domain contains only those cells that are included
-c  by the control volume data.
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the region 
-c                           where phi < 0
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the integral calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for 
-c                           Heaviside function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dVolumeIntegralPhiLessThanZeroControlVolume(
      &  int_F,
@@ -1597,29 +1549,7 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dVolumeIntegralPhiGreaterThanZeroControlVolume() computes the 
-c  volume integral of the specified function over the region of the
-c  computational domain where the level set function is greater than 0.  
-c  The computational domain contains only those cells that are included
-c  by the control volume data.
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the region 
-c                           where phi < 0
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the integral calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for Heaviside 
-c                           function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dVolumeIntegralPhiGreaterThanZeroControlVolume(
      &  int_F,
@@ -1754,30 +1684,7 @@ c       } end loop over grid
 c } end subroutine
 c***********************************************************************
 
-c***********************************************************************
-c
-c  lsm3dSurfaceIntegralControlVolume() computes the surface integral 
-c  of the specified function over the region of the comptuational 
-c  domain where the level set function equals 0.  The computational 
-c  domain contains only those cells that are included by the control 
-c  volume data.
-c
-c  Arguments:
-c    int_F (out):           value of integral of F over the surface defined
-c                           by the zero level set
-c    F (in):                function to be integrated 
-c    phi (in):              level set function
-c    phi_* (in):            components of grad(phi)
-c    control_vol (in):      control volume data (used to exclude cells
-c                           from the integral calculation)
-c    control_vol_sgn (in):  1 (-1) if positive (negative) control volume
-c                           points should be used
-c    dx, dy, dz (in):       grid spacing
-c    epsilon (in):          width of numerical smoothing to use for 
-c                           delta-function
-c    *_gb (in):             index range for ghostbox
-c    *_ib (in):             index range for interior box
-c
+
 c***********************************************************************
       subroutine lsm3dSurfaceIntegralControlVolume(
      &  int_F,
@@ -1930,6 +1837,169 @@ c             negative control volume
 c       } end loop over grid
       endif
 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+c***********************************************************************
+      subroutine lsm3dVoxelCountGreaterThanZeroControlVolume(
+     &  count,
+     &  phi,
+     &  ilo_gb, ihi_gb,
+     &  jlo_gb, jhi_gb,
+     &  klo_gb, khi_gb,
+     &  control_vol,
+     &  ilo_control_vol_gb, ihi_control_vol_gb,
+     &  jlo_control_vol_gb, jhi_control_vol_gb,
+     &  klo_control_vol_gb, khi_control_vol_gb,
+     &  control_vol_sgn,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer count
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      integer ilo_control_vol_gb, ihi_control_vol_gb
+      integer jlo_control_vol_gb, jhi_control_vol_gb
+      integer klo_control_vol_gb, khi_control_vol_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
+      integer control_vol_sgn
+      
+c     local variables      
+      integer i,j,k
+      
+      count = 0
+      if (control_vol_sgn .gt. 0) then      
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .gt. 0.d0 .and.
+     &	        control_vol(i,j,k) .ge. 0.d0) then
+	           count = count + 1
+	     endif
+	        
+          enddo
+	 enddo 
+        enddo	
+c       } end loop over grid     
+      else
+        
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .gt. 0.d0 .and.
+     &	        control_vol(i,j,k) .le. 0.d0) then
+	           count = count + 1
+	     endif
+	        
+          enddo
+	 enddo 
+        enddo	
+c       } end loop over grid     
+      
+      endif
+      	 
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+
+
+c***********************************************************************
+      subroutine lsm3dVoxelCountLessThanZeroControlVolume(
+     &  count,
+     &  phi,
+     &  ilo_gb, ihi_gb,
+     &  jlo_gb, jhi_gb,
+     &  klo_gb, khi_gb,
+     &  control_vol,
+     &  ilo_control_vol_gb, ihi_control_vol_gb,
+     &  jlo_control_vol_gb, jhi_control_vol_gb,
+     &  klo_control_vol_gb, khi_control_vol_gb,
+     &  control_vol_sgn,
+     &  ilo_ib, ihi_ib,
+     &  jlo_ib, jhi_ib,
+     &  klo_ib, khi_ib)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+      integer count
+c     _gb refers to ghostbox 
+c     _ib refers to box to include in norm calculation
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      integer ilo_control_vol_gb, ihi_control_vol_gb
+      integer jlo_control_vol_gb, jhi_control_vol_gb
+      integer klo_control_vol_gb, khi_control_vol_gb
+      integer ilo_ib, ihi_ib
+      integer jlo_ib, jhi_ib
+      integer klo_ib, khi_ib
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real control_vol(ilo_control_vol_gb:ihi_control_vol_gb,
+     &                 jlo_control_vol_gb:jhi_control_vol_gb,
+     &                 klo_control_vol_gb:khi_control_vol_gb)
+      integer control_vol_sgn
+      
+c     local variables      
+      integer i,j,k
+      
+      count = 0
+      if (control_vol_sgn .gt. 0) then      
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .lt. 0.d0 .and.
+     &	        control_vol(i,j,k) .ge. 0.d0) then
+	           count = count + 1
+	     endif
+	        
+          enddo
+	 enddo 
+        enddo	
+c       } end loop over grid     
+      else
+        
+c       loop over grid { 
+        do k=klo_ib,khi_ib
+	 do j=jlo_ib,jhi_ib
+          do i=ilo_ib,ihi_ib
+
+	     if(phi(i,j,k) .lt. 0.d0 .and.
+     &	        control_vol(i,j,k) .le. 0.d0) then
+	           count = count + 1
+	     endif
+	        
+          enddo
+	 enddo 
+        enddo	
+c       } end loop over grid     
+      
+      endif
+      	 
       return
       end
 c } end subroutine
