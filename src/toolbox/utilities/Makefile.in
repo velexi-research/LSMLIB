@@ -15,18 +15,25 @@ all:  includes library
 
 includes:  
 	@CP@ $(SRC_DIR)/lsm_calculus_toolbox.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_calculus_toolbox2d.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_calculus_toolbox2d_local.h $(BUILD_DIR)/include/
+	@CP@ $(SRC_DIR)/lsm_calculus_toolbox3d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_utilities1d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_utilities2d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_utilities2d_local.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_utilities3d.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/lsm_utilities3d_local.h $(BUILD_DIR)/include/
 
-library:  lsm_calculus_toolbox.o       \
-          lsm_utilities1d.o            \
-          lsm_utilities2d.o            \
-	  lsm_utilities2d_local.o      \
-          lsm_utilities3d.o            \
-	  lsm_utilities3d_local.o      \
+library:  lsm_calculus_toolbox.o         \
+	  lsm_calculus_toolbox.o         \
+	  lsm_calculus_toolbox2d.o       \
+	  lsm_calculus_toolbox2d_local.o \
+	  lsm_calculus_toolbox3d.o       \
+          lsm_utilities1d.o              \
+          lsm_utilities2d.o              \
+	  lsm_utilities2d_local.o        \
+          lsm_utilities3d.o              \
+	  lsm_utilities3d_local.o        \
 
 clean:
 	@RM@ *.o 
