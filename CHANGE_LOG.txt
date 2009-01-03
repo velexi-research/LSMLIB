@@ -1,7 +1,8 @@
-v1.0.0 (2008/01/??)
+v1.0.0 (2009/01/??)
 -------------------
 * ENHANCEMENTS:
   - Improved support for localization/narrow-band calculations
+  - Improved reinitialization via Russo & Smereka subcell fix.
   - Added support for second-order accurate Fast Marching Method 
     calculations:
     * computation of signed distance function

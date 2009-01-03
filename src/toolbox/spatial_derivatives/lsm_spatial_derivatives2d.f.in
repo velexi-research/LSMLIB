@@ -2472,11 +2472,11 @@ c     { begin loop over grid
           phi_y_sq = phi_y(i,j)*phi_y(i,j)
           
           if( phi_x_sq .lt. zero_tol) then
-              phi_x_sq = zero;
+              phi_x_sq = zero
           endif
           
           if( phi_y_sq .lt. zero_tol) then
-               phi_y_sq = zero;
+               phi_y_sq = zero
           endif
           
           tmp = sqrt( phi_x_sq + phi_y_sq )

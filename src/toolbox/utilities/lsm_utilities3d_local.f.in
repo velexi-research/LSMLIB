@@ -72,17 +72,17 @@ c     initialize max_norm_diff
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index              
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
-	
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        j=index_y(l)
+        k=index_z(l)
+
+        if( narrow_band(i,j,k) .le. mark_fb ) then
   
-        next_diff = abs(field1(i,j,k) - field2(i,j,k))
-        if (next_diff .gt. max_norm_diff) then
-          max_norm_diff = next_diff
+          next_diff = abs(field1(i,j,k) - field2(i,j,k))
+          if (next_diff .gt. max_norm_diff) then
+            max_norm_diff = next_diff
+          endif
+
         endif
-	
-	endif
       enddo
 c     } end loop over indexed points
 
@@ -167,18 +167,18 @@ c     initialize max_norm_diff
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index              
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
-	
+        j=index_y(l)
+        k=index_z(l)
+
         if( narrow_band(i,j,k) .le. mark_fb .and. 
-     &      control_vol(i,j,k) .lt. zero   ) then	
+     &      control_vol(i,j,k) .lt. zero   ) then
   
           next_diff = abs(field1(i,j,k) - field2(i,j,k))
           if (next_diff .gt. max_norm_diff) then
             max_norm_diff = next_diff
           endif
-	
-	endif
+
+        endif
       enddo
 c     } end loop over indexed points
 
@@ -258,10 +258,10 @@ c     compute inv_dx, inv_dy, and inv_dz
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-       if( narrow_band(i,j,k) .le. mark_fb ) then	
+       if( narrow_band(i,j,k) .le. mark_fb ) then
 
                 U_over_dX_cur = abs(vel_x(i,j,k))*inv_dx
      &                        + abs(vel_y(i,j,k))*inv_dy
@@ -368,8 +368,9 @@ c     _ib refers to box to include in dt calculation
       real H_over_dX_cur
       real phi_x_cur, phi_y_cur, phi_z_cur
       real norm_grad_phi
-      real small_number
+      real small_number, tol
       parameter (small_number = @tiny_nonzero_number@)
+      parameter (tol=@lsmlib_zero_tol@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -386,32 +387,31 @@ c     compute inv_dx, inv_dy, and inv_dz
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-       if( narrow_band(i,j,k) .le. mark_fb ) then	
+       if( narrow_band(i,j,k) .le. mark_fb ) then
 
                   phi_x_cur = max(abs(phi_x_plus(i,j,k)),
-     &                          abs(phi_x_minus(i,j,k)))
+     &                            abs(phi_x_minus(i,j,k)))
                   phi_y_cur = max(abs(phi_y_plus(i,j,k)),
-     &                          abs(phi_y_minus(i,j,k)))
+     &                            abs(phi_y_minus(i,j,k)))
                   phi_z_cur = max(abs(phi_z_plus(i,j,k)),
-     &                          abs(phi_z_minus(i,j,k)))
-                  norm_grad_phi = sqrt( phi_x_cur*phi_x_cur 
-     &                              + phi_y_cur*phi_y_cur 
-     &                              + phi_z_cur*phi_z_cur + max_dx_sq )
+     &                            abs(phi_z_minus(i,j,k)))
+                  norm_grad_phi = sqrt(phi_x_cur*phi_x_cur 
+     &                                +phi_y_cur*phi_y_cur 
+     &                                +phi_z_cur*phi_z_cur+max_dx_sq)
 
-                 if( norm_grad_phi .gt. tol ) then
-                    H_over_dX_cur = abs(vel_n(i,j,k)) / norm_grad_phi
-     &                            * (  phi_x_cur*inv_dx 
-     &                               + phi_y_cur*inv_dy 
-     &                               + phi_z_cur*inv_dz )
+                 if ( norm_grad_phi .gt. tol ) then
+                   H_over_dX_cur = abs(vel_n(i,j,k)) / norm_grad_phi
+     &                           * (  phi_x_cur*inv_dx 
+     &                              + phi_y_cur*inv_dy 
+     &                              + phi_z_cur*inv_dz )
 
-        	    if (H_over_dX_cur .gt. max_H_over_dX) then
-                       max_H_over_dX = H_over_dX_cur  
-        	    endif
-		endif
-	      
+                   if (H_over_dX_cur .gt. max_H_over_dX) then
+                      max_H_over_dX = H_over_dX_cur  
+                   endif
+            endif
           endif
         enddo
 c       } end loop over indexed points
@@ -529,7 +529,8 @@ c     _ib refers to box to include in dt calculation
       real phi_x_cur, phi_y_cur, phi_z_cur
       real norm_grad_phi
       real small_number, tol
-      parameter (small_number = 1.d-35, tol=1.d-8)
+      parameter (small_number=@tiny_nonzero_number@)
+      parameter (tol=@lsmlib_zero_tol@)
 
 c     compute max_dx_sq
       max_dx_sq = max(dx,dy,dz)
@@ -547,32 +548,32 @@ c     compute inv_dx, inv_dy, and inv_dz
 c     { begin loop over indexed points
         do l=nlo_index, nhi_index     
           i=index_x(l)
-	  j=index_y(l)
-	  k=index_z(l)
+          j=index_y(l)
+          k=index_z(l)
 
          if( narrow_band(i,j,k) .le. mark_fb .and. 
-     &       control_vol(i,j,k) .gt. 0.d0   	 ) then	
+     &       control_vol(i,j,k) .gt. 0.d0 ) then
 
                   phi_x_cur = max(abs(phi_x_plus(i,j,k)),
-     &                          abs(phi_x_minus(i,j,k)))
+     &                            abs(phi_x_minus(i,j,k)))
                   phi_y_cur = max(abs(phi_y_plus(i,j,k)),
-     &                          abs(phi_y_minus(i,j,k)))
+     &                            abs(phi_y_minus(i,j,k)))
                   phi_z_cur = max(abs(phi_z_plus(i,j,k)),
-     &                          abs(phi_z_minus(i,j,k)))
-                  norm_grad_phi = sqrt( phi_x_cur*phi_x_cur 
-     &                              + phi_y_cur*phi_y_cur 
-     &                              + phi_z_cur*phi_z_cur + max_dx_sq )
+     &                            abs(phi_z_minus(i,j,k)))
+                  norm_grad_phi = sqrt(phi_x_cur*phi_x_cur 
+     &                                +phi_y_cur*phi_y_cur 
+     &                                +phi_z_cur*phi_z_cur+max_dx_sq)
 
                  if( norm_grad_phi .gt. tol ) then
-                    H_over_dX_cur = abs(vel_n(i,j,k)) / norm_grad_phi
-     &                            * (  phi_x_cur*inv_dx 
-     &                               + phi_y_cur*inv_dy 
-     &                               + phi_z_cur*inv_dz )
+                   H_over_dX_cur = abs(vel_n(i,j,k)) / norm_grad_phi
+     &                           * (  phi_x_cur*inv_dx 
+     &                              + phi_y_cur*inv_dy 
+     &                              + phi_z_cur*inv_dz )
 
-        	    if (H_over_dX_cur .gt. max_H_over_dX) then
-                       max_H_over_dX = H_over_dX_cur  
-        	    endif
-		 endif	      
+                   if (H_over_dX_cur .gt. max_H_over_dX) then
+                      max_H_over_dX = H_over_dX_cur  
+                   endif
+                 endif     
            endif
          enddo
 c       } end loop over indexed points
@@ -580,21 +581,21 @@ c       } end loop over indexed points
 c     { begin loop over indexed points
         do l=nlo_index, nhi_index     
           i=index_x(l)
-	  j=index_y(l)
-	  k=index_z(l)
+          j=index_y(l)
+          k=index_z(l)
 
          if( narrow_band(i,j,k) .le. mark_fb .and. 
-     &       control_vol(i,j,k) .lt. 0.d0   	 ) then	
+     &       control_vol(i,j,k) .lt. 0.d0 ) then
 
                   phi_x_cur = max(abs(phi_x_plus(i,j,k)),
-     &                          abs(phi_x_minus(i,j,k)))
+     &                            abs(phi_x_minus(i,j,k)))
                   phi_y_cur = max(abs(phi_y_plus(i,j,k)),
-     &                          abs(phi_y_minus(i,j,k)))
+     &                            abs(phi_y_minus(i,j,k)))
                   phi_z_cur = max(abs(phi_z_plus(i,j,k)),
-     &                          abs(phi_z_minus(i,j,k)))
-                  norm_grad_phi = sqrt( phi_x_cur*phi_x_cur 
-     &                              + phi_y_cur*phi_y_cur 
-     &                              + phi_z_cur*phi_z_cur + max_dx_sq )
+     &                            abs(phi_z_minus(i,j,k)))
+                  norm_grad_phi = sqrt(phi_x_cur*phi_x_cur 
+     &                                +phi_y_cur*phi_y_cur 
+     &                                +phi_z_cur*phi_z_cur+max_dx_sq)
 
                  if( norm_grad_phi .gt. tol ) then
                     H_over_dX_cur = abs(vel_n(i,j,k)) / norm_grad_phi
@@ -602,10 +603,10 @@ c     { begin loop over indexed points
      &                               + phi_y_cur*inv_dy 
      &                               + phi_z_cur*inv_dz )
 
-        	    if (H_over_dX_cur .gt. max_H_over_dX) then
+                 if (H_over_dX_cur .gt. max_H_over_dX) then
                        max_H_over_dX = H_over_dX_cur  
-        	    endif
-		 endif	      
+                 endif
+             endif      
            endif
          enddo
 c       } end loop over indexed points
@@ -717,28 +718,27 @@ c     compute inv_dx, ind_dy and inv_dz
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-       if( narrow_band(i,j,k) .le. mark_fb ) then	
-     	
-        phi_x_cur = max(abs(phi_x_plus(i,j,k)),
+       if( narrow_band(i,j,k) .le. mark_fb ) then
+
+         phi_x_cur = max(abs(phi_x_plus(i,j,k)),
      &                   abs(phi_x_minus(i,j,k)))
-        phi_y_cur = max(abs(phi_y_plus(i,j,k)),
+         phi_y_cur = max(abs(phi_y_plus(i,j,k)),
      &                  abs(phi_y_minus(i,j,k)))
-        phi_z_cur = max(abs(phi_z_plus(i,j,k)),
+         phi_z_cur = max(abs(phi_z_plus(i,j,k)),
      &                  abs(phi_z_minus(i,j,k)))
 
-        H_over_dX_cur = abs_vel_n / norm_grad_phi
-     &                        * ( phi_x_cur*inv_dx 
-     &                          + phi_y_cur*inv_dy 
-     &                          + phi_z_cur*inv_dz )
+         H_over_dX_cur = abs_vel_n / norm_grad_phi
+     &                             * ( phi_x_cur*inv_dx 
+     &                               + phi_y_cur*inv_dy 
+     &                               + phi_z_cur*inv_dz )
 
-        if (H_over_dX_cur .gt. max_H_over_dX) then
-            max_H_over_dX = H_over_dX_cur  
+         if (H_over_dX_cur .gt. max_H_over_dX) then
+           max_H_over_dX = H_over_dX_cur  
+          endif
         endif
-	
-	endif
       enddo
 c     } end loop over indexed points
 

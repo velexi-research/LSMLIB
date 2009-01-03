@@ -84,40 +84,40 @@ c     { begin loop over grid
       do k=klo_kappa_fb,khi_kappa_fb
         do j=jlo_kappa_fb,jhi_kappa_fb
           do i=ilo_kappa_fb,ihi_kappa_fb
-	
-	    phi_xx = ( phi(i+1,j,k) - 2.0d0*phi(i,j,k) 
-     &	             + phi(i-1,j,k) )*dxsq_factor
-	    phi_yy = ( phi(i,j+1,k) - 2.0d0*phi(i,j,k)
-     &	             + phi(i,j-1,k) )*dysq_factor
+
+            phi_xx = ( phi(i+1,j,k) - 2.0d0*phi(i,j,k) 
+     &               + phi(i-1,j,k) )*dxsq_factor
+            phi_yy = ( phi(i,j+1,k) - 2.0d0*phi(i,j,k)
+     &               + phi(i,j-1,k) )*dysq_factor
             phi_zz = ( phi(i,j,k+1) - 2.0d0*phi(i,j,k) 
-     &	             + phi(i,j,k-1) )*dzsq_factor 
-	    phi_xy = ( phi(i+1,j+1,k) - phi(i+1,j-1,k)
-     &	              -phi(i-1,j+1,k) + phi(i-1,j-1,k))*dxdy_factor     
-	    phi_xz = ( phi(i+1,j,k+1) - phi(i+1,j,k-1)
-     &	              -phi(i-1,j,k+1) + phi(i-1,j,k-1))*dxdz_factor
+     &               + phi(i,j,k-1) )*dzsq_factor 
+            phi_xy = ( phi(i+1,j+1,k) - phi(i+1,j-1,k)
+     &               -phi(i-1,j+1,k) + phi(i-1,j-1,k))*dxdy_factor     
+            phi_xz = ( phi(i+1,j,k+1) - phi(i+1,j,k-1)
+     &               -phi(i-1,j,k+1) + phi(i-1,j,k-1))*dxdz_factor
             phi_yz = ( phi(i,j+1,k+1) - phi(i,j+1,k-1)
-     &	              -phi(i,j-1,k+1) + phi(i,j-1,k-1))*dydz_factor
+     &               -phi(i,j-1,k+1) + phi(i,j-1,k-1))*dydz_factor
 
             denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
-     &                    grad_phi_mag(i,j,k)	       
+     &                    grad_phi_mag(i,j,k)       
 
-	    if( denominator .lt. zero_tol ) then
-        	 kappa(i,j,k) = 0.d0
-	    else   	
-		 kappa_tmp = phi_xx*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	                  +  phi_yy*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	                  -2*phi_xy*phi_x(i,j,k)*phi_y(i,j,k)
+            if( denominator .lt. zero_tol ) then
+              kappa(i,j,k) = 0.d0
+            else
+              kappa_tmp = phi_xx*phi_y(i,j,k)*phi_y(i,j,k)  
+     &                  +  phi_yy*phi_x(i,j,k)*phi_x(i,j,k)  
+     &                  -2*phi_xy*phi_x(i,j,k)*phi_y(i,j,k)
      &                    +  phi_xx*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	                  +  phi_zz*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	                  -2*phi_xz*phi_x(i,j,k)*phi_z(i,j,k)
+     &                    +  phi_zz*phi_x(i,j,k)*phi_x(i,j,k)  
+     &                  -2*phi_xz*phi_x(i,j,k)*phi_z(i,j,k)
      &                    +  phi_yy*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	                  +  phi_zz*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	                  -2*phi_yz*phi_y(i,j,k)*phi_z(i,j,k)
+     &                    +  phi_zz*phi_y(i,j,k)*phi_y(i,j,k)  
+     &                  -2*phi_yz*phi_y(i,j,k)*phi_z(i,j,k)
      
-        	 kappa(i,j,k) = kappa_tmp/denominator
-              endif
-		
-	enddo
+              kappa(i,j,k) = kappa_tmp/denominator
+            endif
+
+         enddo
        enddo
       enddo
 c     } end loop over grid
@@ -205,39 +205,39 @@ c     { begin loop over grid
       do k=klo_kappa_fb,khi_kappa_fb
         do j=jlo_kappa_fb,jhi_kappa_fb
           do i=ilo_kappa_fb,ihi_kappa_fb     
-	
-	  phi_xx = ( phi(i+1,j,k) - 2.0d0*phi(i,j,k) 
-     &	           + phi(i-1,j,k) )*dxsq_factor
-	  phi_yy = ( phi(i,j+1,k) - 2.0d0*phi(i,j,k)
-     &	           + phi(i,j-1,k) )*dysq_factor
-          phi_zz = ( phi(i,j,k+1) - 2.0d0*phi(i,j,k) 
-     &	           + phi(i,j,k-1) )*dzsq_factor 
-	  phi_xy = ( phi(i+1,j+1,k) - phi(i+1,j-1,k)
-     &	            -phi(i-1,j+1,k) + phi(i-1,j-1,k))*dxdy_factor     
-	  phi_xz = ( phi(i+1,j,k+1) - phi(i+1,j,k-1)
-     &	            -phi(i-1,j,k+1) + phi(i-1,j,k-1))*dxdz_factor
-          phi_yz = ( phi(i,j+1,k+1) - phi(i,j+1,k-1)
-     &	            -phi(i,j-1,k+1) + phi(i,j-1,k-1))*dydz_factor
-	  
-          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
-     &                  grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)	       
 
-	  if( denominator .lt. zero_tol ) then
-           kappa(i,j,k) = 0.d0
-	  else   	
-	   kappa_tmp = 
-     &	    phi_x(i,j,k)*phi_x(i,j,k)*(phi_yy*phi_zz - phi_yz*phi_yz)
+            phi_xx = ( phi(i+1,j,k) - 2.0d0*phi(i,j,k) 
+     &             + phi(i-1,j,k) )*dxsq_factor
+            phi_yy = ( phi(i,j+1,k) - 2.0d0*phi(i,j,k)
+     &             + phi(i,j-1,k) )*dysq_factor
+            phi_zz = ( phi(i,j,k+1) - 2.0d0*phi(i,j,k) 
+     &             + phi(i,j,k-1) )*dzsq_factor 
+            phi_xy = ( phi(i+1,j+1,k) - phi(i+1,j-1,k)
+     &             -phi(i-1,j+1,k) + phi(i-1,j-1,k))*dxdy_factor     
+            phi_xz = ( phi(i+1,j,k+1) - phi(i+1,j,k-1)
+     &             -phi(i-1,j,k+1) + phi(i-1,j,k-1))*dxdz_factor
+          phi_yz = ( phi(i,j+1,k+1) - phi(i,j+1,k-1)
+     &             -phi(i,j-1,k+1) + phi(i,j-1,k-1))*dydz_factor
+
+          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
+     &                  grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)       
+
+          if ( denominator .lt. zero_tol ) then
+            kappa(i,j,k) = 0.d0
+          else
+            kappa_tmp = 
+     &      phi_x(i,j,k)*phi_x(i,j,k)*(phi_yy*phi_zz - phi_yz*phi_yz)
      & +    phi_y(i,j,k)*phi_y(i,j,k)*(phi_xx*phi_zz - phi_xz*phi_xz)
      & +    phi_z(i,j,k)*phi_z(i,j,k)*(phi_xx*phi_yy - phi_xy*phi_xy) 
      & + 2*(phi_x(i,j,k)*phi_y(i,j,k)*(phi_xz*phi_yz - phi_xy*phi_zz)
-     &    + phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_xz - phi_yz*phi_xx) 
-     &    + phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_xz*phi_yy))
+     &     +phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_xz - phi_yz*phi_xx) 
+     &     +phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_xz*phi_yy))
      
-            kappa(i,j,k) = kappa_tmp/denominator;
+            kappa(i,j,k) = kappa_tmp/denominator
           endif
-		
-	  enddo	
-	enddo
+
+          enddo
+        enddo
       enddo 
 c     } end loop over grid
 
@@ -324,20 +324,20 @@ c       { begin loop over grid
         do k=klo_fb,khi_fb
          do j=jlo_fb,jhi_fb
           do i=ilo_fb,ihi_fb  
-       	
-	  phi_xx = ( -phi(i+2,j,k) + sixteen*phi(i+1,j,k)
-     &               -thirty*phi(i,j,k) 	   
+       
+            phi_xx = ( -phi(i+2,j,k) + sixteen*phi(i+1,j,k)
+     &               -thirty*phi(i,j,k)
      &               -phi(i-2,j,k) + sixteen*phi(i-1,j,k) )
      &               * dxsq_factor
-	  phi_yy = ( -phi(i,j+2,k) + sixteen*phi(i,j+1,k) 	  
-     &               -thirty*phi(i,j,k) 	   
+            phi_yy = ( -phi(i,j+2,k) + sixteen*phi(i,j+1,k)
+     &               -thirty*phi(i,j,k) 
      &               -phi(i,j-2,k) + sixteen*phi(i,j-1,k) )
      &               * dysq_factor
-          phi_zz = ( -phi(i,j,k+2) + sixteen*phi(i,j,k+1) 	  
-     &               -thirty*phi(i,j,k) 	   
+            phi_zz = ( -phi(i,j,k+2) + sixteen*phi(i,j,k+1) 
+     &               -thirty*phi(i,j,k)  
      &               -phi(i,j,k-2) + sixteen*phi(i,j,k-1) )
      &               * dzsq_factor
-	  phi_xy = ( -phi_x(i,j+2,k) + eight*phi_x(i,j+1,k) 
+            phi_xy = ( -phi_x(i,j+2,k) + eight*phi_x(i,j+1,k) 
      &               +phi_x(i,j-2,k) - eight*phi_x(i,j-1,k) )
      &               * dy_factor
           phi_yz = ( -phi_y(i,j,k+2) + eight*phi_y(i,j,k+1) 
@@ -346,26 +346,26 @@ c       { begin loop over grid
           phi_zx = ( -phi_z(i+2,j,k) + eight*phi_z(i+1,j,k) 
      &               +phi_z(i-2,j,k) - eight*phi_z(i-1,j,k) )
      &               * dx_factor
-	  
-          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
-     &                  grad_phi_mag(i,j,k)	       
 
-	  if( denominator .lt. zero_tol ) then
+          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
+     &                  grad_phi_mag(i,j,k)       
+
+          if( denominator .lt. zero_tol ) then
              kappa(i,j,k) = 0.d0
-	  else   	
-	     kappa_tmp =    phi_xx*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	                 +  phi_yy*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	                 -2*phi_xy*phi_x(i,j,k)*phi_y(i,j,k)
-     &                   +  phi_xx*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	                 +  phi_zz*phi_x(i,j,k)*phi_x(i,j,k)  
-     &	                 -2*phi_zx*phi_x(i,j,k)*phi_z(i,j,k)
-     &                   +  phi_yy*phi_z(i,j,k)*phi_z(i,j,k)  
-     &	                 +  phi_zz*phi_y(i,j,k)*phi_y(i,j,k)  
-     &	                 -2*phi_yz*phi_y(i,j,k)*phi_z(i,j,k)
+          else
+             kappa_tmp =  phi_xx*phi_y(i,j,k)*phi_y(i,j,k)  
+     &                 +  phi_yy*phi_x(i,j,k)*phi_x(i,j,k)  
+     &                 -2*phi_xy*phi_x(i,j,k)*phi_y(i,j,k)
+     &                 +  phi_xx*phi_z(i,j,k)*phi_z(i,j,k)  
+     &                 +  phi_zz*phi_x(i,j,k)*phi_x(i,j,k)  
+     &                 -2*phi_zx*phi_x(i,j,k)*phi_z(i,j,k)
+     &                 +  phi_yy*phi_z(i,j,k)*phi_z(i,j,k)  
+     &                 +  phi_zz*phi_y(i,j,k)*phi_y(i,j,k)  
+     &                 -2*phi_yz*phi_y(i,j,k)*phi_z(i,j,k)
              kappa(i,j,k) = kappa_tmp/denominator
           endif
-	enddo
-       enddo	
+         enddo
+       enddo
       enddo 
 c     } end loop over grid
 
@@ -456,48 +456,47 @@ c       { begin loop over grid
         do k=klo_kappa_fb,khi_kappa_fb
          do j=jlo_kappa_fb,jhi_kappa_fb
           do i=ilo_kappa_fb,ihi_kappa_fb  
-       	
-	  phi_xx = ( -phi(i+2,j,k) + sixteen*phi(i+1,j,k)
-     &               -thirty*phi(i,j,k) 	   
+       
+            phi_xx = ( -phi(i+2,j,k) + sixteen*phi(i+1,j,k)
+     &               -thirty*phi(i,j,k)
      &               -phi(i-2,j,k) + sixteen*phi(i-1,j,k) )
      &               * dxsq_factor
-	  phi_yy = ( -phi(i,j+2,k) + sixteen*phi(i,j+1,k) 	  
-     &               -thirty*phi(i,j,k) 	   
+            phi_yy = ( -phi(i,j+2,k) + sixteen*phi(i,j+1,k)
+     &               -thirty*phi(i,j,k)
      &               -phi(i,j-2,k) + sixteen*phi(i,j-1,k) )
      &               * dysq_factor
-          phi_zz = ( -phi(i,j,k+2) + sixteen*phi(i,j,k+1) 	  
-     &               -thirty*phi(i,j,k) 	   
+            phi_zz = ( -phi(i,j,k+2) + sixteen*phi(i,j,k+1)
+     &               -thirty*phi(i,j,k)
      &               -phi(i,j,k-2) + sixteen*phi(i,j,k-1) )
      &               * dzsq_factor
-	  phi_xy = ( -phi_x(i,j+2,k) + eight*phi_x(i,j+1,k) 
+            phi_xy = ( -phi_x(i,j+2,k) + eight*phi_x(i,j+1,k) 
      &               +phi_x(i,j-2,k) - eight*phi_x(i,j-1,k) )
      &               * dy_factor
-          phi_yz = ( -phi_y(i,j,k+2) + eight*phi_y(i,j,k+1) 
+            phi_yz = ( -phi_y(i,j,k+2) + eight*phi_y(i,j,k+1) 
      &               +phi_y(i,j,k-2) - eight*phi_y(i,j,k-1) )
      &               * dz_factor
-          phi_zx = ( -phi_z(i+2,j,k) + eight*phi_z(i+1,j,k) 
+            phi_zx = ( -phi_z(i+2,j,k) + eight*phi_z(i+1,j,k) 
      &               +phi_z(i-2,j,k) - eight*phi_z(i-1,j,k) )
      &               * dx_factor
-	  
-          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
-     &                  grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)	       
 
-	  if( denominator .lt. zero_tol ) then
-           kappa(i,j,k) = 0.d0
-	  else   	
-	   kappa_tmp = 
-     &	    phi_x(i,j,k)*phi_x(i,j,k)*(phi_yy*phi_zz - phi_yz*phi_yz)
+          denominator = grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)*
+     &                  grad_phi_mag(i,j,k)*grad_phi_mag(i,j,k)
+
+          if( denominator .lt. zero_tol ) then
+            kappa(i,j,k) = 0.d0
+          else
+            kappa_tmp = 
+     &      phi_x(i,j,k)*phi_x(i,j,k)*(phi_yy*phi_zz - phi_yz*phi_yz)
      & +    phi_y(i,j,k)*phi_y(i,j,k)*(phi_xx*phi_zz - phi_zx*phi_zx)
      & +    phi_z(i,j,k)*phi_z(i,j,k)*(phi_xx*phi_yy - phi_xy*phi_xy) 
      & + 2*(phi_x(i,j,k)*phi_y(i,j,k)*(phi_zx*phi_yz - phi_xy*phi_zz)
      &    + phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_zx - phi_yz*phi_xx) 
      &    + phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_zx*phi_yy))
      
-            kappa(i,j,k) = kappa_tmp/denominator;
+            kappa(i,j,k) = kappa_tmp/denominator
           endif
-		
-	  enddo	
-	enddo
+         enddo
+       enddo
       enddo 
 c     } end loop over grid
 

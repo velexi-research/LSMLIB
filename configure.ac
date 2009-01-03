@@ -361,13 +361,20 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/reinitialization/lsm_reinitialization3d.f
            src/toolbox/reinitialization/lsm_reinitialization3d_local.f
            src/toolbox/spatial_derivatives/Makefile
+           src/toolbox/spatial_derivatives/lsm_curvature2d.f
+           src/toolbox/spatial_derivatives/lsm_curvature2d_local.f
+           src/toolbox/spatial_derivatives/lsm_curvature3d.f
+           src/toolbox/spatial_derivatives/lsm_curvature3d_local.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f
-           src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d_local.f
+           src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives3d_local.f
            src/toolbox/time_integration/Makefile
            src/toolbox/utilities/Makefile
+           src/toolbox/utilities/lsm_calculus_toolbox2d.f
+           src/toolbox/utilities/lsm_calculus_toolbox2d_local.f
+           src/toolbox/utilities/lsm_calculus_toolbox3d.f
            src/toolbox/utilities/lsm_utilities1d.f
            src/toolbox/utilities/lsm_utilities2d.f
            src/toolbox/utilities/lsm_utilities3d.f

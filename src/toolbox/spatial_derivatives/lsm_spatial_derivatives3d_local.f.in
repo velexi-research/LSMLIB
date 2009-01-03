@@ -119,15 +119,15 @@ c            is taken into account by sign_multiplier
 c     loop over indexed points only {
       do l= nlo_index, nhi_index      
         i = index_x(l) 
-	j = index_y(l)
-	k = index_z(l)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
-              Dn(i,j,k) = sign_multiplier
-     &          * ( Dn_minus_one(i,j,k)
-     &          - Dn_minus_one(i-offset(1),j-offset(2),k-offset(3)))          
+        j = index_y(l)
+        k = index_z(l)
+        if( narrow_band(i,j,k) .le. mark_fb ) then
+          Dn(i,j,k) = sign_multiplier
+     &      * ( Dn_minus_one(i,j,k)
+     &      - Dn_minus_one(i-offset(1),j-offset(2),k-offset(3)))          
         else
-	      Dn(i,j,k) = big
-	endif
+          Dn(i,j,k) = big
+        endif
       
       enddo
 c     }  end loop over indexed points 
@@ -287,11 +287,11 @@ c     compute first undivided differences in x-direction
 c    loop over  narrow band level 0 points only {
       do l = nlo_index0, nhi_index0       
         i = index_x(l)
-	j = index_y(l)
-	k = index_z(l)
-	
+        j = index_y(l)
+        k = index_z(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
 
             phi_x_plus(i,j,k) = D1(i+1,j,k)*inv_dx
             phi_x_minus(i,j,k) = D1(i,j,k)*inv_dx
@@ -325,11 +325,11 @@ c     compute first undivided differences in y-direction
 c    loop over  narrow band level 0 points only {
       do l = nlo_index0, nhi_index0       
         i = index_x(l)
-	j = index_y(l)
-	k = index_z(l)
-	
+        j = index_y(l)
+        k = index_z(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
 
             phi_y_minus(i,j,k) = D1(i,j,k)*inv_dy
             phi_y_plus(i,j,k) = D1(i,j+1,k)*inv_dy
@@ -362,11 +362,11 @@ c     compute first undivided differences in z-direction
 c    loop over  narrow band level 0 points only {
       do l = nlo_index0, nhi_index0       
         i = index_x(l)
-	j = index_y(l)
-	k = index_z(l)
-	
+        j = index_y(l)
+        k = index_z(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
 
             phi_z_plus(i,j,k) = D1(i,j,k+1)*inv_dz
             phi_z_minus(i,j,k) = D1(i,j,k)*inv_dz
@@ -568,30 +568,30 @@ c     compute second undivided differences x-direction
 c    loop over narrow band level 0 points {
       do l=nlo_index0, nhi_index0   
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
 c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
-	
+
 c             phi_x_plus
               if (abs(D2(i,j,k)).lt.abs(D2(i+1,j,k))) then
-        	phi_x_plus(i,j,k) = (D1(i+1,j,k) 
+                phi_x_plus(i,j,k) = (D1(i+1,j,k) 
      &                            - half*D2(i,j,k))*inv_dx
               else
-        	phi_x_plus(i,j,k) = (D1(i+1,j,k) 
+                phi_x_plus(i,j,k) = (D1(i+1,j,k) 
      &                            - half*D2(i+1,j,k))*inv_dx
               endif
 
 c             phi_x_minus
               if (abs(D2(i-1,j,k)).lt.abs(D2(i,j,k))) then
-        	phi_x_minus(i,j,k) = (D1(i,j,k) 
+                phi_x_minus(i,j,k) = (D1(i,j,k) 
      &                             + half*D2(i-1,j,k))*inv_dx
               else
-        	phi_x_minus(i,j,k) = (D1(i,j,k) 
+                phi_x_minus(i,j,k) = (D1(i,j,k) 
      &                             + half*D2(i,j,k))*inv_dx
               endif
-        endif	      
+        endif      
       enddo
 c     } end loop over indexed points
 
@@ -638,29 +638,29 @@ c     compute second undivided differences in y-direction
 c    loop over  narrow band level 0 points only {
       do l = nlo_index0, nhi_index0       
         i = index_x(l)
-	j = index_y(l)
-	k = index_z(l)
-	
+        j = index_y(l)
+        k = index_z(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
 c             phi_y_plus
               if (abs(D2(i,j,k)).lt.abs(D2(i,j+1,k))) then
-        	phi_y_plus(i,j,k) = (D1(i,j+1,k) 
+                phi_y_plus(i,j,k) = (D1(i,j+1,k) 
      &                            - half*D2(i,j,k))*inv_dy
               else
-        	phi_y_plus(i,j,k) = (D1(i,j+1,k) 
+                phi_y_plus(i,j,k) = (D1(i,j+1,k) 
      &                            - half*D2(i,j+1,k))*inv_dy
               endif
 
 c             phi_y_minus
               if (abs(D2(i,j-1,k)).lt.abs(D2(i,j,k))) then
-        	phi_y_minus(i,j,k) = (D1(i,j,k) 
+                phi_y_minus(i,j,k) = (D1(i,j,k) 
      &                             + half*D2(i,j-1,k))*inv_dy
               else
-        	phi_y_minus(i,j,k) = (D1(i,j,k) 
+                phi_y_minus(i,j,k) = (D1(i,j,k) 
      &                             + half*D2(i,j,k))*inv_dy
               endif
-	endif      
+        endif      
       enddo
 c     } end loop over narrow band points
 
@@ -707,12 +707,12 @@ c     compute second undivided differences in z-direction
 c    loop over  narrow band level 0 points only {
       do l = nlo_index0, nhi_index0     
         i = index_x(l)
-	j = index_y(l)
-	k = index_z(l)
-	
+        j = index_y(l)
+        k = index_z(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j,k) .le. mark_fb ) then	
-	
+        if( narrow_band(i,j,k) .le. mark_fb ) then
+
 c             phi_z_plus
               if (abs(D2(i,j,k)).lt.abs(D2(i,j,k+1))) then
                 phi_z_plus(i,j,k) = (D1(i,j,k+1) 
@@ -730,7 +730,7 @@ c             phi_z_minus
                 phi_z_minus(i,j,k) = (D1(i,j,k) 
      &                             + half*D2(i,j,k))*inv_dz
               endif
-	endif      
+        endif      
       enddo
 c     } end loop over grid 
 
@@ -827,16 +827,15 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l= nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-c       include only fill box points (marked appropriately)	
+c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
           phi_x(i,j,k) = (phi(i+1,j,k) - phi(i-1,j,k))*dx_factor
           phi_y(i,j,k) = (phi(i,j+1,k) - phi(i,j-1,k))*dy_factor
           phi_z(i,j,k) = (phi(i,j,k+1) - phi(i,j,k-1))*dz_factor
-	  
-	endif  
+        endif  
       enddo
 c     } end loop over indexed points
       
@@ -934,10 +933,10 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l= nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-c       include only fill box points (marked appropriately)	
+c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
 
             phi_x(i,j,k) = ( -phi(i+2,j,k) + eight*phi(i+1,j,k) 
@@ -1042,10 +1041,10 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l= nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
-c       include only fill box points (marked appropriately)	
+c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
 
             laplacian_phi(i,j,k) = 
@@ -1141,8 +1140,8 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l= nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
 c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
@@ -1150,9 +1149,9 @@ c       include only fill box points (marked appropriately)
           phi_x = (phi(i+1,j,k) - phi(i-1,j,k))*dx_factor
           phi_y = (phi(i,j+1,k) - phi(i,j-1,k))*dy_factor
           phi_z = (phi(i,j,k+1) - phi(i,j,k-1))*dz_factor
-	
-	  grad_phi_ave = grad_phi_ave + sqrt(phi_x*phi_x + phi_y*phi_y +     
-     &                                 phi_z*phi_z)
+
+          grad_phi_ave = grad_phi_ave + sqrt(phi_x*phi_x + phi_y*phi_y +
+     &                                       phi_z*phi_z)
           count = count+1
      
         endif
@@ -1241,35 +1240,35 @@ c     local variables
 c     { begin loop over indexed points
        do l=nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	k=index_z(l)
+        j=index_y(l)
+        k=index_z(l)
 
 c       include only fill box points (marked appropriately)
         if( narrow_band(i,j,k) .le. mark_fb ) then
-		
+
           phi_x_sq = phi_x(i,j,k)*phi_x(i,j,k)
           phi_y_sq = phi_y(i,j,k)*phi_y(i,j,k)
-	  phi_z_sq = phi_z(i,j,k)*phi_z(i,j,k)
+          phi_z_sq = phi_z(i,j,k)*phi_z(i,j,k)
 
           if( phi_x_sq .lt. zero_tol) then
-	      phi_x_sq = zero;
-	  endif    
+            phi_x_sq = zero
+          endif    
 
           if( phi_y_sq .lt. zero_tol) then
-	       phi_y_sq = zero;
-	  endif 
-	  
-	  if( phi_z_sq .lt. zero_tol) then
-	       phi_z_sq = zero;
-	  endif   
+            phi_y_sq = zero
+          endif 
+
+          if( phi_z_sq .lt. zero_tol) then
+            phi_z_sq = zero
+          endif   
  
           tmp = sqrt( phi_x_sq + phi_y_sq + phi_z_sq)
-	  if( tmp .lt. zero_tol ) then
+          if( tmp .lt. zero_tol ) then
             grad_phi_mag(i,j,k) = zero
-	  else
-	    grad_phi_mag(i,j,k) = tmp
-	  endif
-	     
+          else
+            grad_phi_mag(i,j,k) = tmp
+          endif
+
         endif
       enddo
 c     } end loop over indexed points 

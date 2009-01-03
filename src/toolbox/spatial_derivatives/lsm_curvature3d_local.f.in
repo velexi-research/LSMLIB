@@ -266,7 +266,7 @@ c       include only fill box points (marked appropriately)
      &      + phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_xz - phi_yz*phi_xx) 
      &      + phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_xz*phi_yy))
      
-             kappa(i,j,k) = kappa_tmp/denominator;
+             kappa(i,j,k) = kappa_tmp/denominator
           endif
 		
 	endif
@@ -412,7 +412,7 @@ c       include only fill box points (marked appropriately)
      &    + phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_zx - phi_yz*phi_xx) 
      &    + phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_zx*phi_yy))
      
-            kappa(i,j,k) = kappa_tmp/denominator;
+            kappa(i,j,k) = kappa_tmp/denominator
           endif
 		
 	endif
@@ -559,7 +559,7 @@ c       include only fill box points (marked appropriately)
      &    + phi_y(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_zx - phi_yz*phi_xx) 
      &    + phi_x(i,j,k)*phi_z(i,j,k)*(phi_xy*phi_yz - phi_zx*phi_yy))
      
-            kappa(i,j,k) = kappa_tmp/denominator;
+            kappa(i,j,k) = kappa_tmp/denominator
           endif
 		
 	endif

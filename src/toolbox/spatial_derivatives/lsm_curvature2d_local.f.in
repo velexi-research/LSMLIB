@@ -73,31 +73,31 @@ c     local variables
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	
+        j=index_y(l)
+
 c       include only fill box points (marked appropriately)
         if( narrow_band(i,j) .le. mark_fb ) then
-	
-	  phi_xx = ( phi(i+1,j) - 2.0d0*phi(i,j) 
-     &	           + phi(i-1,j) )*dxsq_factor
-	  phi_yy = ( phi(i,j+1) - 2.0d0*phi(i,j)
-     &	           + phi(i,j-1) )*dysq_factor
-	  phi_xy = ( phi(i+1,j+1) - phi(i+1,j-1)
-     &	            -phi(i-1,j+1) + phi(i-1,j-1))*dxdy_factor
-	  
-          denominator = grad_phi_mag(i,j)*grad_phi_mag(i,j)*
-     &          grad_phi_mag(i,j)	       
 
-	  if( denominator .lt. zero_tol ) then
+          phi_xx = ( phi(i+1,j) - 2.0d0*phi(i,j) 
+     &             + phi(i-1,j) )*dxsq_factor
+          phi_yy = ( phi(i,j+1) - 2.0d0*phi(i,j)
+     &             + phi(i,j-1) )*dysq_factor
+          phi_xy = ( phi(i+1,j+1) - phi(i+1,j-1)
+     &             - phi(i-1,j+1) + phi(i-1,j-1))*dxdy_factor
+
+          denominator = grad_phi_mag(i,j)*grad_phi_mag(i,j)*
+     &          grad_phi_mag(i,j)       
+
+          if ( denominator .lt. zero_tol ) then
              kappa(i,j) = 0.d0
-	  else   	
-	     kappa(i,j)=  phi_xx*phi_y(i,j)*phi_y(i,j)  
-     &	               +  phi_yy*phi_x(i,j)*phi_x(i,j)  
-     &	               -2*phi_xy*phi_x(i,j)*phi_y(i,j)
+          else
+             kappa(i,j)=  phi_xx*phi_y(i,j)*phi_y(i,j)  
+     &                 +  phi_yy*phi_x(i,j)*phi_x(i,j)  
+     &                 -2*phi_xy*phi_x(i,j)*phi_y(i,j)
              kappa(i,j) = kappa(i,j)/denominator
           endif
-		
-	endif
+
+        endif
       enddo 
 c     } end loop over indexed points
 
@@ -161,38 +161,40 @@ c     local variables
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	
+        j=index_y(l)
+
 c       include only fill box points (marked appropriately)
         if( narrow_band(i,j) .le. mark_fb ) then
-	
+
           phi_x_plus = (phi(i+1,j) - phi(i,j))/dx
-	  tmp=(phi(i,j+1) - phi(i,j-1) +  phi(i+1,j+1) - phi(i+1,j-1))/dy
-	  norm_x_plus = sqrt( phi_x_plus * phi_x_plus + c*tmp*tmp)
+          tmp=(phi(i,j+1)-phi(i,j-1)+ phi(i+1,j+1)-phi(i+1,j-1))/dy
+          norm_x_plus = sqrt( phi_x_plus * phi_x_plus + c*tmp*tmp)
 
-	  phi_x_minus = (phi(i,j) - phi(i-1,j))/dx
-	  tmp=(phi(i,j+1) - phi(i,j-1) +  phi(i-1,j+1) - phi(i-1,j-1))/dy
-	  norm_x_minus = sqrt( phi_x_minus * phi_x_minus + c*tmp*tmp)
+          phi_x_minus = (phi(i,j) - phi(i-1,j))/dx
+          tmp=(phi(i,j+1)-phi(i,j-1)+ phi(i-1,j+1)-phi(i-1,j-1))/dy
+          norm_x_minus = sqrt( phi_x_minus * phi_x_minus + c*tmp*tmp)
 
-	  phi_y_plus = (phi(i,j+1) - phi(i,j))/dy
-	  tmp=(phi(i+1,j) - phi(i-1,j) + phi(i+1,j+1) - phi(i-1,j+1))/dx
-	  norm_y_plus = sqrt( phi_y_plus*phi_y_plus + c*tmp*tmp)
+          phi_y_plus = (phi(i,j+1) - phi(i,j))/dy
+          tmp=(phi(i+1,j) - phi(i-1,j) + phi(i+1,j+1) - phi(i-1,j+1))/dx
+          norm_y_plus = sqrt( phi_y_plus*phi_y_plus + c*tmp*tmp)
 
-	  phi_y_minus = (phi(i,j) - phi(i,j-1))/dy
-	  tmp=(phi(i+1,j) - phi(i-1,j) + phi(i+1,j-1) - phi(i-1,j-1))/dx
-	  norm_y_minus = sqrt( phi_y_minus*phi_y_minus + c*tmp*tmp)
+          phi_y_minus = (phi(i,j) - phi(i,j-1))/dy
+          tmp=(phi(i+1,j) - phi(i-1,j) + phi(i+1,j-1) - phi(i-1,j-1))/dx
+          norm_y_minus = sqrt( phi_y_minus*phi_y_minus + c*tmp*tmp)
 
-	  if( (norm_x_plus .lt. zero_tol) .or. (norm_x_minus .lt. zero_tol) .or.
-     &	    (norm_y_plus .lt. zero_tol) .or. (norm_y_minus .lt. zero_tol) ) then
+          if ((norm_x_plus .lt. zero_tol) .or. 
+     &        (norm_x_minus .lt. zero_tol) .or.
+     &        (norm_y_plus .lt. zero_tol) .or. 
+     &        (norm_y_minus .lt. zero_tol) ) then
              kappa(i,j) = 0.d0
-	  else   	
-	     kappa(i,j)=(  phi_x_plus/norm_x_plus 
-     &	               - phi_x_minus/norm_x_minus )/dx
-     &              + (  phi_y_plus/norm_y_plus
-     &                 - phi_y_minus/norm_y_minus )/dy	
+          else
+            kappa(i,j)=(  phi_x_plus/norm_x_plus 
+     &                 - phi_x_minus/norm_x_minus )/dx
+     &               + (  phi_y_plus/norm_y_plus
+     &                 - phi_y_minus/norm_y_minus )/dy
           endif
-		
-	endif
+
+        endif
       enddo 
 c     } end loop over indexed points
 
@@ -258,30 +260,30 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	
+        j=index_y(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j) .le. mark_fb ) then
-	   laplacian = 
+        if ( narrow_band(i,j) .le. mark_fb ) then
+          laplacian = 
      &        inv_dx_sq *
      &        ( phi(i+1,j) - 2.0d0*phi(i,j) + phi(i-1,j) ) 
      &      + inv_dy_sq *
      &        ( phi(i,j+1) - 2.0d0*phi(i,j) + phi(i,j-1) )
       
-	  if( abs(laplacian) .lt. zero_tol) then
-	     laplacian = zero;
-	  endif 
-	  
+          if ( abs(laplacian) .lt. zero_tol) then
+            laplacian = zero
+          endif 
+
           denominator = one - phi(i,j) * laplacian       
 
-	  if( abs(denominator) .lt. zero_tol ) then
-             denominator  = dx;
-c            denominator  = one	     
-	  endif
-	  
-	  kappa(i,j)= laplacian/denominator
-		
-	endif
+          if ( abs(denominator) .lt. zero_tol ) then
+             denominator  = dx
+c            denominator  = one
+          endif
+
+          kappa(i,j)= laplacian/denominator
+
+        endif
       enddo 
 c     } end loop over indexed points
 
@@ -360,36 +362,36 @@ c     compute denominator values
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index      
         i=index_x(l)
-	j=index_y(l)
-	
+        j=index_y(l)
+
 c       include only fill box points (marked appropriately)
-        if( narrow_band(i,j) .le. mark_fb ) then
-	
-	  phi_xx = ( -phi(i+2,j) + sixteen*phi(i+1,j)
-     &               -thirty*phi(i,j) 	   
+        if ( narrow_band(i,j) .le. mark_fb ) then
+
+           phi_xx = ( -phi(i+2,j) + sixteen*phi(i+1,j)
+     &               -thirty*phi(i,j)
      &               -phi(i-2,j) + sixteen*phi(i-1,j) )
      &               * dxsq_factor
-	  phi_yy = ( -phi(i,j+2) + sixteen*phi(i,j+1) 	  
-     &               -thirty*phi(i,j) 	   
+           phi_yy = ( -phi(i,j+2) + sixteen*phi(i,j+1)  
+     &               -thirty*phi(i,j) 
      &               -phi(i,j-2) + sixteen*phi(i,j-1) )
      &               * dysq_factor
-	  phi_xy = ( -phi_x(i,j+2) + eight*phi_x(i,j+1) 
+           phi_xy = ( -phi_x(i,j+2) + eight*phi_x(i,j+1) 
      &               +phi_x(i,j-2) - eight*phi_x(i,j-1) )
      &               * dy_factor
-	  
-          tmp = grad_phi_mag(i,j)*grad_phi_mag(i,j)*
-     &          grad_phi_mag(i,j)	       
 
-	  if( tmp .lt. zero_tol ) then
+          tmp = grad_phi_mag(i,j)*grad_phi_mag(i,j)*
+     &          grad_phi_mag(i,j)      
+
+          if( tmp .lt. zero_tol ) then
              kappa(i,j) = 0.d0
-	  else   	
-	     kappa(i,j)=  phi_xx*phi_y(i,j)*phi_y(i,j)  
-     &	               +  phi_yy*phi_x(i,j)*phi_x(i,j)  
-     &	               -2*phi_xy*phi_x(i,j)*phi_y(i,j)
+          else   
+             kappa(i,j)=  phi_xx*phi_y(i,j)*phi_y(i,j)  
+     &                 +  phi_yy*phi_x(i,j)*phi_x(i,j)  
+     &                 -2*phi_xy*phi_x(i,j)*phi_y(i,j)
              kappa(i,j) = kappa(i,j)/tmp
           endif
-		
-	endif
+
+        endif
       enddo 
 c     } end loop over indexed points
 

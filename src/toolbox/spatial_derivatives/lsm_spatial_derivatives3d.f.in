@@ -3630,15 +3630,15 @@ c     { begin loop over grid
 	    phi_z_sq = phi_z(i,j,k)*phi_z(i,j,k)
 
             if( phi_x_sq .lt. tol) then
-		phi_x_sq = zero;
+		phi_x_sq = zero
 	    endif    
 
             if( phi_y_sq .lt. tol) then
-		 phi_y_sq = zero;
+		 phi_y_sq = zero
 	    endif 
 
 	    if( phi_z_sq .lt. tol) then
-		 phi_z_sq = zero;
+		 phi_z_sq = zero
 	    endif   
 
             tmp = sqrt( phi_x_sq + phi_y_sq + phi_z_sq)

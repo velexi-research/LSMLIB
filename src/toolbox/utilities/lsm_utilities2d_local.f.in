@@ -61,16 +61,16 @@ c     initialize max_norm_diff
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index              
         i=index_x(l)
-	j=index_y(l)
-	
-        if( narrow_band(i,j) .le. mark_fb ) then	
+        j=index_y(l)
+
+        if( narrow_band(i,j) .le. mark_fb ) then
   
-        next_diff = abs(field1(i,j) - field2(i,j))
-        if (next_diff .gt. max_norm_diff) then
-          max_norm_diff = next_diff
+          next_diff = abs(field1(i,j) - field2(i,j))
+          if (next_diff .gt. max_norm_diff) then
+            max_norm_diff = next_diff
+          endif
+
         endif
-	
-	endif
       enddo
 c     } end loop over indexed points
 
@@ -133,15 +133,15 @@ c     initialize max_norm_diff
 c     { begin loop over indexed points
        do l=nlo_index, nhi_index      
          i=index_x(l)
-	 j=index_y(l)
+         j=index_y(l)
 
 c         include only fill box points (marked appropriately)
           if( narrow_band(i,j) .le. mark_fb ) then
 
-	      next_diff = abs(field1(i,j) - field2(i,j))	      	      
+            next_diff = abs(field1(i,j) - field2(i,j))
               sum_abs_diff = sum_abs_diff + next_diff
               num_pts = num_pts + 1
-	      
+
           endif
         enddo
 c       } end loop over indexed points
@@ -151,7 +151,7 @@ c       } end loop over indexed points
       else 
          ave_abs_diff = zero
       endif
-      	 
+
       return
       end
 c } end subroutine
@@ -216,9 +216,9 @@ c     compute inv_dx, inv_dy
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
+        j=index_y(l)
 
-       if( narrow_band(i,j) .le. mark_fb ) then	
+       if( narrow_band(i,j) .le. mark_fb ) then
 
                 U_over_dX_cur = abs(vel_x(i,j))*inv_dx
      &                        + abs(vel_y(i,j))*inv_dy
@@ -320,9 +320,9 @@ c     compute inv_dx, inv_dy
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
+        j=index_y(l)
 
-       if( narrow_band(i,j) .le. mark_fb ) then	
+        if( narrow_band(i,j) .le. mark_fb ) then
 
                   phi_x_cur = max(abs(phi_x_plus(i,j)),
      &                          abs(phi_x_minus(i,j)))
@@ -336,13 +336,13 @@ c     { begin loop over indexed points
      &                        * ( phi_x_cur*inv_dx 
      &                        + phi_y_cur*inv_dy )
 
-                if (H_over_dX_cur .gt. max_H_over_dX) then
-                  max_H_over_dX = H_over_dX_cur  
-                endif
-	      
-          endif
-        enddo
-c       } end loop over indexed points
+                  if (H_over_dX_cur .gt. max_H_over_dX) then
+                    max_H_over_dX = H_over_dX_cur  
+                  endif
+
+        endif
+      enddo
+c     } end loop over indexed points
       
 c     set dt
       dt = cfl_number / (max_H_over_dX + small_number);
@@ -429,26 +429,26 @@ c     compute inv_dx, ind_dy
 c     { begin loop over indexed points
       do l=nlo_index, nhi_index     
         i=index_x(l)
-	j=index_y(l)
+        j=index_y(l)
 
-       if( narrow_band(i,j) .le. mark_fb ) then	
-     	
-        phi_x_cur = max(abs(phi_x_plus(i,j)),
+       if( narrow_band(i,j) .le. mark_fb ) then
+     
+         phi_x_cur = max(abs(phi_x_plus(i,j)),
      &                   abs(phi_x_minus(i,j)))
-        phi_y_cur = max(abs(phi_y_plus(i,j)),
+         phi_y_cur = max(abs(phi_y_plus(i,j)),
      &                  abs(phi_y_minus(i,j)))
 
-        H_over_dX_cur = abs(vel_n) 
-     &               / sqrt( phi_x_cur*phi_x_cur 
-     &                     + phi_y_cur*phi_y_cur + max_dx_sq)
-     &                   * ( phi_x_cur*inv_dx
-     &                     + phi_y_cur*inv_dy   )
+         H_over_dX_cur = abs(vel_n) 
+     &                 / sqrt( phi_x_cur*phi_x_cur 
+     &                       + phi_y_cur*phi_y_cur + max_dx_sq)
+     &                 * ( phi_x_cur*inv_dx
+     &                   + phi_y_cur*inv_dy )
 
-        if (H_over_dX_cur .gt. max_H_over_dX) then
-            max_H_over_dX = H_over_dX_cur  
+         if (H_over_dX_cur .gt. max_H_over_dX) then
+           max_H_over_dX = H_over_dX_cur  
+          endif
+
         endif
-	
-	endif
       enddo
 c     } end loop over indexed points
 
