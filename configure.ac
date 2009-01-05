@@ -23,16 +23,19 @@ case $target in
     AC_SUBST([arch],darwin86)
   ;;
   *cygwin*)
-    AC_SUBST([arch],linux)
+    AC_SUBST([arch],linux32)
   ;;
-  *linux*)
-    AC_SUBST([arch],linux)
+  *32*linux*)
+    AC_SUBST([arch],linux32)
+  ;;
+  *64*linux*)
+    AC_SUBST([arch],linux64)
   ;;
   *bgl*)
     AC_SUBST([arch],bgl)
   ;;
   *)
-    AC_SUBST([arch],linux)
+    AC_SUBST([arch],linux32)
     AC_MSG_WARN([m4_text_wrap([Unknown target architecture...assuming linux...])])
   ;;
 esac
@@ -157,8 +160,11 @@ AS_IF([! test -z "$matlab_dir"],
          darwin86)
            AC_SUBST([mex_extension],mexmaci)
          ;;
-         linux)
+         linux32)
            AC_SUBST([mex_extension],mexglx)
+         ;;
+         linux64)
+           AC_SUBST([mex_extension],mexa64)
          ;;
          windows)
            AC_SUBST([mex_extension],dll)

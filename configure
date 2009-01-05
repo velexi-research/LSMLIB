@@ -1960,11 +1960,15 @@ case $target in
 
   ;;
   *cygwin*)
-    arch=linux
+    arch=linux32
 
   ;;
-  *linux*)
-    arch=linux
+  *32*linux*)
+    arch=linux32
+
+  ;;
+  *64*linux*)
+    arch=linux64
 
   ;;
   *bgl*)
@@ -1972,7 +1976,7 @@ case $target in
 
   ;;
   *)
-    arch=linux
+    arch=linux32
 
     { echo "$as_me:$LINENO: WARNING: Unknown target architecture...assuming linux..." >&5
 echo "$as_me: WARNING: Unknown target architecture...assuming linux..." >&2;}
@@ -5395,8 +5399,12 @@ if ! test -z "$matlab_dir"; then
            mex_extension=mexmaci
 
          ;;
-         linux)
+         linux32)
            mex_extension=mexglx
+
+         ;;
+         linux64)
+           mex_extension=mexa64
 
          ;;
          windows)
