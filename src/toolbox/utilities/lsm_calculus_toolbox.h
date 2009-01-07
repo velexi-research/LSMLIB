@@ -26,12 +26,6 @@ extern "C" {
 
 #include <math.h>
 
-/*! \def LSM_PI
- *
- * Value of \f$ \pi \f$
- */
-#define LSM_PI     (3.14159265358979323846)
-
 /*! 
  * LSM_HEAVISIDE() macro computes the value of the standard Heaviside
  * function for level set method calculations (smoothed using sine function).
@@ -45,7 +39,7 @@ extern "C" {
 #define LSM_HEAVISIDE(x,eps)                                            \
 (                                                                       \
   ((x) < -(eps)) ? 0 : ( ((x) > (eps)) ? 1 :                            \
-  0.5*( 1+(x)/(eps)+1/LSM_PI*sin(LSM_PI*(x)/(eps)) ) )                  \
+  0.5*( 1+(x)/(eps)+1/M_PI*sin(M_PI*(x)/(eps)) ) )                  \
 )
 
 /*! 
@@ -62,7 +56,7 @@ extern "C" {
 #define LSM_DELTA_FUNCTION(x,eps)                                       \
 (                                                                       \
   ((x) < -(eps)) ? 0 : ( ((x) > (eps)) ? 0 :                            \
-  0.5/(eps)*( 1+cos(LSM_PI*(x)/(eps)) ) )                               \
+  0.5/(eps)*( 1+cos(M_PI*(x)/(eps)) ) )                               \
 )
 
 /*! 
