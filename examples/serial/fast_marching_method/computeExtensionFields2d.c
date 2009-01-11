@@ -1,5 +1,5 @@
 /*
- * File:        test_computeExtensionFields2d.c
+ * File:        computeExtensionFields2d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/08/13 13:35:24 $
@@ -129,7 +129,7 @@ int main( int argc, char *argv[])
     dx);
 
   /* write results to output file */
-  data_file = fopen("test_computeExtensionFields2d.dat","w");
+  data_file = fopen("computeExtensionFields2d.dat","w");
   for (idx = 0; idx < num_gridpts; idx++) {
     fprintf(data_file,"%f %f %f %f %f %f\n", 
       distance_function[idx], phi[idx],

@@ -1,8 +1,8 @@
 /*
- * File:        test_solveEikonalEquation2d.c
+ * File:        computeDistanceFunction2d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.2 $
- * Modified:    $Date: 2006/08/13 13:35:24 $
+ * Revision:    $Revision: 1.3 $
+ * Modified:    $Date: 2006/08/13 13:35:23 $
  * Description: Test program for the fast marching method functions
  */
 
@@ -28,7 +28,7 @@ int main( int argc, char *argv[])
 {
   /* field variables */
   LSMLIB_REAL *phi;
-  LSMLIB_REAL *speed;
+  LSMLIB_REAL *distance_function;
   LSMLIB_REAL *mask = 0;
 
   /* grid parameters */
@@ -61,8 +61,8 @@ int main( int argc, char *argv[])
   }
 
   /* allocate memory for field data */
-  phi   = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
-  speed = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+  phi = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
+  distance_function = (LSMLIB_REAL*) malloc(num_gridpts*sizeof(LSMLIB_REAL));
 
   /* initialize data */
   center[0] = 0.0; center[1] = 0.0;
@@ -73,43 +73,34 @@ int main( int argc, char *argv[])
       x = X_lo[0]+dx[0]*i;
       y = X_lo[1]+dx[1]*j;
 
-      /* set boundary data for phi */
-      if ( ((x-center[0])*(x-center[0])+(y-center[1])*(y-center[1])) 
-         - radius*radius < 0 ) {
-        phi[idx] = 0.0;
-      } else {;
-        phi[idx] = -1.0;
-      }
-
-      /* set speed function */
-      if (x<0) {
-        speed[idx] = 1;
-      } else {
-        speed[idx] = 2;
-      }
-
+      phi[idx] = ( (x-center[0])*(x-center[0])
+                  +(y-center[1])*(y-center[1]) ) - radius*radius;
     }
   }
 
+  for (i = 0; i < num_gridpts; i++) {
+    distance_function[i] = 0; 
+  }
+
   /* Carry out FMM calculation */
-  solveEikonalEquation2d(
+  computeDistanceFunction2d(
+    distance_function,
     phi,
-    speed,
     mask,
     spatial_derivative_order,
     grid_dims,
     dx);
 
   /* write results to output file */
-  data_file = fopen("test_solveEikonalEquation2d.dat","w");
+  data_file = fopen("computeDistanceFunction2d.dat","w");
   for (idx = 0; idx < num_gridpts; idx++) {
-    fprintf(data_file,"%f %f\n", phi[idx],speed[idx]);
+    fprintf(data_file,"%f %f\n", distance_function[idx],phi[idx]);
   }
   fclose(data_file);
 
   /* clean up memory */
   free(phi);  
-  free(speed);  
+  free(distance_function);  
 
   return(0);
 }

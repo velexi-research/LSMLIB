@@ -3,7 +3,7 @@
 ## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 ## Revision:    $Revision: 1.5 $
 ## Modified:    $Date: 2006/12/04 13:25:24 $
-## Description: makefile for fast marching method example/test code
+## Description: makefile for fast marching method example code
 ##
 
 BUILD_DIR = @top_builddir@
@@ -11,23 +11,23 @@ include $(BUILD_DIR)/config/Makefile.config
 
 LIB_DIRS     = -L$(LSMLIB_LIB_DIR)
 
-PROGS        = test_computeDistanceFunction2d        \
-               test_computeExtensionFields2d         \
-               test_computeDistanceFunction3d        \
-               test_solveEikonalEquation2d           \
+PROGS        = computeDistanceFunction2d        \
+               computeExtensionFields2d         \
+               computeDistanceFunction3d        \
+               solveEikonalEquation2d           \
 
 all:  $(PROGS)
 
-test_computeDistanceFunction2d: test_computeDistanceFunction2d.o
+computeDistanceFunction2d: computeDistanceFunction2d.o
 	@CC@ @CFLAGS@ $(LIB_DIRS) $< $(LSMLIB_LIBS) -o $@
 
-test_computeExtensionFields2d: test_computeExtensionFields2d.o
+computeExtensionFields2d: computeExtensionFields2d.o
 	@CC@ @CFLAGS@ $(LIB_DIRS) $< $(LSMLIB_LIBS) -o $@
 
-test_computeDistanceFunction3d: test_computeDistanceFunction3d.o
+computeDistanceFunction3d: computeDistanceFunction3d.o
 	@CC@ @CFLAGS@ $(LIB_DIRS) $< $(LSMLIB_LIBS) -o $@
 
-test_solveEikonalEquation2d: test_solveEikonalEquation2d.o
+solveEikonalEquation2d: solveEikonalEquation2d.o
 	@CC@ @CFLAGS@ $(LIB_DIRS) $< $(LSMLIB_LIBS) -o $@
 
 clean:
