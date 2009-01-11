@@ -1,5 +1,5 @@
 /*
- * File:        test_grid_management.c
+ * File:        demo_grid_management.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/12/05 21:16:17 $
@@ -35,19 +35,19 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"test_grid_2d.ascii",NO_ZIP);
-  g_from_ascii_file = readGridFromAsciiFile("test_grid_2d.ascii");
+  writeGridToAsciiFile(g_original,"demo_grid_2d.ascii",NO_ZIP);
+  g_from_ascii_file = readGridFromAsciiFile("demo_grid_2d.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"test_grid_2d.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("test_grid_2d.binary");
+  writeGridToBinaryFile(g_original,"demo_grid_2d.binary",GZIP);
+  g_from_binary_file = readGridFromBinaryFile("demo_grid_2d.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");
 
-  printf("\n**************** End 2D Grid management tests ****************\n\n");
+  printf("\n**************** End 2D Grid management demo ****************\n\n");
 
 
   printf("\n************ Testing 3D Grid management functions ************\n\n");
@@ -64,19 +64,19 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"test_grid_3d.ascii",NO_ZIP);
-  g_from_ascii_file = readGridFromAsciiFile("test_grid_3d.ascii");
+  writeGridToAsciiFile(g_original,"demo_grid_3d.ascii",NO_ZIP);
+  g_from_ascii_file = readGridFromAsciiFile("demo_grid_3d.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"test_grid_3d.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("test_grid_3d.binary");
+  writeGridToBinaryFile(g_original,"demo_grid_3d.binary",GZIP);
+  g_from_binary_file = readGridFromBinaryFile("demo_grid_3d.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");
 
-  printf("\n**************** End 3D Grid management tests ****************\n\n");
+  printf("\n**************** End 3D Grid management demo ****************\n\n");
 
   return 0;
 }
