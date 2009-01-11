@@ -1,14 +1,14 @@
 %
-% File:        test_solveEikonalEquation2d.m
+% File:        demo_solveEikonalEquation2d.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.4 $
 % Modified:    $Date: 2006/08/13 15:45:27 $
-% Description: MATLAB test code for solveEikonalEquation2d MEX file
+% Description: MATLAB demo code for solveEikonalEquation2d MEX file
 %
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This script tests the solveEikonalEquation2d MATLAB MEX-function.
+% This script demos the solveEikonalEquation2d MATLAB MEX-function.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -17,7 +17,7 @@ clear
 format long
 
 % plotting parameters
-num_plots_per_test = 4;
+num_plots_per_examples = 4;
 
 % grid parameters
 Nx = 500;
@@ -34,14 +34,14 @@ dX = [dx dy];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Test Problem 1 
-% --------------
+% Example Problem 1 
+% -----------------
 %  * boundary: circles centered at (0.25,0.25) with radius 0.2
 %  * speed:  1 for x < 0 
 %            2 for x > 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-disp('Test Problem 1...');
-test_problem_num = 1;
+disp('Example Problem 1...');
+demo_problem_num = 1;
 [X,Y] = meshgrid(x,y);  
 center = [0.25 0.25]; radius = 0.2;
 boundary_data = -1*ones(size(X));
@@ -56,7 +56,7 @@ speed(idx_X_right) = 2;
 phi = solveEikonalEquation2d(boundary_data, speed, dX);
 
 % plot boundary_data
-figure((test_problem_num-1)*num_plots_per_test+1); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+1); clf;
 pcolor(X,Y,boundary_data);
 shading flat;
 axis([x_lo x_hi y_lo y_hi]);
@@ -64,7 +64,7 @@ pbaspect([1 1 1]);
 colorbar;
 
 % plot speed function
-figure((test_problem_num-1)*num_plots_per_test+2); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+2); clf;
 pcolor(X,Y,speed);
 shading flat;
 axis([x_lo x_hi y_lo y_hi]);
@@ -72,7 +72,7 @@ pbaspect([1 1 1]);
 colorbar;
 
 % plot phi
-figure((test_problem_num-1)*num_plots_per_test+3); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+3); clf;
 pcolor(X,Y,phi);
 shading interp;
 axis([x_lo x_hi y_lo y_hi]);
@@ -81,8 +81,8 @@ colorbar;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Test Problem 2 
-% --------------
+% Example Problem 2 
+% -----------------
 %  * boundary: circle centered at (-1.0,-1.0) with radius 0.2
 %  * speed:  0 in box bounded by (0.4,0.1) and (0.6,0.3)
 %            0 in box bounded by (-0.6,-0.3) and (-0.4,-0.1)
@@ -90,8 +90,8 @@ colorbar;
 %  * mask: interior circle centered at (-1.0,-1.0) with radius 0.2
 %          region where x-y > 0.75
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-disp('Test Problem 2...');
-test_problem_num = 2;
+disp('Example Problem 2...');
+demo_problem_num = 2;
 [X,Y] = meshgrid(x,y);  
 center = [-1.0 -1.0]; radius = 0.2;
 boundary_data = -1*ones(size(X));
@@ -112,7 +112,7 @@ mask(idx_mask_2) = -1;
 phi = solveEikonalEquation2d(boundary_data, speed, dX, mask);
 
 % plot boundary_data
-figure((test_problem_num-1)*num_plots_per_test+1); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+1); clf;
 pcolor(X,Y,boundary_data);
 shading flat;
 axis([x_lo x_hi y_lo y_hi]);
@@ -120,7 +120,7 @@ pbaspect([1 1 1]);
 colorbar;
 
 % plot speed function
-figure((test_problem_num-1)*num_plots_per_test+2); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+2); clf;
 pcolor(X,Y,speed);
 shading flat;
 axis([x_lo x_hi y_lo y_hi]);
@@ -128,7 +128,7 @@ pbaspect([1 1 1]);
 colorbar;
 
 % plot mask
-figure((test_problem_num-1)*num_plots_per_test+3); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+3); clf;
 pcolor(X,Y,mask);
 shading flat;
 axis([x_lo x_hi y_lo y_hi]);
@@ -136,7 +136,7 @@ pbaspect([1 1 1]);
 colorbar;
 
 % plot phi
-figure((test_problem_num-1)*num_plots_per_test+4); clf;
+figure((demo_problem_num-1)*num_plots_per_examples+4); clf;
 pcolor(X,Y,phi);
 shading interp;
 axis([x_lo x_hi y_lo y_hi]);

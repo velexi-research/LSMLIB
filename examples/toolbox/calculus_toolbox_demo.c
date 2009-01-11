@@ -1,9 +1,9 @@
 /*
- * File:        test_calculus_toolbox.c
+ * File:        calculus_toolbox_demo.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/04/26 13:45:31 $
- * Description: Test code for delta and heaviside functions
+ * Description: Demo code for delta and heaviside functions
  */
 
 #include <stdio.h>

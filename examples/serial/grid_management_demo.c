@@ -1,9 +1,9 @@
 /*
- * File:        demo_grid_management.c
+ * File:        grid_management_demo.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
  * Modified:    $Date: 2006/12/05 21:16:17 $
- * Description: Test code for grid management functions.
+ * Description: Demo code for grid management functions.
  */
 
 #include <stdio.h>
@@ -21,7 +21,7 @@ int main(void)
   LSMLIB_REAL x_hi[3];
 
 
-  printf("\n************ Testing 2D Grid management functions ************\n\n");
+  printf("\n************ Demo 2D Grid management functions ************\n\n");
 
   num_dims = 2;
   grid_dims[0] = 10; grid_dims[1] = 20;
@@ -35,14 +35,14 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"demo_grid_2d.ascii",NO_ZIP);
-  g_from_ascii_file = readGridFromAsciiFile("demo_grid_2d.ascii");
+  writeGridToAsciiFile(g_original,"grid_2d_demo.ascii",NO_ZIP);
+  g_from_ascii_file = readGridFromAsciiFile("grid_2d_demo.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"demo_grid_2d.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("demo_grid_2d.binary");
+  writeGridToBinaryFile(g_original,"grid_2d_demo.binary",GZIP);
+  g_from_binary_file = readGridFromBinaryFile("grid_2d_demo.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");
@@ -50,7 +50,7 @@ int main(void)
   printf("\n**************** End 2D Grid management demo ****************\n\n");
 
 
-  printf("\n************ Testing 3D Grid management functions ************\n\n");
+  printf("\n************ Demo 3D Grid management functions ************\n\n");
 
   num_dims = 3;
   grid_dims[0] = 10; grid_dims[1] = 20; grid_dims[2] = 30;
@@ -64,14 +64,14 @@ int main(void)
   printGrid(g_original,stdout); 
   printf("==============================================================\n");
 
-  writeGridToAsciiFile(g_original,"demo_grid_3d.ascii",NO_ZIP);
-  g_from_ascii_file = readGridFromAsciiFile("demo_grid_3d.ascii");
+  writeGridToAsciiFile(g_original,"grid_3d_demo.ascii",NO_ZIP);
+  g_from_ascii_file = readGridFromAsciiFile("grid_3d_demo.ascii");
   printf("=================== Grid From ASCII File =====================\n");
   printGrid(g_from_ascii_file,stdout);
   printf("==============================================================\n");
 
-  writeGridToBinaryFile(g_original,"demo_grid_3d.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("demo_grid_3d.binary");
+  writeGridToBinaryFile(g_original,"grid_3d_demo.binary",GZIP);
+  g_from_binary_file = readGridFromBinaryFile("grid_3d_demo.binary");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");

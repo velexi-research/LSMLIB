@@ -3,7 +3,7 @@
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/10/14 03:56:33 $
- * Description: test program for the 1D homogeneous Neumann BCS using
+ * Description: Demo program for the 1D homogeneous Neumann BCS using
  *              WENO5 discretization
  */
 
@@ -19,12 +19,12 @@
 /************************************************************************
  * Helper function declarations
  ************************************************************************/
-#define TEST_DIM (1)
+#define DIM (1)
 
 
 /************************************************************************
  *                                                                    
- * Test program for the 1D homogeneous Neumann BCS using WENO5 
+ * Demo program for the 1D homogeneous Neumann BCS using WENO5 
  * discretization
  *                                                                  
  ************************************************************************/
@@ -36,12 +36,12 @@ int main( int argc, char *argv[])
   LSMLIB_REAL *phi_x_minus;
   LSMLIB_REAL *D1;
   int ghostcell_width = 3;
-  int box_lower[TEST_DIM];
-  int box_upper[TEST_DIM];
-  int box_dims[TEST_DIM];
-  int ghostbox_lower[TEST_DIM];
-  int ghostbox_upper[TEST_DIM];
-  int ghostbox_dims[TEST_DIM];
+  int box_lower[DIM];
+  int box_upper[DIM];
+  int box_dims[DIM];
+  int ghostbox_lower[DIM];
+  int ghostbox_upper[DIM];
+  int ghostbox_dims[DIM];
   int i;
   LSMLIB_REAL dx;
   LSMLIB_REAL err_x_lower;

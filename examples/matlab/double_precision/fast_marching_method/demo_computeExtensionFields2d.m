@@ -1,14 +1,14 @@
 %
-% File:        test_computeExtensionFields2d.m
+% File:        demo_computeExtensionFields2d.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.8 $
 % Modified:    $Date: 2006/08/13 15:45:27 $
-% Description: MATLAB test code for computeExtensionFields2d MEX file
+% Description: MATLAB demo code for computeExtensionFields2d MEX file
 %
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This script tests the computeExtensionFields2d MATLAB MEX-function.
+% This script demos the computeExtensionFields2d MATLAB MEX-function.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -18,7 +18,7 @@ clear
 format long
 
 % plotting parameters
-num_plots_per_test = 5;
+num_plots_per_example = 5;
 
 % grid parameters
 Nx = 200;
@@ -35,14 +35,14 @@ dX = [dx dy];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Test Problem 1 
-% --------------
+% Example Problem 1 
+% -----------------
 %  * interface: two circles centered at (0.25,0.25) and (-0.25,-0.25)
 %               both with radius 0.2
 %  * velocity:  uniform velocity.  U = (1,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-disp('Test Problem 1...');
-test_problem_num = 1;
+disp('Example Problem 1...');
+demo_problem_num = 1;
 [X,Y] = meshgrid(x,y);  
 center1 = [0.25 0.25]; radius1 = 0.2;
 center2 = [-0.25 -0.25]; radius2 = 0.2;
@@ -61,13 +61,13 @@ source_fields{2} = vel_y;
 err = max(max(abs(distance_function-phi)))
 
 % plot results
-figure((test_problem_num-1)*num_plots_per_test+1); clf;
+figure((demo_problem_num-1)*num_plots_per_example+1); clf;
 contourf(X,Y,distance_function,10);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+2); clf;
+figure((demo_problem_num-1)*num_plots_per_example+2); clf;
 contourf(X,Y,phi,10);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
@@ -75,14 +75,14 @@ colorbar;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Test Problem 2
-% --------------
+% Example Problem 2
+% -----------------
 %  * interface: two circles centered at (0.25,0.25) and (-0.25,-0.25)
 %               both with radius 0.2
 %  * velocity:  "expanding velocity".  U = (x,y)/r
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-disp('Test Problem 2...');
-test_problem_num = 2;
+disp('Example Problem 2...');
+demo_problem_num = 2;
 [X,Y] = meshgrid(x,y);  
 center1 = [0.25 0.25]; radius1 = 0.2;
 center2 = [-0.25 -0.25]; radius2 = 0.2;
@@ -107,25 +107,25 @@ source_fields{2} = vel_y;
 err = max(max(abs(distance_function-phi)))
 
 % plot results
-figure((test_problem_num-1)*num_plots_per_test+1); clf;
+figure((demo_problem_num-1)*num_plots_per_example+1); clf;
 contourf(X,Y,distance_function,20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+2); clf;
+figure((demo_problem_num-1)*num_plots_per_example+2); clf;
 contourf(X,Y,phi,20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+3); clf;
+figure((demo_problem_num-1)*num_plots_per_example+3); clf;
 contourf(X,Y,ext_fields{1},50);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+4); clf;
+figure((demo_problem_num-1)*num_plots_per_example+4); clf;
 contourf(X,Y,source_fields{1},20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
@@ -133,14 +133,14 @@ colorbar;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Test Problem 3
-% --------------
+% Example Problem 3
+% -----------------
 %  * interface: two circles centered at (0.25,0.1) and (-0.35,0.25)
 %               both with radii of 0.2 and 0.3 respectively
 %  * velocity:  "expanding velocity".  U = (x,y)/r
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-disp('Test Problem 3...');
-test_problem_num = 3;
+disp('Example Problem 3...');
+demo_problem_num = 3;
 [X,Y] = meshgrid(x,y);  
 center1 = [0.25 0.1]; radius1 = 0.2;
 center2 = [-0.35 0.25]; radius2 = 0.3;
@@ -165,25 +165,25 @@ source_fields{2} = vel_y;
 err = max(max(abs(distance_function-phi)))
 
 % plot results
-figure((test_problem_num-1)*num_plots_per_test+1); clf;
+figure((demo_problem_num-1)*num_plots_per_example+1); clf;
 contourf(X,Y,distance_function,20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+2); clf;
+figure((demo_problem_num-1)*num_plots_per_example+2); clf;
 contourf(X,Y,phi,20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+3); clf;
+figure((demo_problem_num-1)*num_plots_per_example+3); clf;
 contourf(X,Y,ext_fields{1},50);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);
 colorbar;
 
-figure((test_problem_num-1)*num_plots_per_test+4); clf;
+figure((demo_problem_num-1)*num_plots_per_example+4); clf;
 contourf(X,Y,source_fields{1},20);
 axis([x_lo x_hi y_lo y_hi]);
 pbaspect([1 1 1]);

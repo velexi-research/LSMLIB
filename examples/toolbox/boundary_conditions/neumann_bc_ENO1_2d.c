@@ -3,7 +3,7 @@
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.1 $
  * Modified:    $Date: 2006/10/01 17:45:05 $
- * Description: test program for the 2D homogeneous Neumann BCS using
+ * Description: Demo program for the 2D homogeneous Neumann BCS using
  *              ENO1 discretization
  */
 
@@ -19,12 +19,12 @@
 /************************************************************************
  * Helper function declarations
  ************************************************************************/
-#define TEST_DIM (2)
+#define DIM (2)
 
 
 /************************************************************************
  *                                                                    
- * Test program for the 2D homogeneous Neumann BCS using ENO1 
+ * Demo program for the 2D homogeneous Neumann BCS using ENO1 
  * discretization
  *                                                                  
  ************************************************************************/
@@ -36,12 +36,12 @@ int main( int argc, char *argv[])
   LSMLIB_REAL *phi_x_minus, *phi_y_minus;
   LSMLIB_REAL *D1;
   int ghostcell_width = 1;
-  int box_lower[TEST_DIM];
-  int box_upper[TEST_DIM];
-  int box_dims[TEST_DIM];
-  int ghostbox_lower[TEST_DIM];
-  int ghostbox_upper[TEST_DIM];
-  int ghostbox_dims[TEST_DIM];
+  int box_lower[DIM];
+  int box_upper[DIM];
+  int box_dims[DIM];
+  int ghostbox_lower[DIM];
+  int ghostbox_upper[DIM];
+  int ghostbox_dims[DIM];
   int i,j;
   LSMLIB_REAL dx, dy;
   LSMLIB_REAL err_x_lower;

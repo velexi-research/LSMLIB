@@ -26,8 +26,8 @@ grid_sizes = [50, 100, 200];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Test Problem 1
-% --------------
+% Example Problem 1
+% -----------------
 %  * boundary: phi = 0 on circle centered at (0,0,0) with radius 0.2
 %  * speed:    1
 %  * mask:     interior of circle
@@ -59,7 +59,7 @@ for i = 1:length(grid_sizes)
   [X,Y,Z] = meshgrid(x,y,z);  
 
   % display some information for user ...
-  disp_str = sprintf('   solving Test Problem 1 with N = %d', N);
+  disp_str = sprintf('   solving Example Problem 1 with N = %d', N);
   disp(disp_str);
 
   % compute exact solution
@@ -106,7 +106,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_first_order(1)+P_first_order(2)),'k');
 hold on;
 plot(grid_sizes,errs1_first_order,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 1: First-Order Scheme');
+title('Example Problem 1: First-Order Scheme');
 order_str = sprintf('Order = %1.1f', order_first_order);
 text(100,0.05,order_str);
 xlabel('N');
@@ -119,7 +119,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_second_order(1)+P_second_order(2)),'k');
 hold on;
 plot(grid_sizes,errs1_second_order,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 1: Second-Order Scheme');
+title('Example Problem 1: Second-Order Scheme');
 order_str = sprintf('Order = %1.1f', order_second_order);
 text(100,1e-2,order_str);
 xlabel('N');
@@ -128,8 +128,8 @@ ylabel('L_\infty Error');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Test Problem 2
-% --------------
+% Example Problem 2
+% -----------------
 %  * boundary: phi = 1 on circle centered at (0,0,0) with radius 0.7
 %  * speed:    1
 %  * mask:     exterior of circle centered at (0,0,0) with radius 0.7
@@ -163,7 +163,7 @@ for i = 1:length(grid_sizes)
   [X,Y,Z] = meshgrid(x,y,z);  
 
   % display some information for user ...
-  disp_str = sprintf('   solving Test Problem 2 with N = %d', N);
+  disp_str = sprintf('   solving Example Problem 2 with N = %d', N);
   disp(disp_str);
 
   % compute exact solution
@@ -212,7 +212,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_first_order(1)+P_first_order(2)),'k');
 hold on;
 plot(grid_sizes,errs2_first_order,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 2: First-Order Scheme');
+title('Example Problem 2: First-Order Scheme');
 order_str = sprintf('Order = %1.1f', order_first_order);
 text(100,0.05,order_str);
 xlabel('N');
@@ -225,7 +225,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_second_order(1)+P_second_order(2)),'k');
 hold on;
 plot(grid_sizes,errs2_second_order,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 2: Second-Order Scheme');
+title('Example Problem 2: Second-Order Scheme');
 order_str = sprintf('Order = %1.1f', order_second_order);
 text(100,1e-2,order_str);
 xlabel('N');
@@ -233,8 +233,8 @@ ylabel('L_\infty Error');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Test Problem 3
-% --------------
+% Example Problem 3
+% -----------------
 %  * boundary: phi = 0 on circle centered at (0,0,0) with radius 0.2
 %  * speed:    1
 %  * mask:     interior of circle
@@ -273,7 +273,7 @@ for i = 1:length(grid_sizes)
   [X,Y,Z] = meshgrid(x,y,z);
 
   % display some information for user ...
-  disp_str = sprintf('   solving Test Problem 3 with N = %d', N);
+  disp_str = sprintf('   solving Example Problem 3 with N = %d', N);
   disp(disp_str);
 
   % compute exact solution
@@ -312,7 +312,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_Linf(1)+P_Linf(2)),'k');
 hold on;
 plot(grid_sizes,errs3_Linf_norm,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 3: Second-Order Scheme, L_\infty Convergence Rate');
+title('Example Problem 3: Second-Order Scheme, L_\infty Convergence Rate');
 order_str = sprintf('Order = %1.1f', order_Linf);
 text(100,0.05,order_str);
 xlabel('N');
@@ -325,7 +325,7 @@ N_plot = [10, 1000];
 loglog(N_plot,exp(log(N_plot)*P_L2(1)+P_L2(2)),'k');
 hold on;
 plot(grid_sizes,errs3_L2_norm,'bo','MarkerSize',14,'MarkerFaceColor','b');
-title('Test Problem 3: Second-Order Scheme, L_2 Convergence Rate');
+title('Example Problem 3: Second-Order Scheme, L_2 Convergence Rate');
 order_str = sprintf('Order = %1.1f', order_L2);
 text(100,1e-3,order_str);
 xlabel('N');

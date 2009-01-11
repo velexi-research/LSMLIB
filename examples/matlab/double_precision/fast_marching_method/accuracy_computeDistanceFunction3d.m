@@ -23,8 +23,8 @@ grid_sizes = [25, 50, 100, 200];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %
-% Test Problem 1 
-% --------------
+% Example Problem 1 
+% -----------------
 %  * interface: circle centered at origin with radius 0.4
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -56,7 +56,7 @@ for i = 1:length(grid_sizes)
   [X,Y,Z] = meshgrid(x,y,z);  
 
   % display some information for user ...
-  disp_str = sprintf('   solving Test Problem 1 with N = %d', N);
+  disp_str = sprintf('   solving Example Problem 1 with N = %d', N);
   disp(disp_str);
 
   % compute initial level set function
@@ -110,7 +110,7 @@ plot(grid_sizes,errs1_first_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs1_first_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 1: First-Order Scheme');
+title('Example Problem 1: First-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_first_order_Linf);
 text(100,0.05,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_first_order_L2);
@@ -132,7 +132,7 @@ plot(grid_sizes,errs1_second_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs1_second_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 1: Second-Order Scheme');
+title('Example Problem 1: Second-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_second_order_Linf);
 text(100,0.01,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_second_order_L2);
@@ -143,8 +143,8 @@ ylabel('Error');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %
-% Test Problem 2
-% --------------
+% Example Problem 2
+% -----------------
 %  * interface: two circles centered at (0.25,0.25,0.25) and 
 %               (-0.25,-0.25,-0.25) both with radius 0.2
 %
@@ -178,7 +178,7 @@ for i = 1:length(grid_sizes)
   [X,Y,Z] = meshgrid(x,y,z);  
 
   % display some information for user ...
-  disp_str = sprintf('   solving Test Problem 2 with N = %d', N);
+  disp_str = sprintf('   solving Example Problem 2 with N = %d', N);
   disp(disp_str);
 
   % compute initial level set function
@@ -239,7 +239,7 @@ plot(grid_sizes,errs2_first_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs2_first_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 2: First-Order Scheme');
+title('Example Problem 2: First-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_first_order_Linf);
 text(100,0.05,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_first_order_L2);
@@ -261,7 +261,7 @@ plot(grid_sizes,errs2_second_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs2_second_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 2: Second-Order Scheme');
+title('Example Problem 2: Second-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_second_order_Linf);
 text(100,0.01,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_second_order_L2);

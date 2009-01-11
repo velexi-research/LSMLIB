@@ -4,11 +4,11 @@
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.3 $
 % Modified:    $Date: 2006/01/24 21:45:49 $
-% Description: MATLAB test program for 1D ENO/WENO spatial derivatives 
+% Description: MATLAB demo program for 1D ENO/WENO spatial derivatives 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This script tests the 1D ENO/WENO derivative calculations using 
+% This script demos the 1D ENO/WENO derivative calculations using 
 % the advection equation:
 %
 %    u_t + v u_x = 0

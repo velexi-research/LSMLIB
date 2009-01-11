@@ -23,8 +23,8 @@ grid_sizes = [50, 100, 200, 400];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %
-% Test Problem 1 
-% --------------
+% Example Problem 1 
+% -----------------
 %  * interface: circle centered at origin with radius 0.4
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -103,7 +103,7 @@ plot(grid_sizes,errs1_first_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs1_first_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 1: First-Order Scheme');
+title('Example Problem 1: First-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_first_order_Linf);
 text(100,0.05,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_first_order_L2);
@@ -125,7 +125,7 @@ plot(grid_sizes,errs1_second_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs1_second_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 1: Second-Order Scheme');
+title('Example Problem 1: Second-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_second_order_Linf);
 text(100,0.01,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_second_order_L2);
@@ -148,8 +148,8 @@ plot(X(err_idx),Y(err_idx),'go');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %
-% Test Problem 2
-% --------------
+% Example Problem 2
+% -----------------
 %  * interface: two circles centered at (0.25,0.25) and (-0.25,-0.25)
 %               both with radius 0.2
 %
@@ -236,7 +236,7 @@ plot(grid_sizes,errs2_first_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs2_first_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 2: First-Order Scheme');
+title('Example Problem 2: First-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_first_order_Linf);
 text(100,0.05,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_first_order_L2);
@@ -258,7 +258,7 @@ plot(grid_sizes,errs2_second_order_Linf,'bo','MarkerSize',14, ...
      'MarkerFaceColor','b');
 plot(grid_sizes,errs2_second_order_L2,'ro','MarkerSize',14, ...
      'MarkerFaceColor','r');
-title('Test Problem 2: Second-Order Scheme');
+title('Example Problem 2: Second-Order Scheme');
 order_str = sprintf('Order (L_%s) = %1.1f', '\infty', order_second_order_Linf);
 text(100,0.01,order_str);
 order_str = sprintf('Order (L_2) = %1.1f', order_second_order_L2);

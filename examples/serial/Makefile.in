@@ -3,7 +3,7 @@
 ## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 ## Revision:    $Revision: 1.7 $
 ## Modified:    $Date: 2006/12/06 17:31:45 $
-## Description: makefile for serial example/test codes
+## Description: makefile for serial example codes
 ##
 
 BUILD_DIR = @top_builddir@
@@ -11,7 +11,7 @@ include $(BUILD_DIR)/config/Makefile.config
 
 LIB_DIRS     = -L$(LSMLIB_LIB_DIR)
 
-PROGS        = test_grid_management
+PROGS        = grid_management_demo
 
 SUBDIRS = curvature_example         \
           fast_marching_method      \
@@ -20,7 +20,7 @@ SUBDIRS = curvature_example         \
 all:  $(PROGS)
 	for DIR in $(SUBDIRS); do (cd $$DIR; @MAKE@ $@) || exit 1; done
 
-test_grid_management: test_grid_management.o
+grid_management_demo: grid_management_demo.o
 	@CC@ @CFLAGS@ $(LIB_DIRS) $< $(LSMLIB_LIBS) -o $@
 
 clean:

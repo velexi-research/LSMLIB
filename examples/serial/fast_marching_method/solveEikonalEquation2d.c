@@ -3,7 +3,7 @@
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.2 $
  * Modified:    $Date: 2006/08/13 13:35:24 $
- * Description: Test program for the fast marching method functions
+ * Description: Demo program for the fast marching method functions
  */
 
 
@@ -18,7 +18,7 @@
 
 /************************************************************************
  *
- * Test program for the Fast Marching Method classes.
+ * Demo program for the Fast Marching Method classes.
  *
  ************************************************************************
  */

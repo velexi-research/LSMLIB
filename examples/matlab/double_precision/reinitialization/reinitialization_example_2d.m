@@ -4,11 +4,11 @@
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.1 $
 % Modified:    $Date: 2006/09/18 20:33:24 $
-% Description: MATLAB test program for reinitialization
+% Description: MATLAB demo program for reinitialization
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This script tests reinitialization of level set functions to be distance
+% This script demos reinitialization of level set functions to be distance
 % functions near the zero level set.
 %
 % The initial level set function is

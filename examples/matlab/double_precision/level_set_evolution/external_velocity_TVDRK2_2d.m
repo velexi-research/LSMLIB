@@ -4,11 +4,11 @@
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.2 $
 % Modified:    $Date: 2006/09/18 20:32:03 $
-% Description: MATLAB test program for level set evolution functions
+% Description: MATLAB demo program for level set evolution functions
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This script tests level set evolution functions when an external 
+% This script demos level set evolution functions when an external 
 % velocity field drives the motion of the zero level set.
 %
 % The initial condition is the signed distance from the ellipse:
