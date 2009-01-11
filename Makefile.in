@@ -95,7 +95,9 @@ install:
 	    @RANLIB@ $(INSTALL_DIR)/$$i;                                \
 	  done                                                          \
 	fi
-	@CP@ -r $(SRC_DIR)/doc/lsmlib-dox $(INSTALL_DIR)/share/LSMLIB/doc
+	if test -d $(SRC_DIR)/doc/lsmlib-dox; then                            \
+  	@CP@ -r $(SRC_DIR)/doc/lsmlib-dox $(INSTALL_DIR)/share/LSMLIB/doc;  \
+  fi
 	@CP@ -r $(BUILD_DIR)/examples $(INSTALL_DIR)/share/LSMLIB/
 	@FIND@ $(INSTALL_DIR) -name Makefile > examples_makefiles.tmp
 	for i in `cat examples_makefiles.tmp`; do                       \
