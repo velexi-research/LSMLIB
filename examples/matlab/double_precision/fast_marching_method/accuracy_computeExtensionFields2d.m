@@ -1,7 +1,7 @@
 %
 % File:        accuracy_computeExtensionFields2d.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-% Revision:    $Revision: 1.7 $
+% Revision:    $Revision$
 % Modified:    $Date$
 % Description: MATLAB test code for computeExtensionFields2d MEX file
 %

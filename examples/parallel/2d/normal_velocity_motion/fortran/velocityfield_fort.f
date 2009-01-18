@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        velocityfield.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-c  Revision:    $Revision: 1.2 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 normal velocity field routines for 2d LSM example 
 c               problem

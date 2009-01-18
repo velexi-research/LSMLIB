@@ -2,7 +2,7 @@
 ##
 ## File:        generate_autoconf_files.m4
 ## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-## Revision:    $Revision: 1.3 $
+## Revision:    $Revision$
 ## Modified:    $Date$
 ## Description: shell script for generating configure script using autoconf
 ##

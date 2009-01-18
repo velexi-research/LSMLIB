@@ -1,7 +1,7 @@
 /*
  * File:        UPWIND_HJ_ENO2_3D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.14 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: MATLAB MEX-file for 3d, second-order upwind HJ ENO 
  */

@@ -1,7 +1,7 @@
 /*
  * File:        fmm_heap_test.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.2 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: test program for the FMM_Heap "object"
  */

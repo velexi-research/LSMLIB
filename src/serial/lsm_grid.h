@@ -1,7 +1,7 @@
 /*
  * File:        lsm_grid.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.3 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for grid data structures that support serial
  *              LSMLIB calculations

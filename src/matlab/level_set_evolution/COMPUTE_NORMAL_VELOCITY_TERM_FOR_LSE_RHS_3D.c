@@ -1,7 +1,7 @@
 /*
  * File:        COMPUTE_NORMAL_VELOCITY_TERM_FOR_LSE_RHS_3D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.7 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: MATLAB MEX-file for adding the contribution from a
  *              normal velocity term to the RHS of level set equation

@@ -1,7 +1,7 @@
 /*
  * File:        lsm_spatial_derivatives2d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.19 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for Fortran 77 2D ENO/WENO routines.
  */

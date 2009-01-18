@@ -1,7 +1,7 @@
 /*
  * File:        lsm_level_set_evolution2d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.8 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for 2D Fortran 77 narrow-band, level set 
  *              evolution equation subroutines

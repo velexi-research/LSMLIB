@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_level_set_evolution2d_local.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.6 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 subroutines for 2D, narrow-band level set 
 c               evolution equation

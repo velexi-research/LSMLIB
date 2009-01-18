@@ -1,7 +1,7 @@
 ##
 ## File:        set_build_mode.m4
 ## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-## Revision:    $Revision: 1.7 $
+## Revision:    $Revision$
 ## Modified:    $Date$
 ## Description: autoconf macro for setting the build mode 
 ##

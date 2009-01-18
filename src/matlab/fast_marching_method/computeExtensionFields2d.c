@@ -1,7 +1,7 @@
 /*
  * File:        computeExtensionFields2d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.14 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: MATLAB MEX-file for using the fast marching method to
  *              compute extension fields for 2d level set functions

@@ -1,7 +1,7 @@
 /*
  * File:        main_integrals.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.5 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: 2d example program for Level Set Method computing integrals
  */

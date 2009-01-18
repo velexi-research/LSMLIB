@@ -1,7 +1,7 @@
 /*
  * File:        neumann_bc_ENO2_1d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.2 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Demo program for the 1D homogeneous Neumann BCS using
  *              ENO2 discretization

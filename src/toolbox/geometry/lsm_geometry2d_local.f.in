@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_geometry2d_local.f
 c  Copyright:   (c) 2005-2006 Kevin T. Chu
-c  Revision:    $Revision: 1.10 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description:  F77 routines 2D level set method geometry subroutines for
 c                narrow-band computations.

@@ -1,7 +1,7 @@
 /*
  * File:        lsm_file.c
  * Copyright:   (c) 2005-2007 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.3 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation file for file management functions (zipping etc.)
  */

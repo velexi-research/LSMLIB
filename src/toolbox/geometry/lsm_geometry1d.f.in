@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_geometry1d.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-c  Revision:    $Revision: 1.12 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 routines for several common level set method
 c               geometry calculations

@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        patchmodule_fort.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-c  Revision:    $Revision: 1.1 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 patch module routines for LSMLIB example program
 c

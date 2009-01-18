@@ -1,7 +1,7 @@
 /*
  * File:        lsm_utilities1d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.18 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for 1D Fortran 77 level set method utility 
  *              subroutines

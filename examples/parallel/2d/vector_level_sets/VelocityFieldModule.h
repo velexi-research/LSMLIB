@@ -1,7 +1,7 @@
 /*
  * File:        VelocityFieldModule.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.3 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header for class that computes the velocity field for
  *              the level set method

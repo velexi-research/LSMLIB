@@ -1,7 +1,7 @@
 /*
  * File:        PatchModule.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.3 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation for concrete subclass of 
  *              LevelSetMethodPatchStrategy that computes the single patch 

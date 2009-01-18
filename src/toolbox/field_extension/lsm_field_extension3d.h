@@ -1,7 +1,7 @@
 /*
  * File:        lsm_field_extension3d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.7 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for 3D Fortran 77 field extension subroutines
  */

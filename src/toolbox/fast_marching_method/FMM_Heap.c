@@ -1,7 +1,7 @@
 /*
  * File:        FMM_Heap.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.15 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: C heap library for supporting fast marching method 
  */

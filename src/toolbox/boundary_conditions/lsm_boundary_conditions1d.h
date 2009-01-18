@@ -1,7 +1,7 @@
 /*
  * File:        lsm_boundary_conditions1d.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.2 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for 1D boundary conditions functions 
  */

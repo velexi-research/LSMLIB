@@ -2,7 +2,7 @@
 %
 % File:        variable_adv_1d_sine.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-% Revision:    $Revision: 1.3 $
+% Revision:    $Revision$
 % Modified:    $Date$
 % Description: MATLAB demo program for 1D ENO/WENO spatial derivatives 
 %

@@ -1,7 +1,7 @@
 /*
  * File:        lsm_macros.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.1 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file with helpful macros for manipulating data arrays
  */

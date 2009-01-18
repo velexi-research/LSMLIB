@@ -1,7 +1,7 @@
 /*
  * File:        lsm_level_set_evolution1d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.7 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Header file for 1D Fortran 77 level set evolution equation
  *              subroutines

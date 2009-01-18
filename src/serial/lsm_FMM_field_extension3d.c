@@ -1,7 +1,7 @@
 /*
  * File:        lsm_FMM_field_extension3d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.2 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation of 3D Fast Marching Method for computing
  *              signed distance functions and extension fields

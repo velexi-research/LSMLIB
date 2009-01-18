@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_calculus_toolbox2d_local.f
 c  Copyright:   (c) 2005-2009 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.8 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 routines for several common level set method
 c               calculus calculations

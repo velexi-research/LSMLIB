@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_boundary_conditions1d.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.4 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 routines for applying boundary conditions in 1D
 c

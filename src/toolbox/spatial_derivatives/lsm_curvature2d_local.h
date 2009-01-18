@@ -1,7 +1,7 @@
 /*
  * File:        lsm_curvature2d_local.h
 *  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
-*  Revision:    $Revision: 1.19 $
+*  Revision:    $Revision$
 *  Modified:    $Date$
 *  Description: F77 routines for computing 2D curvature
 */

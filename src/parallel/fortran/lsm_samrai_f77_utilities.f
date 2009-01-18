@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_samrai_f77_utilities.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
-c  Revision:    $Revision: 1.3 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: Utility F77 subroutines for SAMRAI implementation of
 c               level set method

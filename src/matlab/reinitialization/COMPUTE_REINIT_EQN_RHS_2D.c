@@ -1,7 +1,7 @@
 /*
  * File:        COMPUTE_REINIT_EQN_RHS_2D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.2 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: MATLAB MEX-file for adding the contribution from a
  *              normal velocity term to the RHS of level set equation

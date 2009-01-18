@@ -1,7 +1,7 @@
 /*
  * File:        lsm_FMM_eikonal.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.4 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation of Fast Marching Method for Eikonal equation
  */

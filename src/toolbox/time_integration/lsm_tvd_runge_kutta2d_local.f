@@ -2,7 +2,7 @@ c***********************************************************************
 c
 c  File:        lsm_tvd_runge_kutta2d_local.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
-c  Revision:    $Revision: 1.8 $
+c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 routines for 2D TVD Runge-Kutta time integration 
 c               on narrow-bands

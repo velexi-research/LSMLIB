@@ -1,7 +1,7 @@
 /*
  * File:        lsm_data_arrays.c
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.3 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation file for LSM_DataArrays structure
  */

@@ -1,7 +1,7 @@
 /*
  * File:        lsm_options.c
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
- * Revision:    $Revision: 1.1 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation file for Options structure.
  */

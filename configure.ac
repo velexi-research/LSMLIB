@@ -8,7 +8,7 @@
 #===========================================================================
 AC_PREREQ(2.57)
 AC_INIT([LSMLIB], 1.0.0, [ktchu@serendipityresearch.org])
-AC_REVISION($Revision: 1.31 $)
+AC_REVISION($Revision$)
 AC_CONFIG_SRCDIR([src/parallel/LevelSetMethodAlgorithm.cc])
 AC_CONFIG_HEADER([config/LSMLIB_config.h])
 AC_CONFIG_AUX_DIR([config/autoconf])

@@ -1,7 +1,7 @@
 /*
  * File:        HJ_ENO3_2D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
- * Revision:    $Revision: 1.10 $
+ * Revision:    $Revision$
  * Modified:    $Date$
  * Description: MATLAB MEX-file for 2d, third-order plus and minus HJ ENO 
  */
