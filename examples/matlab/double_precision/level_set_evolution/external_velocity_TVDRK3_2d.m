@@ -3,7 +3,7 @@
 % File:        external_velocity_TVDRK3_2d.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.2 $
-% Modified:    $Date: 2006/09/18 20:32:04 $
+% Modified:    $Date$
 % Description: MATLAB demo program for level set evolution functions
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -2,7 +2,7 @@
  * File:        neumann_bc_WENO5_1d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.2 $
- * Modified:    $Date: 2006/10/14 03:56:33 $
+ * Modified:    $Date$
  * Description: Demo program for the 1D homogeneous Neumann BCS using
  *              WENO5 discretization
  */

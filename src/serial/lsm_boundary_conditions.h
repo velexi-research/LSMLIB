@@ -2,7 +2,7 @@
  * File:        lsm_boundary_conditions.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/12/04 13:26:55 $
+ * Modified:    $Date$
  * Description: Header file for functions for imposing boundary conditions
  *              for serial calculations
  */

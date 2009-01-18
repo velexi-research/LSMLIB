@@ -2,7 +2,7 @@
  * File:        BoundaryConditionModule.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/10/16 20:54:25 $
+ * Modified:    $Date$
  * Description: Header file for anti-periodic bc module
  */
  

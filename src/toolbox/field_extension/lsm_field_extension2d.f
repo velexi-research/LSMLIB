@@ -3,7 +3,7 @@ c
 c  File:        lsm_field_extension2d.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 c  Revision:    $Revision: 1.5 $
-c  Modified:    $Date: 2006/05/18 01:50:44 $
+c  Modified:    $Date$
 c  Description: 2D F77 routines for extending fields off of the 
 c               zero level set 
 c

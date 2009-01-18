@@ -2,7 +2,7 @@
  * File:        lsm_data_arrays.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.3 $
- * Modified:    $Date: 2006/07/06 22:22:43 $
+ * Modified:    $Date$
  * Description: Header file for LSM_DataArrays data structure and functions
  *              that support serial LSMLIB calculations
  */

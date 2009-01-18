@@ -2,7 +2,7 @@
  * File:        Array__Array__Array__BoundaryBox.NDIM.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
- * Modified:    $Date: 2006/10/04 22:09:28 $
+ * Modified:    $Date$
  * Description: Explicit template instantiation of LSMLIB classes 
  */
 

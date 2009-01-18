@@ -3,7 +3,7 @@ c
 c  File:        lsm_localization3d.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.8 $
-c  Modified:    $Date: 2006/01/24 21:46:42 $
+c  Modified:    $Date$
 c  Description: F77 routines for 3D narrow-band level set calculations
 c
 c***********************************************************************

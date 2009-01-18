@@ -3,7 +3,7 @@ c
 c  File:        lsm_reinitialization3d_local.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.12 $
-c  Modified:    $Date: 2006/04/02 12:59:44 $
+c  Modified:    $Date$
 c  Description: F77 routines for narrow-band reinitialization of 
 c               3d level set functions
 c

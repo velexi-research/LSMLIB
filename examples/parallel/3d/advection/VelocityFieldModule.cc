@@ -2,7 +2,7 @@
  * File:        VelocityFieldModule.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/03/23 14:00:06 $
+ * Modified:    $Date$
  * Description: Implementation of class that computes the velocity field
  *              for the 3d level set method example program
  */

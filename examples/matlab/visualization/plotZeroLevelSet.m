@@ -10,7 +10,7 @@
 %
 % Copyright:  (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 % Revision:   $Revision: 1.1 $
-% Modified:   $Date: 2006/07/07 12:11:11 $
+% Modified:   $Date$
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

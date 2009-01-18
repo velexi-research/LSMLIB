@@ -4,7 +4,7 @@
 ##              Regents of the University of Texas.  All rights reserved.
 ##              (c) 2008 Kevin T. Chu.  All rights reserved.
 ## Revision:    $Revision: 1.9 $
-## Modified:    $Date: 2006/12/06 00:21:12 $
+## Modified:    $Date$
 ## Description: makefile for parallel level set method example programs
 ##
 

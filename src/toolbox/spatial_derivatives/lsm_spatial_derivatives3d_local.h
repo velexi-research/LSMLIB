@@ -2,7 +2,7 @@
  * File:        lsm_spatial_derivatives3d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.19 $
- * Modified:    $Date: 2006/10/28 01:48:58 $
+ * Modified:    $Date$
  * Description: Header file for Fortran 77 3D narrow-band ENO/WENO routines
  */
 

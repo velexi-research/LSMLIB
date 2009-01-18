@@ -3,7 +3,7 @@ c
 c  File:        lsm_utilities3d_local.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.17 $
-c  Modified:    $Date: 2006/10/28 04:54:37 $
+c  Modified:    $Date$
 c  Description: F77 routines for 3D level set method utility subroutines
 c               on narrow-bands
 c

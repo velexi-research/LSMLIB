@@ -2,7 +2,7 @@
  * File:        lsm_level_set_evolution2d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.8 $
- * Modified:    $Date: 2006/10/28 05:09:39 $
+ * Modified:    $Date$
  * Description: Header file for 2D Fortran 77 level set evolution equation
  *              subroutines
  */

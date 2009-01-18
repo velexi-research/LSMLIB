@@ -2,7 +2,7 @@
  * File:        grid_management_demo.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
- * Modified:    $Date: 2006/12/05 21:16:17 $
+ * Modified:    $Date$
  * Description: Demo code for grid management functions.
  */
 

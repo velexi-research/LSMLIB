@@ -2,7 +2,7 @@
  * File:        lsm_utilities3d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.23 $
- * Modified:    $Date: 2006/10/28 04:54:37 $
+ * Modified:    $Date$
  * Description: Header file for 3D Fortran 77 level set method narrow-band
  *              utility subroutines
  */

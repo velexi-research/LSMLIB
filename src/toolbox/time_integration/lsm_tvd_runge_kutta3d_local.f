@@ -3,7 +3,7 @@ c
 c  File:        lsm_tvd_runge_kutta3d_local.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.8 $
-c  Modified:    $Date: 2007/02/11 17:14:03 $
+c  Modified:    $Date$
 c  Description: F77 routines for 3D TVD Runge-Kutta time integration 
 c               on narrow-bands
 c

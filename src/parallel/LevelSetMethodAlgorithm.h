@@ -2,7 +2,7 @@
  * File:        LevelSetMethodAlgorithm.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.32 $
- * Modified:    $Date: 2006/10/15 02:22:29 $
+ * Modified:    $Date$
  * Description: Header file for the main level set method algorithm class
  */
  

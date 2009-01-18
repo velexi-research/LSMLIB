@@ -2,7 +2,7 @@
  * File:        lsm_geometry3d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.16 $
- * Modified:    $Date: 2007/04/20 16:39:27 $
+ * Modified:    $Date$
  * Description: Header file for 3D Fortran 77 level set method geometry
  *              subroutines
  */

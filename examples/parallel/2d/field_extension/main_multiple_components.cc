@@ -2,7 +2,7 @@
  * File:        main_multiple_components.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.1 $
- * Modified:    $Date: 2006/05/18 01:09:35 $
+ * Modified:    $Date$
  * Description: 2D example program for Level Set Method Classes
  */
 

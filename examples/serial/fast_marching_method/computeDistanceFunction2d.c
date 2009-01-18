@@ -2,7 +2,7 @@
  * File:        computeDistanceFunction2d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.3 $
- * Modified:    $Date: 2006/08/13 13:35:23 $
+ * Modified:    $Date$
  * Description: Demo program for the fast marching method functions
  */
 

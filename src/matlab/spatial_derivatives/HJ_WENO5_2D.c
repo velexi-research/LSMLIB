@@ -2,7 +2,7 @@
  * File:        HJ_WENO5_2D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.10 $
- * Modified:    $Date: 2006/09/18 20:27:32 $
+ * Modified:    $Date$
  * Description: MATLAB MEX-file for 2d, fifth-order plus and minus HJ WENO 
  */
 

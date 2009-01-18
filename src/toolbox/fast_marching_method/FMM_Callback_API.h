@@ -2,7 +2,7 @@
  * File:        FMM_Callback_API.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.13 $
- * Modified:    $Date: 2006/08/13 13:32:08 $
+ * Modified:    $Date$
  * Description: Definitions of callback function signatures for FMM algorithm
  */
 

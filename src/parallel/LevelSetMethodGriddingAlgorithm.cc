@@ -2,7 +2,7 @@
  * File:        LevelSetMethodGriddingAlgorithm.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.6 $
- * Modified:    $Date: 2007/03/24 01:28:10 $
+ * Modified:    $Date$
  * Description: Implementation of the level set method grid management class
  */
 

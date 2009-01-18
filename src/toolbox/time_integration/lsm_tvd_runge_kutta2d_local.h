@@ -2,7 +2,7 @@
  * File:        lsm_tvd_runge_kutta2d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.8 $
- * Modified:    $Date: 2006/05/18 23:20:20 $
+ * Modified:    $Date$
  * Description: Header file for Fortran 77 2D narrow-band TVD Runge-Kutta 
  *              routines
  */

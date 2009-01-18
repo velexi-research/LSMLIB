@@ -2,7 +2,7 @@
  * File:        LevelSetMethodToolbox.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.16 $
- * Modified:    $Date: 2006/11/01 00:28:32 $
+ * Modified:    $Date$
  * Description: Header file for level set method toolbox class
  */
  

@@ -2,7 +2,7 @@
  * File:        lsm_calculus_toolbox2d.h
  * Copyright:   (c) 2005-2009 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.9 $
- * Modified:    $Date: 2006/05/19 14:55:04 $
+ * Modified:    $Date$
  * Description: Header file level set method calculus toolbox functions in 2d.
  */
 

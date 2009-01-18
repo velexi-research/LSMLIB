@@ -3,7 +3,7 @@ c
 c  File:        patchmodule_fort.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 c  Revision:    $Revision: 1.2 $
-c  Modified:    $Date: 2006/01/24 21:46:09 $
+c  Modified:    $Date$
 c  Description: F77 patch module routines for 3d LSM example problem
 c
 c***********************************************************************

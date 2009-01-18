@@ -2,7 +2,7 @@
  * File:        main.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.7 $
- * Modified:    $Date: 2006/08/01 16:13:43 $
+ * Modified:    $Date$
  * Description: 3D example program for Level Set Method Classes
  */
 

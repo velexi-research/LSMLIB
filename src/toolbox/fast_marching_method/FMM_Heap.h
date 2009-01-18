@@ -2,7 +2,7 @@
  * File:        FMM_Heap.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.14 $
- * Modified:    $Date: 2006/08/13 13:32:08 $
+ * Modified:    $Date$
  * Description: Header file for C heap library for supporting FMM algorithm
  */
 

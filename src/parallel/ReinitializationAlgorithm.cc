@@ -2,7 +2,7 @@
  * File:        ReinitializationAlgorithm.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.24 $
- * Modified:    $Date: 2006/10/05 15:03:45 $
+ * Modified:    $Date$
  * Description: Implementation file for level set method reinitialization class
  */
 

@@ -2,7 +2,7 @@
  * File:        lsm_field_extension2d.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.7 $
- * Modified:    $Date: 2006/05/18 23:20:10 $
+ * Modified:    $Date$
  * Description: Header file for 2D Fortran 77 field extension subroutines
  */
 

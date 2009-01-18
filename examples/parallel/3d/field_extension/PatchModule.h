@@ -2,7 +2,7 @@
  * File:        PatchModule.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/03/23 14:00:07 $
+ * Modified:    $Date$
  * Description: Header for concrete subclass of LevelSetMethodPatchStrategy 
  *              that computes the single patch numerical routines for the 
  *              3d level set method example problem

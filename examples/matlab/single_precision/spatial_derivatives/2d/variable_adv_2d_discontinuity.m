@@ -3,7 +3,7 @@
 % File:        variable_adv_2d_discontinuity.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.2 $
-% Modified:    $Date: 2006/01/24 21:45:50 $
+% Modified:    $Date$
 % Description: MATLAB demo program for 2D ENO/WENO spatial derivatives 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -3,7 +3,7 @@ c
 c  File:        lsm_calculus_toolbox3d.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.8 $
-c  Modified:    $Date: 2006/04/20 12:22:18 $
+c  Modified:    $Date$
 c  Description: F77 routines for several common level set method
 c               calculus calculations
 c

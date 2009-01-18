@@ -2,7 +2,7 @@
  * File:        LevelSetFunctionIntegratorStrategy.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.15 $
- * Modified:    $Date: 2006/10/05 15:03:44 $
+ * Modified:    $Date$
  * Description: Header file for level set method integrator strategy class
  */
  

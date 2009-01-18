@@ -2,7 +2,7 @@
  * File:        LevelSetFunctionIntegrator.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.26 $
- * Modified:    $Date: 2007/03/25 07:09:05 $
+ * Modified:    $Date$
  * Description: Header file for level set method integrator class
  */
  

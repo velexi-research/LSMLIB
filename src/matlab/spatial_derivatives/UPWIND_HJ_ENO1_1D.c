@@ -2,7 +2,7 @@
  * File:        UPWIND_HJ_ENO1_1D.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.13 $
- * Modified:    $Date: 2006/04/24 11:48:36 $
+ * Modified:    $Date$
  * Description: MATLAB MEX-file for 1d, first-order upwind HJ ENO 
  */
 

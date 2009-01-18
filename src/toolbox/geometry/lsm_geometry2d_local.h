@@ -2,7 +2,7 @@
  * File:        lsm_geometry2d_local.h
  * Copyright:   (c) 2005-2006 Kevin T. Chu
  * Revision:    $Revision: 1.11 $
- * Modified:    $Date: 2006/09/30 18:17:22 $
+ * Modified:    $Date$
  * Description: Header file for 2D Fortran 77 level set method geometry
  *              subroutines
  */

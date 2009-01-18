@@ -3,7 +3,7 @@
 % File:        convergence_test.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.4 $
-% Modified:    $Date: 2006/01/24 21:45:49 $
+% Modified:    $Date$
 % Description: MATLAB test program for 1D ENO/WENO spatial derivatives 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

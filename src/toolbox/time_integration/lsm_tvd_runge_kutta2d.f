@@ -3,7 +3,7 @@ c
 c  File:        lsm_tvd_runge_kutta2d.f
 c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 c  Revision:    $Revision: 1.8 $
-c  Modified:    $Date: 2007/02/11 17:14:03 $
+c  Modified:    $Date$
 c  Description: F77 routines for 2D TVD Runge-Kutta time integration 
 c
 c***********************************************************************

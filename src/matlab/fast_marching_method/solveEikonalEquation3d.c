@@ -2,7 +2,7 @@
  * File:        solveEikonalEquation3d.c
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.4 $
- * Modified:    $Date: 2006/09/18 16:17:02 $
+ * Modified:    $Date$
  * Description: MATLAB MEX-file for using the fast marching method to
  *              compute the distance function for 3d level set functions
  */

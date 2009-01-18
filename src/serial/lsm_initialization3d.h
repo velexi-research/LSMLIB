@@ -2,7 +2,7 @@
  * File:        lsm_initialization3d.h
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
- * Modified:    $Date: 2006/05/25 19:41:22 $
+ * Modified:    $Date$
  * Description: Header file for 3D initialization functions
  */
 

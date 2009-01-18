@@ -2,7 +2,7 @@
  * File:        LevelSetMethodGriddingAlgorithm.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.5 $
- * Modified:    $Date: 2006/01/27 16:13:20 $
+ * Modified:    $Date$
  * Description: Header file for the level set method grid management class
  */
  

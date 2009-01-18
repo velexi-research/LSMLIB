@@ -2,7 +2,7 @@
  * File:        patchmodule_fort.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.1 $
- * Modified:    $Date: 2006/05/18 01:09:37 $
+ * Modified:    $Date$
  * Description: Header file for patch module routines for 2d LSM example 
  *              problem
  */

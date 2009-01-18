@@ -3,7 +3,7 @@ c
 c  File:        lsm_boundary_conditions3d.f
 c  Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
 c  Revision:    $Revision: 1.6 $
-c  Modified:    $Date: 2007/05/06 21:08:05 $
+c  Modified:    $Date$
 c  Description: F77 routines for applying boundary conditions in 3D
 c
 c***********************************************************************

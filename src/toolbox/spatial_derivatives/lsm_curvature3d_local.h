@@ -2,7 +2,7 @@
  * File:        lsm_curvature3d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.18 $
- * Modified:    $Date: 2006/07/25 15:00:58 $
+ * Modified:    $Date$
  * Description: Header file for Fortran 77 3D curvature routines.
  */
  

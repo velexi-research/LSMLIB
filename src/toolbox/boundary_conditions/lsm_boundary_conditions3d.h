@@ -2,7 +2,7 @@
  * File:        lsm_boundary_conditions3d.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.2 $
- * Modified:    $Date: 2006/10/01 17:42:19 $
+ * Modified:    $Date$
  * Description: Header file for 3D boundary conditions functions 
  */
 

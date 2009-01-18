@@ -2,7 +2,7 @@
 ## File:        Makefile.in
 ## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 ## Revision:    $Revision: 1.1 $
-## Modified:    $Date: 2006/12/06 15:36:52 $
+## Modified:    $Date$
 ## Description: mex options for Intel compilers
 ##
 

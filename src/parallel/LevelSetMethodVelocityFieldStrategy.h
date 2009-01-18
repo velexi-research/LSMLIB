@@ -2,7 +2,7 @@
  * File:        LevelSetMethodVelocityFieldStrategy.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.10 $
- * Modified:    $Date: 2006/07/07 18:41:52 $
+ * Modified:    $Date$
  * Description: Header for strategy for the velocity field for the level 
  *              set method
  */

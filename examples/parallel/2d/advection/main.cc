@@ -2,7 +2,7 @@
  * File:        main.cc
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.7 $
- * Modified:    $Date: 2006/08/01 16:13:36 $
+ * Modified:    $Date$
  * Description: Example program for LSMLIB Parallel Package
  */
 

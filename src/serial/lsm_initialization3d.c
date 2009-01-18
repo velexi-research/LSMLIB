@@ -2,7 +2,7 @@
  * File:        lsm_initialization3d.c
  * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.3 $
- * Modified:    $Date: 2006/06/02 02:36:52 $
+ * Modified:    $Date$
  * Description: Implementation file for 3D initialization functions
  */
 

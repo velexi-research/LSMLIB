@@ -2,7 +2,7 @@
  * File:        LevelSetMethodGriddingStrategy.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.2 $
- * Modified:    $Date: 2006/01/24 21:46:25 $
+ * Modified:    $Date$
  * Description: Empty implementation file LevelSetMethodGriddingStrategy
 
  */

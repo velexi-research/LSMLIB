@@ -3,7 +3,7 @@
 % File:        reinitialization_example_2d.m
 % Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
 % Revision:    $Revision: 1.1 $
-% Modified:    $Date: 2006/09/18 20:33:24 $
+% Modified:    $Date$
 % Description: MATLAB demo program for reinitialization
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

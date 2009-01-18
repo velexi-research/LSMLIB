@@ -2,7 +2,7 @@
  * File:        lsm_level_set_evolution3d_local.h
  * Copyright:   (c) 2005-2008 Masa Prodanovic and Kevin T. Chu
  * Revision:    $Revision: 1.8 $
- * Modified:    $Date: 2006/10/28 05:09:39 $
+ * Modified:    $Date$
  * Description: Header file for 3D Fortran 77 narrow-band, level set 
  *              evolution equation subroutines
  */

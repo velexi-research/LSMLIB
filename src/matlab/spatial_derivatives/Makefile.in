@@ -4,7 +4,7 @@
 ##              Regents of the University of Texas.  All rights reserved.
 ##              (c) 2008 Kevin T. Chu.  All rights reserved.
 ## Revision:    $Revision: 1.6 $
-## Modified:    $Date: 2006/07/07 12:02:35 $
+## Modified:    $Date$
 ## Description: makefile for building MATLAB MEX-files for spatial derivatives
 ##
 

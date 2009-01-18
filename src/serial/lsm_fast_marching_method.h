@@ -2,7 +2,7 @@
  * File:        lsm_fast_marching_method.h
  * Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
  * Revision:    $Revision: 1.10 $
- * Modified:    $Date: 2006/08/14 20:18:55 $
+ * Modified:    $Date$
  * Description: Header file for 2D and 3D Fast Marching Method Algorithms
  */
  
