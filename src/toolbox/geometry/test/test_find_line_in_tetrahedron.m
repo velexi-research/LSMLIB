@@ -1,3 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+%                  Regents of the University of Texas.  All rights reserved.
+%              (c) 2009 Kevin T. Chu.  All rights reserved.
+% Revision:   $Revision$
+% Modified:   $Date$
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % This script is intended to be used in conjunction with the 
 % test_find_line_in_tetrahedron* test programs to verify the correctness 

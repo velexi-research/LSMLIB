@@ -1,3 +1,13 @@
+/* 
+ * File:        test_find_line_in_tetrahedron_1.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ *
+ */
+
 /*
  * This program tests that the LSM3D_findLineInTetrahedron() function 
  * correctly computes the coefficients of the linear approximation to the 

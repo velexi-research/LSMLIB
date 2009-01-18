@@ -1,6 +1,8 @@
 /*
  * File:        lsm_initialization3d.c
- * Copyright:   (c) 2005-2006 Masa Prodanovic and Kevin T. Chu
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
  * Modified:    $Date$
  * Description: Implementation file for 3D initialization functions

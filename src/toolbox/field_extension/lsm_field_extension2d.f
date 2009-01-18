@@ -1,7 +1,9 @@
 c***********************************************************************
 c
 c  File:        lsm_field_extension2d.f
-c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+c  Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+c                   Regents of the University of Texas.  All rights reserved.
+c               (c) 2009 Kevin T. Chu.  All rights reserved.
 c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: 2D F77 routines for extending fields off of the 

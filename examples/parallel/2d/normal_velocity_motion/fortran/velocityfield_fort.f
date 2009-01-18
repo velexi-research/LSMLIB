@@ -1,7 +1,9 @@
 c***********************************************************************
 c
 c  File:        velocityfield.f
-c  Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+c  Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+c                   Regents of the University of Texas.  All rights reserved.
+c               (c) 2009 Kevin T. Chu.  All rights reserved.
 c  Revision:    $Revision$
 c  Modified:    $Date$
 c  Description: F77 normal velocity field routines for 2d LSM example 
