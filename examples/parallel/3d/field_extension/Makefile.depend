@@ -1,6 +1,8 @@
 ##
-## File:	Makefile.depend
-## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+## File:        Makefile.depend
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##              Regents of the University of Texas.  All rights reserved.
+##              (c) 2008 Kevin T. Chu.  All rights reserved.
 ## Revision:    $Revision: 1.4 $
 ## Modified:    $Date: 2006/07/07 21:32:43 $
 ## Description: source file dependencies for 3d level set method 
@@ -8,20 +10,20 @@
 ##
 
 
-main_multiple_components.o:           \
-	main_multiple_components.cc   \
-	PatchModule.h                 \
-	VelocityFieldModule.h
+main_multiple_components.o:     \
+  main_multiple_components.cc   \
+  PatchModule.h                 \
+  VelocityFieldModule.h
 
-main_single_component.o:              \
-        main_single_component.cc      \
-	PatchModule.h                 \
-	VelocityFieldModule.h
+main_single_component.o:        \
+  main_single_component.cc      \
+  PatchModule.h                 \
+  VelocityFieldModule.h
 
-PatchModule.o:                        \
-	PatchModule.h                 \
-	PatchModule.cc
+PatchModule.o:                  \
+  PatchModule.h                 \
+  PatchModule.cc
 
-VelocityFieldModule.o:                \
-	VelocityFieldModule.h         \
-	VelocityFieldModule.cc
+VelocityFieldModule.o:          \
+  VelocityFieldModule.h         \
+  VelocityFieldModule.cc

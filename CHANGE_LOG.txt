@@ -1,4 +1,4 @@
-v1.0.0 (2009/01/??)
+v1.0.0 (2009/01/31)
 -------------------
 * ENHANCEMENTS:
   - Improved support for localization/narrow-band calculations
@@ -16,6 +16,7 @@ v1.0.0 (2009/01/??)
 * MINOR CHANGES:
   - Added support for gfortran compiler (default Fortran compiler) in 
     configuration scripts.
+  - Updated copyright information throughout library.
 * BUG FIXES:
   - Fixed the following bugs in findLineInTetrahedron():
     * for small tetrahedra, line segment returned occasionally

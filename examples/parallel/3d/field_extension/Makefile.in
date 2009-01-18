@@ -1,9 +1,11 @@
 ##
 ## File:        Makefile.in
-## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##              Regents of the University of Texas.  All rights reserved.
+##              (c) 2008 Kevin T. Chu.  All rights reserved.
 ## Revision:    $Revision: 1.10 $
 ## Modified:    $Date: 2006/12/06 00:21:15 $
-## Description:	makefile for parallel 3d level set method example programs
+## Description: makefile for parallel 3d level set method example programs
 ##
 
 BUILD_DIR = @top_builddir@
@@ -25,24 +27,24 @@ PROGRAMS = main_multiple_components    \
 
 all: $(PROGRAMS)
 
-main_multiple_components:                     \
-		main_multiple_components.o    \
-		VelocityFieldModule.o         \
-		PatchModule.o                 \
-                patchmodule_fort.o            \
-                velocityfield_fort.o
-	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^    \
+main_multiple_components:         \
+    main_multiple_components.o    \
+    VelocityFieldModule.o         \
+    PatchModule.o                 \
+    patchmodule_fort.o            \
+    velocityfield_fort.o
+	$(CXX) @CXXFLAGS@ $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^          \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                     \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)          \
         $(LDLIBS) -o main_multiple_components
      
-main_single_component:                                  \
-                main_single_component.o                 \
-		VelocityFieldModule.o                   \
-		PatchModule.o                           \
-                patchmodule_fort.o                      \
-                velocityfield_fort.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^          \
+main_single_component:                      \
+    main_single_component.o                 \
+    VelocityFieldModule.o                   \
+    PatchModule.o                           \
+    patchmodule_fort.o                      \
+    velocityfield_fort.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L$(LSMLIB_LIB_DIR) $^                \
         $(LSMLIB_LIBS) $(LDLIBS_EXTRA)                                \
         $(LIBSAMRAI3D) $(LIBSAMRAI2D) $(LIBSAMRAI1D) $(LIBSAMRAI)     \
         $(LDLIBS) -o main_single_component
@@ -58,7 +60,7 @@ cleanrun:
 		@RM@ -r *.visit
 		@RM@ -r *.restart
 
-spotless:	clean cleanrun
+spotless: clean cleanrun
 
 include Makefile.depend
 

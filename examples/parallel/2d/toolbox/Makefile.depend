@@ -1,26 +1,28 @@
 ##
-## File:	Makefile.depend
-## Copyright:   (c) 2005-2008 Kevin T. Chu and Masa Prodanovic
+## File:        Makefile.depend
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##              Regents of the University of Texas.  All rights reserved.
+##              (c) 2008 Kevin T. Chu.  All rights reserved.
 ## Revision:    $Revision: 1.4 $
 ## Modified:    $Date: 2006/07/07 21:32:39 $
 ## Description: source file dependencies for level set method example program
 ##
 
 
-main_integrals.o:                     \
+main_integrals.o:               \
 	main_integrals.cc             \
 	PatchModule.h                 \
 	VelocityFieldModule.h
 
-main_volumes.o:                       \
+main_volumes.o:                 \
 	main_volumes.cc               \
 	PatchModule.h                 \
 	VelocityFieldModule.h
 
-PatchModule.o:                        \
+PatchModule.o:                  \
 	PatchModule.h                 \
 	PatchModule.cc
 
-VelocityFieldModule.o:                \
+VelocityFieldModule.o:          \
 	VelocityFieldModule.h         \
 	VelocityFieldModule.cc
