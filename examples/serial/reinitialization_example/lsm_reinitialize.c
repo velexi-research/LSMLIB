@@ -1,8 +1,19 @@
+/*
+ * File:        lsm_reinitialize.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Demo code for reinitialization.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+/* Local headers */
 #include "LSMLIB_config.h"
 #include "lsm_data_arrays.h"
 #include "lsm_macros.h"
@@ -13,6 +24,8 @@
 
 void reinitializeTop(Options *options,int use_input_data,char *filename_data,
                                        char *filename_grid,char *filename_mask);
+      
+/* Main driver for reinitalization demo code. */
       
 int main(int argc, char **argv) 
 {

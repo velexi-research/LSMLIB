@@ -5,7 +5,7 @@
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
  * Modified:    $Date$
- * Description: Header file for Options structure implentation functions.
+ * Description: Support header file for reinitialization.
  */
 
 #ifndef INCLUDED_LSM_REINITIALIZATION_MEDIUM2D
@@ -19,7 +19,7 @@ extern "C" {
 /*! \file lsm_reinitialization_medium2d.h
  *
  * \brief
- * LSMLIB provides reinitialization functions.
+ * Provides reinitialization functions.
  */
 
 #include "LSMLIB_config.h"

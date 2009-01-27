@@ -1,3 +1,13 @@
+/*
+ * File:        curvature_model3d.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Support file for 3D constant curvature flow.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,6 +36,7 @@
 #define DT_MIN_TO_CORRECT 1e-5
 #define DT_MIN            0.001
 
+/* Main loop for constant curvature level set method model in 3D */
 
 void curvatureModelMedium3dMainLoop(
      Options          *options,

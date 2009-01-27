@@ -1,3 +1,13 @@
+/*
+ * File:        curvature_model.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Demo code for constant curvature flow.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 
@@ -46,9 +56,9 @@ int main(int argc, char **argv)
    else
    {
      printf("\nRunning options:");
-     printf("\n\t./constantCurvatureModel");
-     printf("\n\t./constantCuvatureModel input_file");
-     printf("\n\t./constantCurvatureModel input_file data_init grid mask");
+     printf("\n\t./curvature_model");
+     printf("\n\t./curvature_model input_file");
+     printf("\n\t./curvature_model input_file data_init grid mask");
      printf("\n"); 
    }
    

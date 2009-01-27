@@ -1,3 +1,13 @@
+/*
+ * File:        curvature_model_top.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Support file for constant curvature flow.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +26,11 @@
 #include "curvature_model_top.h"
 #include "curvature_model3d.h"
 #include "curvature_model3d_local.h"
+
+/* 
+*  Top routine for constant curvature flow: sets input options and 
+*  calls appropriate main loop function.
+*/
 
 int  curvatureModelTop(
      Options     *options,

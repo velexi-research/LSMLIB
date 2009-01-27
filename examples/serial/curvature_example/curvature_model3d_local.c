@@ -1,3 +1,13 @@
+/*
+ * File:        curvature_model3d_local.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Support file for localized 3D constant curvature flow.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,11 +43,11 @@
 
 static unsigned char mark_gb=127, mark_D1=126, mark_D2=125, mark_fb=124;
  
- 	
 /* 
-* Localization (narrow banding) implementation follows
-* Peng/Merriman/Osher/Zhao/Kang paper "A PDE-Based Fast Local Level Set Method"
-* Journal of Computational Physics, 1999. 
+*  Main loop for localized constant curvature level set method model in 3D.
+*  Localization (narrow banding) implementation follows
+*  Peng/Merriman/Osher/Zhao/Kang paper "A PDE-Based Fast Local Level Set Method"
+*  Journal of Computational Physics, 1999. 
 */
 
 void curvatureModelMedium3dLocalMainLoop(
@@ -741,7 +751,8 @@ void curvatureModelMedium3dLocalMainLoop(
 *               velocity in the reinitialization level set equation is 1. This 
 *	        time is hence equal to the distance from the interface within 
 *	        which the level set function will be replaced by a signed 
-*	        distance function.     
+*	        distance function.
+*     
 */
    
 void reinitializeMedium3dLocal(

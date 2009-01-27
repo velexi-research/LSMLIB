@@ -1,3 +1,13 @@
+/*
+ * File:        lsm_reinitialization_medium2d.c
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Support file for reinitialization.
+ */
+ 
 /* System headers */
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +24,7 @@
 #include "lsm_boundary_conditions.h"
 #include "lsm_reinitialization_medium2d.h"
 
+/* Main loop for reinitialization. */
      
 void lsm2dReinitializationMedium(
   LSM_DataArrays *lsm_arrays,
