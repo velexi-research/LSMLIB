@@ -227,8 +227,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb,
-c                         SHOULD BE? need D1(i+1,j) below...
-c                         ilo_fb,ihi_fb+1,
      &                    jlo_fb, jhi_fb, 
      &                    order, x_dir)
 
@@ -256,8 +254,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb, jhi_fb, 
-c                         SHOULD BE?
-c                         jlo_fb,jhi_fb+1,
      &                    order, y_dir)
 
 c     { begin loop over grid 
@@ -369,9 +365,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-1, ihi_fb+1, 
-c                         SHOULD BE?
-c                         D2 is using D1, and we need D2(i+1,j)...
-c     &                    ilo_fb-2, ihi_fb+2,
      &                    jlo_fb, jhi_fb,
      &                    order_1, x_dir)
 
@@ -421,8 +414,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb-1, jhi_fb+1, 
-c                         SHOULD BE?
-c     &                   jlo_fb-2, jhi_fb+2, 
      &                    order_1, y_dir)
 
 c     compute second undivided differences in y-direction
@@ -563,8 +554,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE? Need D3(i-1,j), D3(i+2,j)
-c     &                    ilo_fb-3, ihi_fb+4, 
      &                    jlo_fb, jhi_fb,
      &                    order_1, x_dir)
 
@@ -576,8 +565,6 @@ c     compute second undivided differences in x-direction
      &                    ilo_D1_gb, ihi_D1_gb, 
      &                    jlo_D1_gb, jhi_D1_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE? Need D3(i-1,j), D3(i+2,j)
-c     &                    ilo_fb-2, ihi_fb+3, 
      &                    jlo_fb, jhi_fb,
      &                    order_2, x_dir)
 
@@ -589,8 +576,6 @@ c     compute third undivided differences in x-direction
      &                    ilo_D2_gb, ihi_D2_gb, 
      &                    jlo_D2_gb, jhi_D2_gb, 
      &                    ilo_fb-1, ihi_fb+1, 
-c                         SHOULD BE? Need D3(i-1,j), D3(i+2,j)
-c     &                    ilo_fb-1, ihi_fb+2, 
      &                    jlo_fb, jhi_fb,
      &                    order_3, x_dir)
 
@@ -663,8 +648,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb,
      &                    jlo_fb-2, jhi_fb+2,
-c                         SHOULD BE?
-c     &                    jlo_fb-3, jhi_fb+4,
      &                    order_1, y_dir)
 
 c     compute second undivided differences in y-direction
@@ -676,8 +659,6 @@ c     compute second undivided differences in y-direction
      &                    jlo_D1_gb, jhi_D1_gb, 
      &                    ilo_fb, ihi_fb,
      &                    jlo_fb-2, jhi_fb+2,
-c                         SHOULD BE? 
-c                         jlo_fb-2, jhi_fb+3
      &                    order_2, y_dir)
 
 c     compute third undivided differences in y-direction
@@ -689,8 +670,6 @@ c     compute third undivided differences in y-direction
      &                    jlo_D2_gb, jhi_D2_gb, 
      &                    ilo_fb, ihi_fb,
      &                    jlo_fb-1, jhi_fb+1,
-c                         SHOULD BE? 
-c                         jlo_fb-1, jhi_fb+2
      &                    order_3, y_dir)
 
 c     { begin loop over grid 
@@ -861,8 +840,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE?  Need D1(i-2,j)...D1(i+3,j)
-c     &                    ilo_fb-2, ihi_fb+3,   
      &                    jlo_fb, jhi_fb,
      &                    order_1, x_dir)
 
@@ -973,8 +950,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb,  
      &                    jlo_fb-2, jhi_fb+2,
-c                         SHOULD BE?
-c                         jlo_fb-2, jhi_fb+3      
      &                    order_1, y_dir)
 
 c     { begin loop over grid 
@@ -1157,8 +1132,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb,
-c                         SHOULD BE?      
-c     &                    ilo_fb, ihi_fb+1, 
      &                    jlo_fb, jhi_fb, 
      &                    order, x_dir)
 
@@ -1195,8 +1168,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb, jhi_fb, 
-c                         SHOULD BE?      
-c    &                    jlo_fb, jhi_fb+1, 
      &                    order, y_dir)
 
 c     { begin loop over grid 
@@ -1311,8 +1282,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-1, ihi_fb+1,
-c                         SHOULD BE?    
-c     &                    ilo_fb-2, ihi_fb+2, 
      &                    jlo_fb, jhi_fb, 
      &                    order_1, x_dir)
 
@@ -1374,8 +1343,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb-1, jhi_fb+1,
-c                         SHOULD BE?
-c     &                    jlo_fb-2, jhi_fb+2, 
      &                    order_1, y_dir)
 
 c     compute second undivided differences in y-direction
@@ -1523,8 +1490,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE? 
-c     &                    ilo_fb-3, ihi_fb+4, 
      &                    jlo_fb, jhi_fb,
      &                    order_1, x_dir)
 
@@ -1536,8 +1501,6 @@ c     compute second undivided differences in x-direction
      &                    ilo_D1_gb, ihi_D1_gb, 
      &                    jlo_D1_gb, jhi_D1_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE? 
-c     &                    ilo_fb-2, ihi_fb+3, 
      &                    jlo_fb, jhi_fb,
      &                    order_2, x_dir)
 
@@ -1549,8 +1512,6 @@ c     compute third undivided differences in x-direction
      &                    ilo_D2_gb, ihi_D2_gb, 
      &                    jlo_D2_gb, jhi_D2_gb, 
      &                    ilo_fb-1, ihi_fb+1, 
-c                         SHOULD BE? 
-c     &                    ilo_fb-1, ihi_fb+2, 
      &                    jlo_fb, jhi_fb, 
      &                    order_3, x_dir)
 
@@ -1629,8 +1590,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb,
      &                    jlo_fb-2, jhi_fb+2,
-c                         SHOULD BE?     
-c     &                    jlo_fb-3, jhi_fb+4,
      &                    order_1, y_dir)
 
 c     compute second undivided differences in y-direction
@@ -1642,8 +1601,6 @@ c     compute second undivided differences in y-direction
      &                    jlo_D1_gb, jhi_D1_gb, 
      &                    ilo_fb, ihi_fb,
      &                    jlo_fb-2, jhi_fb+2,
-c                         SHOULD BE?     
-c     &                    jlo_fb-2, jhi_fb+3,
      &                    order_2, y_dir)
 
 c     compute third undivided differences in y-direction
@@ -1655,8 +1612,6 @@ c     compute third undivided differences in y-direction
      &                    jlo_D2_gb, jhi_D2_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb-1, jhi_fb+1,
-c                         SHOULD BE?     
-c     &                    jlo_fb-1, jhi_fb+2,
      &                    order_3, y_dir)
 
 c     { begin loop over grid 
@@ -1829,8 +1784,6 @@ c     compute first undivided differences in x-direction
      &                    ilo_phi_gb, ihi_phi_gb, 
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb-2, ihi_fb+2,
-c                         SHOULD BE?
-c     &                   ilo_fb-2, ihi_fb+3,
      &                    jlo_fb, jhi_fb,
      &                    order_1, x_dir)
 c     { begin loop over grid 
@@ -1914,8 +1867,6 @@ c     compute first undivided differences in y-direction
      &                    jlo_phi_gb, jhi_phi_gb, 
      &                    ilo_fb, ihi_fb, 
      &                    jlo_fb-2, jhi_fb+2, 
-c                         SHOULD BE?
-c     &                   jlo_fb-2, jhi_fb+3,
      &                    order_1, y_dir)
 
 c     { begin loop over grid 
