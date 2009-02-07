@@ -52,8 +52,8 @@ extern "C" {
                            lsm2darearegionphigreaterthanzerocontrolvolume_
 #define LSM2D_PERIMETER_ZERO_LEVEL_SET_CONTROL_VOLUME                      \
                            lsm2dperimeterzerolevelsetcontrolvolume_
-#define LSM2D_PERIMETER_ZERO_LEVEL_SET_PRECOMPUTED_DELTA_CONTROL_VOLUME    \
-               lsm2dperimeterzerolevelsetppppprecomputeddeltacontrolvolume_
+#define LSM2D_PERIMETER_ZERO_LEVEL_SET_DELTA_CONTROL_VOLUME    \
+               lsm2dperimeterzerolevelsetdeltacontrolvolume_
 /*!
  * LSM2D_COMPUTE_UNIT_NORMAL() computes the unit normal vector to the
  * interface from \f$ \nabla \phi \f$.
