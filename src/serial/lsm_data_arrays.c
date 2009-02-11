@@ -377,6 +377,27 @@ void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name,int zip_statu
 }
 
 
+void writeDataArrayNoGrid(
+     LSMLIB_REAL *data,
+     int *n,
+     char *file_name,
+     int zip_status)
+{
+   FILE *fp;
+   
+   fp = fopen(file_name,"w");   
+
+   /* write grid dimensions */
+   fwrite(n, sizeof(int), 3, fp); 
+
+   /* write data array */
+   fwrite(data, sizeof(LSMLIB_REAL), n[0]*n[1]*n[2], fp);
+
+   fclose(fp);
+   zipFile(file_name,zip_status);
+}
+
+
 LSMLIB_REAL *readDataArray(int *grid_dims_ghostbox,char *file_name)
 {
    FILE    *fp;

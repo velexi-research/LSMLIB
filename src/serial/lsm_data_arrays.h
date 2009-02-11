@@ -190,6 +190,34 @@ void destroyLSMDataArrays(LSM_DataArrays *lsm_data_arrays);
 void writeDataArray(LSMLIB_REAL *data, Grid *grid, char *file_name,
                     int zip_status);
 
+/*!
+ * writeDataArrayNoGrid() writes the specified data array out to a binary file.
+ *
+ * The data is output in the following order:
+ * -# grid/data dimensions 
+ * -# values of data array at all grid points.
+ *
+ * Arguments:
+ *  - data (in):       data array to be output to file
+ *  - n (in):          array of 3 integers indicating grid/array size in each
+ *                     direction 
+ *  - file_name (in):  name of output file
+ *  - zip_status(in):  integer indicating compression of the file 
+ *                     (NO_ZIP,GZIP,BZIP2) 
+ *   
+ * Return value:       none
+ *   
+ * NOTES: 
+ * - writeDataArrayNoGrid() is used for 2d and 3d data arrays.  For 2d
+ *   data, the third dimension MUST be set to 1 
+ *
+ * - If a file with the specified file_name already exists, it is
+ *   overwritten.
+ *
+ */   
+void writeDataArrayNoGrid(LSMLIB_REAL *data, int *n, char *file_name,
+                    int zip_status);
+		    
 
 /*!
  * readDataArray() loads the data from a binary file into a LSMLIB_REAL
