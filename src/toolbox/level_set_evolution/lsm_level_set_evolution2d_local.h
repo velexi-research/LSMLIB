@@ -44,7 +44,7 @@ extern "C" {
 #define LSM2D_ADD_CONST_CURV_TERM_TO_LSE_RHS_LOCAL                            \
                                         lsm2daddconstcurvtermtolserhslocal_				  
 #define LSM2D_ADD_CONST_PRECOMPUTED_CURV_TERM_TO_LSE_RHS_LOCAL \
-                                       lsm2daddconstprecomputedcurvtermtolserhslocal_	
+                                  lsm2daddconstprecomputedcurvtermtolserhslocal_	
 #define LSM2D_ADD_EXTERNAL_AND_NORMAL_VEL_TERM_TO_LSE_RHS_LOCAL	\
                                   lsm2daddexternalandnormalveltermtolserhslocal_						
 
