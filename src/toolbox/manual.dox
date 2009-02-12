@@ -23,8 +23,7 @@ namespace LSMLIB {
   - imposing common boundary conditions;
   - computing geometry quantities;
   - integrating over regions defined by implicit functions;
-  - computation of the distance function and extension fields
-    using fast marching methods;
+  - fast maching method calculations;
   - computing the right-hand side of specific level set method partial 
     differential equations; and
   - general utility functions (e.g. computing a stable time step 

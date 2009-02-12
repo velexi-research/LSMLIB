@@ -24,10 +24,10 @@
 
   <hr>
   <center>
-  Copyrights:<br/>
+  <strong>Copyrights</strong><br>
   (c) 2005 The Trustees of Princeton University and Board of 
-           Regents of the University of Texas.  All rights reserved.
-  (c) 2009 Kevin T. Chu.  All rights reserved.  All rights reserved.
+           Regents of the University of Texas.  All rights reserved.<br>
+  (c) 2009 Kevin T. Chu.  All rights reserved.  
   </center>
 
   <hr>
@@ -44,25 +44,30 @@
   <a name="overview">
   <h1> Overview </h1>
 
-  LSMLIB (Level Set Method Library) provides support for the serial and 
-  parallel simulation of implicit surface and curve dynamics in two- and 
-  three-dimensions (support for nodes in one-dimension is also provided).
-  It contains an implementation of many of the standard level set method
-  algorithms and numerical kernels described in "Level Set Methods and 
-  Dynamics Implicit Surfaces" by S. Osher and R. Fedkiw and "Level Set 
-  Methods and Fast Marching Methods" by J.A. Sethian.
+ <p>
+ The Level Set Method Library (LSMLIB) provides support for the serial and
+ parallel simulation of implicit surface and curve dynamics in two- and
+ three-dimensions.  It contains an implementation of the basic level set
+ method algorithms and numerical kernels described in "Level Set Methods and
+ Dynamics Implicit Surfaces" by S. Osher and R. Fedkiw and "Level Set Methods
+ and Fast Marching Methods" by J.A. Sethian.  It also contains implementations
+ of several advanced level set method techniques available in the literature.
+ </p>
 
+  <p>
   The library consists of a collection of Fortran subroutines, C functions, 
   and C++ classes.  In addition, MATLAB interfaces are provided for several
   of the basic components of the level set method algorithm.
-
   The main features of the library include:
-  - High-computational and high-programmer performance through the use 
-    of mixed-language programming (e.g. C++/Fortran77, MATLAB/C/Fortran77);
+  </p>
+
+  - High-computational and high-programmer performance through the use
+    of mixed-language programming (e.g. C++/Fortran77, C/Fortran77,
+    MATLAB/C/Fortran77);
   - Support for serial and parallel computation;
+  - Support for narrow-band/localized computation;
   - Support for vector level set method calculations;
-  - Restart capabilities;
-  - Adapative mesh refinement (NOT YET IMPLEMENTED).
+  - Restart capabilities.
 
   <h2> IMPORTANT NOTE:  </h2>
   This library is still under development and has not been thoroughly tested.  
@@ -93,8 +98,7 @@
 
   The top-level directory contains the following: 
 
-  - README.txt
-  - INSTALL.txt
+  - INSTALL
   - LICENSE
   - CHANGE_LOG
   - configure, configure.ac
@@ -103,8 +107,7 @@
   - src/
   - examples/
 
-  README.txt contains much of the same information as this web page.  
-  INSTALL.txt describes the simple installation procedure for the library.  
+  INSTALL describes the simple installation procedure for the library.  
   LICENSE contains the license for LSMLIB.  CHANGE_LOG contains a 
   list of new features/bug fixes/etc. added to each new release of the 
   library.  'configure' is a shell script that automatically configures the 
@@ -146,10 +149,16 @@
   <a name="acknowledgments">
   <h1> Acknowledgements </h1>
 
-  This software library was supported in part by the Department of Energy 
-  Computational Science Graduate Fellowship Program of the Office of Science 
-  and National Nuclear Security Administration in the Department of Energy
-  under contract DE-FG02-97ER25308, the National Science Foundation and 
-  the Air Force Office for Scientific Research.
+  <p>
+  The LSMLIB developers gratefully acknowledge support from the following
+  funding agencies:
+  </p>
+
+  - Department of Energy under contract numbers
+    DE-FG02-97ER25308 (Computational Science Graduate Fellowship)
+    and DE-FC26-06NT43067
+  - Department of Agriculture under grant #2007-35102-18162
+  - National Science Foundation
+  - Air Force Office of Scientific Research
 
 */
