@@ -1,4 +1,4 @@
-v1.0.0 (2009/01/31)
+v1.0.0 (2009/02/15)
 -------------------
 * ENHANCEMENTS:
   - Improved support for localization/narrow-band calculations
@@ -7,16 +7,19 @@ v1.0.0 (2009/01/31)
     calculations:
     * computation of signed distance function
     * solution of Eikonal equation
+  - Added support for higher-order delta functions. 
+  - Added support for building single precision version of library 
+    (via --enable-float configure option).
+* MINOR CHANGES:
+  - Updated copyright information throughout library.
+  - Added many useful helper functions (e.g. curvature calculations, 
+    higher-order delta function approximations, etc.).
+  - Added support for gfortran compiler (default Fortran compiler) in 
+    configuration scripts.
   - Redesigned Fast Marching Method implementation to use generic
     programming ideas.  The field extension, distance function calculation,
     and solution of Eikonal equation are now all "templated" on the
     number of dimensions.
-  - Added support for building single precision version of library 
-    (via --enable-float configure option).
-* MINOR CHANGES:
-  - Added support for gfortran compiler (default Fortran compiler) in 
-    configuration scripts.
-  - Updated copyright information throughout library.
 * BUG FIXES:
   - Fixed the following bugs in findLineInTetrahedron():
     * for small tetrahedra, line segment returned occasionally
