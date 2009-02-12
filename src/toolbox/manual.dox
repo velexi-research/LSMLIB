@@ -12,7 +12,7 @@
 namespace LSMLIB {
 
 /*!
-  @page package_lsm_toolbox LSMLIB Toolbox
+  @page package_lsm_toolbox LSMLIB Toolbox Package
 
   The LSMLIB Toolbox package provides the numerical kernels that form
   the core components of many level set method simulations.  Specifically,

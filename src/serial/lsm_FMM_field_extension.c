@@ -993,7 +993,8 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   int dir;  /* loop variable for spatial directions */
   int k;    /* loop variable for extension fields */
   int l;    /* extra loop variable */ 
-  int idx_cur_gridpoint, idx_neighbor;
+  int idx_cur_gridpoint = -1;
+  int idx_neighbor;
   int grid_idx_out_of_bounds;
 
   /* unused function parameters */
@@ -1099,7 +1100,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
     } 
 
-  } else {
+  } else if (idx_cur_gridpoint >= 0) {
 
     /* discriminant is negative ... set dist_updated to the   */
     /* value of distance_function at the current grid point   */
@@ -1206,7 +1207,8 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   int dir;  /* loop variable for spatial directions */
   int k;    /* loop variable for extension fields */
   int l;    /* extra loop variable */ 
-  int idx_cur_gridpoint, idx_neighbor1, idx_neighbor2;
+  int idx_cur_gridpoint = -1;
+  int idx_neighbor1, idx_neighbor2;
   int grid_idx_out_of_bounds;
 
   /* unused function parameters */
@@ -1361,7 +1363,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
     } 
 
-  } else {
+  } else if (idx_cur_gridpoint >= 0) {
 
     /* discriminant is negative ... set dist_updated to the   */
     /* value of distance_function at the current grid point   */

@@ -74,15 +74,15 @@
   <a name="packages">
   <h1> LSMLIB Packages </h1>
 
-  - @ref package_lsm_toolbox "Toolbox": 
+  - @ref package_lsm_toolbox "Toolbox Package": 
     core algorithms and numerical kernels for level set method calculations
-  - @ref package_lsm_serial "Serial": 
+  - @ref package_lsm_serial "Serial Package": 
     high-level C data structures and algorithmic components for level set
     method computations on a single processor
-  - @ref package_lsm_parallel "Parallel":
+  - @ref package_lsm_parallel "Parallel Package":
     C++ classes that encapsulate high-level algorithmic components of 
     parallel level set method computations
-  - @ref package_lsm_matlab "MATLAB":
+  - @ref package_lsm_matlab "MATLAB Toolbox":
     MATLAB interface for several components of the level set method algorithm
 
 
