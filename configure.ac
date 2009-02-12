@@ -348,6 +348,10 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/fast_marching_method/Makefile.depend
            src/toolbox/field_extension/Makefile
            src/toolbox/geometry/Makefile
+           src/toolbox/geometry/lsm_curvature2d.f
+           src/toolbox/geometry/lsm_curvature2d_local.f
+           src/toolbox/geometry/lsm_curvature3d.f
+           src/toolbox/geometry/lsm_curvature3d_local.f
            src/toolbox/geometry/lsm_geometry1d.f
            src/toolbox/geometry/lsm_geometry2d.f
            src/toolbox/geometry/lsm_geometry2d_local.f
@@ -367,10 +371,6 @@ AC_OUTPUT([config/Makefile.config
            src/toolbox/reinitialization/lsm_reinitialization3d.f
            src/toolbox/reinitialization/lsm_reinitialization3d_local.f
            src/toolbox/spatial_derivatives/Makefile
-           src/toolbox/spatial_derivatives/lsm_curvature2d.f
-           src/toolbox/spatial_derivatives/lsm_curvature2d_local.f
-           src/toolbox/spatial_derivatives/lsm_curvature3d.f
-           src/toolbox/spatial_derivatives/lsm_curvature3d_local.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives1d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d.f
            src/toolbox/spatial_derivatives/lsm_spatial_derivatives2d_local.f
