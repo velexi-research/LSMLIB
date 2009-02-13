@@ -582,7 +582,7 @@ Grid *readGridFromAsciiFile(char *file_name)
           "Number of narrow band levels (local method) %d\n",
 	  &(grid->num_nb_levels));
   fscanf(fp,
-          "Boundary layer marks (local method) gb %u D1 %u D2 %u D3 %u fb %u\n",
+          "Boundary layer marks (local method) gb %c D1 %c D2 %c D3 %c fb %c\n",
 	  &(grid->mark_gb),
 	  &(grid->mark_D1),&(grid->mark_D2),
 	  &(grid->mark_D3),&(grid->mark_fb)); 
