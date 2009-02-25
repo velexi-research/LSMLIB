@@ -48,7 +48,7 @@ Installation Procedure
       
       * MATLAB configuration options
         --with-matlab=<path to directory where MATLAB is installed>
-        --with-matlab-install-dir=<director where LSMLIB MATLAB files 
+        --with-matlab-install-dir=<directory where LSMLIB MATLAB files 
                                    are to be installed>
         --without-matlab
     
