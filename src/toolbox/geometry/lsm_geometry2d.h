@@ -43,8 +43,8 @@ extern "C" {
                                        lsm2darearegionphigreaterthanzero_
 #define LSM2D_PERIMETER_ZERO_LEVEL_SET                                     \
                                        lsm2dperimeterzerolevelset_
-#define LSM2D_PERIMETER_ZERO_LEVEL_SET_PRECOMPUTED_DELTA    \
-               lsm2dperimeterzerolevelsetppppprecomputeddelta_
+#define LSM2D_PERIMETER_ZERO_LEVEL_SET_DELTA    \
+               lsm2dperimeterzerolevelsetdelta_
 	       
 #define LSM2D_AREA_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME                \
                            lsm2darearegionphilessthanzerocontrolvolume_
