@@ -1,0 +1,7 @@
+syntax: glob
+*.o
+Makefile
+Makefile.config
+Makefile.config.MATLAB
+Makefile.depend
+LSMLIB_config.h
