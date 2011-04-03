@@ -40,11 +40,6 @@ case $target in
   ;;
 esac
 
-# Clear the default compilation flags
-CFLAGS=
-CXXFLAGS=
-FFLAGS=
-
 
 #===========================================================================
 # Check for programs
