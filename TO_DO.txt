@@ -46,3 +46,4 @@ TO_DO LIST
 * (2009/07/10) Add support for cut-off of FMM calculation beyond a certain 
   distance from the zero level set.
   - suggested by Ruhollah Tavakoli
+* (2011/05/13) Add support for 64-bit MATLAB.
