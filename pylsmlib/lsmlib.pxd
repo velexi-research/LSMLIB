@@ -19,3 +19,11 @@ cdef extern int computeExtensionFields2d(
      int spatial_derivative_order,
      int *grid_dims,
      double *dX)
+
+cdef extern int solveEikonalEquation2d(
+     double *phi,
+     double *speed,
+     double *mask,
+     int spatial_derivative_order,
+     int *grid_dims,
+     double *dX)

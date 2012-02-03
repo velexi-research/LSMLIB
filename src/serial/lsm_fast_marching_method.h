@@ -69,6 +69,11 @@ extern "C" {
  *                                        negative value.  
  *  - source_fields(in):                  source fields used to compute 
  *                                        extension fields
+ *  - extension_mask(in):                 extension velocities to
+ *                                        ignore when evaluating the
+ *                                        interface values; masked
+ *                                        grid points should be
+ *                                        negative
  *  - num_extension_fields (in):          number of extension fields to compute
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
@@ -122,6 +127,7 @@ int computeExtensionFields2d(
   LSMLIB_REAL *phi,
   LSMLIB_REAL *mark,
   LSMLIB_REAL **source_fields,
+  LSMLIB_REAL *extension_mask,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,
@@ -270,6 +276,11 @@ int solveEikonalEquation2d(
  *                                        negative value.
  *  - source_fields(in):                  source fields used to compute 
  *                                        extension fields
+ *  - extension_mask(in):                 extension velocities to
+ *                                        ignore when evaluating the
+ *                                        interface values; masked
+ *                                        grid points should be
+ *                                        negative
  *  - num_extension_fields (in):          number of extension fields to compute
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
@@ -323,6 +334,7 @@ int computeExtensionFields3d(
   LSMLIB_REAL *phi,
   LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
+  LSMLIB_REAL *extension_mask,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,

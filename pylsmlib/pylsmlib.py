@@ -9,3 +9,4 @@ pyximport.install(setup_args = {'options' :
 
 from lsmlib import computeDistanceFunction2d_ as computeDistanceFunction2d
 from lsmlib import computeExtensionFields2d_ as computeExtensionFields2d
+from lsmlib import solveEikonalEquation2d_ as solveEikonalEquation2d
