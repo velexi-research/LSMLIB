@@ -1,5 +1,5 @@
 from fipy import CellVariable, Viewer, Grid2D
-from pylsmlib import computeDistanceFunction2d
+from pylsmlib import computeDistanceFunction2d 
 
 Nlsm = 999
 Llsm = 2.
