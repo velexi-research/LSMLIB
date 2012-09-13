@@ -3,12 +3,26 @@ from lsmlib import computeExtensionFields2d_
 from lsmlib import solveEikonalEquation2d_
 import numpy as np
 
+__docformat__ = 'restructuredtext'
+
+def _getVersion():
+    from pkg_resources import get_distribution, DistributionNotFound
+
+    try:
+        version = get_distribution(__name__).version
+    except DistributionNotFound:
+        version = "unknown, try running `python setup.py egg_info`"
+        
+    return version
+
+__version__ = _getVersion()
+
 def toFloatArray(arr):
     if type(arr) is not np.ndarray: 
         arr = np.array(arr)
     return arr.astype(float)
 
-def getShape(phi, dx):
+def getShape(phi, dx, order):
 
     phi = toFloatArray(phi)
 
@@ -21,6 +35,8 @@ def getShape(phi, dx):
         dx = np.resize(dx, (len(shape),))
 
     assert len(dx) == len(shape), '`phi` and `dx` have incompatible shapes'
+
+    assert order in (1, 2), '`order` is 1 or 2'
 
     dx = dx.astype(float)
     
@@ -35,81 +51,82 @@ def getShape(phi, dx):
 
     return nx, ny, dx, dy, shape, phi
 
-def computeDistanceFunction(phi, dx=1., order=2):
+def computeDistanceFunction(phi0, dx=1., order=2):
     r"""
 
-    Return the distance from the zero contour of the array $\phi$ so
-    that $\phi$ satisfies,
+    Solves
 
     .. math::
 
-       \abs{\nabla \phi} = 1
+       |\nabla \phi| = 1 \;\; \text{with} \;\; \phi=0 \;\; \text{where} \;\; \phi_0=0
 
+    for :math:`\phi` using the zero level set of :math:`\phi_0`.
+    
     :Parameters:
 
-      - `phi`: array-like the zero contour of this array is the
-        boundary location for the distance calculation. Phi can of
-        1,2,3 or higher dimension
-      - `dx`: float or an array-like of shape `len(phi)`, optional the
-        cell length in each dimension
-      - `order`: int, optional order of computational stencil to use
-        in updating points during the fast marching method. Must be 1
-        or 2, the default is 2
+      - `phi0`: array of positive and negative values locating the
+        zero level set of :math:`\phi`, shape determines the
+        dimension.
+      - `dx`: the cell dimensions
+      - `order`: order of the computational stencil, either 1 or 2
     
     :Returns:
 
-      - `d` : an array the same shape as phi contains the distance
-        from the zero contour (zero level set) of phi to each point in
-        the array.
+      - the calculated distance function, :math:`\phi`
 
     """
-    nx, ny, dx, dy, shape, phi = getShape(phi, dx)
-    return computeDistanceFunction2d_(phi.flatten(), nx=nx, ny=ny, dx=dx, dy=dy, order=order).reshape(shape)
+    nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, order)
+    return computeDistanceFunction2d_(phi0.flatten(), nx=nx, ny=ny, dx=dx, dy=dy, order=order).reshape(shape)
 
-def computeExtensionFields(phi, extensionFields, mask=None, extensionMask=None, dx=1., order=2):
+def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
     r"""
 
-    Calculates multiple extension fields and distance function
-
-    Calculates extension fields $u$ such that,
+    Solves
 
     .. math::
 
-      \nabla \phi \cdot \nabla u = 0
+      \nabla \phi \cdot \nabla u = 0 \;\; \text{with} \;\; u=u_0 \;\; \text{where} \;\; \phi_0=0 
+
+    for multiple extension fields :math:`u` and
+  
+    .. math::
+
+      |\nabla \phi| = 1 \;\; \text{with} \;\; \phi=0 \;\; \text{where} \;\; \phi_0=0
+
+    for :math:`\phi` using the zero level set of :math:`\phi_0`.
 
     :Parameters:
 
-      - `phi`: array-like the zero contour of this array is the
-        boundary location for the distance calculation. Phi can of
-        1,2,3 or higher dimension
-      - `extensionFields`: array-like extension fields. Extension
-        fields have shape `(N,) + s` where N is the number of
-        extension fields and `s` is the shape of `phi.shape`
+
+      - `phi0`: array of positive and negative values locating the
+        zero level set of :math:`\phi`, shape determines the
+        dimension.
+      - `u0`: array of values used as the initial condition to
+        calculate the extension fields, :math:`u`; shape is either
+        `phi0.shape` or `(N,) + phi0.shape`, where `N` is the number
+        of fields to extend
       - `mask`:
-      - `extensionMask`: array-like mask of type bool with shape of
-        `phi.shape`. Only unmasked values are calculated, but masked
-        values are used for initialization
-      - `dx`: float or an array-like of shape `len(phi)`, optional the
-        cell length in each dimension
-      - `order`: int, optional order of computational stencil to use
-        in updating points during the fast marching method. Must be 1
-        or 2, the default is 2
+      - `u0mask`: array of Boolean values determining which values of
+        :math:`u` are calculated; `True` values set :math:`u=u_0`,
+        `False` values set :math:`u=u` determined from the eikonal
+        equation; shape is `phi0.shape`
+      - `dx`: the cell dimensions
+      - `order`: order of the computational stencil, either 1 or 2
     
     :Returns:
 
-      - `d, ext` : a tuple containing the calculated distance function
-        and extension fields
+      - a tuple containing (:math:`\phi`, :math:`u`)
 
     """
 
-    nx, ny, dx, dy, shape, phi = getShape(phi, dx)
-    extensionFields = toFloatArray(extensionFields)
-    extshape = extensionFields.shape
+    nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, order)
+    u0 = toFloatArray(u0)
+    u0shape = u0.shape
 
-    if extensionFields.shape == shape:
-        extensionFields = np.reshape(extensionFields, (1,) + extensionFields.shape)
+    if u0shape == shape:
+        u0 = np.reshape(u0, (1,) + u0shape)
 
-    assert shape == extensionFields[0].shape, '`phi` and `extensionFields` have incompatible shapes'
+    assert shape == u0[0].shape, '`phi` and `extensionFields` have incompatible shapes'
         
     if mask is None:
         mask = np.empty((0,), dtype=float)
@@ -118,66 +135,71 @@ def computeExtensionFields(phi, extensionFields, mask=None, extensionMask=None, 
 
         assert shape == mask.shape, '`phi` and `mask` have incompatible shapes'
 
-    if extensionMask is None:
-        extensionMask = np.empty((0,), dtype=float)
+    if u0mask is None:
+        u0mask = np.empty((0,), dtype=float)
     else:
-        extensionMask = toFloatArray(extensionMask)
-        extensionMask = -extensionMask * 2. + 1.
-        assert shape == extensionMask.shape, '`phi` and `extensionMask` have incompatible shapes'
+        u0mask = toFloatArray(u0mask)
+        u0mask = -u0mask * 2. + 1.
+        assert shape == u0mask.shape, '`phi` and `extensionMask` have incompatible shapes'
 
-    numberOfExtensionFields = extensionFields.shape[0]
-    phi, extensionFields = computeExtensionFields2d_(phi.flatten(),
-                                                     extensionFields.reshape((numberOfExtensionFields, -1)),
-                                                     mask=mask.flatten(),
-                                                     extension_mask=extensionMask.flatten(),
-                                                     nx=nx, ny=ny, dx=dx, dy=dy, order=order)
+    N = u0.shape[0]
+    phi, u = computeExtensionFields2d_(phi0.flatten(),
+                                       u0.reshape((N, -1)),
+                                       mask=mask.flatten(),
+                                       extension_mask=u0mask.flatten(),
+                                       nx=nx, ny=ny, dx=dx, dy=dy, order=order)
                                                      
-    return phi.reshape(shape), extensionFields.reshape(extshape)
+    return phi.reshape(shape), u.reshape(u0shape)
 
-def solveEikonalEquation(phi, speed, dx=1.):
+def solveEikonalEquation(phi0, speed, dx=1.):
     r"""
 
-    Calculates `phi` based on speed function `F`
+    Calculates :math:`\phi` based on the speed function, :math:`F`,
+    using
 
     .. math::
 
-      \abs{\nabla \phi} F = 1
+      |\nabla \phi| F = 1 \;\; \text{with} \;\; \phi=0 \;\; \text{where} \;\; \phi_0=0
 
     :Parameters:
 
-      - `phi`: array-like the zero contour of this array is the
-        boundary location for the eikonal calculation
-      - `speed`: array-like speed function with shape `phi.shape`
-      - `dx`: float or an array-like of shape `len(phi)`, optional the
-        cell length in each dimension
+      - `phi0`: array of positive and negative values locating the
+        zero level set of :math:`\phi`, shape determines the
+        dimension.
+      - `speed`: speed function, :math:`F`, shape is `phi0.shape`
+      - `dx`: the cell dimensions
     
     :Returns:
 
-      - `d`: result of solving the eikonal equation based on $F$
+      - the field calculated by solving the eikonal equation,
+        :math:`\phi`
 
     """
 
-    nx, ny, dx, dy, shape, phi = getShape(phi, dx)
+    nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, 1)
     speed = toFloatArray(speed)
     assert shape == speed.shape
 
-    return solveEikonalEquation2d_(phi.flatten(), speed.flatten(), nx=nx, ny=ny, dx=dx, dy=dy).reshape(shape)
+    return solveEikonalEquation2d_(phi0.flatten(), speed.flatten(), nx=nx, ny=ny, dx=dx, dy=dy).reshape(shape)
 
 def testing():
     r"""
-    Here we will define a few test cases. Firstly a 1D test case
+
+    **1D Test**
 
     >>> print np.allclose(computeDistanceFunction((-1., -1., -1., -1., 1., 1., 1., 1.), dx=.5),
     ...                   (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75))
     True
 
-    A 1D test case with very small dimensions.
+    Small dimensions.
 
     >>> dx = 1e-10
     >>> print np.allclose(computeDistanceFunction((-1., -1., -1., -1., 1., 1., 1., 1.), dx=dx),
     ...                   np.arange(8) * dx - 3.5 * dx)
     True
 
+    **Bug Fix**
+  
     A 2D test case to test trial values for a pathological case.
 
     >>> dx = 1.
@@ -195,21 +217,13 @@ def testing():
     ...                   ((vbl, vml, vbl), (vbr, vmr, vbr)))
     True
 
-    The `extendVariable` method solves the following equation for a given
-    extensionVariable.
-
-    .. math::
-
-       \nabla u \cdot \nabla \phi = 0
-
-    using the fast marching method with an initial condition defined at
-    the zero level set.
+    **Test Extension Field Calculation**
 
     >>> tmp = 1 / np.sqrt(2)
     >>> phi = np.array([[-1., 1.], [1., 1.]])
     >>> phi, ext =  computeExtensionFields(phi,
     ...                                    [[-1, .5], [2., -1.]],  
-    ...                                    extensionMask=phi < 0,
+    ...                                    u0mask=phi < 0,
     ...                                    dx=1., order=1)
     >>> print np.allclose(phi, ((-tmp / 2, 0.5), (0.5, 0.5 + tmp)))
     True
@@ -221,7 +235,7 @@ def testing():
     ...                                   ((-1., 2., -1.),
     ...                                    (.5, -1., -1.),
     ...                                    (-1., -1., -1.)),
-    ...                                   extensionMask=phi < 0,
+    ...                                   u0mask=phi < 0,
     ...                                   order=1)
     >>> v1 = 0.5 + tmp
     >>> v2 = 1.5
@@ -237,6 +251,8 @@ def testing():
     ...                   rtol = 1e-4)
     True
 
+    **Bug Fix**
+ 
     Test case for a bug that occurs when initializing the distance
     variable at the interface. Currently it is assumed that adjacent
     cells that are opposite sign neighbors have perpendicular normal
@@ -261,13 +277,15 @@ def testing():
     ...                   rtol=1e-9)
     True
 
+    **Circle Example** 
+
     Solve the level set equation in two dimensions for a circle. 
 
     The 2D level set equation can be written,
 
     .. math::
 
-        \abs{\nabla \phi} = 1
+        |\nabla \phi| = 1
 
     and the boundary condition for a circle is given by, :math:`\phi = 0` at 
     :math:`(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2`.
@@ -321,20 +339,20 @@ def testing():
     >>> print np.allclose(phi, trialValues)
     True
 
+    **Square Example**
+
     Here we solve the level set equation in two dimensions for a square. The equation is
     given by:
 
     .. math::
 
-       \abs{\nabla \phi} &= 1 \\
+       |\nabla \phi| &= 1 \\
        \phi &= 0 \qquad \text{at} \qquad \begin{cases}
            x = \left( L / 3, 2 L / 3 \right) 
            & \text{for $L / 3 \le y \le 2 L / 3$} \\
            y = \left( L / 3, 2 L / 3 \right) 
            & \text{for $L / 3 \le x \le 2 L / 3$}
        \end{cases}
-
-    Do the tests:
 
     >>> dx = 0.5
     >>> dy = 2.
@@ -371,13 +389,13 @@ def testing():
     >>> print np.allclose(arr, phi)
     True
 
-    Check some assertion errors
+    **Assertion Errors**
 
     >>> computeDistanceFunction([[-1, 1],[1, 1]], dx=(1, 2, 3))
     Traceback (most recent call last):
       ...
     AssertionError: `phi` and `dx` have incompatible shapes
-    >>> computeExtensionFields([[-1, 1],[1, 1]], extensionFields=[1, 1])
+    >>> computeExtensionFields([[-1, 1],[1, 1]], u0=[1, 1])
     Traceback (most recent call last):
       ...
     AssertionError: `phi` and `extensionFields` have incompatible shapes

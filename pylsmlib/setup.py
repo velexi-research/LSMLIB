@@ -19,24 +19,18 @@ import numpy
 try:
     from Cython.Distutils import build_ext
 except ImportError:
-    use_cython = False
-else:
-    use_cython = True
-
-use_cython = False
-
-if use_cython:
-    sources = [os.path.join('pylsmlib', 'lsmlib.pyx')]
-    cmdclass = { 'build_ext': build_ext }
-else:
     sources = [os.path.join('pylsmlib', 'lsmlib.c')]
     cmdclass = {}
+else:
+    sources = [os.path.join('pylsmlib', 'lsmlib.pyx')]
+    cmdclass = { 'build_ext': build_ext }
 
 setup(name="pylsmlib",
       version="0.1",
       author="Daniel Wheeler",
       author_email="daniel.wheeler2@gmail.com",
       description=DOCLINES[0],
+      url='https://github.com/ktchu/LSMLIB.git',
       long_description = "\n".join(DOCLINES[2:]),
       license='BSD-style',
       packages=['pylsmlib'],
