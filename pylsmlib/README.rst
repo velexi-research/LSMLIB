@@ -5,7 +5,7 @@ PyLSMLIB
 PyLSMLIB_ is a Python package that wraps the LSMLIB_ level set library
 using Cython_. It arose out of the need to replace the rudimentary
 level set capability in FiPy_ with a faster C-based level set library.
-The interface is designed to by pythonic and match the interface to
+The interface is designed to be pythonic and match the interface to
 Scikit-fmm_.
 
 Hosted
@@ -18,7 +18,7 @@ PyLSMLIB_ is hosted at Github_ in a subdirectory of LSMLIB_.
 Requirements
 ============
 
-The main requirements are working version of LSMLIB_ and
+The main requirements are working versions of LSMLIB_ and
 Numpy_. Cython_ should not be a requirement as the generated ``*.c``
 files are included with the distribution. See `requirements.txt`_ for
 specific versions of dependencies used to run this package on the
@@ -60,6 +60,16 @@ To install PyLSMLIB_.
 
     $ cd .../LSMLIB/pylsmlib
     $ python setup.py install
+
+Testing
+=======
+
+To run the tests
+
+::
+
+    >>> import pylsmlib
+    >>> pylsmlib.test()
 
 Documentation
 =============
