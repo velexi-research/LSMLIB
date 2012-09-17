@@ -1,6 +1,6 @@
-from lsmlib import computeDistanceFunction2d_
-from lsmlib import computeExtensionFields2d_
-from lsmlib import solveEikonalEquation2d_
+from lsmlib import computeDistanceFunction3d_
+from lsmlib import computeExtensionFields3d_
+from lsmlib import solveEikonalEquation3d_
 import numpy as np
 
 __docformat__ = 'restructuredtext'
@@ -12,13 +12,13 @@ def _getVersion():
         version = get_distribution(__name__).version
     except DistributionNotFound:
         version = "unknown, try running `python setup.py egg_info`"
-        
+
     return version
 
 __version__ = _getVersion()
 
 def toFloatArray(arr):
-    if type(arr) is not np.ndarray: 
+    if type(arr) is not np.ndarray:
         arr = np.array(arr)
     return arr.astype(float)
 
@@ -39,7 +39,7 @@ def getShape(phi, dx, order):
     assert order in (1, 2), '`order` is 1 or 2'
 
     dx = dx.astype(float)
-    
+
     if len(shape) == 1:
         nx, ny = shape[0], 1
         dx, dy = dx[0], 1.
@@ -61,7 +61,7 @@ def computeDistanceFunction(phi0, dx=1., order=2):
        |\nabla \phi| = 1 \;\; \text{with} \;\; \phi=0 \;\; \text{where} \;\; \phi_0=0
 
     for :math:`\phi` using the zero level set of :math:`\phi_0`.
-    
+
     :Parameters:
 
       - `phi0`: array of positive and negative values locating the
@@ -69,14 +69,14 @@ def computeDistanceFunction(phi0, dx=1., order=2):
         dimension.
       - `dx`: the cell dimensions
       - `order`: order of the computational stencil, either 1 or 2
-    
+
     :Returns:
 
       - the calculated distance function, :math:`\phi`
 
     """
     nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, order)
-    return computeDistanceFunction2d_(phi0.flatten(), nx=nx, ny=ny, dx=dx, dy=dy, order=order).reshape(shape)
+    return computeDistanceFunction3d_(phi0.flatten(), nx=nx, ny=ny, dx=dx, dy=dy, order=order).reshape(shape)
 
 def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
     r"""
@@ -85,10 +85,10 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
 
     .. math::
 
-      \nabla \phi \cdot \nabla u = 0 \;\; \text{with} \;\; u=u_0 \;\; \text{where} \;\; \phi_0=0 
+      \nabla \phi \cdot \nabla u = 0 \;\; \text{with} \;\; u=u_0 \;\; \text{where} \;\; \phi_0=0
 
     for multiple extension fields :math:`u` and
-  
+
     .. math::
 
       |\nabla \phi| = 1 \;\; \text{with} \;\; \phi=0 \;\; \text{where} \;\; \phi_0=0
@@ -112,7 +112,7 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
         equation; shape is `phi0.shape`
       - `dx`: the cell dimensions
       - `order`: order of the computational stencil, either 1 or 2
-    
+
     :Returns:
 
       - a tuple containing (:math:`\phi`, :math:`u`)
@@ -127,7 +127,7 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
         u0 = np.reshape(u0, (1,) + u0shape)
 
     assert shape == u0[0].shape, '`phi` and `extensionFields` have incompatible shapes'
-        
+
     if mask is None:
         mask = np.empty((0,), dtype=float)
     else:
@@ -143,12 +143,12 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
         assert shape == u0mask.shape, '`phi` and `extensionMask` have incompatible shapes'
 
     N = u0.shape[0]
-    phi, u = computeExtensionFields2d_(phi0.flatten(),
+    phi, u = computeExtensionFields3d_(phi0.flatten(),
                                        u0.reshape((N, -1)),
                                        mask=mask.flatten(),
                                        extension_mask=u0mask.flatten(),
                                        nx=nx, ny=ny, dx=dx, dy=dy, order=order)
-                                                     
+
     return phi.reshape(shape), u.reshape(u0shape)
 
 def solveEikonalEquation(phi0, speed, dx=1.):
@@ -168,7 +168,7 @@ def solveEikonalEquation(phi0, speed, dx=1.):
         dimension.
       - `speed`: speed function, :math:`F`, shape is `phi0.shape`
       - `dx`: the cell dimensions
-    
+
     :Returns:
 
       - the field calculated by solving the eikonal equation,
@@ -180,7 +180,7 @@ def solveEikonalEquation(phi0, speed, dx=1.):
     speed = toFloatArray(speed)
     assert shape == speed.shape
 
-    return solveEikonalEquation2d_(phi0.flatten(), speed.flatten(), nx=nx, ny=ny, dx=dx, dy=dy).reshape(shape)
+    return solveEikonalEquation3d_(phi0.flatten(), speed.flatten(), nx=nx, ny=ny, dx=dx, dy=dy).reshape(shape)
 
 def testing():
     r"""
@@ -199,7 +199,7 @@ def testing():
     True
 
     **Bug Fix**
-  
+
     A 2D test case to test trial values for a pathological case.
 
     >>> dx = 1.
@@ -222,7 +222,7 @@ def testing():
     >>> tmp = 1 / np.sqrt(2)
     >>> phi = np.array([[-1., 1.], [1., 1.]])
     >>> phi, ext =  computeExtensionFields(phi,
-    ...                                    [[-1, .5], [2., -1.]],  
+    ...                                    [[-1, .5], [2., -1.]],
     ...                                    u0mask=phi < 0,
     ...                                    dx=1., order=1)
     >>> print np.allclose(phi, ((-tmp / 2, 0.5), (0.5, 0.5 + tmp)))
@@ -252,7 +252,7 @@ def testing():
     True
 
     **Bug Fix**
- 
+
     Test case for a bug that occurs when initializing the distance
     variable at the interface. Currently it is assumed that adjacent
     cells that are opposite sign neighbors have perpendicular normal
@@ -277,9 +277,9 @@ def testing():
     ...                   rtol=1e-9)
     True
 
-    **Circle Example** 
+    **Circle Example**
 
-    Solve the level set equation in two dimensions for a circle. 
+    Solve the level set equation in two dimensions for a circle.
 
     The 2D level set equation can be written,
 
@@ -287,7 +287,7 @@ def testing():
 
         |\nabla \phi| = 1
 
-    and the boundary condition for a circle is given by, :math:`\phi = 0` at 
+    and the boundary condition for a circle is given by, :math:`\phi = 0` at
     :math:`(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2`.
 
     The solution to this problem will be demonstrated in the following
@@ -302,7 +302,7 @@ def testing():
     >>> dx = 1.
     >>> N = 11
     >>> L = N * dx
-    >>> x, y = mesh(nx=N, ny=N, dx=dx, dy=dx) 
+    >>> x, y = mesh(nx=N, ny=N, dx=dx, dy=dx)
     >>> phi = -np.ones(N * N, 'd')
     >>> phi[(x.flatten() - L / 2.)**2 + (y.flatten() - L / 2.)**2 < (L / 4.)**2] = 1.
     >>> phi = np.reshape(phi, (N, N))
@@ -316,13 +316,13 @@ def testing():
     ...     cc = dx**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dx**2
     ...     sqr = np.sqrt(bb**2 - 4. * aa * cc)
     ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
-    >>> v1 = evalCell(-dX, -m1, dx)[0] 
+    >>> v1 = evalCell(-dX, -m1, dx)[0]
     >>> v2 = evalCell(-m1, -dX, dx)[0]
     >>> v3 = evalCell(m1,  m1,  dx)[1]
     >>> v4 = evalCell(v3, dX, dx)[1]
     >>> v5 = evalCell(dX, v3, dx)[1]
     >>> MASK = -1000.
-    >>> trialValues = np.array((   
+    >>> trialValues = np.array((
     ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
     ...     MASK,  MASK, MASK, MASK,-3*dX,-3*dX,-3*dX, MASK, MASK, MASK, MASK,
     ...     MASK,  MASK, MASK,   v1,  -dX,  -dX,  -dX,   v1, MASK, MASK, MASK,
@@ -348,9 +348,9 @@ def testing():
 
        |\nabla \phi| &= 1 \\
        \phi &= 0 \qquad \text{at} \qquad \begin{cases}
-           x = \left( L / 3, 2 L / 3 \right) 
+           x = \left( L / 3, 2 L / 3 \right)
            & \text{for $L / 3 \le y \le 2 L / 3$} \\
-           y = \left( L / 3, 2 L / 3 \right) 
+           y = \left( L / 3, 2 L / 3 \right)
            & \text{for $L / 3 \le x \le 2 L / 3$}
        \end{cases}
 

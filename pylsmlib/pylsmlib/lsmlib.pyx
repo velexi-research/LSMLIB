@@ -1,25 +1,25 @@
 import cython
 import numpy as np
-from numpy.core import intc	
+from numpy.core import intc
 cimport numpy as np
 from numpy.compat import asbytes
 from numpy import int, double, int32
-from lsmlib cimport computeDistanceFunction2d
-from lsmlib cimport computeExtensionFields2d
-from lsmlib cimport solveEikonalEquation2d
+from lsmlib cimport computeDistanceFunction3d
+from lsmlib cimport computeExtensionFields3d
+from lsmlib cimport solveEikonalEquation3d
 from libc.stdlib cimport malloc, free
 
-def computeDistanceFunction2d_(np.ndarray[double, ndim=1] phi, nx=1, ny=1, dx=1., dy=1., order=2):
-    cdef np.ndarray[double, ndim=1] distance_function = np.zeros((nx * ny,))
-    cdef int spatial_derivative_order = order				
-    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny), dtype=int32)
-    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy))
+def computeDistanceFunction3d_(np.ndarray[double, ndim=1] phi, nx=1, ny=1, nz=1, dx=1., dy=1., dz=1., order=2):
+    cdef np.ndarray[double, ndim=1] distance_function = np.zeros((nx * ny * nz,))
+    cdef int spatial_derivative_order = order
+    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny, nz), dtype=int32)
+    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy, dz))
 
     cdef double *maskdata=NULL
-    
-    error = computeDistanceFunction2d(
-	<double *> distance_function.data,
-    	<double *> phi.data,	
+
+    error = computeDistanceFunction3d(
+		<double *> distance_function.data,
+    	<double *> phi.data,
     	<double *> maskdata,
     	spatial_derivative_order,
     	<int *> grid_dims.data,
@@ -27,19 +27,19 @@ def computeDistanceFunction2d_(np.ndarray[double, ndim=1] phi, nx=1, ny=1, dx=1.
 
     return distance_function
 
-def computeExtensionFields2d_(np.ndarray[double, ndim=1] phi, np.ndarray[double, ndim=2] extensionFields, np.ndarray[double, ndim=1] mask=np.empty((0,), dtype=double), np.ndarray[double, ndim=1] extension_mask=np.empty((0,), dtype=double), nx=1,  ny=1, dx=1., dy=1., order=2):
+def computeExtensionFields3d_(np.ndarray[double, ndim=1] phi, np.ndarray[double, ndim=2] extensionFields, np.ndarray[double, ndim=1] mask=np.empty((0,), dtype=double), np.ndarray[double, ndim=1] extension_mask=np.empty((0,), dtype=double), nx=1,  ny=1, nz=1, dx=1., dy=1., dz=1., order=2):
 
     cdef int num_ext_fields = extensionFields.shape[0]
 
-    cdef np.ndarray[double, ndim=1] distance_function = np.zeros((nx * ny,))
+    cdef np.ndarray[double, ndim=1] distance_function = np.zeros((nx * ny * nz,))
     cdef int spatial_derivative_order = order
-						
-    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny), dtype=int32)
-    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy))
-    
+
+    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny, nz), dtype=int32)
+    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy, dz))
+
     cdef double **ext_fields = <double **> malloc(num_ext_fields * sizeof(double*))
     cdef double **source_fields = <double **> malloc(num_ext_fields * sizeof(double*))
-    cdef np.ndarray[double, ndim=2] extReturnFields = np.zeros((num_ext_fields, nx * ny))
+    cdef np.ndarray[double, ndim=2] extReturnFields = np.zeros((num_ext_fields, nx * ny * nz))
 
     cdef double *maskdata=NULL
     cdef double *extension_maskdata=NULL
@@ -55,14 +55,14 @@ def computeExtensionFields2d_(np.ndarray[double, ndim=1] phi, np.ndarray[double,
         ext_fields[i] = &extReturnFields[i,0]
         source_fields[i] = &extensionFields[i,0]
 
-    error = computeExtensionFields2d(
-	<double *> distance_function.data,
-	<double **> ext_fields,
-    	<double *> phi.data,	
+    error = computeExtensionFields3d(
+		<double *> distance_function.data,
+		<double **> ext_fields,
+    	<double *> phi.data,
     	<double *> maskdata,
-	<double **> source_fields,
-	<double *> extension_maskdata,
-	num_ext_fields,
+		<double **> source_fields,
+		<double *> extension_maskdata,
+		num_ext_fields,
     	spatial_derivative_order,
     	<int *> grid_dims.data,
     	<double *> _dx.data)
@@ -72,13 +72,13 @@ def computeExtensionFields2d_(np.ndarray[double, ndim=1] phi, np.ndarray[double,
 
     return distance_function, extReturnFields
 
-def solveEikonalEquation2d_(np.ndarray[double, ndim=1] phi,
-                            np.ndarray[double, ndim=1] speed, nx=1, ny=1, dx=1., dy=1.):
+def solveEikonalEquation3d_(np.ndarray[double, ndim=1] phi,
+                            np.ndarray[double, ndim=1] speed, nx=1, ny=1, nz=1, dx=1., dy=1., dz=1.):
 
-    cdef np.ndarray[double, ndim=1] mask = np.zeros((nx * ny,))
-    cdef int spatial_derivative_order = 2							
-    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny), dtype=int32)
-    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy))
+    cdef np.ndarray[double, ndim=1] mask = np.zeros((nx * ny * nz,))
+    cdef int spatial_derivative_order = 2
+    cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny, nz), dtype=int32)
+    cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy, dz))
 
     cdef double *maskdata=NULL
 
@@ -86,9 +86,9 @@ def solveEikonalEquation2d_(np.ndarray[double, ndim=1] phi,
     phi[phi > 0] = minphi - 1.
     phi[:] = phi - minphi
 
-    error = solveEikonalEquation2d(
-	<double *> phi.data,
-    	<double *> speed.data,	
+    error = solveEikonalEquation3d(
+		<double *> phi.data,
+    	<double *> speed.data,
     	<double *> maskdata,
     	spatial_derivative_order,
     	<int *> grid_dims.data,
