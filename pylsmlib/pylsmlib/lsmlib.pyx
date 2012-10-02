@@ -72,10 +72,10 @@ def computeExtensionFields3d_(np.ndarray[double, ndim=1] phi, np.ndarray[double,
     return distance_function, extReturnFields
 
 def solveEikonalEquation3d_(np.ndarray[double, ndim=1] phi,
-                            np.ndarray[double, ndim=1] speed, nx=1, ny=1, nz=1, dx=1., dy=1., dz=1.):
+                            np.ndarray[double, ndim=1] speed, nx=1, ny=1, nz=1, dx=1., dy=1., dz=1., order=2):
 
     cdef np.ndarray[double, ndim=1] mask = np.zeros((nx * ny * nz,))
-    cdef int spatial_derivative_order = 2
+    cdef int spatial_derivative_order = order
     cdef np.ndarray[int, ndim=1] grid_dims = np.array((nx, ny, nz), dtype=int32)
     cdef np.ndarray[double, ndim=1] _dx = np.array((dx, dy, dz))
 
