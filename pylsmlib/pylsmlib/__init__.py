@@ -78,7 +78,7 @@ def computeDistanceFunction(phi0, dx=1., order=2):
     nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, order)
     return computeDistanceFunction3d_(phi0.flatten(), nx=nx, ny=ny, dx=dx, dy=dy, order=order).reshape(shape)
 
-def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
+def computeExtensionFields(phi0, speed, dx=1., order=2, mask=None, ext_mask=None, ):
     r"""
 
     Solves
@@ -101,8 +101,8 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
       - `phi0`: array of positive and negative values locating the
         zero level set of :math:`\phi`, shape determines the
         dimension.
-      - `u0`: array of values used as the initial condition to
-        calculate the extension fields, :math:`u`; shape is either
+      - `speed`: array of values used as the initial condition to
+        calculate the extension fields, :math:`u0`; shape is either
         `phi0.shape` or `(N,) + phi0.shape`, where `N` is the number
         of fields to extend
       - `mask`:
@@ -120,7 +120,7 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
     """
 
     nx, ny, dx, dy, shape, phi0 = getShape(phi0, dx, order)
-    u0 = toFloatArray(u0)
+    u0 = toFloatArray(speed)
     u0shape = u0.shape
 
     if u0shape == shape:
@@ -135,18 +135,18 @@ def computeExtensionFields(phi0, u0, mask=None, u0mask=None, dx=1., order=2):
 
         assert shape == mask.shape, '`phi` and `mask` have incompatible shapes'
 
-    if u0mask is None:
-        u0mask = np.empty((0,), dtype=float)
+    if ext_mask is None:
+        ext_mask = np.empty((0,), dtype=float)
     else:
-        u0mask = toFloatArray(u0mask)
-        u0mask = -u0mask * 2. + 1.
-        assert shape == u0mask.shape, '`phi` and `extensionMask` have incompatible shapes'
+        ext_mask = toFloatArray(ext_mask)
+        ext_mask = -ext_mask * 2. + 1.
+        assert shape == ext_mask.shape, '`phi` and `extensionMask` have incompatible shapes'
 
     N = u0.shape[0]
     phi, u = computeExtensionFields3d_(phi0.flatten(),
                                        u0.reshape((N, -1)),
                                        mask=mask.flatten(),
-                                       extension_mask=u0mask.flatten(),
+                                       extension_mask=ext_mask.flatten(),
                                        nx=nx, ny=ny, dx=dx, dy=dy, order=order)
 
     return phi.reshape(shape), u.reshape(u0shape)

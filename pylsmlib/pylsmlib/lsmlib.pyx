@@ -1,7 +1,6 @@
 import cython
 import numpy as np
 from numpy.core import intc
-cimport numpy as np
 from numpy.compat import asbytes
 from numpy import int, double, int32
 from lsmlib cimport computeDistanceFunction3d
