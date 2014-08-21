@@ -99,14 +99,14 @@
  */
 
 
-#include "SAMRAI_config.h"
-#include "GriddingAlgorithm.h"
-#include "PatchHierarchy.h"
-#include "PatchLevel.h"
-#include "StandardTagAndInitialize.h"
-#include "tbox/Array.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/mesh/GriddingAlgorithm.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/StandardTagAndInitialize.h"
+#include "SAMRAI/tbox/Array.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodGriddingStrategy.h"

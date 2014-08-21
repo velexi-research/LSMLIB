@@ -27,11 +27,11 @@
  */
 
 
-#include "SAMRAI_config.h"     
-#include "BasePatchHierarchy.h"
-#include "PatchHierarchy.h"
-#include "StandardTagAndInitStrategy.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/BasePatchHierarchy.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/mesh/StandardTagAndInitStrategy.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"     
 #include "LevelSetMethodToolbox.h"

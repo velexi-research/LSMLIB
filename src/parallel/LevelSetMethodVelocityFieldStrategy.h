@@ -53,10 +53,10 @@
  */
 
 
-#include "SAMRAI_config.h"
-#include "PatchHierarchy.h"
-#include "PatchLevel.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"

@@ -474,10 +474,10 @@
 #include <string>
 #include <vector>
 
-#include "SAMRAI_config.h"
-#include "PatchHierarchy.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodGriddingStrategy.h"

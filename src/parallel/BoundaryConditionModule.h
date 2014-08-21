@@ -82,12 +82,12 @@
  */
 
 
-#include "SAMRAI_config.h"
-#include "BoundaryBox.h"
-#include "IntVector.h"
-#include "PatchHierarchy.h"
-#include "tbox/Array.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/BoundaryBox.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/tbox/Array.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"

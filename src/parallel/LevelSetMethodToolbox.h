@@ -59,14 +59,14 @@
 
 #include <vector>
 
-#include "SAMRAI_config.h"
-#include "ComponentSelector.h"
-#include "PatchHierarchy.h"
-#include "CartesianGridGeometry.h"
-#include "RefineAlgorithm.h"
-#include "RefineSchedule.h"
-#include "tbox/Array.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/ComponentSelector.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
+#include "SAMRAI/xfer/RefineAlgorithm.h"
+#include "SAMRAI/xfer/RefineSchedule.h"
+#include "SAMRAI/tbox/Array.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 

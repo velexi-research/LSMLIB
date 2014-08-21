@@ -37,11 +37,11 @@
  */
 
 
-#include "SAMRAI_config.h"
-#include "tbox/Database.h"
-#include "IntVector.h"
-#include "Patch.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/tbox/Pointer.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetFunctionIntegrator.h"

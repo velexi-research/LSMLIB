@@ -20,8 +20,8 @@
  *
  */
 
-#include "SAMRAI_config.h"
-#include "StandardTagAndInitStrategy.h"
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/StandardTagAndInitStrategy.h"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodVelocityFieldStrategy.h"
