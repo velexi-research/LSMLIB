@@ -23,7 +23,7 @@ LSMLIB_LIBS    = @LSMLIB_PARALLEL@ -llsm_serial -llsm_toolbox @LIBS_EXTRA@ -lm
 	@CC@ -c @CFLAGS@ -I$(LSMLIB_INCLUDE) $(CFLAGS) $(CPPFLAGS) $(CFLAGS_EXTRA) -o $@ $<
 
 %.o: %.f
-	@F77@ -c @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -o $@ $<
+	@FC@ -c @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -o $@ $<
 
 %.o: %.cc
 	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<

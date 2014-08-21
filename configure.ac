@@ -49,10 +49,10 @@ esac
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
-AC_PROG_F77
+AC_PROG_FC
 
 # set Fortran compiler flags
-case $F77 in
+case $FC in
   xlf) 
     FFLAGS="$FFLAGS -qextname"
     COMPILER_FULL_PATH=`which xlf`
@@ -238,11 +238,11 @@ AC_ARG_ENABLE([float],
               [], [enable_float=no])
 AC_MSG_RESULT([$enable_float])
 AS_IF([test $enable_float = no],
-      [case "$F77" in
+      [case "$FC" in
          g77)
            FFLAGS="-fdefault-real-8 -fdefault-double-8 $FFLAGS"
          ;;
-         gfortran)
+         gfortran*)
            FFLAGS="-fdefault-real-8 -fdefault-double-8 $FFLAGS"
          ;;
          ifort)
@@ -451,7 +451,7 @@ echo "                        CFLAGS: $CFLAGS"
 echo "             C++ Compiler(CXX): $CXX"
 echo "                      CXXFLAGS: $CXXFLAGS"
 echo "                       LDFLAGS: $LDFLAGS"
-echo "      Fortran 77 Compiler(F77): $F77"
+echo "          Fortran Compiler(FC): $FC"
 echo "                        FFLAGS: $FFLAGS"
 if test -z "$samrai_dir"; then
 echo "                        SAMRAI: not configured"
