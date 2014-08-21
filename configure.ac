@@ -103,7 +103,7 @@ AS_IF([test $withval = no],
       [samrai_dir=$with_samrai 
        AC_MSG_RESULT([$samrai_dir])])
 AS_IF([! test -z "$samrai_dir"],
-      [AC_CHECK_FILE([$samrai_dir/include/SAMRAI_config.h],
+      [AC_CHECK_FILE([$samrai_dir/include/SAMRAI/SAMRAI_config.h],
                      [samrai_inc="$samrai_dir/include"
                       samrai_lib="$samrai_dir/lib"
                       AC_SUBST(samrai_dir)
