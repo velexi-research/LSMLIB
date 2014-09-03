@@ -1,20 +1,9 @@
-============================================================================
-
+===========================================================
 Level Set Method Library (LSMLIB) Installation Instructions
------------------------------------------------------------
+===========================================================
 
-Kevin T. Chu
-Serendipity Research
-
-and 
-
-Masa Prodanovic
-University of Texas at Austin
-
-============================================================================
-
-Installation Procedure
-----------------------
+Preparations
+============
 
 (0.a) If you plan to use the samrai package, install SAMRAI and
       supporting libraries.
@@ -24,6 +13,9 @@ Installation Procedure
       you may need to set up a special mex options file, mexopt.sh, file 
       for the compilers you are using.  A sample mex options file for
       the Intel compilers is provided in <LSMLIB_SOURCE_DIR>/config/matlab. 
+
+Installation Procedure
+======================
 
 (1)   Run 'configure' to set the configure options used to build LSMLIB
       on your platform and architecture.  Note that LSMLIB supports
@@ -102,5 +94,3 @@ Installation Procedure
                  (including programs and output from the examples
                  directory) created during the build process, but
                  will leave the installed library intact.
-
-============================================================================
