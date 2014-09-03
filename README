@@ -1,8 +1,15 @@
-============================================================================
+======
+LSMLIB
+======
 
-See LSMLIB website at 
+Software Dependencies
+=====================
+* SAMRAI (3.8.0)
+
+
+More Information
+================
+
+For more information, see LSMLIB website at
 
 http://ktchu.serendipityresearch.org/software/lsmlib/index.html
-
-
-============================================================================
