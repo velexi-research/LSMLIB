@@ -20,12 +20,12 @@ while [ -z "$CHECK" ]; do
     TOP_DIR=`dirname $TOP_DIR`
     CHECK=`ls $TOP_DIR | grep $CHECK_FILE`
 done
+cd $TOP_DIR
 
 # generate aclocal.m4
 aclocal -Iconfig/autoconf/ --output=config/autoconf/aclocal.m4
 
 # generate configure that searches config/autoconf for macro files
-pwd
 autoconf -Iconfig/autoconf configure.ac > configure
 chmod a+x configure
 
