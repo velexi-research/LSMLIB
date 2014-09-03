@@ -26,7 +26,7 @@ cd $TOP_DIR
 aclocal -Iconfig/autoconf/ --output=config/autoconf/aclocal.m4
 
 # generate configure that searches config/autoconf for macro files
-autoconf -Iconfig/autoconf configure.ac > configure
+autoconf -Iconfig/autoconf configure.ac > $TOP_DIR/configure
 chmod a+x configure
 
 # remove autom4te.cache
