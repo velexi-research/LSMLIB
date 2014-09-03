@@ -12,13 +12,20 @@
 ## - This script is intended to be called from the config/autoconf directory.
 ##
 
-# change directories to top level source directory
-cd ../..
+# Find top-level directory
+TOP_DIR=`pwd`
+CHECK_FILE=pylsmlib
+CHECK=`ls $TOP_DIR | grep $CHECK_FILE`
+while [ -z "$CHECK" ]; do
+    TOP_DIR=`dirname $TOP_DIR`
+    CHECK=`ls $TOP_DIR | grep $CHECK_FILE`
+done
 
 # generate aclocal.m4
-aclocal --acdir=config/autoconf/ --output=config/autoconf/aclocal.m4 
+aclocal -Iconfig/autoconf/ --output=config/autoconf/aclocal.m4
 
 # generate configure that searches config/autoconf for macro files
+pwd
 autoconf -Iconfig/autoconf configure.ac > configure
 chmod a+x configure
 
