@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/22/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method reinitialization algorithm 
  */
  
@@ -107,7 +107,7 @@
 #include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "BoundaryConditionModule.h"
@@ -150,7 +150,7 @@ public:
    * Arguments:      
    *  - input_db (in):               input database containing user-defined
    *                                 parameters
-   *  - hierarchy (in):              Pointer to PatchHierarchy 
+   *  - hierarchy (in):              Boost pointer to PatchHierarchy 
    *                                 containing data
    *  - phi_handle (in):             PatchData handle for the level set
    *                                 function (phi)
@@ -169,8 +169,8 @@ public:
    *
    */
   ReinitializationAlgorithm(
-    Pointer<Database> input_db,
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr<Database> input_db,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const string& object_name = "ReinitializationAlgorithm");
@@ -182,7 +182,7 @@ public:
    * to the constructor.
    *
    * Arguments:      
-   *  - hierarchy (in):                 Pointer to PatchHierarchy 
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy 
    *                                    containing data
    *  - phi_handle (in):                PatchData handle for the level set
    *                                    function (phi)
@@ -222,7 +222,7 @@ public:
    *
    */
   ReinitializationAlgorithm(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -382,7 +382,7 @@ public:
    * PatchHierarchy has been changed.
    *
    * Arguments:      
-   *  - hierarchy (in):       Pointer to new PatchHierarchy 
+   *  - hierarchy (in):       Boost pointer to new PatchHierarchy 
    *  - coarsest_level (in):  coarsest level in the hierarchy to be updated
    *  - finest_level (in):    finest level in the hierarchy to be updated
    *
@@ -390,7 +390,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -524,10 +524,10 @@ protected:
    * Return value:             none
    *
    * NOTES:
-   *  - An assertion results if the database pointer is null.
+   *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(Pointer<Database> db);
+  virtual void getFromInput(boost::shared_ptr<Database> db);
 
   /*!
    * checkParameters() checks to make sure that user-specified parameters
@@ -575,11 +575,11 @@ protected:
    * Grid management objects 
    */
 
-  // Pointer to PatchHierarchy object
-  Pointer< PatchHierarchy<DIM> > d_patch_hierarchy;
+  // Boost pointer to PatchHierarchy object
+  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
 
-  // Pointer to GridGeometry
-  Pointer< CartesianGridGeometry<DIM> > d_grid_geometry;
+  // Boost pointer to GridGeometry
+  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve reinitialization equation
@@ -617,15 +617,15 @@ protected:
   /*
    * Boundary condition objects
    */
-  Pointer< BoundaryConditionModule<DIM> > d_bc_module;
+  boost::shared_ptr< BoundaryConditionModule<DIM> > d_bc_module;
 
   /*
    * Communication objects.
    */
 
   // data communication parameters
-  Array< Pointer< RefineAlgorithm<DIM> > > d_phi_fill_bdry_alg;
-  Array< Array< Pointer< RefineSchedule<DIM> > > > d_phi_fill_bdry_sched;
+  Array< boost::shared_ptr< RefineAlgorithm<DIM> > > d_phi_fill_bdry_alg;
+  Array< Array< boost::shared_ptr< RefineSchedule<DIM> > > > d_phi_fill_bdry_sched;
 
 private: 
 

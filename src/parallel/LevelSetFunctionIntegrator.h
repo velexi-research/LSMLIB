@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:     $09/19/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method integrator class
  */
  
@@ -244,8 +244,8 @@
 #include <vector>
 
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/BasePatchHierarchy.h"
-#include "SAMRAI/hier/BasePatchLevel.h"
+//#include "SAMRAI/hier/BasePatchHierarchy.h"
+//#include "SAMRAI/hier/BasePatchLevel.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/pdat/CellVariable.h"
@@ -253,7 +253,7 @@
 #include "SAMRAI/xfer/CoarsenPatchStrategy.h"
 #include "SAMRAI/xfer/CoarsenSchedule.h"
 #include "SAMRAI/hier/ComponentSelector.h"
-#include "SAMRAI/hier/HierarchyCellDataOpsReal.h"
+#include "SAMRAI/math/HierarchyCellDataOpsReal.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
@@ -263,7 +263,7 @@
 #include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 #include "SAMRAI/tbox/Serializable.h"
 
 #include "LSMLIB_config.h"
@@ -280,6 +280,7 @@ using namespace geom;
 using namespace hier;
 using namespace tbox;
 using namespace xfer;
+using namespace math;
 
 namespace LSMLIB {
 
@@ -335,8 +336,8 @@ public:
    *
    */
   LevelSetFunctionIntegrator(
-    Pointer<Database> input_db,
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr<Database> input_db,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     LevelSetMethodPatchStrategy<DIM>* lsm_patch_strategy,
     LevelSetMethodVelocityFieldStrategy<DIM>* lsm_velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
@@ -808,7 +809,7 @@ public:
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int level_number);
 
   /*!
@@ -825,7 +826,7 @@ public:
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int level_number);
 
   //! @}
@@ -850,7 +851,7 @@ public:
    * Return value:   none
    *
    */
-  virtual void putToDatabase(Pointer<Database> db);
+  virtual void putToDatabase(boost::shared_ptr<Database> db);
 
   //! @}
 
@@ -891,13 +892,13 @@ public:
    *
    */
   virtual void initializeLevelData (
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy ,
+    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
     const int level_number ,
     const double init_data_time ,
     const bool can_be_refined ,
     const bool initial_time ,
-    const Pointer< BasePatchLevel<DIM> > old_level
-      = Pointer< BasePatchLevel<DIM> >((0)) ,
+    const boost::shared_ptr< BasePatchLevel<DIM> > old_level
+      = boost::shared_ptr< BasePatchLevel<DIM> >((0)) ,
     const bool allocate_data = true );
 
   /*!
@@ -1031,7 +1032,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -1051,7 +1052,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration (
-    Pointer< BasePatchHierarchy<DIM> > hierarchy ,
+    boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
     int coarsest_level ,
     int finest_level );
 
@@ -1336,10 +1337,10 @@ protected:
    * Return value:             none
    *
    * NOTES:
-   *  - An assertion results if the database pointer is null.
+   *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(Pointer<Database> db,
+  virtual void getFromInput(boost::shared_ptr<Database> db,
                             bool is_from_restart);
 
   /*!
@@ -1351,7 +1352,7 @@ protected:
    * Return values:  none
    *
    * NOTES:
-   *  - An assertion results if the database pointer is null.
+   *  - An assertion results if the database boost pointer is null.
    *
    */
   virtual void getFromRestart();
@@ -1438,12 +1439,12 @@ protected:
    * User-defined level set method strategy objects
    */
 
-  // Pointer to the LevelSetMethodPatchStrategy.  This object
+  // Boost pointer to the LevelSetMethodPatchStrategy.  This object
   // is used to initialize and set boundary conditions for the 
   // level set functions. 
   LevelSetMethodPatchStrategy<DIM>*  d_lsm_patch_strategy;
 
-  // Pointer to LevelSetMethodVelocityFieldStrategy.  This object
+  // Boost pointer to LevelSetMethodVelocityFieldStrategy.  This object
   // is used to set the velocity field for the time advance of the
   // level set functions.  It is also used to provide some physics-based
   // restrictions on the maximum allowable dt to use for advancing
@@ -1455,23 +1456,23 @@ protected:
    * Grid management objects
    */
 
-  // Pointer to the patch hierarchy object
-  Pointer< PatchHierarchy<DIM> > d_patch_hierarchy;
+  // Boost pointer to the patch hierarchy object
+  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
 
-  // Pointer to the grid geometry.  The CartesianGridGeometry object
+  // Boost pointer to the grid geometry.  The CartesianGridGeometry object
   // is used to set up initial data, set physical boundary conditions, 
   // and register plot variables.
-  Pointer< CartesianGridGeometry<DIM> > d_grid_geometry;
+  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
 
-  // Pointer to reinitialization algorithms which manage the 
+  // Boost pointer to reinitialization algorithms which manage the 
   // reinitialization of level set functions to distance functions
-  Pointer< ReinitializationAlgorithm<DIM> > d_phi_reinitialization_alg;
-  Pointer< ReinitializationAlgorithm<DIM> > d_psi_reinitialization_alg;
+  boost::shared_ptr< ReinitializationAlgorithm<DIM> > d_phi_reinitialization_alg;
+  boost::shared_ptr< ReinitializationAlgorithm<DIM> > d_psi_reinitialization_alg;
 
-  // Pointer to orthogonalization algorithm which manages the 
+  // Boost pointer to orthogonalization algorithm which manages the 
   // orthogonalization of gradients of phi and psi for 
   // codimension-two problems
-  Pointer< OrthogonalizationAlgorithm<DIM> > d_orthogonalization_alg;
+  boost::shared_ptr< OrthogonalizationAlgorithm<DIM> > d_orthogonalization_alg;
 
   
   /*
@@ -1544,7 +1545,7 @@ protected:
   /*
    * Boundary condition objects
    */
-  Pointer< BoundaryConditionModule<DIM> > d_bc_module;
+  boost::shared_ptr< BoundaryConditionModule<DIM> > d_bc_module;
   Array< IntVector<DIM> > d_lower_bc_phi;
   Array< IntVector<DIM> > d_upper_bc_phi;
   Array< IntVector<DIM> > d_lower_bc_psi;
@@ -1555,17 +1556,17 @@ protected:
    */
 
   // for filling a new level
-  Pointer< RefineAlgorithm<DIM> > d_fill_new_level;
+  boost::shared_ptr< RefineAlgorithm<DIM> > d_fill_new_level;
 
   // for filling boundary data used during the calculation of 
   // a stable dt for motion under normal velocity
-  Pointer< RefineAlgorithm<DIM> > d_fill_bdry_compute_stable_dt;
-  Array< Pointer< RefineSchedule<DIM> > >
+  boost::shared_ptr< RefineAlgorithm<DIM> > d_fill_bdry_compute_stable_dt;
+  Array< boost::shared_ptr< RefineSchedule<DIM> > >
     d_fill_bdry_sched_compute_stable_dt;
 
   // for filling bdry data before doing time advance
-  Array< Pointer< RefineAlgorithm<DIM> > > d_fill_bdry_time_advance;
-  Array< Array< Pointer< RefineSchedule<DIM> > > > 
+  Array< boost::shared_ptr< RefineAlgorithm<DIM> > > d_fill_bdry_time_advance;
+  Array< Array< boost::shared_ptr< RefineSchedule<DIM> > > > 
     d_fill_bdry_sched_time_advance;
 
 private:

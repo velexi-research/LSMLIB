@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/18/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for anti-periodic bc module
  */
  
@@ -87,7 +87,7 @@
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/tbox/Array.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
@@ -150,7 +150,7 @@ public:
    *    set to be in an invalid state.
    */
   BoundaryConditionModule( 
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const IntVector<DIM>& ghostcell_width );
 
   /*!
@@ -790,7 +790,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    const Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int coarsest_level,
     const int finest_level,
     const IntVector<DIM>& ghostcell_width);
@@ -898,8 +898,8 @@ protected:
    *
    ****************************************************************/
 
-  // pointer to PatchHierarchy
-  Pointer< PatchHierarchy<DIM> > d_patch_hierarchy;
+  //boost pointer to PatchHierarchy
+  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
 
   // parameters for imposing anti-periodic BCs
   IntVector<DIM> d_ghostcell_width;

@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/22/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for the level set method grid management class
  */
  
@@ -103,10 +103,10 @@
 #include "SAMRAI/mesh/GriddingAlgorithm.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
-#include "SAMRAI/hier/StandardTagAndInitialize.h"
+#include "SAMRAI/mesh/StandardTagAndInitialize.h"
 #include "SAMRAI/tbox/Array.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodGriddingStrategy.h"
@@ -150,10 +150,10 @@ public:
    * and the standard LoadBalancer.
    *
    * Arguments:
-   *  - input_db (in):                 pointer to input database 
-   *  - patch_hierarchy (in):          pointer to BasePatchHierarchy 
+   *  - input_db (in):                 boost pointer to input database 
+   *  - patch_hierarchy (in):          boost pointer to BasePatchHierarchy 
    *                                   object used for computation
-   *  - lsm_integrator_strategy (in):  pointer to subclass of 
+   *  - lsm_integrator_strategy (in):  boost pointer to subclass of 
    *                                   LevelSetFunctionIntegratorStrategy
    *                                   that implements a gridding strategy
    *                                   based on level set function values 
@@ -161,9 +161,9 @@ public:
    *
    */
   LevelSetMethodGriddingAlgorithm(
-    Pointer<Database> input_db,
-    Pointer< BasePatchHierarchy<DIM> > patch_hierarchy,
-    Pointer< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
+    boost::shared_ptr<Database> input_db,
+    boost::shared_ptr< BasePatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
     const string& object_name = "LevelSetMethodGriddingAlgorithm");
 
   /*!
@@ -190,7 +190,7 @@ public:
    * class with the LevelSetMethodGriddingAlgorithm object.  
    *
    * Arguments:     
-   *  - velocity_field_strategy (in):  pointer to instance of subclass of 
+   *  - velocity_field_strategy (in):  boost pointer to instance of subclass of 
    *                                   LevelSetMethodVelocityFieldStrategy 
    *                                   used to manage the variables involved 
    *                                   in the calculation of the velocity 
@@ -287,13 +287,13 @@ public:
    *                
    */
   virtual void initializeLevelData(
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
     const int level_number,
     const double init_data_time,
     const bool can_be_refined,
     const bool initial_time,
-    const Pointer< BasePatchLevel<DIM> > old_level = 
-      Pointer< BasePatchLevel<DIM> >(NULL),
+    const boost::shared_ptr< BasePatchLevel<DIM> > old_level = 
+      boost::shared_ptr< BasePatchLevel<DIM> >(NULL),
     const bool allocate_data = true);
 
   /*!
@@ -316,7 +316,7 @@ public:
    *                
    */
   void resetHierarchyConfiguration(
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -353,7 +353,7 @@ public:
    *                
    */
   void tagCellsForRefinement(
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
     const int level_number,
     const double regrid_time,
     const int tag_index,
@@ -391,7 +391,7 @@ protected:
    *    because getFromInput() is not declared virtual in the class
    *    StandardTagAndInitialize. 
    */
-  void getFromInput(Pointer<Database> input_db);
+  void getFromInput(boost::shared_ptr<Database> input_db);
 
   //! @}
 
@@ -409,14 +409,14 @@ protected:
   string d_object_name;
 
   /*
-   * Pointer to the PatchHierarchy object
+   * Boost pointer to the PatchHierarchy object
    */
-  Pointer< BasePatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< BasePatchHierarchy<DIM> > d_patch_hierarchy;
 
   /*
-   * Pointer to the SAMRAI::mesh::GriddingAlgorithm object
+   * Boost pointer to the SAMRAI::mesh::GriddingAlgorithm object
    */
-  Pointer< SAMRAI::mesh::GriddingAlgorithm<DIM> > d_gridding_alg;
+  boost::shared_ptr< SAMRAI::mesh::GriddingAlgorithm<DIM> > d_gridding_alg;
 
   /*
    * Duplicates of the booleans specifying the tagging method that
@@ -427,12 +427,12 @@ protected:
   bool d_use_richardson_extrapolation;
 
   /*
-   * Pointers to the LevelSetFunctionIntegratorStrategy and 
+   * Boost pointers to the LevelSetFunctionIntegratorStrategy and 
    * LevelSetMethodVelocityFieldStrategy objects.
    */
-  Pointer< LevelSetFunctionIntegratorStrategy<DIM> > d_lsm_integrator_strategy;
+  boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > d_lsm_integrator_strategy;
 
-  Array< Pointer< LevelSetMethodVelocityFieldStrategy<DIM> > > 
+  Array< boost::shared_ptr< LevelSetMethodVelocityFieldStrategy<DIM> > > 
     d_velocity_field_strategies;
 
 private:

@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/15/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header for strategy for the velocity field for the level 
  *              set method
  */
@@ -56,7 +56,7 @@
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp" 
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
@@ -64,7 +64,6 @@
 // SAMRAI namespaces
 using namespace SAMRAI;
 using namespace hier;
-using namespace tbox;
 
 
 /******************************************************************
@@ -321,15 +320,15 @@ public:
    *
    */
   virtual void initializeLevelData(
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int level_number,
     const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
     const bool initial_time,
-    const Pointer< PatchLevel<DIM> > old_level
-      = Pointer< PatchLevel<DIM> >((0)),
+    const boost::shared_ptr< PatchLevel<DIM> > old_level
+      = boost::shared_ptr< PatchLevel<DIM> >((0)),
     const bool allocate_data = true) = 0;
 
   //! @}
@@ -369,7 +368,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     int coarsest_level,
     int finest_level){}
 
@@ -395,7 +394,7 @@ public:
    *
    */
   virtual void tagCellsForRefinement(
-      const Pointer< PatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
       const int level_number,
       const int tag_handle){}
 

@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:     $09/16/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method toolbox class
  */
  
@@ -66,7 +66,7 @@
 #include "SAMRAI/xfer/RefineAlgorithm.h"
 #include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp" 
 
 #include "LSMLIB_config.h"
 
@@ -149,7 +149,7 @@ public:
    * using the specified ENO/WENO scheme specified.
    *
    * Arguments:     
-   *  - hierarchy (in):                 Pointer to PatchHierarchy
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy
    *                                    containing data
    *  - spatial_derivative_type (in):   type of spatial derivative calculation
    *  - spatial_derivative_order (in):  order of spatial derivative
@@ -177,7 +177,7 @@ public:
    * 
    */
   static void computeUpwindSpatialDerivatives(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int grad_phi_handle,
@@ -191,7 +191,7 @@ public:
    * the specified ENO/WENO scheme. 
    *
    * Arguments:     
-   *  - hierarchy (in):                 Pointer to PatchHierarchy
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy
    *                                    containing data
    *  - spatial_derivative_type (in):   type of spatial derivative calculation
    *  - spatial_derivative_order (in):  order of spatial derivative
@@ -221,7 +221,7 @@ public:
    * 
    */
   static void computePlusAndMinusSpatialDerivatives(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int grad_phi_plus_handle,
@@ -234,7 +234,7 @@ public:
    * to the spatial derivatives with the specified order of accuracy.
    *
    * Arguments:     
-   *  - hierarchy (in):                 Pointer to PatchHierarchy
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy
    *                                    containing data
    *  - spatial_derivative_order (in):  order of spatial derivative
    *  - grad_phi_handle (out):          PatchData handle for grad(phi)
@@ -277,7 +277,7 @@ public:
    *
    */
   static void computeCentralSpatialDerivatives(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int spatial_derivative_order,
     const int grad_phi_handle,
     const int phi_handle,
@@ -299,7 +299,7 @@ public:
    * the first-order Runge-Kutta method (i.e. forward euler).
    *
    * Arguments:     
-   *  - hierarchy (in):         Pointer to PatchHierarchy containing
+   *  - hierarchy (in):         Boost pointer to PatchHierarchy containing
    *                            data
    *  - u_next_handle (out):    PatchData handle for u(t+dt)
    *  - u_cur_handle (in):      PatchData handle for u(t)
@@ -316,7 +316,7 @@ public:
    *
    */
   static void TVDRK1Step(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_next_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -330,7 +330,7 @@ public:
    * of the second-order TVD Runge-Kutta method
    *
    * Arguments:     
-   *  - hierarchy (in):           Pointer to PatchHierarchy containing
+   *  - hierarchy (in):           Boost pointer to PatchHierarchy containing
    *                              data
    *  - u_stage1_handle (out):    PatchData handle for u_approx(t+dt)
    *  - u_cur_handle (in):        PatchData handle for u(t)
@@ -347,7 +347,7 @@ public:
    *
    */
   static void TVDRK2Stage1(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -361,7 +361,7 @@ public:
    * a single step of the second-order TVD Runge-Kutta method.
    *
    * Arguments:     
-   *  - hierarchy (in):           Pointer to PatchHierarchy containing
+   *  - hierarchy (in):           Boost pointer to PatchHierarchy containing
    *                              data
    *  - u_next_handle (out):      PatchData handle for u(t+dt)
    *  - u_stage1_handle (in):     PatchData handle for u_approx(t+dt)
@@ -381,7 +381,7 @@ public:
    *
    */
   static void TVDRK2Stage2(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_next_handle,
     const int u_stage1_handle,
     const int u_cur_handle,
@@ -397,7 +397,7 @@ public:
    * of the third-order TVD Runge-Kutta method
    *
    * Arguments:     
-   *  - hierarchy (in):           Pointer to PatchHierarchy containing
+   *  - hierarchy (in):           Boost pointer to PatchHierarchy containing
    *                              data
    *  - u_stage1_handle (out):    PatchData handle for u_approx(t+dt)
    *  - u_cur_handle (in):        PatchData handle for u(t)
@@ -414,7 +414,7 @@ public:
    *
    */
   static void TVDRK3Stage1(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -428,7 +428,7 @@ public:
    * of the third-order TVD Runge-Kutta method
    *
    * Arguments:     
-   *  - hierarchy (in):           Pointer to PatchHierarchy containing
+   *  - hierarchy (in):           Boost pointer to PatchHierarchy containing
    *                              data
    *  - u_stage2_handle (out):    PatchData handle for u_approx(t+dt/2)
    *  - u_stage1_handle (in):     PatchData handle for u_approx(t+dt)
@@ -448,7 +448,7 @@ public:
    *
    */
   static void TVDRK3Stage2(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_stage2_handle,
     const int u_stage1_handle,
     const int u_cur_handle,
@@ -464,7 +464,7 @@ public:
    * a single step of the third-order TVD Runge-Kutta method.
    *
    * Arguments:     
-   *  - hierarchy (in):           Pointer to PatchHierarchy containing
+   *  - hierarchy (in):           Boost pointer to PatchHierarchy containing
    *                              data
    *  - u_next_handle (out):      PatchData handle for u(t+dt)
    *  - u_stage2_handle (in):     PatchData handle for u_approx(t+dt/2)
@@ -484,7 +484,7 @@ public:
    *
    */
   static void TVDRK3Stage3(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int u_next_handle,
     const int u_stage2_handle,
     const int u_cur_handle,
@@ -515,7 +515,7 @@ public:
    * defined by the zero level set of the function. 
    *
    * Arguments:     
-   *  - hierarchy (in):                   Pointer to PatchHierarchy
+   *  - hierarchy (in):                   Boost pointer to PatchHierarchy
    *                                      containing data
    *  - spatial_derivative_order (in):    order of spatial derivative
    *  - distance_function_handle (out):   PatchData handle for distance
@@ -560,7 +560,7 @@ public:
    *
    */
   static void computeDistanceFunctionUsingFMM(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int spatial_derivative_order,
     const int distance_function_handle,
     const int phi_handle,
@@ -573,7 +573,7 @@ public:
    * of the interface defined by the zero level set of the function.
    *
    * Arguments:      
-   *  - hierarchy (in):                   Pointer to PatchHierarchy 
+   *  - hierarchy (in):                   Boost pointer to PatchHierarchy 
    *                                      containing data
    *  - spatial_derivative_order (in):    order of spatial derivative
    *  - extension_field_handles (out):    vector of PatchData handles for where
@@ -626,7 +626,7 @@ public:
    *    p 2-22, 1999).
    */
   static void computeExtensionFieldsUsingFMM(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int spatial_derivative_order,
     const vector<int>& extension_field_handles,
     const int distance_function_handle,
@@ -679,7 +679,7 @@ public:
    *
    */
   static void computeUnitNormalVectorFromPhi(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int normal_vector_handle,
@@ -722,7 +722,7 @@ public:
    *
    */
   static void computeSignedUnitNormalVectorFromPhi(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int normal_vector_handle,
@@ -753,7 +753,7 @@ public:
    *
    */
   static void computeUnitNormalVectorFromGradPhi(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int normal_vector_handle,
     const int grad_phi_handle);
 
@@ -788,7 +788,7 @@ public:
    *
    */
   static void computeSignedUnitNormalVectorFromGradPhi(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int normal_vector_handle,
     const int grad_phi_handle,
     const int phi_handle,
@@ -819,7 +819,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeOfRegionDefinedByZeroLevelSet(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const int region_indicator,
@@ -851,7 +851,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeOfZeroLevelSet(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int phi_handle,
     const int grad_phi_handle,
     const int control_volume_handle,
@@ -887,7 +887,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeIntegral(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
     const int control_volume_handle,
@@ -924,7 +924,7 @@ public:
    *
    */
   static LSMLIB_REAL computeSurfaceIntegral(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
     const int grad_phi_handle,
@@ -961,7 +961,7 @@ public:
    *
    */
   static LSMLIB_REAL computeStableAdvectionDt(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int velocity_handle,
     const int control_volume_handle,
     const LSMLIB_REAL cfl_number);
@@ -990,7 +990,7 @@ public:
    *
    */
   static LSMLIB_REAL computeStableNormalVelocityDt(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int normal_velocity_handle,
     const int grad_phi_plus_handle,
     const int grad_phi_minus_handle,
@@ -1002,7 +1002,7 @@ public:
    * two scalar fields.
    *
    * Arguments:     
-   *  - hierarchy (in):              Pointer to PatchHierarchy containing
+   *  - hierarchy (in):              Boost pointer to PatchHierarchy containing
    *                                 data
    *  - field1_handle (in):          PatchData handle for field1
    *  - field2_handle (in):          PatchData handle for field2
@@ -1016,7 +1016,7 @@ public:
    *
    */
   static LSMLIB_REAL maxNormOfDifference(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int field1_handle,
     const int field2_handle,
     const int control_volume_handle,
@@ -1037,7 +1037,7 @@ public:
    *
    */
   static void computeControlVolumes(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     int control_volume_handle);
 
   /*!
@@ -1061,7 +1061,7 @@ public:
    *
    */
   static void copySAMRAIData(
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
     const int dst_handle,
     const int src_handle,
     const int dst_component = 0,

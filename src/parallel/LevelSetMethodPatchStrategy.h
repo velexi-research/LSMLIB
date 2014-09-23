@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/18/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Interface for single patch numerical routines for the
  *              level set algorithm
  */
@@ -41,7 +41,7 @@
 #include "SAMRAI/tbox/Database.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "LevelSetFunctionIntegrator.h"
@@ -159,8 +159,8 @@ public:
    * Arguments:
    *  - patch (in):                    Patch on which to compute a stable
    *                                   time step size
-   *  - lsm_integrator (in):           pointer to LevelSetFunctionIntegrator
-   *  - velocity_field_strategy (in):  pointer to 
+   *  - lsm_integrator (in):           boost pointer to LevelSetFunctionIntegrator
+   *  - velocity_field_strategy (in):  bosst pointer to 
    *                                   LevelSetMethodVelocityFieldStrategy
    * 
    * Return value:                     user-specified time step dt
@@ -176,7 +176,7 @@ public:
    *    maximum stable dt and the stable dt returned by the user 
    *    implemented subclass of LevelSetMethodVelocityFieldStrategy.
    *
-   *  - The pointer to the LevelSetMethodVelocityFieldStrategy object
+   *  - The boost pointer to the LevelSetMethodVelocityFieldStrategy object
    *    is provided in case the stable dt calculation requires 
    *    information about the velocity field.
    *

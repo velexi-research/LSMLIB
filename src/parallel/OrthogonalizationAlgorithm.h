@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/19/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method orthogonalization algorithm 
  */
  
@@ -112,7 +112,7 @@
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
@@ -156,7 +156,7 @@ public:
    * Arguments:      
    *  - input_db (in):               input database containing user-defined
    *                                 parameters
-   *  - hierarchy (in):              Pointer to PatchHierarchy 
+   *  - hierarchy (in):              Boost pointer to PatchHierarchy 
    *                                 containing data
    *  - phi_handle (in):             PatchData handle for phi
    *  - psi_handle (in):             PatchData handle for psi
@@ -202,8 +202,8 @@ public:
    *
    */
   OrthogonalizationAlgorithm(
-    Pointer<Database> input_db,
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr<Database> input_db,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int phi_handle,
     const int psi_handle,
     const int control_volume_handle,
@@ -219,7 +219,7 @@ public:
    * input database.
    *
    * Arguments:      
-   *  - hierarchy (in):                 Pointer to PatchHierarchy 
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy 
    *                                    containing data
    *  - phi_handle (in):                PatchData handle for phi
    *  - psi_handle (in):                PatchData handle for psi
@@ -286,7 +286,7 @@ public:
    *
    */
   OrthogonalizationAlgorithm(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int phi_handle,
     const int psi_handle,
     const int control_volume_handle,
@@ -531,7 +531,7 @@ public:
    * PatchHierarchy has been changed.
    *
    * Arguments:      
-   *  - hierarchy (in):       Pointer to new PatchHierarchy 
+   *  - hierarchy (in):       Boost pointer to new PatchHierarchy 
    *  - coarsest_level (in):  coarsest level in the hierarchy to be updated
    *  - finest_level (in):    finest level in the hierarchy to be updated
    *
@@ -539,7 +539,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    Pointer< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -567,10 +567,10 @@ protected:
    * Return value:             none
    *
    * NOTES:
-   *  - An assertion results if the database pointer is null.
+   *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(Pointer<Database> db);
+  virtual void getFromInput(boost::shared_ptr<Database> db);
 
   /*!
    * checkParameters() checks to make sure that user-specified parameters
@@ -618,15 +618,15 @@ protected:
    * Grid management objects 
    */
 
-  // Pointer to PatchHierarchy and GridGeometry object
-  Pointer< PatchHierarchy<DIM> > d_patch_hierarchy;
-  Pointer< CartesianGridGeometry<DIM> > d_grid_geometry;
+  // Boost pointer to PatchHierarchy and GridGeometry object
+  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
 
   /*
-   * Pointers to FieldExtensionAlgorithm objects 
+   * Boost pointers to FieldExtensionAlgorithm objects 
    */
-  Pointer< FieldExtensionAlgorithm<DIM> > d_fixed_phi_field_ext_alg;
-  Pointer< FieldExtensionAlgorithm<DIM> > d_fixed_psi_field_ext_alg;
+  boost::shared_ptr< FieldExtensionAlgorithm<DIM> > d_fixed_phi_field_ext_alg;
+  boost::shared_ptr< FieldExtensionAlgorithm<DIM> > d_fixed_psi_field_ext_alg;
 
   /*
    * PatchData handles for data required to solve orthogonalization equation

@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/17/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method integrator strategy class
  */
  
@@ -28,10 +28,10 @@
 
 
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/BasePatchHierarchy.h"
+//#include "SAMRAI/hier/BasePatchHierarchy.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/mesh/StandardTagAndInitStrategy.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp" 
 
 #include "LSMLIB_config.h"     
 #include "LevelSetMethodToolbox.h"
@@ -473,13 +473,13 @@ public:
    *
    */
   virtual void initializeLevelData (
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy ,
+    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
     const int level_number ,
     const double init_data_time ,
     const bool can_be_refined ,
     const bool initial_time ,
-    const Pointer< BasePatchLevel<DIM> > old_level
-      = Pointer< BasePatchLevel<DIM> >((0)) ,
+    const boost::shared_ptr< BasePatchLevel<DIM> > old_level
+      = boost::shared_ptr< BasePatchLevel<DIM> >((0)) ,
     const bool allocate_data = true ) = 0;
 
   /*!
@@ -504,7 +504,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -524,7 +524,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration (
-    Pointer< BasePatchHierarchy<DIM> > hierarchy ,
+    boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
     int coarsest_level ,
     int finest_level ) = 0;
 
@@ -564,7 +564,7 @@ public:
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int level_number) = 0;
 
   /*!
@@ -581,7 +581,7 @@ public:
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int level_number) = 0;
 
   //! @}

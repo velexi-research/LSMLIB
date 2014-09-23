@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$
+ * Modified:    $09/12/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for the main level set method algorithm class
  */
  
@@ -72,7 +72,7 @@
  *    handle for the velocity field data.  For more details, see the
  *    header file for the LevelSetMethodVelocityFieldStrategy class. 
  * -# Create a LevelSetMethodAlgorithm object using the constructor
- *    that takes pointers to LevelSetMethodVelocityFieldStrategy and 
+ *    that takes boost pointers to LevelSetMethodVelocityFieldStrategy and 
  *    LevelSetMethodPatchStrategy objects as arguments.
  * -# Begin the level set method calculation by invoking the
  *    @ref initializeLevelSetMethodCalculation() method.  This will 
@@ -101,7 +101,7 @@
  *    the interface defined by the LevelSetMethodGriddingStrategy
  *    class.
  * -# Create a LevelSetMethodAlgorithm object using the constructor
- *    that takes a pointer to a LevelSetFunctionIntegratorStrategy 
+ *    that takes a boost pointer to a LevelSetFunctionIntegratorStrategy 
  *    and a LevelSetMethodGriddingStrategy as arguments.
  * -# Follow steps 4 through 6 from Method (A).
  *
@@ -477,7 +477,7 @@
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Pointer.h"
+#include "boost/shared_ptr.hpp"
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodGriddingStrategy.h"
@@ -541,8 +541,8 @@ public:
    *
    */
   LevelSetMethodAlgorithm(
-    Pointer<Database> lsm_algorithm_input_db,
-    Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr<Database> lsm_algorithm_input_db,
+    boost::shared_ptr<PatchHierarchy<DIM> > patch_hierarchy,
     LevelSetMethodPatchStrategy<DIM>* patch_strategy,
     LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
@@ -555,16 +555,16 @@ public:
    * manage the time integration of the level set functions.
    *
    * Arguments:
-   *  - lsm_integrator_strategy (in):  pointer to concrete subclass of the 
+   *  - lsm_integrator_strategy (in): boost pointer to concrete subclass of the 
    *                                   LevelSetFunctionIntegratorStrategy 
-   *  - lsm_gridding_strategy (in):    pointer to concrete subclass of the 
+   *  - lsm_gridding_strategy (in):   boost pointer to concrete subclass of the 
    *                                   LevelSetMethodGriddingStrategy
    *  - object_name (in):              name for object
    *
    */
   LevelSetMethodAlgorithm(
-    Pointer< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
-    Pointer< LevelSetMethodGriddingStrategy<DIM> > lsm_gridding_strategy,
+    boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
+    boost::shared_ptr< LevelSetMethodGriddingStrategy<DIM> > lsm_gridding_strategy,
     const string& object_name = "LevelSetMethodAlgorithm"); 
 
   /*!
@@ -1118,7 +1118,7 @@ public:
    *
    */
   void resetHierarchyConfiguration(
-    const Pointer< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -1180,8 +1180,8 @@ public:
    *    LevelSetMethodAlgorithm::resetHierarchyConfiguration() is invoked.
    * 
    */
-  virtual Pointer< FieldExtensionAlgorithm<DIM> > getFieldExtensionAlgorithm(
-    Pointer<Database> input_db,     
+  virtual boost::shared_ptr< FieldExtensionAlgorithm<DIM> > getFieldExtensionAlgorithm(
+    boost::shared_ptr<Database> input_db,     
     const int field_handle,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const string& object_name = "FieldExtensionAlgorithm");
@@ -1246,7 +1246,7 @@ public:
    *    LevelSetMethodAlgorithm::resetHierarchyConfiguration() is invoked.
    * 
    */
-  virtual Pointer< FieldExtensionAlgorithm<DIM> > getFieldExtensionAlgorithm(
+  virtual boost::shared_ptr< FieldExtensionAlgorithm<DIM> > getFieldExtensionAlgorithm(
     const int field_handle,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = UNKNOWN,
@@ -1272,20 +1272,20 @@ protected:
   // object name
   string d_object_name;
 
-  // pointers to LevelSetFunctionIntegratorStrategy and 
+  // boost pointers to LevelSetFunctionIntegratorStrategy and 
   // LevelSetMethodGriddingStrategy objects
-  Pointer< LevelSetFunctionIntegratorStrategy<DIM> > d_lsm_integrator_strategy; 
-  Pointer< LevelSetMethodGriddingStrategy<DIM> > d_lsm_gridding_strategy; 
+  boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > d_lsm_integrator_strategy; 
+  boost::shared_ptr< LevelSetMethodGriddingStrategy<DIM> > d_lsm_gridding_strategy; 
 
 
   // lists of FieldExtensionAlgorithm objects 
   // ( used in resetHierarchyConfiguration() )
-  Array< Pointer< FieldExtensionAlgorithm<DIM> > > d_field_extension_alg_list;
+  Array< boost::shared_ptr< FieldExtensionAlgorithm<DIM> > > d_field_extension_alg_list;
 
 
   // simulation parameters when using standard LevelSetFunctionIntegrator
   // class
-  Pointer< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
   bool d_using_standard_level_set_fcn_integrator;
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
