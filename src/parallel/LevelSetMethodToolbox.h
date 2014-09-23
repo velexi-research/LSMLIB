@@ -4,10 +4,10 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:     $09/16/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
+ * Modified:    $Date$
  * Description: Header file for level set method toolbox class
  */
- 
+
 #ifndef included_LevelSetMethodToolbox_h
 #define included_LevelSetMethodToolbox_h
 
@@ -69,7 +69,7 @@
 #include "boost/shared_ptr.hpp" 
 
 #include "LSMLIB_config.h"
-
+using namespace std;
 // SAMRAI namespaces 
 using namespace SAMRAI;
 using namespace geom;
@@ -103,7 +103,7 @@ typedef enum { PHI = 0, PSI = 1 } LEVEL_SET_FCN_TYPE;
  */
 typedef enum { ENO = 0, WENO = 1, UNKNOWN = 2 } SPATIAL_DERIVATIVE_TYPE;
 
-template<int DIM> class LevelSetMethodToolbox
+class LevelSetMethodToolbox
 {
 
 public:
@@ -177,7 +177,7 @@ public:
    * 
    */
   static void computeUpwindSpatialDerivatives(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int grad_phi_handle,
@@ -221,7 +221,7 @@ public:
    * 
    */
   static void computePlusAndMinusSpatialDerivatives(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int grad_phi_plus_handle,
@@ -277,7 +277,7 @@ public:
    *
    */
   static void computeCentralSpatialDerivatives(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int spatial_derivative_order,
     const int grad_phi_handle,
     const int phi_handle,
@@ -316,7 +316,7 @@ public:
    *
    */
   static void TVDRK1Step(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_next_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -347,7 +347,7 @@ public:
    *
    */
   static void TVDRK2Stage1(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -381,7 +381,7 @@ public:
    *
    */
   static void TVDRK2Stage2(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_next_handle,
     const int u_stage1_handle,
     const int u_cur_handle,
@@ -414,7 +414,7 @@ public:
    *
    */
   static void TVDRK3Stage1(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_stage1_handle,
     const int u_cur_handle,
     const int rhs_handle,
@@ -448,7 +448,7 @@ public:
    *
    */
   static void TVDRK3Stage2(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_stage2_handle,
     const int u_stage1_handle,
     const int u_cur_handle,
@@ -484,7 +484,7 @@ public:
    *
    */
   static void TVDRK3Stage3(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int u_next_handle,
     const int u_stage2_handle,
     const int u_cur_handle,
@@ -560,7 +560,7 @@ public:
    *
    */
   static void computeDistanceFunctionUsingFMM(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int spatial_derivative_order,
     const int distance_function_handle,
     const int phi_handle,
@@ -626,7 +626,7 @@ public:
    *    p 2-22, 1999).
    */
   static void computeExtensionFieldsUsingFMM(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int spatial_derivative_order,
     const vector<int>& extension_field_handles,
     const int distance_function_handle,
@@ -679,7 +679,7 @@ public:
    *
    */
   static void computeUnitNormalVectorFromPhi(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int normal_vector_handle,
@@ -722,7 +722,7 @@ public:
    *
    */
   static void computeSignedUnitNormalVectorFromPhi(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int normal_vector_handle,
@@ -753,7 +753,7 @@ public:
    *
    */
   static void computeUnitNormalVectorFromGradPhi(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int normal_vector_handle,
     const int grad_phi_handle);
 
@@ -788,7 +788,7 @@ public:
    *
    */
   static void computeSignedUnitNormalVectorFromGradPhi(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int normal_vector_handle,
     const int grad_phi_handle,
     const int phi_handle,
@@ -819,7 +819,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeOfRegionDefinedByZeroLevelSet(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const int region_indicator,
@@ -851,7 +851,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeOfZeroLevelSet(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int phi_handle,
     const int grad_phi_handle,
     const int control_volume_handle,
@@ -887,7 +887,7 @@ public:
    *
    */
   static LSMLIB_REAL computeVolumeIntegral(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
     const int control_volume_handle,
@@ -924,7 +924,7 @@ public:
    *
    */
   static LSMLIB_REAL computeSurfaceIntegral(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int F_handle,
     const int phi_handle,
     const int grad_phi_handle,
@@ -961,7 +961,7 @@ public:
    *
    */
   static LSMLIB_REAL computeStableAdvectionDt(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int velocity_handle,
     const int control_volume_handle,
     const LSMLIB_REAL cfl_number);
@@ -990,7 +990,7 @@ public:
    *
    */
   static LSMLIB_REAL computeStableNormalVelocityDt(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int normal_velocity_handle,
     const int grad_phi_plus_handle,
     const int grad_phi_minus_handle,
@@ -1016,7 +1016,7 @@ public:
    *
    */
   static LSMLIB_REAL maxNormOfDifference(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int field1_handle,
     const int field2_handle,
     const int control_volume_handle,
@@ -1037,7 +1037,7 @@ public:
    *
    */
   static void computeControlVolumes(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     int control_volume_handle);
 
   /*!
@@ -1061,7 +1061,7 @@ public:
    *
    */
   static void copySAMRAIData(
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int dst_handle,
     const int src_handle,
     const int dst_component = 0,

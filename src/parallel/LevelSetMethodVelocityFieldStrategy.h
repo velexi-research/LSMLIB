@@ -26,7 +26,7 @@
  * for initializing the data required for the velocity field calculation, 
  * resetting the PatchHierarchy configuation (after a regridding operation), 
  * and tagging cells for refinement.  These methods emulate similarly named 
- * methods in the SAMRAI::mesh::StandardTagAndInitStrategy<DIM> class (in 
+ * methods in the SAMRAI::mesh::StandardTagAndInitStrategy class (in 
  * the SAMRAI library).
  * 
  * 
@@ -74,7 +74,7 @@ using namespace hier;
 
 namespace LSMLIB {
 
-template<int DIM> class LevelSetMethodVelocityFieldStrategy
+class LevelSetMethodVelocityFieldStrategy
 {
 public:
 
@@ -320,15 +320,15 @@ public:
    *
    */
   virtual void initializeLevelData(
-    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number,
     const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
     const bool initial_time,
-    const boost::shared_ptr< PatchLevel<DIM> > old_level
-      = boost::shared_ptr< PatchLevel<DIM> >((0)),
+    const boost::shared_ptr< PatchLevel > old_level
+      = boost::shared_ptr< PatchLevel >((0)),
     const bool allocate_data = true) = 0;
 
   //! @}
@@ -368,7 +368,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     int coarsest_level,
     int finest_level){}
 
@@ -394,7 +394,7 @@ public:
    *
    */
   virtual void tagCellsForRefinement(
-      const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< PatchHierarchy > hierarchy,
       const int level_number,
       const int tag_handle){}
 
