@@ -1,0 +1,23 @@
+##
+## File:        Makefile.depend
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: source file dependencies for 3d level set method example program
+##
+
+
+main.o:                         \
+  main.cc                       \
+  PatchModule.h                 \
+  VelocityFieldModule.h
+
+PatchModule.o:                  \
+  PatchModule.h                 \
+  PatchModule.cc
+
+VelocityFieldModule.o:          \
+  VelocityFieldModule.h         \
+  VelocityFieldModule.cc

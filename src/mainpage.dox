@@ -1,0 +1,164 @@
+/*
+ * File:        mainpage.dox
+ * Package:     LSMLIB Doxygen manual
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: Generation of LSMLIB Doxygen source code manual
+ */
+
+/*!
+  @mainpage LSMLIB Documentation
+
+  <center>
+  Kevin T. Chu <br>
+  Serendipity Research <br>
+
+  and<br>
+
+  Masa Prodanovic <br>
+  University of Texas at Austin<br>
+  </center>
+
+  <hr>
+  <center>
+  <strong>Copyrights</strong><br>
+  (c) 2005 The Trustees of Princeton University and Board of 
+           Regents of the University of Texas.  All rights reserved.<br>
+  (c) 2009 Kevin T. Chu.  All rights reserved.  
+  </center>
+
+  <hr>
+  <h2> Table of Contents </h2>
+  - <a href="#overview">          Overview                             </a>
+  - <a href="#packages">          LSMLIB Packages                      </a>
+  - <a href="#organization">      Source Code Organization             </a>
+  - <a href="#dependencies">      Software Dependencies                </a>
+  - <a href="#acknowledgments">   Acknowledgments                      </a>
+
+  - @ref lsmlib_users_guide "LSMLIB User's Guide"
+ 
+  <hr>
+  <a name="overview">
+  <h1> Overview </h1>
+
+ <p>
+ The Level Set Method Library (LSMLIB) provides support for the serial and
+ parallel simulation of implicit surface and curve dynamics in two- and
+ three-dimensions.  It contains an implementation of the basic level set
+ method algorithms and numerical kernels described in "Level Set Methods and
+ Dynamics Implicit Surfaces" by S. Osher and R. Fedkiw and "Level Set Methods
+ and Fast Marching Methods" by J.A. Sethian.  It also contains implementations
+ of several advanced level set method techniques available in the literature.
+ </p>
+
+  <p>
+  The library consists of a collection of Fortran subroutines, C functions, 
+  and C++ classes.  In addition, MATLAB interfaces are provided for several
+  of the basic components of the level set method algorithm.
+  The main features of the library include:
+  </p>
+
+  - High-computational and high-programmer performance through the use
+    of mixed-language programming (e.g. C++/Fortran77, C/Fortran77,
+    MATLAB/C/Fortran77);
+  - Support for serial and parallel computation;
+  - Support for narrow-band/localized computation;
+  - Support for vector level set method calculations;
+  - Restart capabilities.
+
+  <h2> IMPORTANT NOTE:  </h2>
+  This library is still under development and has not been thoroughly tested.  
+  If you find a bug, please send me a bug report at 
+  ktchu@serendipityresearch.org, and we will make an attempt to fix it in 
+  the next release of the library.  Thank you for your patience during the 
+  development process.
+
+  <hr> 
+  <a name="packages">
+  <h1> LSMLIB Packages </h1>
+
+  - @ref package_lsm_toolbox "Toolbox Package": 
+    core algorithms and numerical kernels for level set method calculations
+  - @ref package_lsm_serial "Serial Package": 
+    high-level C data structures and algorithmic components for level set
+    method computations on a single processor
+  - @ref package_lsm_parallel "Parallel Package":
+    C++ classes that encapsulate high-level algorithmic components of 
+    parallel level set method computations
+  - @ref package_lsm_matlab "MATLAB Toolbox":
+    MATLAB interface for several components of the level set method algorithm
+
+
+  <hr> 
+  <a name="organization">
+  <h1> Source Code Organization </h1>
+
+  The top-level directory contains the following: 
+
+  - INSTALL
+  - LICENSE
+  - CHANGE_LOG
+  - configure, configure.ac
+  - config/
+  - doc/
+  - src/
+  - examples/
+
+  INSTALL describes the simple installation procedure for the library.  
+  LICENSE contains the license for LSMLIB.  CHANGE_LOG contains a 
+  list of new features/bug fixes/etc. added to each new release of the 
+  library.  'configure' is a shell script that automatically configures the 
+  makefiles and build process for LSMLIB.  The config directory contains 
+  template configuration files for the build process.  Configuration files
+  that reflect the actual system setup are generated automatically by the 
+  configure script.  The doc directory contains documentation on how to 
+  use LSMLIB.  The examples directory contains several example codes that 
+  demonstrate the basic usage of the library and may be used to test 
+  functionality of the library.
+
+  In addition to these files and directories, two additional directories are 
+  added to the top-level directory after the build process:  include
+  and lib.  These directories contain the header files and library archives
+  for the Level Set Method library.  In addition, if the MATLAB mex files
+  are built, they are placed in the lib/mex directory. 
+
+
+ <hr>
+ <a name="dependencies">
+ <h1> Software Dependencies </h1>
+
+  The core library (i.e. @ref package_lsm_toolbox "LSMLIB Toolbox Package") 
+  and @ref package_lsm_serial "Serial LSMLIB Package" do not depend on any 
+  external software libraries.  The MATLAB Toolbox and Parallel Packages, 
+  however, DO have external dependencies.  
+  The @ref package_lsm_matlab "MATLAB LSMLIB Toolbox" depends on having a 
+  MATLAB MEX compiler available.  
+  The @ref package_lsm_parallel "Parallel LSMLIB Package" depends on the 
+  <a href="http://www.llnl.gov/CASC/SAMRAI">SAMRAI</a> library, which in 
+  turn requires the 
+  <a href="http://hdf.ncsa.uiuc.edu/HDF5/">HDF5</a> library (required for 
+  visualization and restart) and an 
+  <a href="http://www-unix.mcs.anl.gov/mpi/">MPI</a> library (required 
+  to build parallel executables).
+  
+
+  <hr>
+  <a name="acknowledgments">
+  <h1> Acknowledgements </h1>
+
+  <p>
+  The LSMLIB developers gratefully acknowledge support from the following
+  funding agencies:
+  </p>
+
+  - Department of Energy under contract numbers
+    DE-FG02-97ER25308 (Computational Science Graduate Fellowship)
+    and DE-FC26-06NT43067
+  - Department of Agriculture under grant #2007-35102-18162
+  - National Science Foundation
+  - Air Force Office of Scientific Research
+
+*/

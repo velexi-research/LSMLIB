@@ -1,0 +1,124 @@
+c***********************************************************************
+c
+c  File:        lsm_calculus_toolbox3d.f
+c  Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+c                   Regents of the University of Texas.  All rights reserved.
+c               (c) 2009 Kevin T. Chu.  All rights reserved.
+c  Revision:    $Revision$
+c  Modified:    $Date$
+c  Description: F77 routines for several common level set method
+c               calculus calculations
+c
+c***********************************************************************
+
+c***********************************************************************
+      subroutine lsm3dDeltaFunctionOrder1(
+     &  phi, delta,
+     &  ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,
+     &  norm_phi_x, norm_phi_y, norm_phi_z,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb, 
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb,
+     &  dx, dy, dz)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _grad_phi_gb refers to ghostbox for grad_phi data
+c     _gb refers to ghostbox for phi/delta arrays
+c     _fb refers to fill-box for grad_phi data
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      integer klo_fb, khi_fb
+      integer ilo_gb, ihi_gb, jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      real norm_phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                klo_grad_phi_gb:khi_grad_phi_gb)
+      real norm_phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                klo_grad_phi_gb:khi_grad_phi_gb)
+      real norm_phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &                jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &                klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real delta(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+     
+      real dx,dy,dz
+
+c     local vars      
+      real zero_tol, zero
+      parameter (zero_tol=@lsmlib_zero_tol@, zero = 0.d0)
+      integer i,j,k,l
+      real delta_x_plus, delta_x_minus
+      real delta_y_plus, delta_y_minus
+      real delta_z_plus, delta_z_minus
+      real one_over_dx, one_over_dy, one_over_dz
+      
+      one_over_dx = 1.d0/(dx);
+      one_over_dy = 1.d0/(dy);
+      one_over_dz = 1.d0/(dz);
+      
+c     { begin loop over grid
+      do k=klo_fb,khi_fb
+	do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
+
+	    if (phi(i+1,j,k)*phi(i,j,k) .le. zero ) then
+	      delta_x_plus = phi(i+1,j,k)*norm_phi_x(i,j,k)*one_over_dx;
+	      delta_x_plus = delta_x_plus/(phi(i+1,j,k) - phi(i,j,k)); 
+	    else
+	      delta_x_plus = zero;
+	    endif
+
+            if (phi(i-1,j,k)*phi(i,j,k) .le. zero ) then
+	      delta_x_minus = phi(i-1,j,k)*norm_phi_x(i,j,k)*one_over_dx;
+	      delta_x_minus = delta_x_minus/(phi(i-1,j,k) - phi(i,j,k)); 
+	    else
+	      delta_x_minus = zero;
+	    endif
+
+	    if (phi(i,j+1,k)*phi(i,j,k) .le. zero ) then
+	      delta_y_plus = phi(i,j+1,k)*norm_phi_y(i,j,k)*one_over_dy;
+	      delta_y_plus = delta_y_plus/(phi(i,j+1,k) - phi(i,j,k)); 
+	    else
+	       delta_y_plus = zero;
+	    endif
+
+            if (phi(i,j-1,k)*phi(i,j,k) .le. zero ) then
+	      delta_y_minus = phi(i,j-1,k)*norm_phi_y(i,j,k)*one_over_dy;
+	      delta_y_minus = delta_y_minus/(phi(i,j-1,k) - phi(i,j,k)); 
+	    else
+	      delta_y_minus = zero;
+	    endif
+
+            if (phi(i,j,k+1)*phi(i,j,k) .le. zero ) then
+	      delta_z_plus = phi(i,j,k+1)*norm_phi_x(i,j,k)*one_over_dx;
+	      delta_z_plus = delta_z_plus/(phi(i,j,k+1) - phi(i,j,k)); 
+	    else
+	      delta_z_plus = zero;
+	    endif
+
+            if (phi(i,j,k-1)*phi(i,j,k) .le. zero ) then
+	      delta_z_minus = phi(i,j,k-1)*norm_phi_x(i,j,k)*one_over_dx;
+	      delta_z_minus = delta_z_minus/(phi(i,j,k-1) - phi(i,j,k)); 
+	    else
+	      delta_z_minus = zero;
+	    endif
+
+	    delta(i,j,k) = ( abs(delta_x_plus) + abs(delta_x_minus) +
+     &                       abs(delta_y_plus) + abs(delta_y_minus) +
+     &                       abs(delta_z_plus) + abs(delta_z_minus) )
+
+          enddo
+	enddo
+      enddo	
+c     } end loop over grid 
+
+      return
+      end
+c } end subroutine
+c***********************************************************************

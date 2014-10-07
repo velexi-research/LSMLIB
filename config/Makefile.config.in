@@ -1,0 +1,38 @@
+##
+## File:        Makefile.config.in
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: configuration file for level set method library Makefiles
+##
+
+
+# include and lib directories
+LSMLIB_INCLUDE = $(BUILD_DIR)/include
+LSMLIB_LIB_DIR = $(BUILD_DIR)/lib @LIB_DIR_EXTRA@
+LSMLIB_LIBS    = @LSMLIB_PARALLEL@ -llsm_serial -llsm_toolbox @LIBS_EXTRA@ -lm
+
+
+# Pattern Rules
+%.o: %.c
+	@CC@ -c @CFLAGS@ -I$(LSMLIB_INCLUDE) $(CFLAGS) $(CPPFLAGS) $(CFLAGS_EXTRA) -o $@ $<
+
+%.o: %.c %.h
+	@CC@ -c @CFLAGS@ -I$(LSMLIB_INCLUDE) $(CFLAGS) $(CPPFLAGS) $(CFLAGS_EXTRA) -o $@ $<
+
+%.o: %.f
+	@FC@ -c @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -o $@ $<
+
+%.o: %.cc
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.cc %.h
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.C
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<
+
+%.o: %.C %.h
+	@CXX@ -c @CXXFLAGS@ -I$(LSMLIB_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS_EXTRA) -o $@ $<

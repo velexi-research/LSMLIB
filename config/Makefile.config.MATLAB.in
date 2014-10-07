@@ -1,0 +1,23 @@
+##
+## File:        Makefile.config.MATLAB.in
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: Makefile.config for building MATLAB MEX interface
+##
+
+# MATLAB MEX-file configuration
+MATLAB_DIR          = @matlab_dir@
+MEX                 = $(MATLAB_DIR)/bin/mex
+MEX_FLAGS           = @mex_flags@
+MATLAB_INSTALL_DIR  = @matlab_install_dir@
+
+# Pattern Rules for generating MEX files
+%.@mex_extension@: %.c                                 \
+                   $(BUILD_DIR)/lib/liblsm_serial.a    \
+                   $(BUILD_DIR)/lib/liblsm_toolbox.a
+	$(MEX) $(MEX_FLAGS) $^
+
+

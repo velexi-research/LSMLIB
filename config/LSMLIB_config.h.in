@@ -1,0 +1,51 @@
+/*
+ * File:        LSMLIB_config.h.in
+ * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+ *                  Regents of the University of Texas.  All rights reserved.
+ *              (c) 2009 Kevin T. Chu.  All rights reserved.
+ * Revision:    $Revision$
+ * Modified:    $Date$
+ * Description: LSMLIB configuration header file
+ */
+
+
+#ifndef included_LSMLIB_config_h
+#define included_LSMLIB_config_h
+
+/* Debugging macro */
+#ifndef LSMLIB_DEBUG_NO_INLINE
+#undef LSMLIB_DEBUG_NO_INLINE 
+#endif
+
+/* Macro defined if double precision library is being built. */
+#ifndef LSMLIB_DOUBLE_PRECISION
+#undef LSMLIB_DOUBLE_PRECISION
+#endif
+
+/* Floating-point precision for LSMLIB_REAL */
+#ifndef LSMLIB_REAL
+#define LSMLIB_REAL @LSMLIB_REAL@
+#endif
+
+/* Zero tolerance */
+#ifndef LSMLIB_ZERO_TOL
+#define LSMLIB_ZERO_TOL @LSMLIB_ZERO_TOL@
+#endif
+
+/* Maximum value for LSMLIB_REAL */
+#ifndef LSMLIB_REAL_MAX
+#define LSMLIB_REAL_MAX @LSMLIB_REAL_MAX@
+#endif
+
+/* Minimum value for LSMLIB_REAL */
+#ifndef LSMLIB_REAL_MIN
+#define LSMLIB_REAL_MIN @LSMLIB_REAL_MIN@
+#endif
+
+/* Machine epsilon value for LSMLIB_REAL */
+#ifndef LSMLIB_REAL_EPSILON
+#define LSMLIB_REAL_EPSILON @LSMLIB_REAL_EPSILON@
+#endif
+
+#endif
+

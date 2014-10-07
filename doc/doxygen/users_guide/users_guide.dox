@@ -1,0 +1,51 @@
+
+/*!
+  @page lsmlib_users_guide LSMLIB User's Guide
+
+<center>
+Kevin T. Chu <br>
+Serendipity Research <br>
+
+and<br>
+
+Masa Prodanovic <br>
+University of Texas at Austin<br>
+</center>
+
+
+<center>
+<hr>
+Copyright (c) 2005-2006 Kevin T. Chu and Masa Prodanovic.  All rights reserved.
+</center>
+
+<hr>
+<h1> Table of Contents </h1>
+-# @subpage users_guide_overview "Overview"
+-# @subpage users_guide_serial_lsmlib_package "Serial LSMLIB Package"
+-# @subpage users_guide_parallel_lsmlib_package "Parallel LSMLIB Package"
+-# @subpage users_guide_lsmlib_matlab_toolbox "LSMLIB MATLAB Toolbox"
+-# @subpage users_guide_lsmlib_toolbox_package "LSMLIB Toolbox Package"
+
+
+<hr>
+<h1> Acknowledgements </h1>
+
+This software library was supported in part by the Department of Energy
+Computational Science Graduate Fellowship Program of the Office of Science
+and National Nuclear Security Administration in the Department of Energy
+under contract DE-FG02-97ER25308, the National Science Foundation and
+the Air Force Office for Scientific Research.
+
+<p>
+We would also like to thank the following individuals: 
+
+<ul>
+<li>
+  Professor David J. Srolovitz - support and encouragement in
+    developing LSMLIB
+<li>
+  Zhaoxuan Wu - autoconf system for building LSMLIB
+</li>
+</ul>
+
+*/

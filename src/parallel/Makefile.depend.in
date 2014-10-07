@@ -1,0 +1,90 @@
+##
+## File:	      Makefile.depend.in
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: file dependencies for parallel level set method classes
+##
+
+
+BoundaryConditionModule.o: \
+	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
+	BoundaryConditionModule.h \
+	BoundaryConditionModule.cc
+
+LevelSetMethodAlgorithm.o: \
+	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
+	LevelSetMethodAlgorithm.h \
+	LevelSetMethodAlgorithm.inline \
+	LevelSetMethodAlgorithm.cc \
+	LevelSetMethodGriddingAlgorithm.h \
+	LevelSetMethodGriddingStrategy.h \
+	LevelSetFunctionIntegrator.h \
+	LevelSetFunctionIntegrator.inline \
+	LevelSetFunctionIntegratorStrategy.h \
+	LevelSetMethodPatchStrategy.h \
+	LevelSetMethodToolbox.h \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetFunctionIntegrator.o: \
+	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
+	LevelSetFunctionIntegrator.h \
+	LevelSetFunctionIntegrator.inline \
+	LevelSetFunctionIntegrator.cc \
+	LevelSetFunctionIntegratorStrategy.h \
+	LSMLIB_DefaultParameters.h \
+	BoundaryConditionModule.h \
+	LevelSetMethodPatchStrategy.h \
+	LevelSetMethodToolbox.h \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetFunctionIntegratorStrategy.o: \
+	LevelSetFunctionIntegratorStrategy.h \
+	LevelSetFunctionIntegratorStrategy.cc 
+
+LevelSetMethodGriddingAlgorithm.o: \
+	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
+	LevelSetMethodGriddingAlgorithm.h \
+	LevelSetMethodGriddingAlgorithm.cc \
+	LevelSetMethodGriddingAlgorithm.h \
+	LevelSetFunctionIntegratorStrategy.h \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodGriddingStrategy.o: \
+	LevelSetMethodGriddingStrategy.h \
+	LevelSetMethodGriddingStrategy.cc 
+
+LevelSetMethodToolbox.o: \
+	LevelSetMethodToolbox.h \
+	LevelSetMethodToolbox.cc
+
+LevelSetMethodPatchStrategy.o: \
+	LevelSetMethodPatchStrategy.h \
+	LevelSetMethodPatchStrategy.cc \
+	LevelSetMethodVelocityFieldStrategy.h
+
+LevelSetMethodVelocityFieldStrategy.o: \
+	LevelSetMethodVelocityFieldStrategy.h \
+	LevelSetMethodVelocityFieldStrategy.cc
+
+FieldExtensionAlgorithm.o: \
+	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
+	FieldExtensionAlgorithm.h \
+	FieldExtensionAlgorithm.cc \
+	LSMLIB_DefaultParameters.h \
+	LSMLIB_DefaultParameters.h \
+	LevelSetMethodToolbox.h
+
+OrthogonalizationAlgorithm.o: \
+	OrthogonalizationAlgorithm.h \
+	OrthogonalizationAlgorithm.cc \
+	LSMLIB_DefaultParameters.h \
+	LevelSetMethodToolbox.h
+
+ReinitializationAlgorithm.o: \
+	ReinitializationAlgorithm.h \
+	ReinitializationAlgorithm.cc \
+	LSMLIB_DefaultParameters.h \
+	LevelSetMethodToolbox.h

@@ -1,0 +1,148 @@
+EXAMPLE DESCRIPTION -- CURVATURE DRIVEN INTERFACE MOTION
+
+This example shows the usage of the core serial package/LSMLIB utilities.
+
+The program runs the level set method model for constant curvature interfaces 
+in 3D. The model motivation comes from subsurface fluids problems:
+the interface between two immiscible fluids at equilibrium (constant pressure 
+and surface tension) in a porous medium structure can be modeled as a constant 
+mean curvature surface. The level set modeling requires the following:
+- normal velocity term
+- mean curvature term
+- periodical reinitialization
+- masking in order to restrict the interface to the pore space
+
+In addition, the narrow banding option (localized level set method of
+Peng et al. '99.) is available. See curvature_model3d_local.c for details.
+
+This particular example shows usage of the second order accurate ENO and
+TVD Runge-Kutta schemes ("medium" accuracy) as well as how to build code
+using LSMLIB functions for serial applications.
+
+
+COMPILATION
+-----------
+0. Build LSMLIB on your system.
+
+1. Modify 'Makefile' to reflect the configuration of LSMLIB on your system.
+
+If linking to the LSMLIB build directory, the first few lines of the Makefile 
+should be set as
+
+  BUILD_DIR = < top level of LSMLIB build directory >
+  include $(BUILD_DIR)/config/Makefile.config
+
+If linking to the LSMLIB install directory, the first few lines of the 
+Makefile should be set as
+
+  LSMLIB_DIR = < top level of LSMLIB install directory >
+  include $(LSMLIB_DIR)/share/LSMLIB/config/Makefile.config
+
+The rest of the Makefile shows how LSMLIB libraries should be linked when 
+building your own code.
+
+2. Type 'make'. This should produce the executable named 'curvature_model' in
+the current directory.
+
+
+RUNNING
+-------
+1. 'FULL_PATH_TO_EXECUTABLE/curvature_model'
+Note: 
+- FULL_PATH_TO_EXECUTABLE' can be omitted if the directory that
+contains the executable in on your environmental variable PATH.
+- e.g. if you are running in the same directory where you compiled the code
+then use './curvature_model'
+
+If you do not provide any input files, the default geometry is set to a narrow
+pore space enclosed by three spheres in 3D. Masking and the initial interface
+position are set in 'curvature_model_top.c' file using initialization functions 
+from the serial package. Initial planar surface is exposed to the level set
+model of the type
+      phi_t + a |grad_phi| = b kappa |grad_phi|
+      (where kappa is mean curvature)
+a is set internally to 0.4 and b to 0.05 resulting in the surface of mean
+curvature a/b=8. See OUTPUT and VISUALIZATION in order to interpret the result.
+
+2. 'FULL_PATH_TO_EXECUTABLE/curvature_model input_file'
+input_file specifies running options (such as 'a' and 'b' values, see 
+lsm_options.[ch] for more details) set to desired values, and the geometry of 
+the problem is set as in 1.
+
+Specifying 'narrow_band 1' option will result in running the localized 
+level set method. See curvature_model3d_local.c for details.
+
+3. 'FULL_PATH_TO_EXECUTABLE/curvature_model input_file data_init grid mask'
+You can provide input files that define running options ('input_file', ASCII
+file), the level set function for the initial interface (binary data file 
+'data_init'), grid structure (binary file 'grid') and masking level set 
+function (binary data file 'mask'). Output files can be used as input files 
+(see OUTPUT for more details).
+
+
+OUTPUT
+------
+1. 'out_file'
+Output file with details about the run: Options and Grid structure as well
+as timing details are always output to this file. If the code is run by
+default (or if 'print_details' is set to 1 in the input file), various
+statistics about the level set function will be output at fixed intervals.
+Output file is always output, and its name can be modified by setting
+'out_file' in the input file to desired name. The output file can serve
+as an input file for a different run.
+
+If the code is run using defaults (or if 'save_data' is specified as 1 in
+the input_file provided), four more binary files will be output:
+2. 'data_init'
+The data array specifiying the level set function describing the initial
+interface. Details of the stored data can be specified in lsm_data_arrays.[ch]
+files of the LSMLIB serial package. This file can serve as the initial data
+array file in a different run.
+
+3. 'grid'
+File containing grid structure (note that grid is also output to the 'out_file'
+in the human readable format. Details on the grid structure can be found in
+lsm_grid.[ch] files of the LSMLIB serial package. This file can serve as
+the grid structure input file in a different run.
+
+4. 'mask'
+The data array specifiying the level set function describing the mask for the
+pore space. Mask assumes negative values in the pore space. Details of the 
+stored data can be specified in lsm_data_arrays.[ch] files of the LSMLIB 
+serial package. This file can serve as the masking data array file in a 
+different run.
+
+5. 'data_final'
+The data array specifiying the level set function describing the initial
+interface. Details of the stored data can be specified in lsm_data_arrays.[ch]
+files of the LSMLIB serial package. This file can serve as the initial data
+array file in a different run.
+
+
+VISUALIZATION
+-------------
+Use plotMultipleZeroLevelSets.m Matlab function in LSMLIB_DIRECTORY/examples/matlab/visualization/
+to visualize the result, e.g.
+plotMultipleZeroLevelSets('mask','b','data_final','r','grid') will plot
+the zero level set defining the mask in blue and the final interface in red.
+
+NOTE ON LOCALIZATION
+
+The speed-up benefit from localization method is the best when the ratio of 
+the number of points in the narrow band and in the total volume is small. 
+In the particular example shown here, for spacing 0.04 the ratio is around 0.3 
+which is large. However, the improvement can easily be seen with the higher 
+resolution. For instance, on a x64 Linux machine,  we get the following:
+
+dx = spacing
+r  = (average) fraction of the number of point in the narrow_band
+t_l = timing (in seconds) for the local level set method
+t_r = timing (in seconds) for the regular level set method 
+
+dx      r      t_l     t_r
+--------------------------
+0.04   0.31    102     105 
+0.02   0.17    1086    1276
+
+See subdirectories regular_dx0.04/, regular_dx0.02/, local_dx0.04/ and 
+local_dx0.02/ for sample outputs.
