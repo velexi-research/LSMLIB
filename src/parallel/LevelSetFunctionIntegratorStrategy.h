@@ -53,8 +53,8 @@ using namespace tbox;
 
 namespace LSMLIB {
 
-template<int DIM> class LevelSetFunctionIntegratorStrategy:
-  public StandardTagAndInitStrategy<DIM>
+class LevelSetFunctionIntegratorStrategy:
+  public StandardTagAndInitStrategy
 {
 public:
 
@@ -237,8 +237,8 @@ public:
    *
    */
   virtual void setBoundaryConditions(
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component = -1) = 0;
 
@@ -456,16 +456,16 @@ public:
    * set function(s) for a new patch level in the patch hierarchy.
    *
    * Arguments:
-   *  - hierarchy (in):       BasePatchHierarchy on which to tag cells for
+   *  - hierarchy (in):       PatchHierarchy on which to tag cells for
    *                          refinement
-   *  - level_number (in):    BasePatchLevel number on which to tag cells for
+   *  - level_number (in):    PatchLevel number on which to tag cells for
    *                          refinement
    *  - can_be_refined (in):  true if this is NOT the finest level in the
-   *                          BasePatchHierarchy; false it if is
-   *  - init_data_time (in):  true if the BasePatchLevel is being introduced
+   *                          PatchHierarchy; false it if is
+   *  - init_data_time (in):  true if the PatchLevel is being introduced
    *                          for the first time; false otherwise
-   *  - old_level (in):       old BasePatchLevel from which data for new
-   *                          BasePatchLevel should be taken
+   *  - old_level (in):       old PatchLevel from which data for new
+   *                          PatchLevel should be taken
    *  - allocate_data (in):   true if PatchData needs to be allocated before
    *                          it is initialized; false otherwise
    *
@@ -473,13 +473,13 @@ public:
    *
    */
   virtual void initializeLevelData (
-    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
+    const boost::shared_ptr< PatchHierarchy > hierarchy ,
     const int level_number ,
     const double init_data_time ,
     const bool can_be_refined ,
     const bool initial_time ,
-    const boost::shared_ptr< BasePatchLevel<DIM> > old_level
-      = boost::shared_ptr< BasePatchLevel<DIM> >((0)) ,
+    const boost::shared_ptr< PatchLevel > old_level
+      = boost::shared_ptr< PatchLevel >() ,
     const bool allocate_data = true ) = 0;
 
   /*!
@@ -489,9 +489,9 @@ public:
    * less than some user-supplied threshold.
    *
    * Arguments:
-   *  - hierarchy (in):       BasePatchHierarchy on which to tag cells for
+   *  - hierarchy (in):       PatchHierarchy on which to tag cells for
    *                          refinement
-   *  - level_number (in):    BasePatchLevel number on which to tag cells for
+   *  - level_number (in):    PatchLevel number on which to tag cells for
    *                          refinement
    *  - error_data_time (in): ignored by LevelSetFunctionIntegrator class
    *  - tag_index (in):       PatchData index of the cell-centered integer
@@ -504,7 +504,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< PatchHierarchy > hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -516,15 +516,15 @@ public:
    * hierarchy-dependent information.
    *
    * Arguments:
-   *  - new_hierarchy (in):   BasePatchHierarchy to configure
+   *  - new_hierarchy (in):   PatchHierarchy to configure
    *  - coarsest_level (in):  level number of coarsest PatchLevel to reset
-   *  - finest_level (in):    level number of finest BasePatchLevel to reset
+   *  - finest_level (in):    level number of finest PatchLevel to reset
    *
    * Return value:            none
    *
    */
   virtual void resetHierarchyConfiguration (
-    boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
+    boost::shared_ptr< PatchHierarchy > hierarchy ,
     int coarsest_level ,
     int finest_level ) = 0;
 
@@ -564,7 +564,7 @@ public:
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number) = 0;
 
   /*!
@@ -581,7 +581,7 @@ public:
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number) = 0;
 
   //! @}

@@ -106,7 +106,7 @@ using namespace tbox;
 
 namespace LSMLIB {
 
-template<int DIM> class BoundaryConditionModule
+class BoundaryConditionModule
 {
 public:
 
@@ -150,8 +150,8 @@ public:
    *    set to be in an invalid state.
    */
   BoundaryConditionModule( 
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
-    const IntVector<DIM>& ghostcell_width );
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    const IntVector& ghostcell_width );
 
   /*!
    * Default constructor initializes the BoundaryConditionModule
@@ -169,7 +169,7 @@ public:
    *  - rhs (in):  BoundaryConditionModule object to copy
    *
    */
-  BoundaryConditionModule( const BoundaryConditionModule<DIM>& rhs );
+  BoundaryConditionModule( const BoundaryConditionModule& rhs );
 
   /*!
    * Destructor does nothing
@@ -240,8 +240,8 @@ public:
    */
   virtual void imposeBoundaryConditions(
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -300,10 +300,10 @@ public:
    *
    */
   virtual void imposeBoundaryConditionsOnPatch(
-    Patch<DIM>& patch,
+    Patch& patch,
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -368,8 +368,8 @@ public:
    */
   virtual void imposeAntiPeriodicBCs(
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
 
@@ -432,10 +432,10 @@ public:
    *
    */
   virtual void imposeAntiPeriodicBCsOnPatch(
-    Patch<DIM>& patch,
+    Patch& patch,
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
 
@@ -490,8 +490,8 @@ public:
    */
   virtual void imposeHomogeneousNeumannBCs(
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -549,10 +549,10 @@ public:
    *
    */
   virtual void imposeHomogeneousNeumannBCsOnPatch(
-    Patch<DIM>& patch,
+    Patch& patch,
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -601,8 +601,8 @@ public:
    */
   virtual void imposeLinearExtrapolationBCs(
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -649,10 +649,10 @@ public:
    *
    */
   virtual void imposeLinearExtrapolationBCsOnPatch(
-    Patch<DIM>& patch,
+    Patch& patch,
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -699,8 +699,8 @@ public:
    */
   virtual void imposeSignedLinearExtrapolationBCs(
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -747,10 +747,10 @@ public:
    *
    */
   virtual void imposeSignedLinearExtrapolationBCsOnPatch(
-    Patch<DIM>& patch,
+    Patch& patch,
     const int phi_handle,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = -1);
 
   //! @}
@@ -790,10 +790,10 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    const boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
+    const boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     const int coarsest_level,
     const int finest_level,
-    const IntVector<DIM>& ghostcell_width);
+    const IntVector& ghostcell_width);
 
   //! @}
 
@@ -816,7 +816,7 @@ public:
    *
    */
   virtual inline const BoundaryConditionModule& operator=(
-    const BoundaryConditionModule<DIM>& rhs)
+    const BoundaryConditionModule& rhs)
   {
     d_patch_hierarchy = rhs.d_patch_hierarchy;
     d_ghostcell_width = rhs.d_ghostcell_width;
@@ -861,11 +861,11 @@ public:
    * 
    */
   static void computeIndexSpaceOfNearestGhostLayer(
-    IntVector<DIM>& nearest_ghost_layer_lo,
-    IntVector<DIM>& nearest_ghost_layer_hi,
+    IntVector& nearest_ghost_layer_lo,
+    IntVector& nearest_ghost_layer_hi,
     const int bdry_type,
     const int bdry_location_idx,
-    const Box<DIM>& fillbox);
+    const Box& fillbox);
     
   /*!
    * computeIndexOffset() computes the offset in the data array between
@@ -885,7 +885,7 @@ public:
   static int computeIndexOffset(
     const int bdry_type,
     const int bdry_location_idx,
-    const Box<DIM>& ghostbox);
+    const Box& ghostbox);
   
   //! @}
 
@@ -899,12 +899,12 @@ protected:
    ****************************************************************/
 
   //boost pointer to PatchHierarchy
-  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   // parameters for imposing anti-periodic BCs
-  IntVector<DIM> d_ghostcell_width;
-  IntVector<DIM> d_geom_periodic_dirs;
-  Array< Array< Array< BoundaryBox<DIM> > > > d_boundary_boxes;
+  IntVector d_ghostcell_width;
+  IntVector d_geom_periodic_dirs;
+  Array< Array< Array< BoundaryBox > > > d_boundary_boxes;
   Array< Array<bool> > d_touches_boundary;
   
 };

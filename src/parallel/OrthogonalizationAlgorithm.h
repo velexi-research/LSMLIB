@@ -134,7 +134,7 @@ using namespace xfer;
 
 namespace LSMLIB {
 
-template<int DIM> class OrthogonalizationAlgorithm
+class OrthogonalizationAlgorithm
 {
 
 public:
@@ -201,15 +201,16 @@ public:
    *    finer levels.
    *
    */
+
   OrthogonalizationAlgorithm(
     boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int phi_handle,
     const int psi_handle,
     const int control_volume_handle,
-    const string& object_name = "OrthogonalizationAlgorithm",
-    const IntVector<DIM>& phi_ghostcell_width = 0,
-    const IntVector<DIM>& psi_ghostcell_width = 0);
+    const IntVector& phi_ghostcell_width,
+    const IntVector& psi_ghostcell_width,
+    const string& object_name = "OrthogonalizationAlgorithm");
 
   /*!
    * This constructor sets up the required variables, PatchData, etc. 
@@ -286,7 +287,7 @@ public:
    *
    */
   OrthogonalizationAlgorithm(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int phi_handle,
     const int psi_handle,
     const int control_volume_handle,
@@ -294,13 +295,13 @@ public:
     const int spatial_derivative_order,
     const int tvd_runge_kutta_order,
     const LSMLIB_REAL cfl_number,
-    const LSMLIB_REAL stop_distance = 0.0,
-    const int max_iterations = 0,
-    const LSMLIB_REAL iteration_stop_tolerance = 0.0,
-    const bool verbose_mode = false,
-    const string& object_name = "OrthogonalizationAlgorithm",
-    const IntVector<DIM>& phi_ghostcell_width = 0,
-    const IntVector<DIM>& psi_ghostcell_width = 0);
+    const IntVector& phi_ghostcell_width,
+    const IntVector& psi_ghostcell_width,    
+    const LSMLIB_REAL stop_distance=0.0,
+    const int max_iterations=0,
+    const LSMLIB_REAL iteration_stop_tolerance=0.0,
+    const bool verbose_mode=false,
+    const string& object_name = "OrthogonalizationAlgorithm");
 
   /*!
    * The destructor does nothing.
@@ -411,13 +412,13 @@ public:
    */
   virtual void orthogonalizeLevelSetFunctions(
     const LEVEL_SET_FCN_TYPE level_set_fcn,
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc_fixed = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_fixed = IntVector<DIM>(-1),
-    const IntVector<DIM>& lower_bc_evolved = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_evolved = IntVector<DIM>(-1));
-
-  /*!
+    const IntVector& lower_bc_fixed,
+    const IntVector& upper_bc_fixed,
+    const IntVector& lower_bc_evolved,
+    const IntVector& upper_bc_evolved,
+    const int max_iterations = -1);
+  
+/*!
    * orthogonalizeLevelSetFunctionForSingleComponent() orthogonalizes 
    * grad(phi) and grad(psi) for the specified component of the level 
    * set function corresponding to the the level set functions 
@@ -506,12 +507,12 @@ public:
    */
   virtual void orthogonalizeLevelSetFunctionForSingleComponent(
     const LEVEL_SET_FCN_TYPE level_set_fcn,
-    const int component = 0,
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc_fixed = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_fixed = IntVector<DIM>(-1),
-    const IntVector<DIM>& lower_bc_evolved = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_evolved = IntVector<DIM>(-1));
+    const IntVector& lower_bc_fixed,
+    const IntVector& upper_bc_fixed,
+    const IntVector& lower_bc_evolved,
+    const IntVector& upper_bc_evolved,
+    const int component=0,
+    const int max_iterations=-1);
 
   // @}
 
@@ -539,7 +540,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -619,14 +620,14 @@ protected:
    */
 
   // Boost pointer to PatchHierarchy and GridGeometry object
-  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
-  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
 
   /*
    * Boost pointers to FieldExtensionAlgorithm objects 
    */
-  boost::shared_ptr< FieldExtensionAlgorithm<DIM> > d_fixed_phi_field_ext_alg;
-  boost::shared_ptr< FieldExtensionAlgorithm<DIM> > d_fixed_psi_field_ext_alg;
+  boost::shared_ptr< FieldExtensionAlgorithm > d_fixed_phi_field_ext_alg;
+  boost::shared_ptr< FieldExtensionAlgorithm > d_fixed_psi_field_ext_alg;
 
   /*
    * PatchData handles for data required to solve orthogonalization equation

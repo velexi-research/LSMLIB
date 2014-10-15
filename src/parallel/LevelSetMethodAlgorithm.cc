@@ -26,20 +26,19 @@
 namespace LSMLIB {
 
 /* Constructor for standard integrator and gridding strategy */
-template<int DIM> 
-LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
-  Pointer<Database> lsm_algorithm_input_db,
-  Pointer< PatchHierarchy<DIM> > patch_hierarchy,
-  LevelSetMethodPatchStrategy<DIM>* patch_strategy,
-  LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy,
+LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
+  boost::shared_ptr<Database> lsm_algorithm_input_db,
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  LevelSetMethodPatchStrategy* patch_strategy,
+  LevelSetMethodVelocityFieldStrategy* velocity_field_strategy,
   const int num_level_set_fcn_components,
   const int codimension,
   const string& object_name)
 {
 
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!lsm_algorithm_input_db.isNull());
-  assert(!patch_hierarchy.isNull());
+  assert(lsm_algorithm_input_db !=NULL);
+  assert(patch_hierarchy !=NULL);
   assert(patch_strategy);
   assert(velocity_field_strategy);
   assert(!object_name.empty());
@@ -49,9 +48,9 @@ LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
   d_object_name = object_name;
 
   // create new LevelSetFunctionIntegrator object
-  Pointer<Database> level_set_fcn_integrator_db =
+  boost::shared_ptr<Database> level_set_fcn_integrator_db =
     lsm_algorithm_input_db->getDatabase("LevelSetFunctionIntegrator");
-  d_lsm_integrator_strategy = new LevelSetFunctionIntegrator<DIM>(
+  d_lsm_integrator_strategy = new LevelSetFunctionIntegrator(
     level_set_fcn_integrator_db,
     patch_hierarchy,
     patch_strategy,
@@ -87,7 +86,7 @@ LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
 
 
   // create new LevelSetMethodGriddingAlgorithm object
-  d_lsm_gridding_strategy = new LevelSetMethodGriddingAlgorithm<DIM>(
+  d_lsm_gridding_strategy = new LevelSetMethodGriddingAlgorithm(
     lsm_algorithm_input_db->getDatabase("LevelSetMethodGriddingAlgorithm"),
     patch_hierarchy,
     d_lsm_integrator_strategy,
@@ -101,10 +100,9 @@ LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
 
 
 /* Constructor for custom integrator and gridding strategy */
-template<int DIM> 
-LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
-  Pointer< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
-  Pointer< LevelSetMethodGriddingStrategy<DIM> > lsm_gridding_strategy,
+LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
+  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
+  boost::shared_ptr< LevelSetMethodGriddingStrategy > lsm_gridding_strategy,
   const string& object_name)
 {
 
@@ -121,7 +119,7 @@ LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
   // set simulation parameters used by standard LevelSetFunctionIntegrator
   // class to invalid values
   d_using_standard_level_set_fcn_integrator = false;
-  d_patch_hierarchy.setNull(); 
+  d_patch_hierarchy = 0; 
   d_spatial_derivative_type = UNKNOWN;
   d_spatial_derivative_order = 0;
   d_tvd_runge_kutta_order = 0;
@@ -131,11 +129,10 @@ LevelSetMethodAlgorithm<DIM>::LevelSetMethodAlgorithm(
 
 
 /* printClassData() */
-template<int DIM> 
-void LevelSetMethodAlgorithm<DIM>::printClassData(ostream& os) const
+void LevelSetMethodAlgorithm::printClassData(ostream& os) const
 {
   os << "\n===================================" << endl;
-  os << "LevelSetMethodAlgorithm<DIM>" << endl;
+  os << "LevelSetMethodAlgorithm" << endl;
 
   os << "Object Pointers" << endl;
   os << "---------------" << endl;
@@ -150,9 +147,8 @@ void LevelSetMethodAlgorithm<DIM>::printClassData(ostream& os) const
 
 
 /* resetHierarchyConfiguration() */
-template<int DIM> 
-void LevelSetMethodAlgorithm<DIM>::resetHierarchyConfiguration(
-  const Pointer< PatchHierarchy<DIM> > hierarchy,
+void LevelSetMethodAlgorithm::resetHierarchyConfiguration(
+  const boost::shared_ptr< PatchHierarchy > hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -171,10 +167,9 @@ void LevelSetMethodAlgorithm<DIM>::resetHierarchyConfiguration(
 
 
 /* getFieldExtensionAlgorithm() */
-template<int DIM> 
-Pointer< FieldExtensionAlgorithm<DIM> > 
-LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
-  Pointer<Database> input_db,
+boost::shared_ptr< FieldExtensionAlgorithm > 
+LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
+  boost::shared_ptr<Database> input_db,
   const int field_handle,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const string& object_name)
@@ -186,7 +181,7 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
               << "LevelSetFunctionIntegrator."
               << endl );
 
-    Pointer< FieldExtensionAlgorithm<DIM> > field_extension_alg;
+    boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg;
     field_extension_alg.setNull();
     return field_extension_alg;
   }
@@ -198,8 +193,8 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
     level_set_fcn_handle = d_lsm_integrator_strategy->getPsiPatchDataHandle();
   }
 
-  Pointer< FieldExtensionAlgorithm<DIM> > field_extension_alg =
-    new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg =
+    new FieldExtensionAlgorithm(
       input_db,
       d_patch_hierarchy,
       field_handle,
@@ -218,9 +213,8 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
 
 
 /* getFieldExtensionAlgorithm() */
-template<int DIM> 
-Pointer< FieldExtensionAlgorithm<DIM> > 
-LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
+boost::shared_ptr< FieldExtensionAlgorithm > 
+LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   const int field_handle,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -240,7 +234,7 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
               << "LevelSetFunctionIntegrator."
               << endl );
 
-    Pointer< FieldExtensionAlgorithm<DIM> > field_extension_alg;
+    boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg;
     field_extension_alg.setNull();
     return field_extension_alg;
   }
@@ -266,8 +260,8 @@ LevelSetMethodAlgorithm<DIM>::getFieldExtensionAlgorithm(
     cfl_number = d_cfl_number;
   }
 
-  Pointer< FieldExtensionAlgorithm<DIM> > field_extension_alg =
-    new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg =
+    new FieldExtensionAlgorithm(
       d_patch_hierarchy,
       field_handle,
       level_set_fcn_handle,  

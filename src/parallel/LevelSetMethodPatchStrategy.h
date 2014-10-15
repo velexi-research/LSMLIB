@@ -63,20 +63,21 @@ using namespace hier;
 
 namespace LSMLIB {
 
-template<int DIM> class LevelSetMethodPatchStrategy
+class LevelSetMethodPatchStrategy
 {
 public:
 
   //! @{
   /*!
-   ****************************************************************
+ / ****************************************************************
    * 
    * @name Methods for setting initial and boundary conditions
    *
    ****************************************************************/
 
-  /*!
-   * initializeLevelSetFunctionsOnPatch() initializes the level set 
+
+  
+/* initializeLevelSetFunctionsOnPatch() initializes the level set 
    * functions on a single patch.  
    * 
    * Arguments:
@@ -96,7 +97,7 @@ public:
    *    order to use the LevelSetFunctionIntegrator class.
    * 
    */
-  virtual void initializeLevelSetFunctionsOnPatch(Patch<DIM>& patch,
+  virtual void initializeLevelSetFunctionsOnPatch(Patch& patch,
                                                   const LSMLIB_REAL time,
                                                   const int phi_handle,
                                                   const int psi_handle) = 0;
@@ -136,11 +137,11 @@ public:
    * 
    */
   virtual void setLevelSetFunctionBoundaryConditions(
-    Patch<DIM>& patch,
+    Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector<DIM>& ghost_width_to_fill){}
+    const IntVector& ghost_width_to_fill){}
 
   //! @}
 
@@ -186,9 +187,9 @@ public:
    * 
    */
   inline virtual LSMLIB_REAL computeStableDtOnPatch(
-    Patch<DIM>& patch,
-    LevelSetFunctionIntegrator<DIM>* lsm_integrator,
-    LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy) {
+    Patch& patch,
+    LevelSetFunctionIntegrator* lsm_integrator,
+    LevelSetMethodVelocityFieldStrategy* velocity_field_strategy) {
       return LSMLIB_REAL_MAX;
   } 
 

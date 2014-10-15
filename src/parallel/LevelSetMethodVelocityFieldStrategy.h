@@ -328,8 +328,9 @@ public:
     const bool can_be_refined,
     const bool initial_time,
     const boost::shared_ptr< PatchLevel > old_level
-      = boost::shared_ptr< PatchLevel >((0)),
+    = boost::shared_ptr< PatchLevel >(),
     const bool allocate_data = true) = 0;
+
 
   //! @}
 

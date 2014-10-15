@@ -25,6 +25,7 @@
 
 #include "LSMLIB_config.h"
 #include "LevelSetMethodVelocityFieldStrategy.h"
+#include "boost/shared_ptr.hpp"
 
 // namespaces
 using namespace SAMRAI;
@@ -39,7 +40,7 @@ using namespace mesh;
 
 namespace LSMLIB {
 
-template<int DIM> class LevelSetMethodGriddingStrategy
+class LevelSetMethodGriddingStrategy
 {
 public:
 
@@ -57,7 +58,7 @@ public:
    * with LevelSetMethodGriddingStrategy object.  
    *
    * Arguments:     
-   *  - velocity_field_strategy (in):  pointer to instance of subclass of 
+   *  - velocity_field_strategy (in):  boost pointer to instance of subclass of 
    *                                   LevelSetMethodVelocityFieldStrategy
    *                                   used to manage the variables involved 
    *                                   in the calculation of the velocity field
@@ -66,7 +67,7 @@ public:
    *
    */
   virtual void registerVelocityFieldStrategy(
-     LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy) = 0;
+     LevelSetMethodVelocityFieldStrategy* velocity_field_strategy) = 0;
 
   //! @{
   /*!
@@ -111,7 +112,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    const Pointer< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int coarsest_level,
     const int finest_level) = 0;
 

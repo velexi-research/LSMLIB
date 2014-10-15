@@ -173,11 +173,10 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
 
 
 /* reinitializeLevelSetFunctions() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::reinitializeLevelSetFunctions(
-  const int max_iterations,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc)
+void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
+  const int max_iterations)
 {
 
   // reset hierarchy configuration if necessary
@@ -363,13 +362,12 @@ void ReinitializationAlgorithm<DIM>::reinitializeLevelSetFunctions(
 
 
 /* reinitializeLevelSetFunctionForSingleComponent() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::
+void ReinitializationAlgorithm::
   reinitializeLevelSetFunctionForSingleComponent(
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component,
-    const int max_iterations,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc)
+    const int max_iterations)
 {
 
   // reset hierarchy configuration if necessary

@@ -128,7 +128,7 @@ using namespace xfer;
 
 namespace LSMLIB {
 
-template<int DIM> class ReinitializationAlgorithm
+class ReinitializationAlgorithm
 {
 
 public:
@@ -170,7 +170,7 @@ public:
    */
   ReinitializationAlgorithm(
     boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy> hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const string& object_name = "ReinitializationAlgorithm");
@@ -222,7 +222,7 @@ public:
    *
    */
   ReinitializationAlgorithm(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -305,9 +305,9 @@ public:
    *
    */
   virtual void reinitializeLevelSetFunctions(
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc = IntVector<DIM>(-1));
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
+    const int max_iterations = -1);
 
   /*!
    * reinitializeLevelSetFunctionForSingleComponent() reinitializes the
@@ -359,10 +359,10 @@ public:
    *
    */
   virtual void reinitializeLevelSetFunctionForSingleComponent(
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const int component = 0,
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc = IntVector<DIM>(-1));
+    const int max_iterations = -1);
 
   //! @}
 
@@ -390,7 +390,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -450,18 +450,18 @@ protected:
   virtual void advanceReinitializationEqnUsingTVDRK1(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc);
+    const IntVector& lower_bc,
+    const IntVector& upper_bc);
   virtual void advanceReinitializationEqnUsingTVDRK2(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc);
+    const IntVector& lower_bc,
+    const IntVector& upper_bc);
   virtual void advanceReinitializationEqnUsingTVDRK3(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc);
+    const IntVector& lower_bc,
+    const IntVector& upper_bc);
 
   /*!
    * computeReinitializationEqnRHS() computes the right-hand side of
@@ -576,10 +576,10 @@ protected:
    */
 
   // Boost pointer to PatchHierarchy object
-  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   // Boost pointer to GridGeometry
-  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
+  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve reinitialization equation
@@ -591,7 +591,7 @@ protected:
 
   // scratch data 
   vector<int> d_phi_scr_handles;
-  IntVector<DIM> d_phi_scratch_ghostcell_width;
+  IntVector d_phi_scratch_ghostcell_width;
   int d_rhs_handle;
   int d_grad_phi_plus_handle;
   int d_grad_phi_minus_handle;
@@ -617,28 +617,18 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule<DIM> > d_bc_module;
+  boost::shared_ptr< BoundaryConditionModule > d_bc_module;
 
   /*
    * Communication objects.
    */
 
   // data communication parameters
-  Array< boost::shared_ptr< RefineAlgorithm<DIM> > > d_phi_fill_bdry_alg;
-  Array< Array< boost::shared_ptr< RefineSchedule<DIM> > > > d_phi_fill_bdry_sched;
+  Array< boost::shared_ptr< RefineAlgorithm > > d_phi_fill_bdry_alg;
+  Array< Array< boost::shared_ptr< RefineSchedule > > > d_phi_fill_bdry_sched;
 
 private: 
 
-  /*
-   * Private copy constructor to prevent use.
-   * 
-   * Arguments:
-   *  - rhs (in):  object to copy
-   *
-   */
-  ReinitializationAlgorithm(
-    const ReinitializationAlgorithm& rhs){}
-   
   /*
    * Private assignment operator to prevent use.
    *

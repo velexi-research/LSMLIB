@@ -44,16 +44,15 @@ using namespace pdat;
 namespace LSMLIB {
 
 /* Constructor - parameters from input database */
-template <int DIM>
-OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
+  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int phi_handle,
   const int psi_handle,
   const int control_volume_handle,
-  const string& object_name,
-  const IntVector<DIM>& phi_ghostcell_width,
-  const IntVector<DIM>& psi_ghostcell_width)
+  const IntVector& phi_ghostcell_width,
+  const IntVector& psi_ghostcell_width,
+  const string& object_name)
 {
   // set object_name
   d_object_name = object_name;
@@ -113,9 +112,8 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
 
 
 /* Constructor - parameters from arguments */
-template <int DIM>
-OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int phi_handle,
   const int psi_handle,
   const int control_volume_handle,
@@ -123,13 +121,13 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
   const LSMLIB_REAL cfl_number,
+  const IntVector& phi_ghostcell_width,
+  const IntVector& psi_ghostcell_width,
   const LSMLIB_REAL stop_distance, 
   const int max_iterations,
   const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
-  const string& object_name,
-  const IntVector<DIM>& phi_ghostcell_width,
-  const IntVector<DIM>& psi_ghostcell_width)
+  const string& object_name)
 {
   // set object_name
   d_object_name = object_name;
@@ -220,14 +218,13 @@ OrthogonalizationAlgorithm<DIM>::OrthogonalizationAlgorithm(
 
 
 /* orthogonalizeLevelSetFunctions() */
-template <int DIM> 
-void OrthogonalizationAlgorithm<DIM>::orthogonalizeLevelSetFunctions(
+void OrthogonalizationAlgorithm::orthogonalizeLevelSetFunctions(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
-  const int max_iterations,
-  const IntVector<DIM>& lower_bc_fixed,
-  const IntVector<DIM>& upper_bc_fixed,
-  const IntVector<DIM>& lower_bc_evolved,
-  const IntVector<DIM>& upper_bc_evolved)
+  const IntVector& lower_bc_fixed,
+  const IntVector& upper_bc_fixed,
+  const IntVector& lower_bc_evolved,
+  const IntVector& upper_bc_evolved,
+  const int max_iterations)
 {
   // compute the number of components of level set function
   if (d_num_field_components == 0) {
@@ -271,16 +268,15 @@ void OrthogonalizationAlgorithm<DIM>::orthogonalizeLevelSetFunctions(
 
 
 /* orthogonalizeLevelSetFunctionForSingleComponent() */
-template <int DIM> 
-void OrthogonalizationAlgorithm<DIM>::
+void OrthogonalizationAlgorithm::
   orthogonalizeLevelSetFunctionForSingleComponent(
     const LEVEL_SET_FCN_TYPE level_set_fcn,
+    const IntVector& lower_bc_fixed,
+    const IntVector& upper_bc_fixed,
+    const IntVector& lower_bc_evolved,
+    const IntVector& upper_bc_evolved,
     const int component,
-    const int max_iterations,
-    const IntVector<DIM>& lower_bc_fixed,
-    const IntVector<DIM>& upper_bc_fixed,
-    const IntVector<DIM>& lower_bc_evolved,
-    const IntVector<DIM>& upper_bc_evolved)
+    const int max_iterations)
 {
 
   if (level_set_fcn == PHI) {

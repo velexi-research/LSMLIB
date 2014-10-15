@@ -287,8 +287,8 @@ namespace LSMLIB {
 // explicit declaration of LevelSetMethodPatchStrategy and 
 // LevelSetMethodVelocityFieldStrategy to 
 // avoid circular dependencies in the header files.
-template<int DIM> class LevelSetMethodPatchStrategy;
-template<int DIM> class LevelSetMethodVelocityFieldStrategy;
+class LevelSetMethodPatchStrategy;
+class LevelSetMethodVelocityFieldStrategy;
 
 
 /******************************************************************
@@ -297,10 +297,10 @@ template<int DIM> class LevelSetMethodVelocityFieldStrategy;
  *
  ******************************************************************/
 
-template<int DIM> class LevelSetFunctionIntegrator:
-  public LevelSetFunctionIntegratorStrategy<DIM>,
-  public RefinePatchStrategy<DIM>,
-  public CoarsenPatchStrategy<DIM>,
+class LevelSetFunctionIntegrator:
+  public LevelSetFunctionIntegratorStrategy,
+  public RefinePatchStrategy,
+  public CoarsenPatchStrategy,
   public Serializable
 {
 public:
@@ -337,9 +337,9 @@ public:
    */
   LevelSetFunctionIntegrator(
     boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy<DIM> > patch_hierarchy,
-    LevelSetMethodPatchStrategy<DIM>* lsm_patch_strategy,
-    LevelSetMethodVelocityFieldStrategy<DIM>* lsm_velocity_field_strategy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    LevelSetMethodPatchStrategy* lsm_patch_strategy,
+    LevelSetMethodVelocityFieldStrategy* lsm_velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
     const int codimension = 1,
     const string& object_name = "LevelSetFunctionIntegrator");
@@ -809,7 +809,7 @@ public:
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number);
 
   /*!
@@ -826,7 +826,7 @@ public:
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number);
 
   //! @}
@@ -892,13 +892,13 @@ public:
    *
    */
   virtual void initializeLevelData (
-    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
+    const boost::shared_ptr< PatchHierarchy > hierarchy ,
     const int level_number ,
     const double init_data_time ,
     const bool can_be_refined ,
     const bool initial_time ,
-    const boost::shared_ptr< BasePatchLevel<DIM> > old_level
-      = boost::shared_ptr< BasePatchLevel<DIM> >((0)) ,
+    const boost::shared_ptr< PatchLevel > old_level
+      = boost::shared_ptr< PatchLevel >(),
     const bool allocate_data = true );
 
   /*!
@@ -917,9 +917,9 @@ public:
    * 
    */ 
   virtual void setPhysicalBoundaryConditions(
-    Patch<DIM>& patch,
+    Patch& patch,
     const double fill_time,
-    const IntVector<DIM>& ghost_width_to_fill);
+    const IntVector& ghost_width_to_fill);
 
   /*!
    * setBoundaryConditions() sets the boundary conditions to impose
@@ -989,8 +989,8 @@ public:
    *
    */
   virtual void setBoundaryConditions(
-    const IntVector<DIM>& lower_bc,
-    const IntVector<DIM>& upper_bc,
+    const IntVector& lower_bc,
+    const IntVector& upper_bc,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component = -1);
 
@@ -1032,7 +1032,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
+      const boost::shared_ptr< PatchHierarchy > hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -1052,7 +1052,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration (
-    boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy ,
+    boost::shared_ptr< PatchHierarchy > hierarchy ,
     int coarsest_level ,
     int finest_level );
 
@@ -1084,7 +1084,9 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector<DIM> getRefineOpStencilWidth() const;
+  virtual IntVector getRefineOpStencilWidth(const tbox::Dimension& dim) const{
+ return hier::IntVector::getZero(dim);
+   }
 
   /*!
    * preprocessRefine() does no special user-defined spatial 
@@ -1100,10 +1102,10 @@ public:
    *
    */
   virtual void preprocessRefine(
-    Patch<DIM>& fine,
-    const Patch<DIM>& coarse,
-    const Box<DIM>& fine_box,
-    const IntVector<DIM>& ratio);
+    Patch& fine,
+    const Patch& coarse,
+    const Box& fine_box,
+    const IntVector& ratio);
 
   /*!
    * postprocessRefine() does no special user-defined spatial 
@@ -1119,10 +1121,10 @@ public:
    *
    */
   virtual void postprocessRefine(
-    Patch<DIM>& fine,
-    const Patch<DIM>& coarse,
-    const Box<DIM>& fine_box,
-    const IntVector<DIM>& ratio);
+    Patch& fine,
+    const Patch& coarse,
+    const Box& fine_box,
+    const IntVector& ratio);
 
   /*!
    * getCoarsenOpStencilWidth() returns the maximum stencil width 
@@ -1134,7 +1136,7 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector<DIM> getCoarsenOpStencilWidth() const;
+  virtual IntVector getCoarsenOpStencilWidth() const;
   
   /*!
    * preprocessCoarsen() does no special user-defined spatial 
@@ -1150,10 +1152,10 @@ public:
    *
    */
   virtual void preprocessCoarsen(
-    Patch<DIM>& coarse,
-    const Patch<DIM>& fine,
-    const Box<DIM>& coarse_box,
-    const IntVector<DIM>& ratio);
+    Patch& coarse,
+    const Patch& fine,
+    const Box& coarse_box,
+    const IntVector& ratio);
 
   /*!
    * preprocessCoarsen() does no special user-defined spatial 
@@ -1169,10 +1171,10 @@ public:
    *
    */
   virtual void postprocessCoarsen(
-    Patch<DIM>& coarse,
-    const Patch<DIM>& fine,
-    const Box<DIM>& coarse_box,
-    const IntVector<DIM>& ratio);
+    Patch& coarse,
+    const Patch& fine,
+    const Box& coarse_box,
+    const IntVector& ratio);
 
   //! @}
 
@@ -1442,14 +1444,14 @@ protected:
   // Boost pointer to the LevelSetMethodPatchStrategy.  This object
   // is used to initialize and set boundary conditions for the 
   // level set functions. 
-  LevelSetMethodPatchStrategy<DIM>*  d_lsm_patch_strategy;
+  LevelSetMethodPatchStrategy*  d_lsm_patch_strategy;
 
   // Boost pointer to LevelSetMethodVelocityFieldStrategy.  This object
   // is used to set the velocity field for the time advance of the
   // level set functions.  It is also used to provide some physics-based
   // restrictions on the maximum allowable dt to use for advancing
   // the level set functions in time.
-  LevelSetMethodVelocityFieldStrategy<DIM>*  d_lsm_velocity_field_strategy;
+  LevelSetMethodVelocityFieldStrategy*  d_lsm_velocity_field_strategy;
 
 
   /*
@@ -1457,22 +1459,22 @@ protected:
    */
 
   // Boost pointer to the patch hierarchy object
-  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   // Boost pointer to the grid geometry.  The CartesianGridGeometry object
   // is used to set up initial data, set physical boundary conditions, 
   // and register plot variables.
-  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
+  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
 
   // Boost pointer to reinitialization algorithms which manage the 
   // reinitialization of level set functions to distance functions
-  boost::shared_ptr< ReinitializationAlgorithm<DIM> > d_phi_reinitialization_alg;
-  boost::shared_ptr< ReinitializationAlgorithm<DIM> > d_psi_reinitialization_alg;
+  boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg;
+  boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg;
 
   // Boost pointer to orthogonalization algorithm which manages the 
   // orthogonalization of gradients of phi and psi for 
   // codimension-two problems
-  boost::shared_ptr< OrthogonalizationAlgorithm<DIM> > d_orthogonalization_alg;
+  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg;
 
   
   /*
@@ -1509,7 +1511,7 @@ protected:
   int d_control_volume_handle;
 
   // level set ghostcell width
-  IntVector<DIM> d_level_set_ghostcell_width;
+  IntVector d_level_set_ghostcell_width;
 
   /*
    * Component selectors to organize variables into logical groups
@@ -1545,49 +1547,32 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule<DIM> > d_bc_module;
-  Array< IntVector<DIM> > d_lower_bc_phi;
-  Array< IntVector<DIM> > d_upper_bc_phi;
-  Array< IntVector<DIM> > d_lower_bc_psi;
-  Array< IntVector<DIM> > d_upper_bc_psi;
+  boost::shared_ptr< BoundaryConditionModule > d_bc_module;
+  Array< IntVector > d_lower_bc_phi;
+  Array< IntVector > d_upper_bc_phi;
+  Array< IntVector > d_lower_bc_psi;
+  Array< IntVector > d_upper_bc_psi;
 
   /*
    * Communication objects.
    */
 
   // for filling a new level
-  boost::shared_ptr< RefineAlgorithm<DIM> > d_fill_new_level;
+  boost::shared_ptr< RefineAlgorithm > d_fill_new_level;
 
   // for filling boundary data used during the calculation of 
   // a stable dt for motion under normal velocity
-  boost::shared_ptr< RefineAlgorithm<DIM> > d_fill_bdry_compute_stable_dt;
-  Array< boost::shared_ptr< RefineSchedule<DIM> > >
+  boost::shared_ptr< RefineAlgorithm > d_fill_bdry_compute_stable_dt;
+  Array< boost::shared_ptr< RefineSchedule > >
     d_fill_bdry_sched_compute_stable_dt;
 
   // for filling bdry data before doing time advance
-  Array< boost::shared_ptr< RefineAlgorithm<DIM> > > d_fill_bdry_time_advance;
-  Array< Array< boost::shared_ptr< RefineSchedule<DIM> > > > 
+  Array< boost::shared_ptr< RefineAlgorithm > > d_fill_bdry_time_advance;
+  Array< Array< boost::shared_ptr< RefineSchedule > > > 
     d_fill_bdry_sched_time_advance;
 
 private:
  
-  /*
-   * Private default constructor to prevent use.
-   * 
-   * Arguments:  none
-   * 
-   */
-  LevelSetFunctionIntegrator(){}
-
-  /*
-   * Private copy constructor to prevent use.
-   * 
-   * Arguments:
-   *  - rhs (in):  LevelSetFunctionIntegrator object to copy
-   * 
-   */
-  LevelSetFunctionIntegrator(
-    const LevelSetFunctionIntegrator& rhs){}
    
   /*
    * Private assignment operator to prevent use.

@@ -70,29 +70,29 @@ using namespace pdat;
 namespace LSMLIB {
 
 // parameters for computing spatial derivatives
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D1_one_ghostcell_handle = -1;
+int 
+LevelSetMethodToolbox::s_D1_one_ghostcell_handle = -1;
 
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D1_two_ghostcells_handle = -1;
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D2_two_ghostcells_handle = -1;
+int 
+LevelSetMethodToolbox::s_D1_two_ghostcells_handle = -1;
+int 
+LevelSetMethodToolbox::s_D2_two_ghostcells_handle = -1;
 
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D1_three_ghostcells_handle = -1;
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D2_three_ghostcells_handle = -1;
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_D3_three_ghostcells_handle = -1;
+int 
+LevelSetMethodToolbox::s_D1_three_ghostcells_handle = -1;
+int 
+LevelSetMethodToolbox::s_D2_three_ghostcells_handle = -1;
+int 
+LevelSetMethodToolbox::s_D3_three_ghostcells_handle = -1;
 
 
 // parameters for computing unit normal vector
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_compute_normal_grad_phi_handle = -1;
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_compute_normal_grad_phi_plus_handle = -1;
-template <int DIM> int 
-LevelSetMethodToolbox<DIM>::s_compute_normal_grad_phi_minus_handle = -1;
+int 
+LevelSetMethodToolbox::s_compute_normal_grad_phi_handle = -1;
+int 
+LevelSetMethodToolbox::s_compute_normal_grad_phi_plus_handle = -1;
+int 
+LevelSetMethodToolbox::s_compute_normal_grad_phi_minus_handle = -1;
 
 
 /****************************************************************
@@ -102,9 +102,8 @@ LevelSetMethodToolbox<DIM>::s_compute_normal_grad_phi_minus_handle = -1;
  ****************************************************************/
 
 /* computeUpwindSpatialDerivatives() */
-template <int DIM> 
-void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int grad_phi_handle,
@@ -119,12 +118,12 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
   const int finest_level = hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<DIM>::Iterator pi;
+    typename PatchLevel::Iterator pi;
     for (pi.initialize(level); pi; pi++) { // loop over patches
       const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
+      boost::shared_ptr< Patch > patch = level->getPatch(pn);
       if ( patch.isNull() ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeUpwindSpatialDerivatives(): "
@@ -133,14 +132,14 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
       }
 
       // compute spatial derivatives for phi
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_data =
         patch->getPatchData( grad_phi_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
         patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > upwind_function_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > upwind_function_data =
         patch->getPatchData( upwind_function_handle );
   
-      Pointer< CartesianPatchGeometry<DIM> > patch_geom =
+      boost::shared_ptr< CartesianPatchGeometry > patch_geom =
         patch->getPatchGeometry();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
@@ -163,9 +162,9 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
       const IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
 
       Box<DIM> upwind_fcn_ghostbox = upwind_function_data->getGhostBox();
-      const IntVector<DIM> upwind_fcn_ghostbox_lower = 
+      const IntVector upwind_fcn_ghostbox_lower = 
         upwind_fcn_ghostbox.lower();
-      const IntVector<DIM> upwind_fcn_ghostbox_upper = 
+      const IntVector upwind_fcn_ghostbox_upper = 
         upwind_fcn_ghostbox.upper();
 
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
@@ -184,12 +183,12 @@ void LevelSetMethodToolbox<DIM>::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_one_ghostcell_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
-              const IntVector<DIM> D1_ghostbox_lower = D1_ghostbox.lower();
-              const IntVector<DIM> D1_ghostbox_upper = D1_ghostbox.upper();
+              const IntVector D1_ghostbox_lower = D1_ghostbox.lower();
+              const IntVector D1_ghostbox_upper = D1_ghostbox.upper();
 
               LSMLIB_REAL* D1 = D1_data->getPointer();
 

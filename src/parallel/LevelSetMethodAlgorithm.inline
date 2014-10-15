@@ -37,77 +37,67 @@ namespace LSMLIB {
 
 
 /* Destructor */
-template<int DIM> inline 
-LevelSetMethodAlgorithm<DIM>::~LevelSetMethodAlgorithm(){}
+LevelSetMethodAlgorithm::~LevelSetMethodAlgorithm(){}
 
 
 /* getPhiPatchDataHandle() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getPhiPatchDataHandle() const
+int LevelSetMethodAlgorithm::getPhiPatchDataHandle() const
 {
   return d_lsm_integrator_strategy->getPhiPatchDataHandle();
 } 
 
 
 /* getPsiPatchDataHandle() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getPsiPatchDataHandle() const
+int LevelSetMethodAlgorithm::getPsiPatchDataHandle() const
 {
   return d_lsm_integrator_strategy->getPsiPatchDataHandle();
 }
 
 
 /* getControlVolumePatchDataHandle() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getControlVolumePatchDataHandle() const
+int LevelSetMethodAlgorithm::getControlVolumePatchDataHandle() const
 {
   return d_lsm_integrator_strategy->getControlVolumePatchDataHandle();
 } 
 
 
 /* getStartTime() */
-template<int DIM> inline 
-LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getStartTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm::getStartTime() const
 {
   return d_lsm_integrator_strategy->getStartTime();
 }
 
 
 /* getEndTime() */
-template<int DIM> inline 
-LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getEndTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm::getEndTime() const
 {
   return d_lsm_integrator_strategy->getEndTime();
 }
 
 
 /* getCurrentTime() */
-template<int DIM> inline 
-LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getCurrentTime() const
+LSMLIB_REAL LevelSetMethodAlgorithm::getCurrentTime() const
 {
   return d_lsm_integrator_strategy->getCurrentTime();
 }
 
 
 /* endTimeReached() */
-template<int DIM> inline 
-bool LevelSetMethodAlgorithm<DIM>::endTimeReached() const
+bool LevelSetMethodAlgorithm::endTimeReached() const
 {
   return d_lsm_integrator_strategy->endTimeReached();
 }
 
 
 /* numIntegrationStepsTaken() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::numIntegrationStepsTaken() const
+int LevelSetMethodAlgorithm::numIntegrationStepsTaken() const
 {
   return d_lsm_integrator_strategy->numIntegrationStepsTaken();
 }
 
 
 /* getSpatialDerivativeType() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getSpatialDerivativeType() const
+int LevelSetMethodAlgorithm::getSpatialDerivativeType() const
 {
   if (!d_using_standard_level_set_fcn_integrator) {
     TBOX_WARNING( d_object_name
@@ -122,8 +112,7 @@ int LevelSetMethodAlgorithm<DIM>::getSpatialDerivativeType() const
 
 
 /* getSpatialDerivativeOrder() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getSpatialDerivativeOrder() const
+int LevelSetMethodAlgorithm::getSpatialDerivativeOrder() const
 {
   if (!d_using_standard_level_set_fcn_integrator) {
     TBOX_WARNING( d_object_name
@@ -138,8 +127,7 @@ int LevelSetMethodAlgorithm<DIM>::getSpatialDerivativeOrder() const
 
 
 /* getTVDRungeKuttaOrder() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getTVDRungeKuttaOrder() const
+int LevelSetMethodAlgorithm::getTVDRungeKuttaOrder() const
 {
   if (!d_using_standard_level_set_fcn_integrator) {
     TBOX_WARNING( d_object_name
@@ -154,8 +142,7 @@ int LevelSetMethodAlgorithm<DIM>::getTVDRungeKuttaOrder() const
 
 
 /* getCFLNumber() */
-template<int DIM> inline 
-LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getCFLNumber() const
+LSMLIB_REAL LevelSetMethodAlgorithm::getCFLNumber() const
 {
   if (!d_using_standard_level_set_fcn_integrator) {
     TBOX_WARNING( d_object_name
@@ -170,10 +157,9 @@ LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::getCFLNumber() const
 
 
 /* setBoundaryConditions() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::setBoundaryConditions(
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+void LevelSetMethodAlgorithm::setBoundaryConditions(
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int component)
 {
@@ -183,8 +169,7 @@ void LevelSetMethodAlgorithm<DIM>::setBoundaryConditions(
 
 
 /* initializeLevelSetMethodCalculation() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::initializeLevelSetMethodCalculation() 
+void LevelSetMethodAlgorithm::initializeLevelSetMethodCalculation() 
 {
   d_lsm_gridding_strategy->initializePatchHierarchy(
     d_lsm_integrator_strategy->getCurrentTime());
@@ -192,32 +177,28 @@ void LevelSetMethodAlgorithm<DIM>::initializeLevelSetMethodCalculation()
 
 
 /* computeStableDt() */
-template<int DIM> inline 
-LSMLIB_REAL LevelSetMethodAlgorithm<DIM>::computeStableDt() 
+LSMLIB_REAL LevelSetMethodAlgorithm::computeStableDt() 
 {
   return d_lsm_integrator_strategy->computeStableDt();
 }
 
 
 /* advanceLevelSetFunctions() */
-template<int DIM> inline 
-bool LevelSetMethodAlgorithm<DIM>::advanceLevelSetFunctions(const LSMLIB_REAL dt) 
+bool LevelSetMethodAlgorithm::advanceLevelSetFunctions(const LSMLIB_REAL dt) 
 {
   return d_lsm_integrator_strategy->advanceLevelSetFunctions(dt);
 }
 
 
 /* getReinitializationInterval() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getReinitializationInterval() const
+int LevelSetMethodAlgorithm::getReinitializationInterval() const
 {
   return d_lsm_integrator_strategy->getReinitializationInterval();
 }
 
 
 /* setReinitializationInterval() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::setReinitializationInterval(
+void LevelSetMethodAlgorithm::setReinitializationInterval(
   const int interval)
 {
   d_lsm_integrator_strategy->setReinitializationInterval(interval);
@@ -225,8 +206,7 @@ void LevelSetMethodAlgorithm<DIM>::setReinitializationInterval(
 
 
 /* reinitializeLevelSetFunctions() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::reinitializeLevelSetFunctions(
+void LevelSetMethodAlgorithm::reinitializeLevelSetFunctions(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int max_iterations)
 {
@@ -236,16 +216,14 @@ void LevelSetMethodAlgorithm<DIM>::reinitializeLevelSetFunctions(
 
 
 /* getOrthogonalizationInterval() */
-template<int DIM> inline 
-int LevelSetMethodAlgorithm<DIM>::getOrthogonalizationInterval() const
+int LevelSetMethodAlgorithm::getOrthogonalizationInterval() const
 {
   return d_lsm_integrator_strategy->getOrthogonalizationInterval();
 }
 
 
 /* setOrthogonalizationInterval() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::setOrthogonalizationInterval(
+void LevelSetMethodAlgorithm::setOrthogonalizationInterval(
   const int interval)
 {
   d_lsm_integrator_strategy->setOrthogonalizationInterval(interval);
@@ -253,8 +231,7 @@ void LevelSetMethodAlgorithm<DIM>::setOrthogonalizationInterval(
 
 
 /* orthogonalizeLevelSetFunctions() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::orthogonalizeLevelSetFunctions(
+void LevelSetMethodAlgorithm::orthogonalizeLevelSetFunctions(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int max_reinit_iterations,
   const int max_ortho_iterations)
@@ -265,8 +242,7 @@ void LevelSetMethodAlgorithm<DIM>::orthogonalizeLevelSetFunctions(
 
 
 /* regridPatchHierarchy() */
-template<int DIM> inline 
-void LevelSetMethodAlgorithm<DIM>::regridPatchHierarchy()
+void LevelSetMethodAlgorithm::regridPatchHierarchy()
 {
   d_lsm_gridding_strategy->regridPatchHierarchy(
     d_lsm_integrator_strategy->getCurrentTime());

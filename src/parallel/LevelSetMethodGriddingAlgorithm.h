@@ -128,9 +128,9 @@ using namespace tbox;
 
 namespace LSMLIB {
 
-template<int DIM> class LevelSetMethodGriddingAlgorithm:
-  public LevelSetMethodGriddingStrategy<DIM>,
-  public StandardTagAndInitialize<DIM>
+class LevelSetMethodGriddingAlgorithm:
+  public LevelSetMethodGriddingStrategy,
+  public StandardTagAndInitialize
 {
 public:
 
@@ -162,8 +162,8 @@ public:
    */
   LevelSetMethodGriddingAlgorithm(
     boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< BasePatchHierarchy<DIM> > patch_hierarchy,
-    boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > lsm_integrator_strategy,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
     const string& object_name = "LevelSetMethodGriddingAlgorithm");
 
   /*!
@@ -200,7 +200,7 @@ public:
    *
    */
   virtual void registerVelocityFieldStrategy(
-     LevelSetMethodVelocityFieldStrategy<DIM>* velocity_field_strategy);
+     LevelSetMethodVelocityFieldStrategy* velocity_field_strategy);
 
   //! @}
 
@@ -287,13 +287,13 @@ public:
    *                
    */
   virtual void initializeLevelData(
-    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number,
     const double init_data_time,
     const bool can_be_refined,
     const bool initial_time,
-    const boost::shared_ptr< BasePatchLevel<DIM> > old_level = 
-      boost::shared_ptr< BasePatchLevel<DIM> >(NULL),
+    const boost::shared_ptr< PatchLevel > old_level = 
+      boost::shared_ptr< PatchLevel >(),
     const bool allocate_data = true);
 
   /*!
@@ -316,7 +316,7 @@ public:
    *                
    */
   void resetHierarchyConfiguration(
-    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -353,7 +353,7 @@ public:
    *                
    */
   void tagCellsForRefinement(
-    const boost::shared_ptr< BasePatchHierarchy<DIM> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number,
     const double regrid_time,
     const int tag_index,
@@ -411,12 +411,12 @@ protected:
   /*
    * Boost pointer to the PatchHierarchy object
    */
-  boost::shared_ptr< BasePatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   /*
    * Boost pointer to the SAMRAI::mesh::GriddingAlgorithm object
    */
-  boost::shared_ptr< SAMRAI::mesh::GriddingAlgorithm<DIM> > d_gridding_alg;
+  boost::shared_ptr< SAMRAI::mesh::GriddingAlgorithm > d_gridding_alg;
 
   /*
    * Duplicates of the booleans specifying the tagging method that
@@ -430,9 +430,9 @@ protected:
    * Boost pointers to the LevelSetFunctionIntegratorStrategy and 
    * LevelSetMethodVelocityFieldStrategy objects.
    */
-  boost::shared_ptr< LevelSetFunctionIntegratorStrategy<DIM> > d_lsm_integrator_strategy;
+  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > d_lsm_integrator_strategy;
 
-  Array< boost::shared_ptr< LevelSetMethodVelocityFieldStrategy<DIM> > > 
+  Array< boost::shared_ptr< LevelSetMethodVelocityFieldStrategy > > 
     d_velocity_field_strategies;
 
 private:

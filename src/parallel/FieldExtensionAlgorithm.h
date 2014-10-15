@@ -122,7 +122,7 @@ using namespace xfer;
 
 namespace LSMLIB {
 
-template<int DIM> class FieldExtensionAlgorithm
+class FieldExtensionAlgorithm
 {
 
 public:
@@ -172,16 +172,16 @@ public:
    *    finer levels.
    *
    */
-  FieldExtensionAlgorithm(
+
+ FieldExtensionAlgorithm(
     boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
-    const string& object_name = "FieldExtensionAlgorithm",
-    const IntVector<DIM>& phi_ghostcell_width = 0);
-
-  /*!
+    const IntVector& phi_ghostcell_width,
+    const string& object_name = "FieldExtensionAlgorithm");
+   /*!
    * This constructor sets up the required variables, PatchData, etc. for 
    * computing extension fields via the advection equation using parameters
    * provided as arguments to the constructor.
@@ -241,11 +241,13 @@ public:
    *    finer levels.
    *
    */
+
   FieldExtensionAlgorithm(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
+    const IntVector& phi_ghostcell_width,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = ENO,
     const int spatial_derivative_order = 1,
     const int tvd_runge_kutta_order = 1,
@@ -254,9 +256,7 @@ public:
     const int max_iterations = 0,
     const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
-    const string& object_name = "FieldExtensionAlgorithm",
-    const IntVector<DIM>& phi_ghostcell_width = 0);
-
+    const string& object_name = "FieldExtensionAlgorithm");
   /*!
    * The destructor does nothing.
    *
@@ -351,15 +351,14 @@ public:
    *    non-periodic boundaries.
    *
    */
-  virtual void computeExtensionField(
-    const int phi_component = 0,
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc_phi = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_phi = IntVector<DIM>(-1),
-    const IntVector<DIM>& lower_bc_ext = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_ext = IntVector<DIM>(-1));
-
-  /*!
+virtual void computeExtensionField(
+    const int phi_component,
+    const int max_iterations,
+    const IntVector& lower_bc_phi,
+    const IntVector& upper_bc_phi,
+    const IntVector& lower_bc_ext);
+  
+/*!
    * computeExtensionFieldForSingleComponent() extends the specified
    * component of the field off of the interface defined by the zero 
    * level set of the function phi by advecting it in the direction normal 
@@ -438,13 +437,13 @@ public:
    *
    */
   virtual void computeExtensionFieldForSingleComponent(
-    const int component = 0,
-    const int phi_component = 0,
-    const int max_iterations = -1,
-    const IntVector<DIM>& lower_bc_phi = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_phi = IntVector<DIM>(-1),
-    const IntVector<DIM>& lower_bc_ext = IntVector<DIM>(-1),
-    const IntVector<DIM>& upper_bc_ext = IntVector<DIM>(-1));
+    const int component,
+    const int phi_component,
+    const int max_iterations,
+    const IntVector& lower_bc_phi,
+    const IntVector& upper_bc_phi,
+    const IntVector& lower_bc_ext,
+    const IntVector& upper_bc_ext);
 
   //! @}
 
@@ -472,7 +471,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy<DIM> > hierarchy,
+    boost::shared_ptr< PatchHierarchy > hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -540,20 +539,20 @@ protected:
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector<DIM>& lower_bc_ext,
-    const IntVector<DIM>& upper_bc_ext);
+    const IntVector& lower_bc_ext,
+    const IntVector& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK2(
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector<DIM>& lower_bc_ext,
-    const IntVector<DIM>& upper_bc_ext);
+    const IntVector& lower_bc_ext,
+    const IntVector& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK3(
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector<DIM>& lower_bc_ext,
-    const IntVector<DIM>& upper_bc_ext);
+    const IntVector& lower_bc_ext,
+    const IntVector& upper_bc_ext);
 
   /*!
    * computeFieldExtensionEqnRHS() computes the right-hand side of
@@ -601,7 +600,7 @@ protected:
    * Return value:                 none
    *
    */
-  virtual void initializeVariables(const IntVector<DIM>& phi_ghostcell_width);
+  virtual void initializeVariables(const IntVector& phi_ghostcell_width);
 
   /*!
    * initializeCommunicationObjects() initializes the objects
@@ -677,10 +676,10 @@ protected:
    */
 
   // Boost pointer to PatchHierarchy object
-  boost::shared_ptr< PatchHierarchy<DIM> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   // Boost pointer to GridGeometry
-  boost::shared_ptr< CartesianGridGeometry<DIM> > d_grid_geometry;
+  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve field extension equation
@@ -693,9 +692,9 @@ protected:
 
   // scratch data 
   vector<int> d_extension_field_scr_handles;
-  IntVector<DIM> d_ext_field_scratch_ghostcell_width;
+  IntVector d_ext_field_scratch_ghostcell_width;
   int d_phi_scr_handle;
-  IntVector<DIM> d_phi_scratch_ghostcell_width;
+  IntVector d_phi_scratch_ghostcell_width;
   int d_rhs_handle;
   int d_normal_vector_handle;
   int d_grad_field_handle;
@@ -723,33 +722,23 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule<DIM> > 
+  boost::shared_ptr< BoundaryConditionModule > 
     d_phi_bc_module;
-  boost::shared_ptr< BoundaryConditionModule<DIM> > 
+  boost::shared_ptr< BoundaryConditionModule > 
     d_ext_field_bc_module;
 
   /*
    * Communication objects.
    */
-  Array< boost::shared_ptr< RefineAlgorithm<DIM> > > d_extension_field_fill_bdry_alg;
-  Array< Array< boost::shared_ptr< RefineSchedule<DIM> > > > 
+  Array< boost::shared_ptr< RefineAlgorithm > > d_extension_field_fill_bdry_alg;
+  Array< Array< boost::shared_ptr< RefineSchedule > > > 
     d_extension_field_fill_bdry_sched;
-  boost::shared_ptr< RefineAlgorithm<DIM> > d_phi_fill_bdry_alg;
-  Array< boost::shared_ptr< RefineSchedule<DIM> > > d_phi_fill_bdry_sched;
+  boost::shared_ptr< RefineAlgorithm > d_phi_fill_bdry_alg;
+  Array< boost::shared_ptr< RefineSchedule > > d_phi_fill_bdry_sched;
 
 
 private: 
 
-  /*
-   * Private copy constructor to prevent use.
-   * 
-   * Arguments:
-   *  - rhs (in):  object to copy
-   *
-   */
-  FieldExtensionAlgorithm(
-    const FieldExtensionAlgorithm& rhs){}
-   
   /*
    * Private assignment operator to prevent use.
    *

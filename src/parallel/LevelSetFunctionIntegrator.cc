@@ -87,12 +87,11 @@ using namespace pdat;
 namespace LSMLIB {
 
 /* Constructor */
-template <int DIM> 
-LevelSetFunctionIntegrator<DIM>::LevelSetFunctionIntegrator(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<DIM> > patch_hierarchy,
-  LevelSetMethodPatchStrategy<DIM>* lsm_patch_strategy,
-  LevelSetMethodVelocityFieldStrategy<DIM>* lsm_velocity_field_strategy,
+LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
+  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  LevelSetMethodPatchStrategy* lsm_patch_strategy,
+  LevelSetMethodVelocityFieldStrategy* lsm_velocity_field_strategy,
   const int num_level_set_fcn_components,
   const int codimension,
   const string& object_name) 

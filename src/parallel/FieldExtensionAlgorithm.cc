@@ -49,15 +49,15 @@ using namespace pdat;
 namespace LSMLIB {
 
 /* Constructor - parameters from input database */
-template <int DIM> 
-FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+ 
+FieldExtensionAlgorithm::FieldExtensionAlgorithm(
+  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,
-  const string& object_name,
-  const IntVector<DIM>& phi_ghostcell_width)
+  const IntVector& phi_ghostcell_width,
+  const string& object_name)
 {
   // set object_name
   d_object_name = object_name;
@@ -78,8 +78,8 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
   checkParameters();
 
   // create empty BoundaryConditionModule
-  d_phi_bc_module = new BoundaryConditionModule<DIM>;
-  d_ext_field_bc_module = new BoundaryConditionModule<DIM>;
+  d_phi_bc_module = new BoundaryConditionModule;
+  d_ext_field_bc_module = new BoundaryConditionModule;
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -89,12 +89,12 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
 
 
 /* Constructor - parameters from arguments */
-template <int DIM>
-FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+FieldExtensionAlgorithm::FieldExtensionAlgorithm(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,
+  const IntVector& phi_ghostcell_width,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
@@ -103,9 +103,8 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
   const int max_iterations,
   const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
-  const string& object_name,
-  const IntVector<DIM>& phi_ghostcell_width)
-{
+  const string& object_name){
+
   // set object_name
   d_object_name = object_name;
 
@@ -178,14 +177,13 @@ FieldExtensionAlgorithm<DIM>::FieldExtensionAlgorithm(
 
 
 /* computeExtensionField() */
-template <int DIM> 
-void FieldExtensionAlgorithm<DIM>::computeExtensionField(
+void FieldExtensionAlgorithm::computeExtensionField(
   const int phi_component,
   const int max_iterations,
-  const IntVector<DIM>& lower_bc_phi,
-  const IntVector<DIM>& upper_bc_phi,
-  const IntVector<DIM>& lower_bc_ext,
-  const IntVector<DIM>& upper_bc_ext)
+  const IntVector& lower_bc_phi,
+  const IntVector& upper_bc_phi,
+  const IntVector& lower_bc_ext,
+  const IntVector& upper_bc_ext)
 {
 
   // reset hierarchy configuration if necessary
@@ -445,16 +443,15 @@ void FieldExtensionAlgorithm<DIM>::computeExtensionField(
 }
 
 
-/* computeExtensionFieldForSingleComponent() */
-template <int DIM> 
-void FieldExtensionAlgorithm<DIM>::computeExtensionFieldForSingleComponent(
+/* computeExtensionFieldForSingleComponent() */ 
+void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   const int component,
   const int phi_component,
   const int max_iterations,
-  const IntVector<DIM>& lower_bc_phi,
-  const IntVector<DIM>& upper_bc_phi,
-  const IntVector<DIM>& lower_bc_ext,
-  const IntVector<DIM>& upper_bc_ext)
+  const IntVector& lower_bc_phi,
+  const IntVector& upper_bc_phi,
+  const IntVector& lower_bc_ext,
+  const IntVector& upper_bc_ext)
 {
 
   // reset hierarchy configuration if necessary
