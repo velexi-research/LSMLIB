@@ -265,6 +265,7 @@
 #include "SAMRAI/tbox/Database.h"
 #include "boost/shared_ptr.hpp"
 #include "SAMRAI/tbox/Serializable.h"
+#include "SAMRAI/tbox/Serializable.h"
 
 #include "LSMLIB_config.h"
 #include "BoundaryConditionModule.h"
@@ -336,6 +337,7 @@ public:
    *
    */
   LevelSetFunctionIntegrator(
+    const tbox::Dimension& dim,
     boost::shared_ptr<Database> input_db,
     boost::shared_ptr< PatchHierarchy > patch_hierarchy,
     LevelSetMethodPatchStrategy* lsm_patch_strategy,
@@ -841,7 +843,7 @@ public:
    **************************************************************************/
 
   /*!
-   * putToDatabase() writes the state of the LevelSetFunctionIntegrator 
+   * putToRestart() writes the state of the LevelSetFunctionIntegrator 
    * object to the given database (typically for restart purposes).
    * 
    * Arguments: 
@@ -851,7 +853,7 @@ public:
    * Return value:   none
    *
    */
-  virtual void putToDatabase(boost::shared_ptr<Database> db);
+  virtual void putToRestart(const boost::shared_ptr<Database>& restart_db) const;
 
   //! @}
 
@@ -892,14 +894,14 @@ public:
    *
    */
   virtual void initializeLevelData (
-    const boost::shared_ptr< PatchHierarchy > hierarchy ,
-    const int level_number ,
-    const double init_data_time ,
-    const bool can_be_refined ,
-    const bool initial_time ,
-    const boost::shared_ptr< PatchLevel > old_level
-      = boost::shared_ptr< PatchLevel >(),
-    const bool allocate_data = true );
+      const boost::shared_ptr<hier::PatchHierarchy>& hierarchy,
+      const int level_number,
+      const double init_data_time,
+      const bool can_be_refined,
+      const bool initial_time,
+      const boost::shared_ptr<hier::PatchLevel>& old_level =
+         boost::shared_ptr<hier::PatchLevel>(),    
+      const bool allocate_data = true );
 
   /*!
    * setPhysicalBoundaryConditions() sets the data in ghost 
@@ -1051,10 +1053,10 @@ public:
    * Return value:            none
    *
    */
-  virtual void resetHierarchyConfiguration (
-    boost::shared_ptr< PatchHierarchy > hierarchy ,
-    int coarsest_level ,
-    int finest_level );
+  virtual void resetHierarchyConfiguration(
+     const boost::shared_ptr<hier::PatchHierarchy>& hierarchy,
+     const int coarsest_level,
+     const int finest_level );
 
   //! @}
 
@@ -1084,9 +1086,7 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector getRefineOpStencilWidth(const tbox::Dimension& dim) const{
- return hier::IntVector::getZero(dim);
-   }
+  virtual IntVector getRefineOpStencilWidth(const tbox::Dimension& dim) const;
 
   /*!
    * preprocessRefine() does no special user-defined spatial 
@@ -1136,7 +1136,7 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector getCoarsenOpStencilWidth() const;
+  virtual IntVector getCoarsenOpStencilWidth(const tbox::Dimension& dim) const;
   
   /*!
    * preprocessCoarsen() does no special user-defined spatial 
@@ -1512,6 +1512,11 @@ protected:
 
   // level set ghostcell width
   IntVector d_level_set_ghostcell_width;
+  
+  /*
+   * Problem dimension.
+  */
+  const tbox::Dimension d_dim;
 
   /*
    * Component selectors to organize variables into logical groups
