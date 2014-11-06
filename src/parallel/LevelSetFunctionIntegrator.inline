@@ -151,9 +151,10 @@ void LevelSetFunctionIntegrator::postprocessRefine(
 }
 
 
-IntVector LevelSetFunctionIntegrator::getCoarsenOpStencilWidth() const
+IntVector LevelSetFunctionIntegrator::getCoarsenOpStencilWidth(const tbox::Dimension& dim) const
 {
-  return(IntVector(0));
+   return hier::IntVector::getZero(dim);
+
 }
   
 
