@@ -127,7 +127,7 @@ public:
    * Return value:   none
    *
    */
-  virtual void regridPatchHierarchy(LSMLIB_REAL time) = 0;
+  virtual void regridPatchHierarchy(const double time) = 0;
 
   //! @}
 
