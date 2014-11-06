@@ -30,10 +30,9 @@ namespace LSMLIB {
 
 
 /* Standard constructor */
-template <int DIM>
-BoundaryConditionModule<DIM>::BoundaryConditionModule(
-  Pointer< PatchHierarchy<DIM> > patch_hierarchy,
-  const IntVector<DIM>& ghostcell_width)
+BoundaryConditionModule::BoundaryConditionModule(
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  const IntVector& ghostcell_width)
 {
   // invoke resetHierarchyConfiguration() to set up boundary boxes, etc.
   resetHierarchyConfiguration(
@@ -43,8 +42,7 @@ BoundaryConditionModule<DIM>::BoundaryConditionModule(
 
 
 /* Default constructor */
-template <int DIM>
-BoundaryConditionModule<DIM>::BoundaryConditionModule():
+BoundaryConditionModule::BoundaryConditionModule():
 d_ghostcell_width(0),
 d_geom_periodic_dirs(0)
 {
@@ -55,9 +53,8 @@ d_geom_periodic_dirs(0)
 
 
 /* Copy constructor */
-template <int DIM>
-BoundaryConditionModule<DIM>::BoundaryConditionModule(
-  const BoundaryConditionModule<DIM>& rhs) :
+BoundaryConditionModule::BoundaryConditionModule(
+  const BoundaryConditionModule& rhs) :
 d_ghostcell_width(rhs.d_ghostcell_width),
 d_geom_periodic_dirs(rhs.d_geom_periodic_dirs)
 {
@@ -70,8 +67,7 @@ d_geom_periodic_dirs(rhs.d_geom_periodic_dirs)
 
 
 /* imposeBoundaryConditions() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeBoundaryConditions(
+void BoundaryConditionModule::imposeBoundaryConditions(
   const int phi_handle,
   const IntVector<DIM>& lower_bc,
   const IntVector<DIM>& upper_bc,
@@ -117,8 +113,7 @@ void BoundaryConditionModule<DIM>::imposeBoundaryConditions(
 
 
 /* imposeBoundaryConditionsOnPatch() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeBoundaryConditionsOnPatch(
+void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
   Patch<DIM>& patch,
   const int phi_handle,
   const IntVector<DIM>& lower_bc,
@@ -182,8 +177,7 @@ void BoundaryConditionModule<DIM>::imposeBoundaryConditionsOnPatch(
 
 
 /* imposeAntiPeriodicBCs() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCs( 
+void BoundaryConditionModule::imposeAntiPeriodicBCs( 
   const int phi_handle,
   const IntVector<DIM>& lower_bc,
   const IntVector<DIM>& upper_bc,
@@ -222,8 +216,7 @@ void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCs(
 
 
 /* imposeAntiPeriodicBCsOnPatch() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeAntiPeriodicBCsOnPatch( 
+void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch( 
   Patch<DIM>& patch,
   const int phi_handle,
   const IntVector<DIM>& lower_bc,
