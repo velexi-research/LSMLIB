@@ -541,6 +541,7 @@ public:
    *
    */
   LevelSetMethodAlgorithm(
+    const tbox::Dimension& dim,
     boost::shared_ptr<Database> lsm_algorithm_input_db,
     boost::shared_ptr<PatchHierarchy > patch_hierarchy,
     LevelSetMethodPatchStrategy* patch_strategy,
