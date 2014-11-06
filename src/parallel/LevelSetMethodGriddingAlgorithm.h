@@ -119,7 +119,6 @@ using namespace hier;
 using namespace mesh;
 using namespace tbox;
 
-
 /******************************************************************
  *
  * LevelSetMethodGriddingAlgorithm Class Definition
@@ -163,7 +162,7 @@ public:
   LevelSetMethodGriddingAlgorithm(
     boost::shared_ptr<Database> input_db,
     boost::shared_ptr< PatchHierarchy > patch_hierarchy,
-    boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
+    boost::shared_ptr< LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
     const string& object_name = "LevelSetMethodGriddingAlgorithm");
 
   /*!
@@ -245,7 +244,7 @@ public:
    * Return value:   none
    *
    */
-  virtual void regridPatchHierarchy(LSMLIB_REAL time);
+  virtual void regridPatchHierarchy(const double time);
 
   //! @}
  
