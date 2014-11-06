@@ -303,9 +303,9 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_two_ghostcells_handle );
-              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_two_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -446,11 +446,11 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
-              Pointer< CellData<DIM,LSMLIB_REAL> > D2_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D2_data =
                 patch->getPatchData( s_D2_three_ghostcells_handle );
-              Pointer< CellData<DIM,LSMLIB_REAL> > D3_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D3_data =
                 patch->getPatchData( s_D3_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -622,7 +622,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              Pointer< CellData<DIM,LSMLIB_REAL> > D1_data =
+              boost::shared_ptr< CellData<LSMLIB_REAL> > D1_data =
                 patch->getPatchData( s_D1_three_ghostcells_handle );
 
               Box<DIM> D1_ghostbox = D1_data->getGhostBox();
@@ -764,9 +764,8 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
 
 
 /* computePlusAndMinusSpatialDerivatives() */
-template <int DIM> 
-void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int grad_phi_plus_handle,
@@ -781,12 +780,12 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
   const int finest_level = hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<DIM>::Iterator pi;
+    typename PatchLevel::Iterator pi;
     for (pi.initialize(level); pi; pi++) { // loop over patches
       const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
+      boost::shared_ptr< Patch > patch = level->getPatch(pn);
       if ( patch.isNull() ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computePlusAndMinusSpatialDerivatives(): "
@@ -866,8 +865,6 @@ void LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
                   &grad_phi_plus_ghostbox_lower[1],
                   &grad_phi_plus_ghostbox_upper[1],
                   &grad_phi_plus_ghostbox_lower[2],
-                  &grad_phi_plus_ghostbox_upper[2],
-                  grad_phi_minus[0], grad_phi_minus[1], grad_phi_minus[2],
                   &grad_phi_minus_ghostbox_lower[0],
                   &grad_phi_minus_ghostbox_upper[0],
                   &grad_phi_minus_ghostbox_lower[1],
@@ -6867,6 +6864,8 @@ void LevelSetMethodToolbox<DIM>::initializeComputeSpatialDerivativesParameters()
 template <int DIM>
 void LevelSetMethodToolbox<DIM>::initializeComputeUnitNormalParameters()
 {
+  // do nothing if PatchData for grad(phi) has already been created
+  // do nothing if PatchData for grad(phi) has already been created
   // do nothing if PatchData for grad(phi) has already been created
   if ( (s_compute_normal_grad_phi_handle >= 0) &&
        (s_compute_normal_grad_phi_plus_handle >= 0) &&
