@@ -21,18 +21,6 @@
 #include "LSMLIB_DefaultParameters.h" 
 #include "BoundaryConditionModule.h" 
 
-// SAMRAI header files
-//#include "Box.h"
-//#include "BoxArray.h"
-//#include "CartesianGridGeometry.h"
-//#include "CartesianPatchGeometry.h"
-//#include "CellData.h"
-//#include "PatchLevel.h"
-//#include "RefineOperator.h"
-//#include "VariableContext.h"
-//#include "VariableDatabase.h"
-//#include "tbox/RestartManager.h"
-//#include "tbox/Utilities.h"
 
 #ifdef DEBUG_CHECK_ASSERTIONS
 #ifndef included_assert
@@ -51,9 +39,13 @@ extern "C" {
   #include "lsm_utilities3d.h"
 }
 
+#include "SAMRAI/tbox/RestartManager.h"
+#include "SAMRAI/tbox/SAMRAI_MPI.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Database.h"
 // SAMRAI namespaces
+using namespace tbox;
 using namespace pdat;
-
 // VERSION INFORMATION
 #define LEVEL_SET_METHOD_INTEGRATOR_VERSION	(1)
 
@@ -86,6 +78,9 @@ using namespace pdat;
 
 namespace LSMLIB {
 
+// Initialize MPI and SAMRAI
+//tbox::SAMRAI_MPI::init(&argc, &argv);
+
 /* Constructor */
 LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   const tbox::Dimension& dim,
@@ -114,13 +109,13 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
 
   // Check to make sure that dim is 1, 2, or 3.
   // Dimensions greater than 3 are currently unsupported.
-  if ( dim > tbox::Dimension(3)) {
+  if ( d_dim.getValue() > 3) {
     TBOX_ERROR(  d_object_name 
               << "::LevelSetFunctionIntegrator(): "
               << "dim > 3 not supported."
               << endl );
   } 
-  if (dim < tbox::Dimension(1)) {
+  if (d_dim.getValue() < 1) {
     TBOX_ERROR(  d_object_name 
               << "::LevelSetFunctionIntegrator(): "
               << "dim must be positive."
@@ -145,7 +140,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
 
   // initialize boundary condition data
   d_lower_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
-  d_upper_bc_phi.resizeArray(d_num_level_set_fcn_components);
+  d_upper_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
   for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
     for (int Dim=0; Dim< d_dim.getValue(); Dim++) {
       d_lower_bc_phi[comp](Dim) = BoundaryConditionModule::NONE;
@@ -154,12 +149,12 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   }
   
   if (d_codimension == 2) {
-    d_lower_bc_psi.resizeArray(d_num_level_set_fcn_components);
-    d_upper_bc_psi.resizeArray(d_num_level_set_fcn_components);
+    d_lower_bc_psi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
+    d_upper_bc_psi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
     for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
-      for (int Dim=0; Dim<dim; Dim++) {
-        d_lower_bc_psi[comp](Dim) = BoundaryConditionModule<dim>::NONE;
-        d_upper_bc_psi[comp](Dim) = BoundaryConditionModule<dim>::NONE;
+      for (int Dim=0; Dim< d_dim.getValue(); Dim++) {
+        d_lower_bc_psi[comp](Dim) = BoundaryConditionModule::NONE;
+        d_upper_bc_psi[comp](Dim) = BoundaryConditionModule::NONE;
       }
     }
   }
@@ -188,8 +183,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   initializeCommunicationObjects();
 
   // create reinitialization algorithm for phi
-  d_phi_reinitialization_alg = 
-    new ReinitializationAlgorithm<dim>(
+ boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
       d_patch_hierarchy,
       d_phi_handles[0],
       d_control_volume_handle,
@@ -201,12 +195,11 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
       d_reinitialization_max_iters,
       d_reinitialization_stop_tol,
       d_verbose_mode,
-      "phi reinitialization algorithm");
+      "phi reinitialization algorithm"));
 
   // create reinitialization algorithm for psi (if necessary)
   if (d_codimension == 2) {
-    d_psi_reinitialization_alg = 
-      new ReinitializationAlgorithm<dim>(
+  boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
         d_patch_hierarchy,
         d_psi_handles[0],
         d_control_volume_handle,
@@ -218,13 +211,12 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
         d_reinitialization_max_iters,
         d_reinitialization_stop_tol,
         d_verbose_mode,
-        "psi reinitialization algorithm");
+        "psi reinitialization algorithm"));
    }
  
   // create orthogonalization algorithm for codimension-two problems
   if (d_codimension == 2) {
-    d_orthogonalization_alg = 
-      new OrthogonalizationAlgorithm<dim>(
+ boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg = boost::shared_ptr< OrthogonalizationAlgorithm > (new OrthogonalizationAlgorithm(
         d_patch_hierarchy,
         d_phi_handles[0],
         d_psi_handles[0],
@@ -233,13 +225,15 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
         d_spatial_derivative_order,
         d_tvd_runge_kutta_order,
         d_cfl_number,
+        IntVector(d_patch_hierarchy->getDim(), 0),//TODO:fix me, need ghost cell
+        IntVector(d_patch_hierarchy->getDim(), 0),//TODO:fix me, need ghost cell
         d_orthogonalization_stop_dist,
         d_orthogonalization_max_iters,
         d_orthogonalization_stop_tol,
         d_verbose_mode,
-        "orthogonalization algorithm");
+        "orthogonalization algorithm"));
   } else {
-    d_orthogonalization_alg.setNull(); 
+    boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg= boost::shared_ptr< OrthogonalizationAlgorithm > (); 
   }
   d_orthogonalization_evolved_field = PHI;  // first orthogonalization
                                             // evolves phi
@@ -254,9 +248,9 @@ LevelSetFunctionIntegrator::~LevelSetFunctionIntegrator()
   RestartManager::getManager()->unregisterRestartItem(d_object_name);
 
   // deallocate solution variables and persistent variables
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel<dim> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_solution_variables); 
     level->deallocatePatchData(d_persistent_variables); 
   }
@@ -265,7 +259,7 @@ LevelSetFunctionIntegrator::~LevelSetFunctionIntegrator()
 
 
 /* printClassData() */
-LevelSetFunctionIntegrator::printClassData(
+void  LevelSetFunctionIntegrator::printClassData(
   ostream& os) const
 {
   os << "\n===================================" << endl;
@@ -326,11 +320,11 @@ LevelSetFunctionIntegrator::printClassData(
 
   os << "Object Pointers" << endl;
   os << "---------------" << endl;
-  os << "d_patch_hierarchy = " << d_patch_hierarchy.getPointer() << endl;
-  os << "d_grid_geometry = " << d_grid_geometry.getPointer() << endl;
+  os << "d_patch_hierarchy = " << d_patch_hierarchy.get() << endl;
+  os << "d_grid_geometry = " << d_grid_geometry.get() << endl;
   os << "d_lsm_patch_strategy = " << d_lsm_patch_strategy << endl; 
   os << "d_lsm_velocity_field_strategy = " << d_lsm_velocity_field_strategy << endl; 
-  os << "d_fill_new_level = " << d_fill_new_level.getPointer() << endl; 
+  os << "d_fill_new_level = " << d_fill_new_level.get() << endl; 
   os << "d_fill_bdry_time_advance = " 
      << d_fill_bdry_time_advance.getPointer() << endl; 
 
@@ -366,9 +360,9 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
   LSMLIB_REAL max_user_specified_dt = LSMLIB_REAL_MAX;
 
   // allocate scratch space
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel<dim> > level = 
+    boost::shared_ptr< PatchLevel > level = 
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData( d_compute_stable_dt_scratch_variables );
   }
@@ -403,13 +397,11 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
   // user-specified dt 
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel<dim> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr<PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
 
-    typename PatchLevel<dim>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns secod patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::computeStableDt(): "
                   << "Cannot find patch. Null patch pointer."
@@ -435,7 +427,11 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
 
   }  // end loop over levels in hierarchy
 
-  max_user_specified_dt = tbox::MPI::minReduction(max_user_specified_dt);
+  int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_user_specified_dt,1, MPI_MIN);
+  
+  if(err!=0){
+    perr << "Error AllReduce=" <<err<< endl;
+  }
 
   LSMLIB_REAL max_stable_dt = -1; // temporary value to be set below
   if (max_user_specified_dt < LSMLIB_REAL_MAX) {
@@ -465,7 +461,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
        */
       if (d_lsm_velocity_field_strategy->providesExternalVelocityField()) {
         LSMLIB_REAL max_advection_dt_for_component = 
-          LevelSetMethodToolbox<dim>::computeStableAdvectionDt(
+          LevelSetMethodToolbox::computeStableAdvectionDt(
             d_patch_hierarchy,
             d_lsm_velocity_field_strategy->
               getExternalVelocityFieldPatchDataHandle(comp),
@@ -486,7 +482,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
       if (d_lsm_velocity_field_strategy->providesNormalVelocityField()) {
   
         // compute normal velocity dt for phi
-        LevelSetMethodToolbox<dim>::computePlusAndMinusSpatialDerivatives(
+        LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
           d_patch_hierarchy,
           d_spatial_derivative_type,
           d_spatial_derivative_order,
@@ -496,7 +492,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
           comp);
   
         LSMLIB_REAL max_phi_normal_vel_dt_for_component = 
-          LevelSetMethodToolbox<dim>::computeStableNormalVelocityDt(
+          LevelSetMethodToolbox::computeStableNormalVelocityDt(
             d_patch_hierarchy,
             d_lsm_velocity_field_strategy->
               getNormalVelocityFieldPatchDataHandle(PHI, comp),
@@ -512,7 +508,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
 
         if (d_codimension == 2) {
           // compute normal velocity dt for psi
-          LevelSetMethodToolbox<dim>::computePlusAndMinusSpatialDerivatives(
+          LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
           d_patch_hierarchy,
           d_spatial_derivative_type,
           d_spatial_derivative_order,
@@ -522,7 +518,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
           comp);
   
           LSMLIB_REAL max_psi_normal_vel_dt_for_component = 
-            LevelSetMethodToolbox<dim>::computeStableNormalVelocityDt(
+            LevelSetMethodToolbox::computeStableNormalVelocityDt(
               d_patch_hierarchy,
               d_lsm_velocity_field_strategy->
                 getNormalVelocityFieldPatchDataHandle(PSI, comp),
@@ -563,7 +559,12 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
      *        (2) the concrete subclass of LevelSetMethodVelocityFieldStrategy
      *            physics_dt forgets to do a reduction
      */
-    max_stable_dt = tbox::MPI::minReduction(max_stable_dt);
+   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_user_specified_dt,1, MPI_MIN);
+
+  if(err!=0){
+    perr << "Error AllReduce=" <<err<< endl;
+  }
+
 
     if (d_verbose_mode) {
       pout << endl;
@@ -577,7 +578,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
 
   // deallocate patch data that was allocated for the time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel<dim> > level 
+    boost::shared_ptr< PatchLevel > level 
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData( d_compute_stable_dt_scratch_variables );
   }
@@ -587,11 +588,11 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
 
 
 /* advanceLevelSetFunctions() */
-bool LevelSetFunctionIntegrator<dim>::advanceLevelSetFunctions(
+bool LevelSetFunctionIntegrator::advanceLevelSetFunctions(
   const LSMLIB_REAL dt)
 {
   // get number of levels in PatchHierarchy
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   
   // if this is the first time step, synchronize data across processors 
   // NOTE:  normally this is done at the end of the time advance
@@ -624,7 +625,7 @@ bool LevelSetFunctionIntegrator<dim>::advanceLevelSetFunctions(
 
   // allocate scratch space
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel<dim> > level = 
+    boost::shared_ptr< PatchLevel > level = 
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData( d_time_advance_scratch_variables );
   }
@@ -712,7 +713,7 @@ bool LevelSetFunctionIntegrator<dim>::advanceLevelSetFunctions(
 
   // deallocate patch data that was allocated for the time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel<dim> > level 
+    boost::shared_ptr< PatchLevel > level 
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData( d_time_advance_scratch_variables );
   }
@@ -749,16 +750,16 @@ bool LevelSetFunctionIntegrator<dim>::advanceLevelSetFunctions(
 
 
 /* preprocessInitializeVelocityField() */
-void LevelSetFunctionIntegrator<dim>::preprocessInitializeVelocityField(
+void LevelSetFunctionIntegrator::preprocessInitializeVelocityField(
   int& phi_handle,
   int& psi_handle,
-  const boost::shared_ptr< PatchHierarchy<dim> > hierarchy,
+  const boost::shared_ptr< PatchHierarchy > hierarchy,
   const int level_number)
 {
-  boost::shared_ptr< PatchLevel<dim> > level = hierarchy->getPatchLevel(level_number);
+  boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(level_number);
 
   // fill scratch data
-  boost::shared_ptr< RefineSchedule<dim> > sched =
+  boost::shared_ptr< RefineSchedule > sched =
     d_fill_new_level->createSchedule(level, level_number-1, hierarchy, this);
   sched->fillData(d_current_time,true);
 
@@ -779,7 +780,7 @@ void LevelSetFunctionIntegrator::postprocessInitializeVelocityField(
 void LevelSetFunctionIntegrator::putToRestart(const boost::shared_ptr<Database>& restart_db) const
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-   assert(!restart_db.isNull());
+   assert(restart_db!=NULL);
 #endif
 
    // write out version information
@@ -858,16 +859,16 @@ void LevelSetFunctionIntegrator::initializeLevelData (
 {
 
 #ifdef DEBUG_CHECK_ASSERTIONS
-   assert(!hierarchy.isNull());
+   assert(hierarchy!=NULL);
    assert( (level_number >= 0)
            && (level_number <= hierarchy->getFinestLevelNumber()) );
-   if ( !(old_level.isNull()) ) {
+   if ( old_level!=NULL ) {
       assert( level_number == old_level->getLevelNumber() );
    }
-   assert(!(hierarchy->getPatchLevel(level_number)).isNull());
+   assert(hierarchy->getPatchLevel(level_number)!=NULL);
 #endif
 
-  boost::shared_ptr< PatchLevel<dim> > level = hierarchy->getPatchLevel(level_number);
+  boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(level_number);
 
   if (allocate_data) {
     level->allocatePatchData(d_solution_variables);
@@ -878,9 +879,9 @@ void LevelSetFunctionIntegrator::initializeLevelData (
   }
 
   // create schedules for filling new level and fill new level with data
-  if ((level_number > 0) || !old_level.isNull()) {
+  if ((level_number > 0) || old_level!=NULL) {
 
-    boost::shared_ptr< RefineSchedule<dim> > sched =
+    boost::shared_ptr< RefineSchedule > sched =
       d_fill_new_level->createSchedule(
         level, old_level, level_number-1,
         hierarchy, this);
@@ -895,11 +896,9 @@ void LevelSetFunctionIntegrator::initializeLevelData (
    */ 
   if (initial_time)
   {
-    typename PatchLevel<dim>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) {
-      const int pn = *pi;
-      boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.      
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name 
                   << "::initializeLevelData(): "
                   << "Cannot find patch. Null patch pointer."
@@ -913,7 +912,7 @@ void LevelSetFunctionIntegrator::initializeLevelData (
   } // end (initial_time)
 
   // deallocate data on old PatchLevel if it exists
-  if (!old_level.isNull()) {
+  if (old_level!=NULL) {
     old_level->deallocatePatchData(d_solution_variables);
     old_level->deallocatePatchData(d_persistent_variables);
   }
@@ -922,10 +921,10 @@ void LevelSetFunctionIntegrator::initializeLevelData (
 
 
 /* setPhysicalBoundaryConditions() */
-void LevelSetFunctionIntegrator<dim>::setPhysicalBoundaryConditions(
-  Patch<dim>& patch,
+void LevelSetFunctionIntegrator::setPhysicalBoundaryConditions(
+  Patch& patch,
   const double fill_time,
-  const IntVector<dim>& ghost_width_to_fill)
+  const IntVector & ghost_width_to_fill)
 {
   // invoke LevelSetMethodPatchStrategy::setPhysicalBoundaryConditions()
   d_lsm_patch_strategy
@@ -936,19 +935,19 @@ void LevelSetFunctionIntegrator<dim>::setPhysicalBoundaryConditions(
 
 
 /* setBoundaryConditions() */
-void LevelSetFunctionIntegrator<dim>::setBoundaryConditions(
-  const IntVector<dim>& lower_bc,
-  const IntVector<dim>& upper_bc,
+void LevelSetFunctionIntegrator::setBoundaryConditions(
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int component)
 {
 
   // check that anti-periodic boundary conditions are consistent
-  for (int Dim = 0; Dim < dim; Dim++) {
-    if ( ((lower_bc[Dim] == BoundaryConditionModule<dim>::ANTI_PERIODIC) &&
-          (upper_bc[Dim] != BoundaryConditionModule<dim>::ANTI_PERIODIC)) ||
-         ((lower_bc[Dim] != BoundaryConditionModule<dim>::ANTI_PERIODIC) &&
-          (upper_bc[Dim] == BoundaryConditionModule<dim>::ANTI_PERIODIC)) ) {
+  for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
+    if ( ((lower_bc[Dim] == BoundaryConditionModule::ANTI_PERIODIC) &&
+          (upper_bc[Dim] != BoundaryConditionModule::ANTI_PERIODIC)) ||
+         ((lower_bc[Dim] != BoundaryConditionModule::ANTI_PERIODIC) &&
+          (upper_bc[Dim] == BoundaryConditionModule::ANTI_PERIODIC)) ) {
       TBOX_ERROR(  d_object_name 
                 << "::setBoundaryConditions(): "
                 << "ANTI_PERIODIC boundary conditions inconsistently set."
@@ -982,50 +981,49 @@ void LevelSetFunctionIntegrator<dim>::setBoundaryConditions(
 
 
 /* applyGradientDetector() */
-void LevelSetFunctionIntegrator<dim>::applyGradientDetector(
-  const boost::shared_ptr< BasePatchHierarchy<dim> > hierarchy,
+void LevelSetFunctionIntegrator::applyGradientDetector(
+  const boost::shared_ptr< PatchHierarchy > hierarchy,
   const int level_number,
   const double error_data_time,
   const int tag_index,
   const bool initial_time,
   const bool uses_richardson_extrapolation_too)
 {
-  boost::shared_ptr< PatchLevel<dim> > level = hierarchy->getPatchLevel(level_number);
-  typename PatchLevel<dim>::Iterator pi;
-  for (pi.initialize(level); pi; pi++) { // loop over patches
-    const int pn = *pi;
-    boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-    if ( patch.isNull() ) {
+  boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(level_number);
+  for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+    boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    
+    if ( patch==NULL ) {
       TBOX_ERROR(  d_object_name 
                 << "::applyGradientDetector(): "
                 << "Cannot find patch. Null patch pointer."
                 << endl );
     }
 
-    boost::shared_ptr< CellData<dim,LSMLIB_REAL> > phi_data = 
+    boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data = 
       patch->getPatchData( d_phi_handles[0] );
-    boost::shared_ptr< CellData<dim,LSMLIB_REAL> > psi_data;
+    boost::shared_ptr< CellData<LSMLIB_REAL> > psi_data;
     if (d_codimension == 2) {
       psi_data = patch->getPatchData( d_psi_handles[0] );
     }
-    boost::shared_ptr< CellData<dim,int> > tag_data = 
+    boost::shared_ptr< CellData<int> > tag_data = 
       patch->getPatchData( tag_index );
 
-    Box<dim> phi_ghostbox = phi_data->getGhostBox();
-    const IntVector<dim> phi_gb_lower = phi_ghostbox.lower();
-    const IntVector<dim> phi_gb_upper = phi_ghostbox.upper();
+    Box phi_ghostbox = phi_data->getGhostBox();
+    const IntVector phi_gb_lower = phi_ghostbox.lower();
+    const IntVector phi_gb_upper = phi_ghostbox.upper();
 
-    Box<dim> psi_ghostbox = psi_data->getGhostBox();
-    const IntVector<dim> psi_gb_lower = psi_ghostbox.lower();
-    const IntVector<dim> psi_gb_upper = psi_ghostbox.upper();
+    Box psi_ghostbox = psi_data->getGhostBox();
+    const IntVector psi_gb_lower = psi_ghostbox.lower();
+    const IntVector psi_gb_upper = psi_ghostbox.upper();
 
-    Box<dim> tag_box = tag_data->getBox();
-    const IntVector<dim> tag_box_lower = tag_box.lower();
-    const IntVector<dim> tag_box_upper = tag_box.upper();
+    Box tag_box = tag_data->getBox();
+    const IntVector tag_box_lower = tag_box.lower();
+    const IntVector tag_box_upper = tag_box.upper();
 
-    Box<dim> tag_ghostbox = tag_data->getGhostBox();
-    const IntVector<dim> tag_gb_lower = tag_ghostbox.lower();
-    const IntVector<dim> tag_gb_upper = tag_ghostbox.upper();
+    Box tag_ghostbox = tag_data->getGhostBox();
+    const IntVector tag_gb_lower = tag_ghostbox.lower();
+    const IntVector tag_gb_upper = tag_ghostbox.upper();
 
 /* KTC - FIX ME
 #if dim==2
@@ -1063,16 +1061,16 @@ void LevelSetFunctionIntegrator::resetHierarchyConfiguration(
   const int finest_level)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!hierarchy.isNull());
+  assert(hierarchy!=NULL);
   assert( (coarsest_level >= 0)
           && (coarsest_level <= finest_level)
           && (finest_level <= hierarchy->getFinestLevelNumber()) );
   for (int ln = 0; ln <= finest_level; ln++) {
-     assert(!(hierarchy->getPatchLevel(ln)).isNull());
+     assert(hierarchy->getPatchLevel(ln)!=NULL);
   }
 #endif
 
-  int num_levels = hierarchy->getNumberLevels();
+  int num_levels = hierarchy->getNumberOfLevels();
 
   // reset communications schedules used to fill boundary data 
   // during time advance
@@ -1080,7 +1078,7 @@ void LevelSetFunctionIntegrator::resetHierarchyConfiguration(
     d_fill_bdry_sched_time_advance[k].resizeArray(num_levels);
 
     for (int ln = coarsest_level; ln <= finest_level; ln++) {
-      boost::shared_ptr< PatchLevel<dim> > level = hierarchy->getPatchLevel(ln);
+      boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
   
       // reset data transfer configuration for boundary filling 
       // before time advance
@@ -1098,7 +1096,7 @@ void LevelSetFunctionIntegrator::resetHierarchyConfiguration(
   d_fill_bdry_sched_compute_stable_dt.resizeArray(num_levels);
 
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
-    boost::shared_ptr< PatchLevel<dim> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
 
     // reset data transfer configuration for boundary filling 
     // before time advance
@@ -1116,12 +1114,12 @@ void LevelSetFunctionIntegrator::resetHierarchyConfiguration(
   if (d_codimension == 2) {
     d_psi_reinitialization_alg->resetHierarchyConfiguration(
       hierarchy, coarsest_level, finest_level);
-    d_orthogonalization_alg->resetHierarchyConfiguration(
+    d_orthogonalization_alg-> resetHierarchyConfiguration(
       hierarchy, coarsest_level, finest_level);
   }
 
   // recompute control volumes
-  LevelSetMethodToolbox<dim>::computeControlVolumes(
+  LevelSetMethodToolbox::computeControlVolumes(
     hierarchy, d_control_volume_handle);
 
   // create anti-periodic boundary condition plan
@@ -1135,7 +1133,7 @@ void LevelSetFunctionIntegrator::resetHierarchyConfiguration(
 
 
 /* advanceLevelSetEqnUsingTVDRK1() */
-void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK1(
+void LevelSetFunctionIntegrator::advanceLevelSetEqnUsingTVDRK1(
   const LSMLIB_REAL dt)
 {
   // initialize counter for current stage of TVD RK step
@@ -1155,7 +1153,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK1(
     // advance phi through TVD-RK1 step 
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK1Step(
+    LevelSetMethodToolbox::TVDRK1Step(
       d_patch_hierarchy,
       d_phi_handles[0], 
       d_phi_handles[rk_stage], 
@@ -1167,7 +1165,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK1(
       // advance psi through TVD-RK1 step 
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK1Step(
+      LevelSetMethodToolbox::TVDRK1Step(
         d_patch_hierarchy,
         d_psi_handles[0], 
         d_psi_handles[rk_stage], 
@@ -1181,7 +1179,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK1(
 
 
 /* advanceLevelSetEqnUsingTVDRK2() */
-void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
+void LevelSetFunctionIntegrator::advanceLevelSetEqnUsingTVDRK2(
   const LSMLIB_REAL dt)
 {
   // { begin Stage 1
@@ -1203,7 +1201,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
     // advance phi through the first stage of TVD-RK2 
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK2Stage1(
+    LevelSetMethodToolbox::TVDRK2Stage1(
       d_patch_hierarchy,
       d_phi_handles[rk_stage+1],
       d_phi_handles[rk_stage],
@@ -1216,7 +1214,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
       // advance psi through the first stage of TVD-RK2 
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK2Stage1(
+      LevelSetMethodToolbox::TVDRK2Stage1(
         d_patch_hierarchy,
         d_psi_handles[rk_stage+1],
         d_psi_handles[rk_stage],
@@ -1235,7 +1233,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
   rk_stage = 1;
 
   // fill scratch space for second stage of time advance
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: true indicates that physical boundary conditions should
     //       be set.
@@ -1274,7 +1272,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
     // advance phi through the second stage of TVD-RK2 
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK2Stage2(
+    LevelSetMethodToolbox::TVDRK2Stage2(
       d_patch_hierarchy,
       d_phi_handles[0],
       d_phi_handles[rk_stage],
@@ -1288,7 +1286,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
       // advance psi through the second stage of TVD-RK2 
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK2Stage2(
+      LevelSetMethodToolbox::TVDRK2Stage2(
         d_patch_hierarchy,
         d_psi_handles[0],
         d_psi_handles[rk_stage],
@@ -1304,7 +1302,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK2(
 
 
 /* advanceLevelSetEqnUsingTVDRK3() */
-void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
+void LevelSetFunctionIntegrator::advanceLevelSetEqnUsingTVDRK3(
   const LSMLIB_REAL dt)
 {
   // { begin Stage 1
@@ -1326,7 +1324,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
     // advance phi through the first stage of TVD-RK3
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK3Stage1(
+    LevelSetMethodToolbox::TVDRK3Stage1(
       d_patch_hierarchy,
       d_phi_handles[rk_stage+1],
       d_phi_handles[rk_stage],
@@ -1339,7 +1337,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
       // advance psi through the first stage of TVD-RK3
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK3Stage1(
+      LevelSetMethodToolbox::TVDRK3Stage1(
         d_patch_hierarchy,
         d_psi_handles[rk_stage+1],
         d_psi_handles[rk_stage],
@@ -1358,7 +1356,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
   rk_stage = 1;
 
   // fill scratch space for second stage of time advance
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: true indicates that physical boundary conditions should
     //       be set.
@@ -1397,7 +1395,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
     // advance phi through the second stage of TVD-RK3
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK3Stage2(
+    LevelSetMethodToolbox::TVDRK3Stage2(
       d_patch_hierarchy,
       d_phi_handles[rk_stage+1],
       d_phi_handles[rk_stage],
@@ -1411,7 +1409,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
       // advance psi through the second stage of TVD-RK3
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK3Stage2(
+      LevelSetMethodToolbox::TVDRK3Stage2(
         d_patch_hierarchy,
         d_psi_handles[rk_stage+1],
         d_psi_handles[rk_stage],
@@ -1469,7 +1467,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
     // advance phi through the second stage of TVD-RK3
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
-    LevelSetMethodToolbox<dim>::TVDRK3Stage3(
+    LevelSetMethodToolbox::TVDRK3Stage3(
       d_patch_hierarchy,
       d_phi_handles[0],
       d_phi_handles[rk_stage],
@@ -1483,7 +1481,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
       // advance psi through the second stage of TVD-RK3
       computeLevelSetEquationRHS(PSI,d_psi_handles[rk_stage],
                                  comp);
-      LevelSetMethodToolbox<dim>::TVDRK3Stage3(
+      LevelSetMethodToolbox::TVDRK3Stage3(
         d_patch_hierarchy,
         d_psi_handles[0],
         d_psi_handles[rk_stage],
@@ -1502,7 +1500,7 @@ void LevelSetFunctionIntegrator<dim>::advanceLevelSetEqnUsingTVDRK3(
  * calls addAdvectionTermToLevelSetEquationRHS() and 
  * addNormalVelocityTermToLevelSetEquationRHS() as appropriate.
  */
-void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
+void LevelSetFunctionIntegrator::computeLevelSetEquationRHS(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int phi_handle,
   const int component)
@@ -1516,16 +1514,14 @@ void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
 
   // loop over PatchHierarchy and zero out the RHS for level set 
   // equation by calling Fortran routines
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel<dim> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<dim>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name 
                   << "::computeLevelSetEquationRHS(): "
                   << "Cannot find patch. Null patch pointer."
@@ -1533,17 +1529,17 @@ void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > rhs_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
   
-      Box<dim> rhs_ghostbox = rhs_data->getGhostBox();
-      const IntVector<dim> rhs_ghostbox_lower = rhs_ghostbox.lower();
-      const IntVector<dim> rhs_ghostbox_upper = rhs_ghostbox.upper();
+      Box rhs_ghostbox = rhs_data->getGhostBox();
+      const IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
+      const IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
 
       LSMLIB_REAL* rhs = rhs_data->getPointer();
 
       // zero out level set equation RHS
-      if (dim == 3) {
+      if (d_dim.getValue() == 3) {
 
         LSM3D_ZERO_OUT_LEVEL_SET_EQN_RHS(
           rhs,
@@ -1554,7 +1550,7 @@ void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
           &rhs_ghostbox_lower[2],
           &rhs_ghostbox_upper[2]);
 
-      } else if (dim == 2) {
+      } else if (d_dim.getValue() == 2) {
 
         LSM2D_ZERO_OUT_LEVEL_SET_EQN_RHS(
           rhs,
@@ -1563,7 +1559,7 @@ void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
           &rhs_ghostbox_lower[1],
           &rhs_ghostbox_upper[1]);
 
-      } else if (dim == 1) {
+      } else if (d_dim.getValue() == 1) {
 
         LSM1D_ZERO_OUT_LEVEL_SET_EQN_RHS(
           rhs,
@@ -1597,7 +1593,7 @@ void LevelSetFunctionIntegrator<dim>::computeLevelSetEquationRHS(
 
 
 /* addAdvectionTermToLevelSetEquationRHS() */
-void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
+void LevelSetFunctionIntegrator::addAdvectionTermToLevelSetEquationRHS(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int phi_handle,
   const int component)
@@ -1616,7 +1612,7 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
     getExternalVelocityFieldPatchDataHandle(component);
 
   // compute upwind spatial derivatives 
-  LevelSetMethodToolbox<dim>::computeUpwindSpatialDerivatives(
+  LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
     d_patch_hierarchy,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
@@ -1627,16 +1623,14 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
 
   // loop over PatchHierarchy and add contribution of advection term 
   // to level set equation RHS by calling Fortran subroutines
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel<dim> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<dim>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name 
                   << "::addAdvectionTermToLevelSetEquationRHS(): "
                   << "Cannot find patch. Null patch pointer."
@@ -1644,41 +1638,41 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > rhs_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > grad_phi_upwind_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_upwind_data =
         patch->getPatchData( grad_phi_upwind_handle );
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > velocity_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data =
         patch->getPatchData( velocity_handle );
 
-      Box<dim> rhs_ghostbox = rhs_data->getGhostBox();
-      const IntVector<dim> rhs_ghostbox_lower = rhs_ghostbox.lower();
-      const IntVector<dim> rhs_ghostbox_upper = rhs_ghostbox.upper();
+      Box rhs_ghostbox = rhs_data->getGhostBox();
+      const IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
+      const IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
 
-      Box<dim> grad_phi_upwind_ghostbox = grad_phi_upwind_data->getGhostBox();
-      const IntVector<dim> grad_phi_upwind_ghostbox_lower = 
+      Box grad_phi_upwind_ghostbox = grad_phi_upwind_data->getGhostBox();
+      const IntVector grad_phi_upwind_ghostbox_lower = 
         grad_phi_upwind_ghostbox.lower();
-      const IntVector<dim> grad_phi_upwind_ghostbox_upper = 
+      const IntVector grad_phi_upwind_ghostbox_upper = 
         grad_phi_upwind_ghostbox.upper();
 
-      Box<dim> vel_ghostbox = velocity_data->getGhostBox();
-      const IntVector<dim> vel_ghostbox_lower = vel_ghostbox.lower();
-      const IntVector<dim> vel_ghostbox_upper = vel_ghostbox.upper();
+      Box vel_ghostbox = velocity_data->getGhostBox();
+      const IntVector vel_ghostbox_lower = vel_ghostbox.lower();
+      const IntVector vel_ghostbox_upper = vel_ghostbox.upper();
 
       // fill box
-      Box<dim> fillbox = rhs_data->getBox();
-      const IntVector<dim> fillbox_lower = fillbox.lower();
-      const IntVector<dim> fillbox_upper = fillbox.upper();
+      Box fillbox = rhs_data->getBox();
+      const IntVector fillbox_lower = fillbox.lower();
+      const IntVector fillbox_upper = fillbox.upper();
 
       LSMLIB_REAL* rhs = rhs_data->getPointer();
       LSMLIB_REAL* grad_phi_upwind[LSM_DIM_MAX];
       LSMLIB_REAL* vel[LSM_DIM_MAX];
-      for (int Dim = 0; Dim < dim; Dim++) {
+      for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
         grad_phi_upwind[Dim] = grad_phi_upwind_data->getPointer(Dim);
         vel[Dim] = velocity_data->getPointer(Dim);
       }
 
-      if (dim == 3) {
+      if (d_dim.getValue() == 3) {
 
         LSM3D_ADD_ADVECTION_TERM_TO_LSE_RHS(
           rhs,
@@ -1709,7 +1703,7 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
           &fillbox_lower[2],
           &fillbox_upper[2]);
 
-      } else if (dim == 2) {
+      } else if (d_dim.getValue() == 2) {
 
         LSM2D_ADD_ADVECTION_TERM_TO_LSE_RHS(
           rhs,
@@ -1732,7 +1726,7 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
           &fillbox_lower[1],
           &fillbox_upper[1]);
 
-      } else if (dim == 1) {
+      } else if (d_dim.getValue() == 1) {
 
         LSM1D_ADD_ADVECTION_TERM_TO_LSE_RHS(
           rhs,
@@ -1761,7 +1755,7 @@ void LevelSetFunctionIntegrator<dim>::addAdvectionTermToLevelSetEquationRHS(
 
 
 /* addNormalVelocityTermToLevelSetEquationRHS() */
-void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS(
+void LevelSetFunctionIntegrator::addNormalVelocityTermToLevelSetEquationRHS(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int phi_handle,
   const int component)
@@ -1783,7 +1777,7 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
     getNormalVelocityFieldPatchDataHandle(level_set_fcn, component);
 
   // compute plus and minus spatial derivatives 
-  LevelSetMethodToolbox<dim>::computePlusAndMinusSpatialDerivatives(
+  LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
     d_patch_hierarchy,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
@@ -1794,16 +1788,14 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
 
   // loop over PatchHierarchy and add contribution of normal velocity 
   // term to level set equation RHS by calling Fortran subroutines
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel<dim> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<dim>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      boost::shared_ptr< Patch<dim> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+    boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.  
+    if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name 
                   << "::addNormalVelocityTermToLevelSetEquationRHS(): "
                   << "Cannot find patch. Null patch pointer."
@@ -1811,50 +1803,50 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > rhs_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
         patch->getPatchData( rhs_handle );
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > normal_velocity_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > normal_velocity_data =
         patch->getPatchData( normal_velocity_handle );
 
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > grad_phi_plus_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_plus_data =
         patch->getPatchData( grad_phi_plus_handle );
-      boost::shared_ptr< CellData<dim,LSMLIB_REAL> > grad_phi_minus_data =
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_minus_data =
         patch->getPatchData( grad_phi_minus_handle );
   
-      Box<dim> rhs_ghostbox = rhs_data->getGhostBox();
-      const IntVector<dim> rhs_ghostbox_lower = rhs_ghostbox.lower();
-      const IntVector<dim> rhs_ghostbox_upper = rhs_ghostbox.upper();
+      Box rhs_ghostbox = rhs_data->getGhostBox();
+      const IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
+      const IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
 
-      Box<dim> grad_phi_plus_ghostbox = grad_phi_plus_data->getGhostBox();
-      const IntVector<dim> grad_phi_plus_ghostbox_lower = 
+      Box grad_phi_plus_ghostbox = grad_phi_plus_data->getGhostBox();
+      const IntVector grad_phi_plus_ghostbox_lower = 
         grad_phi_plus_ghostbox.lower();
-      const IntVector<dim> grad_phi_plus_ghostbox_upper = 
+      const IntVector grad_phi_plus_ghostbox_upper = 
         grad_phi_plus_ghostbox.upper();
-      Box<dim> grad_phi_minus_ghostbox = grad_phi_minus_data->getGhostBox();
-      const IntVector<dim> grad_phi_minus_ghostbox_lower = 
+      Box grad_phi_minus_ghostbox = grad_phi_minus_data->getGhostBox();
+      const IntVector grad_phi_minus_ghostbox_lower = 
         grad_phi_minus_ghostbox.lower();
-      const IntVector<dim> grad_phi_minus_ghostbox_upper = 
+      const IntVector grad_phi_minus_ghostbox_upper = 
         grad_phi_minus_ghostbox.upper();
 
-      Box<dim> vel_ghostbox = normal_velocity_data->getGhostBox();
-      const IntVector<dim> vel_ghostbox_lower = vel_ghostbox.lower();
-      const IntVector<dim> vel_ghostbox_upper = vel_ghostbox.upper();
+      Box vel_ghostbox = normal_velocity_data->getGhostBox();
+      const IntVector vel_ghostbox_lower = vel_ghostbox.lower();
+      const IntVector vel_ghostbox_upper = vel_ghostbox.upper();
 
       // fill box
-      Box<dim> fillbox = rhs_data->getBox();
-      const IntVector<dim> fillbox_lower = fillbox.lower();
-      const IntVector<dim> fillbox_upper = fillbox.upper();
+      Box fillbox = rhs_data->getBox();
+      const IntVector fillbox_lower = fillbox.lower();
+      const IntVector fillbox_upper = fillbox.upper();
 
       LSMLIB_REAL* rhs = rhs_data->getPointer();
       LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
       LSMLIB_REAL* vel = normal_velocity_data->getPointer();
-      for (int Dim = 0; Dim < dim; Dim++) {
+      for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
         grad_phi_plus[Dim] = grad_phi_plus_data->getPointer(Dim);
         grad_phi_minus[Dim] = grad_phi_minus_data->getPointer(Dim);
       }
 
-      if (dim == 3) {
+      if (d_dim.getValue() == 3) {
 
         LSM3D_ADD_NORMAL_VEL_TERM_TO_LSE_RHS(
           rhs,
@@ -1892,7 +1884,7 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
           &fillbox_lower[2],
           &fillbox_upper[2]);
 
-      } else if (dim == 2) {
+      } else if (d_dim.getValue() == 2) {
 
         LSM2D_ADD_NORMAL_VEL_TERM_TO_LSE_RHS(
           rhs,
@@ -1920,7 +1912,7 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
           &fillbox_lower[1],
           &fillbox_upper[1]);
 
-      } else if (dim == 1) {
+      } else if (d_dim.getValue() == 1) {
 
         LSM1D_ADD_NORMAL_VEL_TERM_TO_LSE_RHS(
           rhs,
@@ -1952,7 +1944,7 @@ void LevelSetFunctionIntegrator<dim>::addNormalVelocityTermToLevelSetEquationRHS
 
 
 /* reinitializeLevelSetFunctions() */
-void LevelSetFunctionIntegrator<dim>::reinitializeLevelSetFunctions(
+void LevelSetFunctionIntegrator::reinitializeLevelSetFunctions(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int max_iterations)
 {
@@ -1960,26 +1952,26 @@ void LevelSetFunctionIntegrator<dim>::reinitializeLevelSetFunctions(
     for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
       d_phi_reinitialization_alg->
         reinitializeLevelSetFunctionForSingleComponent(
-          comp,
-          max_iterations,
           d_lower_bc_phi[comp],
-          d_upper_bc_phi[comp]);
+          d_upper_bc_phi[comp],
+          comp,
+          max_iterations);
     }
   } else {
     for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
       d_psi_reinitialization_alg->
         reinitializeLevelSetFunctionForSingleComponent(
+          d_lower_bc_phi[comp],
+          d_upper_bc_phi[comp],
           comp,
-          max_iterations,
-          d_lower_bc_psi[comp],
-          d_upper_bc_psi[comp]);
+          max_iterations);
     }
   }
 }
 
 
 /* orthogonalizeLevelSetFunctions() */
-void LevelSetFunctionIntegrator<dim>::orthogonalizeLevelSetFunctions(
+void LevelSetFunctionIntegrator::orthogonalizeLevelSetFunctions(
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int max_reinit_iterations,
   const int max_ortho_iterations)
@@ -1989,12 +1981,12 @@ void LevelSetFunctionIntegrator<dim>::orthogonalizeLevelSetFunctions(
     for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
       d_orthogonalization_alg->
         orthogonalizeLevelSetFunctionForSingleComponent(PHI, 
-          comp,
-          max_ortho_iterations,
           d_lower_bc_psi[comp],
           d_upper_bc_psi[comp],
           d_lower_bc_phi[comp],
-          d_upper_bc_phi[comp]);
+          d_upper_bc_phi[comp],
+          comp,
+          max_ortho_iterations);
     }
     reinitializeLevelSetFunctions(PHI, max_reinit_iterations);
   } else {
@@ -2002,12 +1994,12 @@ void LevelSetFunctionIntegrator<dim>::orthogonalizeLevelSetFunctions(
     for (int comp=0; comp < d_num_level_set_fcn_components; comp++) {
       d_orthogonalization_alg->
         orthogonalizeLevelSetFunctionForSingleComponent(PSI, 
-          comp,
-          max_ortho_iterations,
           d_lower_bc_phi[comp],
           d_upper_bc_phi[comp],
           d_lower_bc_psi[comp],
-          d_upper_bc_psi[comp]);
+          d_upper_bc_psi[comp],
+          comp,
+          max_ortho_iterations);
     }
     reinitializeLevelSetFunctions(PSI, max_reinit_iterations);
   }
@@ -2015,7 +2007,7 @@ void LevelSetFunctionIntegrator<dim>::orthogonalizeLevelSetFunctions(
 
 
 /* initializeVariables() */
-void LevelSetFunctionIntegrator<dim>::initializeVariables()
+void LevelSetFunctionIntegrator::initializeVariables()
 {
   // setup ghost cell widths
   int scratch_ghostcell_width = -1; // bogus value set in switch statement
@@ -2036,14 +2028,14 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
               << endl );
   }
 
-  d_level_set_ghostcell_width = IntVector<dim>(scratch_ghostcell_width);
-  IntVector<dim> zero_ghostcell_width(0);
+  d_level_set_ghostcell_width = IntVector(d_dim,scratch_ghostcell_width);
+  IntVector zero_ghostcell_width();
 
   // get pointer to VariableDatabase
-  VariableDatabase<dim> *var_restart_db = VariableDatabase<dim>::getDatabase();
+  VariableDatabase *var_restart_db = VariableDatabase::getDatabase();
 
   // get contexts used by level set method algorithm
-  boost::shared_ptr<VariableContext> current_context = var_db->getContext("CURRENT");
+  boost::shared_ptr<VariableContext> current_context =  var_db->getContext("CURRENT");
   boost::shared_ptr<VariableContext> scratch_context = var_db->getContext("SCRATCH");
   boost::shared_ptr<VariableContext> upwind_context = var_db->getContext("UPWIND");
   boost::shared_ptr<VariableContext> plus_context = var_db->getContext("PLUS_DERIVATIVE");
@@ -2064,18 +2056,18 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
    */
 
   // create variables
-  boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > phi_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_variable;
   if (var_db->checkVariableExists("phi (LSMLIB)")) {
     phi_variable = var_db->getVariable("phi (LSMLIB)");
   } else {
-    phi_variable = new CellVariable<dim,LSMLIB_REAL>(
+    phi_variable = new CellVariable<LSMLIB_REAL>(
       "phi (LSMLIB)", d_num_level_set_fcn_components); 
   }
-  boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > grad_phi_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi (LSMLIB)")) {
     grad_phi_variable = var_db->getVariable("grad phi (LSMLIB)");
   } else {
-    grad_phi_variable = new CellVariable<dim,LSMLIB_REAL>("grad phi (LSMLIB)",dim); 
+    grad_phi_variable = new CellVariable<LSMLIB_REAL>("grad phi (LSMLIB)",dim); 
   }
  
   // reserve memory for scratch variable PatchData Handles
@@ -2122,11 +2114,11 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
   }
 
   // RHS for phi updates
-  boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > rhs_phi_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > rhs_phi_variable;
   if (var_db->checkVariableExists("rhs phi (LSMLIB)")) {
     rhs_phi_variable = var_db->getVariable("rhs phi (LSMLIB)");
   } else {
-    rhs_phi_variable = new CellVariable<dim,LSMLIB_REAL>("rhs phi (LSMLIB)",1); 
+    rhs_phi_variable = new CellVariable<LSMLIB_REAL>("rhs phi (LSMLIB)",1); 
   }
   d_rhs_phi_handle = var_db->registerVariableAndContext(
     rhs_phi_variable, scratch_context, zero_ghostcell_width);
@@ -2142,18 +2134,18 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
   if (d_codimension == 2) {
 
     // create variables
-    boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > psi_variable;
+    boost::shared_ptr< CellVariable<LSMLIB_REAL> > psi_variable;
     if (var_db->checkVariableExists("psi (LSMLIB)")) {
       psi_variable = var_db->getVariable("psi (LSMLIB)");
     } else {
-      psi_variable = new CellVariable<dim,LSMLIB_REAL>(
+      psi_variable = new CellVariable<LSMLIB_REAL>(
         "psi (LSMLIB)", d_num_level_set_fcn_components); 
     }
-    boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > grad_psi_variable;
+    boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_psi_variable;
     if (var_db->checkVariableExists("grad psi (LSMLIB)")) {
       grad_psi_variable = var_db->getVariable("grad psi (LSMLIB)");
     } else {
-      grad_psi_variable = new CellVariable<dim,LSMLIB_REAL>(
+      grad_psi_variable = new CellVariable<LSMLIB_REAL>(
         "grad psi (LSMLIB)",dim); 
     } 
 
@@ -2198,11 +2190,11 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
     }
 
     // RHS for psi updates
-    boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > rhs_psi_variable;
+    boost::shared_ptr< CellVariable<LSMLIB_REAL> > rhs_psi_variable;
     if (var_db->checkVariableExists("rhs psi (LSMLIB)")) {
       rhs_psi_variable = var_db->getVariable("rhs psi (LSMLIB)");
     } else {
-      rhs_psi_variable = new CellVariable<dim,LSMLIB_REAL>("rhs psi (LSMLIB)",1); 
+      rhs_psi_variable = new CellVariable<LSMLIB_REAL>("rhs psi (LSMLIB)",1); 
     }
     d_rhs_psi_handle = var_db->registerVariableAndContext(
       rhs_psi_variable, scratch_context, zero_ghostcell_width);
@@ -2217,11 +2209,11 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
   /*
    * Initialize control volume variables
    */
-  boost::shared_ptr< CellVariable<dim,LSMLIB_REAL> > control_volume;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > control_volume;
   if (var_db->checkVariableExists("control volume (LSMLIB)")) {
     control_volume = var_db->getVariable("control volume (LSMLIB)");
   } else {
-    control_volume = new CellVariable<dim,LSMLIB_REAL>("control volume (LSMLIB)",1);
+    control_volume = new CellVariable<LSMLIB_REAL>("control volume (LSMLIB)",1);
   }
   d_control_volume_handle = var_db->registerVariableAndContext(
     control_volume, current_context, zero_ghostcell_width);
@@ -2239,12 +2231,12 @@ void LevelSetFunctionIntegrator<dim>::initializeVariables()
 }
 
 /* initializeCommunicationObjects() */
-void LevelSetFunctionIntegrator<dim>::initializeCommunicationObjects()
+void LevelSetFunctionIntegrator::initializeCommunicationObjects()
 {
   // lookup refine operations
-  boost::shared_ptr< RefineOperator<dim> > refine_op =
+  boost::shared_ptr< RefineOperator > refine_op =
     d_grid_geometry->lookupRefineOperator(
-      VariableDatabase<dim>::getDatabase()->getVariable("phi (LSMLIB)"),
+      VariableDatabase::getDatabase()->getVariable("phi (LSMLIB)"),
       "LINEAR_REFINE");
 
   // set up communications objects for filling a new level (used during
@@ -2308,7 +2300,7 @@ void LevelSetFunctionIntegrator<dim>::initializeCommunicationObjects()
 
 
 /* getFromInput() */
-void LevelSetFunctionIntegrator<dim>::getFromInput(
+void LevelSetFunctionIntegrator::getFromInput(
   boost::shared_ptr<Database> db, 
   bool is_from_restart)
 {
@@ -2515,7 +2507,7 @@ void LevelSetFunctionIntegrator<dim>::getFromInput(
       int lower_bc[dim];
       if (db->keyExists(lower_bc_phi_key.str())) {
         db->getIntegerArray(lower_bc_phi_key.str(), lower_bc, dim);
-        for (int Dim = 0; Dim < dim; Dim++) {
+        for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
           d_lower_bc_phi[comp](Dim) = lower_bc[Dim];
         }
       }
@@ -2526,7 +2518,7 @@ void LevelSetFunctionIntegrator<dim>::getFromInput(
       int upper_bc[dim];
       if (db->keyExists(upper_bc_phi_key.str())) {
         db->getIntegerArray(upper_bc_phi_key.str(), upper_bc, dim);
-        for (int Dim = 0; Dim < dim; Dim++) {
+        for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
           d_upper_bc_phi[comp](Dim) = upper_bc[Dim];
         }
       }
@@ -2536,7 +2528,7 @@ void LevelSetFunctionIntegrator<dim>::getFromInput(
       lower_bc_psi_key << comp; 
       if (db->keyExists(lower_bc_psi_key.str())) {
         db->getIntegerArray(lower_bc_psi_key.str(), lower_bc,dim);
-        for (int Dim = 0; Dim < dim; Dim++) {
+        for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
           d_lower_bc_psi[comp](Dim) = lower_bc[Dim];
         }
       }
@@ -2546,7 +2538,7 @@ void LevelSetFunctionIntegrator<dim>::getFromInput(
       upper_bc_psi_key << comp; 
       if (db->keyExists(upper_bc_psi_key.str())) {
         db->getIntegerArray(upper_bc_psi_key.str(), upper_bc, dim);
-        for (int Dim = 0; Dim < dim; Dim++) {
+        for (int Dim = 0; Dim < d_dim.getValue(); Dim++) {
           d_upper_bc_psi[comp](Dim) = upper_bc[Dim];
         }
       }
@@ -2568,7 +2560,7 @@ void LevelSetFunctionIntegrator<dim>::getFromInput(
 
 /* getFromRestart() */
 
-void LevelSetFunctionIntegrator<dim>::getFromRestart()
+void LevelSetFunctionIntegrator::getFromRestart()
 {
 
   // open restart file
@@ -2652,6 +2644,8 @@ void LevelSetFunctionIntegrator<dim>::getFromRestart()
   d_use_orthogonalization_max_iters =
     db->getBool("d_use_orthogonalization_max_iters");
 }
+//Finalize SAMRAI and MPI environments
+//tbox::SAMRAI_MPI::finalize();
 
 } // end LSMLIB namespace
 

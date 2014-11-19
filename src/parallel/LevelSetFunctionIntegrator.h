@@ -266,6 +266,7 @@
 #include "boost/shared_ptr.hpp"
 #include "SAMRAI/tbox/Serializable.h"
 #include "SAMRAI/tbox/Serializable.h"
+#include "SAMRAI/tbox/SAMRAI_MPI.h"
 
 #include "LSMLIB_config.h"
 #include "BoundaryConditionModule.h"
@@ -921,7 +922,7 @@ public:
   virtual void setPhysicalBoundaryConditions(
     Patch& patch,
     const double fill_time,
-    const IntVector& ghost_width_to_fill);
+    const IntVector & ghost_width_to_fill);
 
   /*!
    * setBoundaryConditions() sets the boundary conditions to impose
@@ -1472,9 +1473,9 @@ protected:
   boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg;
 
   // Boost pointer to orthogonalization algorithm which manages the 
-  // orthogonalization of gradients of phi and psi for 
+  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg; 
+ // orthogonalization of gradients of phi and psi for 
   // codimension-two problems
-  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg;
 
   
   /*
@@ -1575,6 +1576,9 @@ protected:
   Array< boost::shared_ptr< RefineAlgorithm > > d_fill_bdry_time_advance;
   Array< Array< boost::shared_ptr< RefineSchedule > > > 
     d_fill_bdry_sched_time_advance;
+
+//Variable Database
+  hier::VariableDatabase* var_db;
 
 private:
  
