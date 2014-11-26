@@ -267,6 +267,7 @@
 #include "SAMRAI/tbox/Serializable.h"
 #include "SAMRAI/tbox/Serializable.h"
 #include "SAMRAI/tbox/SAMRAI_MPI.h"
+#include "SAMRAI/hier/PatchDataRestartManager.h"
 
 #include "LSMLIB_config.h"
 #include "BoundaryConditionModule.h"
@@ -1578,8 +1579,8 @@ protected:
     d_fill_bdry_sched_time_advance;
 
 //Variable Database
-  hier::VariableDatabase* var_db;
-
+ // hier::VariableDatabase* var_db;
+  hier::PatchDataRestartManager* pdrm;
 private:
  
    
