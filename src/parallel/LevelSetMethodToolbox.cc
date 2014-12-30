@@ -142,13 +142,13 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
      
       boost::shared_ptr< CartesianPatchGeometry > patch_geom =
         BOOST_CAST<CartesianPatchGeometry, PatchGeometry>(
-	patch->getPatchGeometry());
+            patch->getPatchGeometry());
 
+      int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      int DIM = hierarchy->getDim().getValue();
       float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
