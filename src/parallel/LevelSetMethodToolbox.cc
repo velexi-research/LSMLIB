@@ -809,11 +809,12 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
       boost::shared_ptr< CartesianPatchGeometry> patch_geom =
        BOOST_CAST<CartesianPatchGeometry,PatchGeometry>(
        patch->getPatchGeometry());
+
+      int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      int DIM = hierarchy->getDim().getValue();
       float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
@@ -883,6 +884,8 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
                   &grad_phi_plus_ghostbox_lower[1],
                   &grad_phi_plus_ghostbox_upper[1],
                   &grad_phi_plus_ghostbox_lower[2],
+                  &grad_phi_plus_ghostbox_upper[2],
+                  grad_phi_minus[0], grad_phi_minus[1], grad_phi_minus[2],
                   &grad_phi_minus_ghostbox_lower[0],
                   &grad_phi_minus_ghostbox_upper[0],
                   &grad_phi_minus_ghostbox_lower[1],
@@ -1480,11 +1483,13 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
       boost::shared_ptr< CartesianPatchGeometry > patch_geom =
         BOOST_CAST<CartesianPatchGeometry, PatchGeometry>(
         patch->getPatchGeometry());
+
+      int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      float dx[DIM];
+      float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
   
@@ -1663,7 +1668,9 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
                     << endl );
         }
       } // end switch on spatial derivative order
-
+#ifndef LSMLIB_DOUBLE_PRECISION
+  delete [] dx;
+#endif
     } // end loop over Patches
   } // end loop over PatchLevels
 }
@@ -1727,8 +1734,9 @@ void LevelSetMethodToolbox::TVDRK1Step(
       LSMLIB_REAL* u_next = u_next_data->getPointer(u_next_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
-      if ( DIM == 3 ) {
+      if (DIM == 3 ) {
         LSM3D_RK1_STEP(
           u_next,
           &u_next_ghostbox_lower[0],
@@ -1872,6 +1880,7 @@ void LevelSetMethodToolbox::TVDRK2Stage1(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE1(
@@ -2029,6 +2038,7 @@ void LevelSetMethodToolbox::TVDRK2Stage2(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE2(
@@ -2190,6 +2200,7 @@ void LevelSetMethodToolbox::TVDRK3Stage1(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE1(
@@ -2303,14 +2314,18 @@ void LevelSetMethodToolbox::TVDRK3Stage2(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage2_data =
-        patch->getPatchData( u_stage2_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage1_data =
-        patch->getPatchData( u_stage1_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
-        patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
-        patch->getPatchData( rhs_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_stage2_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_stage2_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_stage1_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_stage1_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_cur_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_cur_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( rhs_handle ));
   
       Box u_stage2_ghostbox = u_stage2_data->getGhostBox();
       const IntVector u_stage2_ghostbox_lower = 
@@ -2343,6 +2358,7 @@ void LevelSetMethodToolbox::TVDRK3Stage2(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE2(
@@ -2443,9 +2459,8 @@ void LevelSetMethodToolbox::TVDRK3Stage2(
 
 
 /* TVDRK3Stage3() */
-template <int DIM> 
-void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
-  Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+void LevelSetMethodToolbox::TVDRK3Stage3(
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
   const int u_next_handle,
   const int u_stage2_handle,
   const int u_cur_handle,
@@ -2458,16 +2473,14 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
 {
   // loop over PatchHierarchy and take Runge-Kutta step
   // by calling Fortran routines
-  const int num_levels = patch_hierarchy->getNumberLevels();
+  const int num_levels = patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel> level = patch_hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL) {
         TBOX_ERROR(  "LevelSetMethodToolbox::" 
                   << "TVDRK3Stage3(): "
                   << "Cannot find patch. Null patch pointer."
@@ -2475,14 +2488,18 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_next_data =
-        patch->getPatchData( u_next_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_stage2_data =
-        patch->getPatchData( u_stage2_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > u_cur_data =
-        patch->getPatchData( u_cur_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
-        patch->getPatchData( rhs_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_next_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_next_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_stage2_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_stage2_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > u_cur_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( u_cur_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( rhs_handle ));
   
       Box u_next_ghostbox = u_next_data->getGhostBox();
       const IntVector u_next_ghostbox_lower = 
@@ -2515,6 +2532,7 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
       LSMLIB_REAL* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
+      int DIM = patch_hierarchy->getDim().getValue();
 
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE3(
@@ -2615,9 +2633,8 @@ void LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
 
 
 /* computeDistanceFunctionUsingFMM() */
-template <int DIM> 
-void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void LevelSetMethodToolbox::computeDistanceFunctionUsingFMM(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int spatial_derivative_order,
   const int distance_function_handle,
   const int phi_handle,
@@ -2649,7 +2666,7 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
 
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
 
     // error checking...only single level calculations currently supported
     if (level->getNumberOfPatches() > 1) {
@@ -2659,11 +2676,9 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
                 << endl );
     }
 
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeDistanceFunctionUsingFMM(): "
                   << "Cannot find patch. Null patch pointer."
@@ -2671,21 +2686,26 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
       }
 
       // get geometry information for patch
-      Pointer< CartesianPatchGeometry<DIM> > patch_geom =
-        patch->getPatchGeometry();
+      boost::shared_ptr< CartesianPatchGeometry > patch_geom =
+        BOOST_CAST<CartesianPatchGeometry, PatchGeometry>(
+        patch->getPatchGeometry());
+      int DIM = hierarchy->getDim().getValue();
+
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      float dx[DIM];
+      float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
   
       // get PatchData for distance function and phi
-      Pointer< CellData<DIM,LSMLIB_REAL> > distance_function_data =
-        patch->getPatchData( distance_function_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
-        patch->getPatchData( phi_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > distance_function_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( distance_function_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( phi_handle ));
   
       // get index space information for PatchData
       Box ghostbox = distance_function_data->getGhostBox();
@@ -2738,16 +2758,17 @@ void LevelSetMethodToolbox<DIM>::computeDistanceFunctionUsingFMM(
                   << endl );
 
       } // end switch on DIM
-
+#ifndef LSMLIB_DOUBLE_PRECISION
+  delete [] dx;
+#endif
     } // end loop over Patches
   } // end loop over PatchLevels
 }
 
 
 /* computeExtensionFieldsUsingFMM() */
-template <int DIM>
-void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void LevelSetMethodToolbox::computeExtensionFieldsUsingFMM(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int spatial_derivative_order,
   const vector<int>& extension_field_handles,
   const int distance_function_handle,
@@ -2788,7 +2809,7 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
 
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
 
     // error checking...only single level calculations currently supported
     if (level->getNumberOfPatches() > 1) {
@@ -2798,11 +2819,9 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
                 << endl );
     }
 
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line. 
+      if ( patch==NULL ) {
         TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeExtensionFieldsUsingFMM(): "
                   << "Cannot find patch. Null patch pointer."
@@ -2810,31 +2829,39 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
       }
 
       // get geometry information for patch
-      Pointer< CartesianPatchGeometry<DIM> > patch_geom =
-        patch->getPatchGeometry();
+      boost::shared_ptr< CartesianPatchGeometry> patch_geom =
+     BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+        patch->getPatchGeometry());
+ 
+  
+      int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      float dx[DIM];
+      float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
   
       // get PatchData for distance function and phi
-      Pointer< CellData<DIM,LSMLIB_REAL> > distance_function_data =
-        patch->getPatchData( distance_function_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
-        patch->getPatchData( phi_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > distance_function_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( distance_function_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( phi_handle ));
       LSMLIB_REAL* distance_function = 
         distance_function_data->getPointer(distance_function_component);
       LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
   
       // get PatchData for source fields and extension fields
       for (int k=0; k < num_extension_fields; k++) {
-        Pointer< CellData<DIM,LSMLIB_REAL> > extension_field_data = 
-          patch->getPatchData( extension_field_handles[k] );
-        Pointer< CellData<DIM,LSMLIB_REAL> > source_field_data = 
-          patch->getPatchData( source_field_handles[k] );
+        boost::shared_ptr< CellData<LSMLIB_REAL> > extension_field_data = 
+          BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+          patch->getPatchData( extension_field_handles[k] ));
+        boost::shared_ptr< CellData<LSMLIB_REAL> > source_field_data = 
+          BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+          patch->getPatchData( source_field_handles[k] ));
 
         extension_fields[k] = 
           extension_field_data->getPointer(extension_field_component);
@@ -2901,9 +2928,8 @@ void LevelSetMethodToolbox<DIM>::computeExtensionFieldsUsingFMM(
 
 
 /* computeUnitNormalVectorFromPhi() */
-template <int DIM>
-void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
-  Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
   SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int normal_vector_handle,
@@ -2923,14 +2949,12 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
   const int finest_level = patch_hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = patch_hierarchy->getPatchLevel(ln);
+   boost::shared_ptr< PatchLevel> level = patch_hierarchy->getPatchLevel(ln);
     
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
-        TBOX_ERROR(  "LevelSetMethodToolbox::"
+      for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
+	TBOX_ERROR(  "LevelSetMethodToolbox::"
                   << "computeUnitNormalVectorFromPhi(): "
                   << "Cannot find patch. Null patch pointer."
                   << endl );
@@ -2942,19 +2966,25 @@ void LevelSetMethodToolbox<DIM>::computeUnitNormalVectorFromPhi(
       patch->allocatePatchData(s_compute_normal_grad_phi_minus_handle);
 
       // get PatchData
-      Pointer< CellData<DIM,LSMLIB_REAL> > normal_vector_data=
-        patch->getPatchData( normal_vector_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
-        patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_data =
-        patch->getPatchData( s_compute_normal_grad_phi_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
-        patch->getPatchData( s_compute_normal_grad_phi_plus_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
-        patch->getPatchData( s_compute_normal_grad_phi_minus_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > normal_vector_data=
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( normal_vector_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( phi_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( s_compute_normal_grad_phi_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_plus_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( s_compute_normal_grad_phi_plus_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_minus_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( s_compute_normal_grad_phi_minus_handle ));
   
-      Pointer< CartesianPatchGeometry<DIM> > patch_geom =
-        patch->getPatchGeometry();
+      boost::shared_ptr< CartesianPatchGeometry > patch_geom =
+        BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+        patch->getPatchGeometry());
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
