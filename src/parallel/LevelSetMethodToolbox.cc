@@ -6983,31 +6983,34 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters()
   IntVector one_ghostcell_width();
   IntVector two_ghostcells_width();
   IntVector three_ghostcells_width();
-
+  
   // create Variables and VariableContext 
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > D1_variable;
   if (var_db->checkVariableExists("D1")) {
     D1_variable = var_db->getVariable("D1");
   } else {
-    D1_variable = new CellVariable<LSMLIB_REAL>("D1", 1);
+    D1_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >( new 
+    CellVariable<LSMLIB_REAL>("D1", 1));
   }
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > D2_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > D2_variable;
   if (var_db->checkVariableExists("D2")) {
     D2_variable = var_db->getVariable("D2");
   } else {
-    D2_variable = new CellVariable<DIM,LSMLIB_REAL>("D2", 1);
+    D2_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >( new 
+    CellVariable<LSMLIB_REAL>("D2", 1));
   }
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > D3_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > D3_variable;
   if (var_db->checkVariableExists("D3")) {
     D3_variable = var_db->getVariable("D3");
   } else {
-    D3_variable = new CellVariable<DIM,LSMLIB_REAL>("D3", 1);
+    D3_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >(new 
+    CellVariable<LSMLIB_REAL>("D3", 1));
   }
-  Pointer<VariableContext> one_ghostcell_context = 
+  boost::shared_ptr<VariableContext> one_ghostcell_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH::ONE_GHOSTCELL");
-  Pointer<VariableContext> two_ghostcells_context = 
+  boost::shared_ptr<VariableContext> two_ghostcells_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH::TWO_GHOSTCELLS");
-  Pointer<VariableContext> three_ghostcells_context = 
+  boost::shared_ptr<VariableContext> three_ghostcells_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH::THREE_GHOSTCELLS");
 
   // register (Variable,VariableContext) pairs with VariableDatabase
@@ -7030,8 +7033,7 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters()
 
 
 /* initializeComputeUnitNormalParameters() */
-template <int DIM>
-void LevelSetMethodToolbox<DIM>::initializeComputeUnitNormalParameters()
+void LevelSetMethodToolbox::initializeComputeUnitNormalParameters()
 {
   // do nothing if PatchData for grad(phi) has already been created
   // do nothing if PatchData for grad(phi) has already been created
@@ -7043,23 +7045,24 @@ void LevelSetMethodToolbox<DIM>::initializeComputeUnitNormalParameters()
   }
 
   // get pointer to VariableDatabase
-  VariableDatabase<DIM> *var_db = VariableDatabase<DIM>::getDatabase();
+  VariableDatabase *var_db = VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
   IntVector zero_ghostcell_width(0);
 
   // create Variables and VariableContext 
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_phi_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi")) {
     grad_phi_variable = var_db->getVariable("grad phi");
   } else {
-    grad_phi_variable = new CellVariable<DIM,LSMLIB_REAL>("grad phi", DIM);
+    grad_phi_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >(new 
+    CellVariable<LSMLIB_REAL>("grad phi"));
   }
-  Pointer<VariableContext> scratch_context = 
+  boost::shared_ptr<VariableContext> scratch_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH");
-  Pointer<VariableContext> grad_phi_plus_context = 
+  boost::shared_ptr<VariableContext> grad_phi_plus_context = 
     var_db->getContext("LSM_TOOLBOX_GRAD_PHI_PLUS");
-  Pointer<VariableContext> grad_phi_minus_context = 
+  boost::shared_ptr<VariableContext> grad_phi_minus_context = 
     var_db->getContext("LSM_TOOLBOX_GRAD_PHI_MINUS");
 
   // register (Variable,VariableContext) pairs with VariableDatabase
