@@ -51,12 +51,13 @@ extern "C" {
 #include "SAMRAI/hier/VariableContext.h"
 #include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/tbox/Utilities.h"
-
+#include "SAMRAI/tbox/Database.h"
 // SAMRAI namespaces
 using namespace std;
 using namespace geom;
 using namespace pdat;
 using namespace hier;
+using namespace tbox;
 
 /****************************************************************
  *
@@ -112,8 +113,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
   const int phi_component)
 {
 
-  // make sure that the scratch PatchData handles have been created
-  initializeComputeSpatialDerivativesParameters();
+  initializeComputeSpatialDerivativesParameters(hierarchy);
 
   const int finest_level = hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
@@ -787,9 +787,8 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
   const int phi_handle,
   const int phi_component)
 {
-
   // make sure that the scratch PatchData handles have been created
-  initializeComputeSpatialDerivativesParameters();
+  initializeComputeSpatialDerivativesParameters(hierarchy);
 
   const int finest_level = hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
@@ -1456,7 +1455,7 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
 {
 
   // make sure that the scratch PatchData handles have been created
-  initializeComputeSpatialDerivativesParameters();
+  initializeComputeSpatialDerivativesParameters(hierarchy);
 
   const int finest_level = hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
@@ -2956,9 +2955,9 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
   if ( (s_compute_normal_grad_phi_handle < 0) ||
        (s_compute_normal_grad_phi_plus_handle < 0) ||
        (s_compute_normal_grad_phi_minus_handle < 0) ) {
-    initializeComputeUnitNormalParameters();
+    initializeComputeUnitNormalParameters(patch_hierarchy);
   }
-  initializeComputeSpatialDerivativesParameters();
+  initializeComputeSpatialDerivativesParameters(patch_hierarchy);
 
   const int finest_level = patch_hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
@@ -3918,9 +3917,9 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
   if ( (s_compute_normal_grad_phi_handle < 0) ||
        (s_compute_normal_grad_phi_plus_handle < 0) ||
        (s_compute_normal_grad_phi_minus_handle < 0) ) {
-    initializeComputeUnitNormalParameters();
+    initializeComputeUnitNormalParameters(patch_hierarchy);
   }
-  initializeComputeSpatialDerivativesParameters();
+  initializeComputeSpatialDerivativesParameters(patch_hierarchy);
 
   const int finest_level = patch_hierarchy->getFinestLevelNumber();
       for ( int ln=0 ; ln<=finest_level ; ln++ ) {
@@ -6838,7 +6837,7 @@ void LevelSetMethodToolbox::computeControlVolumes(
 
         for ( hier::BoxContainer::iterator ib = coarsened_boxes.begin();ib != coarsened_boxes.end(); ++ib) {
 
-          hier::BoxContainer coarse_box = coarsened_boxes(ib);
+          hier::Box coarse_box = *ib;
           Box intersection = coarse_box*(patch->getBox());
           if ( !intersection.empty() ) {
             boost::shared_ptr< CellData< LSMLIB_REAL> > cv_data =
@@ -6969,7 +6968,8 @@ void LevelSetMethodToolbox::copySAMRAIData(
 
 
 /* initializeComputeSpatialDerivativesParameters() */
-void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters()
+void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
+boost::shared_ptr< PatchHierarchy > hierarchy)
 {
   // do nothing if PatchData for grad(phi) has already been created
   if (s_D1_one_ghostcell_handle >= 0) {
@@ -6980,31 +6980,31 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters()
   VariableDatabase *var_db = VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
-  IntVector one_ghostcell_width();
-  IntVector two_ghostcells_width();
-  IntVector three_ghostcells_width();
+  IntVector one_ghostcell_width(hierarchy->getDim(),1);
+  IntVector two_ghostcells_width(hierarchy->getDim(),1);
+  IntVector three_ghostcells_width(hierarchy->getDim(),1);
   
   // create Variables and VariableContext 
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > D1_variable;
-  if (var_db->checkVariableExists("D1")) {
-    D1_variable = var_db->getVariable("D1");
-  } else {
+  if (var_db->checkVariableExists("D1")){
+    D1_variable = BOOST_CAST<CellVariable<LSMLIB_REAL>, Variable>( var_db->getVariable("D1"));
+   // VariableDatabaseD1_variable = var_db->getVariable(hierarchy->getDim(),"D1");
     D1_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >( new 
-    CellVariable<LSMLIB_REAL>("D1", 1));
+    CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D1", 1));
   }
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > D2_variable;
   if (var_db->checkVariableExists("D2")) {
-    D2_variable = var_db->getVariable("D2");
+    D2_variable = BOOST_CAST<CellVariable<LSMLIB_REAL>, Variable>(var_db->getVariable("D2"));
   } else {
     D2_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >( new 
-    CellVariable<LSMLIB_REAL>("D2", 1));
+    CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D2", 1));
   }
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > D3_variable;
   if (var_db->checkVariableExists("D3")) {
-    D3_variable = var_db->getVariable("D3");
+    D3_variable = BOOST_CAST<CellVariable<LSMLIB_REAL>, Variable>(var_db->getVariable("D3"));
   } else {
     D3_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >(new 
-    CellVariable<LSMLIB_REAL>("D3", 1));
+    CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D3", 1));
   }
   boost::shared_ptr<VariableContext> one_ghostcell_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH::ONE_GHOSTCELL");
@@ -7033,7 +7033,7 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters()
 
 
 /* initializeComputeUnitNormalParameters() */
-void LevelSetMethodToolbox::initializeComputeUnitNormalParameters()
+void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(boost::shared_ptr< PatchHierarchy > hierarchy)
 {
   // do nothing if PatchData for grad(phi) has already been created
   // do nothing if PatchData for grad(phi) has already been created
@@ -7048,15 +7048,15 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters()
   VariableDatabase *var_db = VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
-  IntVector zero_ghostcell_width(0);
+  IntVector zero_ghostcell_width(hierarchy->getDim(),0);
 
   // create Variables and VariableContext 
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi")) {
-    grad_phi_variable = var_db->getVariable("grad phi");
+    grad_phi_variable = BOOST_CAST<CellVariable<LSMLIB_REAL>, Variable>( var_db->getVariable("grad phi"));
   } else {
     grad_phi_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >(new 
-    CellVariable<LSMLIB_REAL>("grad phi"));
+    CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"grad phi"));
   }
   boost::shared_ptr<VariableContext> scratch_context = 
     var_db->getContext("LSM_TOOLBOX_SCRATCH");

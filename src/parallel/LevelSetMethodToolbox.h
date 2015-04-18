@@ -67,7 +67,7 @@
 #include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
 #include "boost/shared_ptr.hpp" 
-
+#include "SAMRAI/tbox/Database.h"
 #include "LSMLIB_config.h"
 using namespace std;
 // SAMRAI namespaces 
@@ -1068,8 +1068,8 @@ public:
     const int src_component = 0); 
 
   //! @}
-
 protected:
+
 
   //! @{
   /*!
@@ -1088,7 +1088,7 @@ protected:
    * Return value:  none
    *
    */
-  static void initializeComputeSpatialDerivativesParameters();
+  static void initializeComputeSpatialDerivativesParameters(boost::shared_ptr< PatchHierarchy > hierarchy);
 
   /*!
    * initializeComputeUnitNormalParameters() sets up the parameters
@@ -1099,7 +1099,8 @@ protected:
    * Return value:  none
    *
    */
-  static void initializeComputeUnitNormalParameters();
+
+  static void initializeComputeUnitNormalParameters(boost::shared_ptr< PatchHierarchy > hierarchy);
 
   //! @}
 
