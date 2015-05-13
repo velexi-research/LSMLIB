@@ -22,14 +22,14 @@ extern "C" {
 #include "LSMLIB_DefaultParameters.h"
 
 // SAMRAI Headers
-#include "CartesianPatchGeometry.h" 
-#include "CellData.h" 
-#include "CellVariable.h" 
-#include "IntVector.h" 
-#include "Patch.h" 
-#include "PatchLevel.h" 
-#include "VariableContext.h" 
-#include "VariableDatabase.h" 
+#include "SAMRAI/geom/CartesianPatchGeometry.h" 
+#include "SAMRAI/pdat/CellData.h" 
+#include "SAMRAI/pdat/CellVariable.h" 
+#include "SAMRAI/hier/IntVector.h" 
+#include "SAMRAI/hier/Patch.h" 
+#include "SAMRAI/hier/PatchLevel.h" 
+#include "SAMRAI/hier/VariableContext.h" 
+#include "SAMRAI/hier/VariableDatabase.h" 
 
 // Headers for Fortran kernels
 extern "C" {
@@ -42,7 +42,8 @@ extern "C" {
 // SAMRAI namespaces
 using namespace std;
 using namespace pdat;
-
+using namespace geom;
+using namespace hier;
 // Constant
 #define LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS                   (1000)
 
@@ -64,7 +65,7 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = hierarchy->getGridGeometry();
+  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
 
   // set data field handles
   d_extension_field_handle = field_handle;
@@ -78,8 +79,10 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   checkParameters();
 
   // create empty BoundaryConditionModule
-  d_phi_bc_module = new BoundaryConditionModule;
-  d_ext_field_bc_module = new BoundaryConditionModule;
+  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
+  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -91,6 +94,7 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
 /* Constructor - parameters from arguments */
 FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   boost::shared_ptr< PatchHierarchy > hierarchy,
+  const tbox::Dimension& dim,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,
@@ -103,8 +107,8 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   const int max_iterations,
   const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
-  const string& object_name){
-
+  const string& object_name)
+{
   // set object_name
   d_object_name = object_name;
 
@@ -145,6 +149,7 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
 #else 
     const double *X_lower_double = d_grid_geometry->getXLower();
     const double *X_upper_double = d_grid_geometry->getXUpper();
+    int DIM = hierarchy->getDim().getValue();
     float X_lower[DIM];
     float X_upper[DIM];
     for (int i = 0; i < DIM; i++) {
@@ -167,8 +172,10 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   checkParameters();
 
   // create empty BoundaryConditionModule
-  d_phi_bc_module = new BoundaryConditionModule<DIM>;
-  d_ext_field_bc_module = new BoundaryConditionModule<DIM>;
+  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
+  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -193,9 +200,9 @@ void FieldExtensionAlgorithm::computeExtensionField(
   }
 
   // allocate patch data for requird to compute extension field
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = 
+    boost::shared_ptr< PatchLevel > level = 
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -206,10 +213,11 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  Pointer< PatchLevel<DIM> > patch_level = 
+  boost::shared_ptr< PatchLevel > patch_level = 
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
+  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
+  int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
@@ -244,7 +252,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
    */
   // fill phi scratch space for computing signed normal vector
   if (d_phi_scr_handle != d_phi_handle) {
-    LevelSetMethodToolbox<DIM>::copySAMRAIData(
+    LevelSetMethodToolbox::copySAMRAIData(
       d_patch_hierarchy,
       d_phi_scr_handle, d_phi_handle, 
       0, phi_component);
@@ -275,25 +283,25 @@ void FieldExtensionAlgorithm::computeExtensionField(
   if (d_phi_scr_handle != d_phi_handle) {  
 
     // case:  use FieldExtensionAlgorithm's scratch space for phi
-    LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
+    LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       d_patch_hierarchy,
       d_spatial_derivative_type,
       d_spatial_derivative_order,
       d_normal_vector_handle,
       d_phi_scr_handle,
-      LevelSetMethodToolbox<DIM>::PHI_UPWIND,
+      LevelSetMethodToolbox::PHI_UPWIND,
       0);  // phi scratch data is stored in component 0 
 
   } else {
 
     // case:  use user allocated data for phi
-    LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
+    LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       d_patch_hierarchy,
       d_spatial_derivative_type,
       d_spatial_derivative_order,
       d_normal_vector_handle,
       d_phi_handle,
-      LevelSetMethodToolbox<DIM>::PHI_UPWIND,
+      LevelSetMethodToolbox::PHI_UPWIND,
       phi_component);  // phi data to use for field extension calculation
                        // stored in phi_component 
 
@@ -304,20 +312,19 @@ void FieldExtensionAlgorithm::computeExtensionField(
    *  (if it has not already been computed) 
    */
   if (d_num_field_components == 0) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(0);
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::computeExtensionField(): " 
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
   
-      Pointer< CellData<DIM,LSMLIB_REAL> > field_data= 
-        patch->getPatchData( d_extension_field_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > field_data= 
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( d_extension_field_handle ));
       d_num_field_components = field_data->getDepth();
   
       break;  // only need PatchData from one patch for computation
@@ -383,7 +390,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
       // update count and delta
       if (d_use_iteration_stop_tol) {
-        delta += LevelSetMethodToolbox<DIM>::maxNormOfDifference(
+        delta += LevelSetMethodToolbox::maxNormOfDifference(
           d_patch_hierarchy, field_handle_after_step, field_handle_before_step, 
           d_control_volume_handle, component, 0);  // 0 is component of field
                                                    // before the time step
@@ -436,7 +443,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level 
+    boost::shared_ptr< PatchLevel > level 
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
@@ -461,9 +468,9 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   }
 
   // allocate patch data for required to compute extension field
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = 
+    boost::shared_ptr< PatchLevel > level = 
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -474,10 +481,11 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  Pointer< PatchLevel<DIM> > patch_level = 
+  boost::shared_ptr< PatchLevel > patch_level = 
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
+  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
+  int DIM = d_patch_hierarchy->getDim().getValue(); 
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];

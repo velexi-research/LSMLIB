@@ -217,6 +217,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
 /* getFieldExtensionAlgorithm() */
 boost::shared_ptr< FieldExtensionAlgorithm > 
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
+  const tbox::Dimension& dim,
   const int field_handle,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -264,6 +265,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg =
     boost::shared_ptr< FieldExtensionAlgorithm > (new FieldExtensionAlgorithm(
       d_patch_hierarchy,
+      dim,
       field_handle,
       level_set_fcn_handle,  
       getControlVolumePatchDataHandle(),

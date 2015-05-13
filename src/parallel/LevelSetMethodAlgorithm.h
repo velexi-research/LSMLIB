@@ -1248,6 +1248,7 @@ public:
    * 
    */
   virtual boost::shared_ptr< FieldExtensionAlgorithm > getFieldExtensionAlgorithm(
+    const tbox::Dimension& dim,
     const int field_handle,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = UNKNOWN,

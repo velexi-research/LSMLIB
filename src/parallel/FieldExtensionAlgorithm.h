@@ -244,6 +244,7 @@ public:
 
   FieldExtensionAlgorithm(
     boost::shared_ptr< PatchHierarchy > hierarchy,
+    const tbox::Dimension& dim,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
@@ -356,7 +357,8 @@ virtual void computeExtensionField(
     const int max_iterations,
     const IntVector& lower_bc_phi,
     const IntVector& upper_bc_phi,
-    const IntVector& lower_bc_ext);
+    const IntVector& lower_bc_ext,
+    const IntVector& upper_bc_ext);
   
 /*!
    * computeExtensionFieldForSingleComponent() extends the specified
