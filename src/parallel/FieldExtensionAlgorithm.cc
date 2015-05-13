@@ -520,7 +520,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
    */
   // fill phi scratch space for computing signed normal vector
   if (d_phi_scr_handle != d_phi_handle) {
-    LevelSetMethodToolbox<DIM>::copySAMRAIData(
+    LevelSetMethodToolbox::copySAMRAIData(
       d_patch_hierarchy,
       d_phi_scr_handle, d_phi_handle, 
       0, phi_component);
@@ -551,25 +551,25 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   if (d_phi_scr_handle != d_phi_handle) {  
 
     // case:  use FieldExtensionAlgorithm's scratch space for phi
-    LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
+    LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       d_patch_hierarchy,
       d_spatial_derivative_type,
       d_spatial_derivative_order,
       d_normal_vector_handle,
       d_phi_scr_handle,
-      LevelSetMethodToolbox<DIM>::PHI_UPWIND,
+      LevelSetMethodToolbox::PHI_UPWIND,
       0);  // phi scratch data is stored in component 0 
 
   } else {
 
     // case:  use user allocated data for phi
-    LevelSetMethodToolbox<DIM>::computeSignedUnitNormalVectorFromPhi(
+    LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       d_patch_hierarchy,
       d_spatial_derivative_type,
       d_spatial_derivative_order,
       d_normal_vector_handle,
       d_phi_handle,
-      LevelSetMethodToolbox<DIM>::PHI_UPWIND,
+      LevelSetMethodToolbox::PHI_UPWIND,
       phi_component);  // phi data to use for field extension calculation
                        // stored in phi_component 
 
@@ -628,7 +628,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
     // update count and delta
     if (d_use_iteration_stop_tol) {
-      delta = LevelSetMethodToolbox<DIM>::maxNormOfDifference(
+      delta = LevelSetMethodToolbox::maxNormOfDifference(
         d_patch_hierarchy, field_handle_after_step, field_handle_before_step, 
         d_control_volume_handle, component, 0);  // 0 is component of field
                                                  // before the time step
@@ -680,7 +680,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level 
+    boost::shared_ptr< PatchLevel > level 
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
@@ -688,9 +688,8 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
 
 /* resetHierarchyConfiguration() */
-template <int DIM>
-void FieldExtensionAlgorithm<DIM>::resetHierarchyConfiguration(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void FieldExtensionAlgorithm::resetHierarchyConfiguration(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -701,12 +700,12 @@ void FieldExtensionAlgorithm<DIM>::resetHierarchyConfiguration(
   d_grid_geometry = d_patch_hierarchy->getGridGeometry();
 
   // compute RefineSchedules for filling extension field boundary data
-  int num_levels = hierarchy->getNumberLevels();
+  int num_levels = hierarchy->getNumberOfLevels();
   for (int k = 0; k < d_tvd_runge_kutta_order; k++) {
     d_extension_field_fill_bdry_sched[k].resizeArray(num_levels);
 
     for (int ln = coarsest_level; ln <= finest_level; ln++) {
-      Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+      boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
  
       // reset data transfer configuration for boundary filling
       // before time advance
@@ -722,7 +721,7 @@ void FieldExtensionAlgorithm<DIM>::resetHierarchyConfiguration(
   d_phi_fill_bdry_sched.resizeArray(num_levels);
 
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
-    Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
 
     // reset data transfer configuration for filling phi boundary data
     // before computing signed normal vector
@@ -750,13 +749,12 @@ void FieldExtensionAlgorithm<DIM>::resetHierarchyConfiguration(
 
 
 /* advanceFieldExtensionEqnUsingTVDRK1() */
-template <int DIM> 
-void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
+void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK1(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector<DIM>& lower_bc_ext,
-  const IntVector<DIM>& upper_bc_ext)
+  const IntVector& lower_bc_ext,
+  const IntVector& upper_bc_ext)
 {
   // initialize counter for current stage of TVD RK step
   // NOTE: the rk_stage begins at 0 for convenience
@@ -767,12 +765,12 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_extension_field_scr_handles[0], d_extension_field_handle, 
     0, field_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -789,7 +787,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
   // advance extension field through TVD-RK1 step
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK1Step(
+  LevelSetMethodToolbox::TVDRK1Step(
     d_patch_hierarchy,
     d_extension_field_handle,
     d_extension_field_scr_handles[rk_stage], 
@@ -799,13 +797,12 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK1(
 
 
 /* advanceFieldExtensionEqnUsingTVDRK2() */
-template <int DIM> 
-void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
+void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK2(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector<DIM>& lower_bc_ext,
-  const IntVector<DIM>& upper_bc_ext)
+  const IntVector& lower_bc_ext,
+  const IntVector& upper_bc_ext)
 {
   // { begin Stage 1
 
@@ -818,12 +815,12 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_extension_field_scr_handles[0], d_extension_field_handle, 
     0, field_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -840,7 +837,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
   // advance extension field through the first stage of TVD-RK2
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK2Stage1(
+  LevelSetMethodToolbox::TVDRK2Stage1(
     d_patch_hierarchy,
     d_extension_field_scr_handles[rk_stage+1],
     d_extension_field_scr_handles[rk_stage],
@@ -872,7 +869,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
   // advance extension field through the second stage of TVD-RK2
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK2Stage2(
+  LevelSetMethodToolbox::TVDRK2Stage2(
     d_patch_hierarchy,
     d_extension_field_handle,
     d_extension_field_scr_handles[rk_stage],
@@ -886,13 +883,12 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK2(
 
 
 /* advanceFieldExtensionEqnUsingTVDRK3() */
-template <int DIM> 
-void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
+void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector<DIM>& lower_bc_ext,
-  const IntVector<DIM>& upper_bc_ext)
+  const IntVector& lower_bc_ext,
+  const IntVector& upper_bc_ext)
 {
   // { begin Stage 1
 
@@ -905,12 +901,12 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_extension_field_scr_handles[0], d_extension_field_handle, 
     0, field_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -927,7 +923,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
   // advance extension field through the first stage of TVD-RK3
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage1(
+  LevelSetMethodToolbox::TVDRK3Stage1(
     d_patch_hierarchy,
     d_extension_field_scr_handles[rk_stage+1],
     d_extension_field_scr_handles[rk_stage],
@@ -959,7 +955,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
   // advance extension field through the second stage of TVD-RK3
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage2(
+  LevelSetMethodToolbox::TVDRK3Stage2(
     d_patch_hierarchy,
     d_extension_field_scr_handles[rk_stage+1],
     d_extension_field_scr_handles[rk_stage],
@@ -992,7 +988,7 @@ void FieldExtensionAlgorithm<DIM>::advanceFieldExtensionEqnUsingTVDRK3(
   // advance extension field through the third stage of TVD-RK3
   computeFieldExtensionEqnRHS(d_extension_field_scr_handles[rk_stage],
                               phi_component);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
+  LevelSetMethodToolbox::TVDRK3Stage3(
     d_patch_hierarchy,
     d_extension_field_handle,
     d_extension_field_scr_handles[rk_stage],
