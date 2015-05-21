@@ -22,14 +22,14 @@ extern "C" {
 #include "ReinitializationAlgorithm.h" 
 
 // SAMRAI Headers
-#include "CartesianPatchGeometry.h" 
-#include "CellData.h" 
-#include "CellVariable.h" 
-#include "IntVector.h" 
-#include "Patch.h" 
-#include "PatchLevel.h" 
-#include "VariableContext.h" 
-#include "VariableDatabase.h" 
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/VariableContext.h"
+#include "SAMRAI/hier/VariableDatabase.h"
 
 // Headers for Fortran kernels
 extern "C" {
@@ -50,21 +50,21 @@ using namespace pdat;
 namespace LSMLIB {
 
 /* Constructor - parameters from input database */
-template <int DIM>
-ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+ReinitializationAlgorithm::ReinitializationAlgorithm(
+  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int phi_handle,
   const int control_volume_handle,
   const string& object_name)
+:
+d_phi_scratch_ghostcell_width(hierarchy->getDim())
 {
   // set object_name
   d_object_name = object_name;
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = hierarchy->getGridGeometry();
-
+  d_grid_geometry = BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
   // set data field handles
   d_phi_handle = phi_handle;
   d_control_volume_handle = control_volume_handle;
@@ -76,7 +76,8 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
   checkParameters();
 
   // create empty BoundaryConditionModule
-  d_bc_module = new BoundaryConditionModule<DIM>;
+  boost::shared_ptr< BoundaryConditionModule > d_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables();
@@ -86,9 +87,8 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
 
 
 /* Constructor - parameters from arguments */
-template <int DIM>
-ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+ReinitializationAlgorithm::ReinitializationAlgorithm(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int phi_handle,
   const int control_volume_handle,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -100,14 +100,15 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
   const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
   const string& object_name)
+:
+d_phi_scratch_ghostcell_width(hierarchy->getDim())
 {
   // set object_name
   d_object_name = object_name;
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = hierarchy->getGridGeometry();
-
+  d_grid_geometry = BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
   // set data field handles
   d_phi_handle = phi_handle;
   d_control_volume_handle = control_volume_handle;
@@ -133,7 +134,8 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
-    
+  
+    int DIM = d_patch_hierarchy->getDim().getValue(); 
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
@@ -163,7 +165,8 @@ ReinitializationAlgorithm<DIM>::ReinitializationAlgorithm(
   checkParameters();
 
   // create empty BoundaryConditionModule
-  d_bc_module = new BoundaryConditionModule<DIM>;
+  boost::shared_ptr< BoundaryConditionModule > d_bc_module =
+  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables();
@@ -186,9 +189,9 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
   }
 
   // allocate patch data for required to reinitialize level set function
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
 
@@ -198,10 +201,11 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  Pointer< PatchLevel<DIM> > patch_level = 
+  boost::shared_ptr< PatchLevel> patch_level = 
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
+  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
+  int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
@@ -236,21 +240,19 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
    *  (if it has not already been computed) 
    */
   if (d_num_phi_components == 0) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(0);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(0);
 
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::reinitializeLevelSetFunctions(): " 
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
   
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
-        patch->getPatchData( d_phi_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data = 
+      BOOST_CAST<CellData<LSMLIB_REAL>, PatchData> (patch->getPatchData( d_phi_handle ));
       d_num_phi_components = phi_data->getDepth();
   
       break;  // only need PatchData from one patch for computation
@@ -302,7 +304,7 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
 
       // update count and delta
       if (d_use_iteration_stop_tol) {
-        delta += LevelSetMethodToolbox<DIM>::maxNormOfDifference(
+        delta += LevelSetMethodToolbox::maxNormOfDifference(
           d_patch_hierarchy, phi_handle_after_step, phi_handle_before_step, 
           d_control_volume_handle, component, 0);  // 0 is component of field
                                                    // before the time step
@@ -355,7 +357,7 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
 
   // deallocate patch data that was allocated for reinitialization 
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
 }
@@ -377,9 +379,9 @@ void ReinitializationAlgorithm::
   }
 
   // allocate patch data for required for reinitialization calculation
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
 
@@ -389,9 +391,10 @@ void ReinitializationAlgorithm::
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  Pointer< PatchLevel<DIM> > patch_level = 
+  boost::shared_ptr< PatchLevel > patch_level = 
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector<DIM> ratio_to_coarsest = patch_level->getRatio();
+  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  int DIM = d_patch_hierarchy->getDim().getValue();
   const double* coarsest_dx = d_grid_geometry->getDx();
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
@@ -460,7 +463,7 @@ void ReinitializationAlgorithm::
 
     // update count and delta
     if (d_use_iteration_stop_tol) {
-      delta = LevelSetMethodToolbox<DIM>::maxNormOfDifference(
+      delta = LevelSetMethodToolbox::maxNormOfDifference(
         d_patch_hierarchy, phi_handle_after_step, phi_handle_before_step, 
         d_control_volume_handle, component, 0);  // 0 is component of field
                                                  // before the time step
