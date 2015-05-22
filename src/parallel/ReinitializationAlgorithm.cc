@@ -515,16 +515,16 @@ void ReinitializationAlgorithm::
 
   // deallocate patch data that was allocated for reinitialization calculation
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel> level = 
+     d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
 }
 
 
 /* resetHierarchyConfiguration() */
-template <int DIM>
-void ReinitializationAlgorithm<DIM>::resetHierarchyConfiguration(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void ReinitializationAlgorithm::resetHierarchyConfiguration(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -532,15 +532,15 @@ void ReinitializationAlgorithm<DIM>::resetHierarchyConfiguration(
   d_patch_hierarchy = hierarchy;
 
   // reset d_grid_geometry
-  d_grid_geometry = d_patch_hierarchy->getGridGeometry();
-
+  d_grid_geometry = BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>
+   (d_patch_hierarchy->getGridGeometry());
   // compute RefineSchedules for filling phi boundary data
-  int num_levels = hierarchy->getNumberLevels();
+  int num_levels = hierarchy->getNumberOfLevels();
   for (int k = 0; k < d_tvd_runge_kutta_order; k++) {
     d_phi_fill_bdry_sched[k].resizeArray(num_levels);
 
     for (int ln = coarsest_level; ln <= finest_level; ln++) {
-      Pointer< PatchLevel<DIM> > level = hierarchy->getPatchLevel(ln);
+      boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
  
       // reset data transfer configuration for boundary filling
       // before time advance
@@ -565,12 +565,11 @@ void ReinitializationAlgorithm<DIM>::resetHierarchyConfiguration(
 
 
 /* advanceReinitializationEqnUsingTVDRK1() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
+void ReinitializationAlgorithm::advanceReinitializationEqnUsingTVDRK1(
   const LSMLIB_REAL dt,
   const int phi_component,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc)
+  const IntVector& lower_bc,
+  const IntVector& upper_bc)
 {
   // initialize counter for current stage of TVD RK step
   // NOTE: the rk_stage begins at 0 for convenience
@@ -581,12 +580,12 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_phi_scr_handles[0], d_phi_handle,
     0, phi_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -602,7 +601,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
 
   // advance reinitialization equation through TVD-RK1 step
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK1Step(
+  LevelSetMethodToolbox::TVDRK1Step(
     d_patch_hierarchy,
     d_phi_handle,
     d_phi_scr_handles[rk_stage], 
@@ -612,12 +611,11 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK1(
 
 
 /* advanceReinitializationEqnUsingTVDRK2() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
+void ReinitializationAlgorithm::advanceReinitializationEqnUsingTVDRK2(
   const LSMLIB_REAL dt,
   const int phi_component,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc)
+  const IntVector& lower_bc,
+  const IntVector& upper_bc)
 {
   // { begin Stage 1
 
@@ -630,12 +628,12 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_phi_scr_handles[0], d_phi_handle,
     0, phi_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -651,7 +649,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
 
   // advance reinitialization equation through the first stage of TVD-RK2
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK2Stage1(
+  LevelSetMethodToolbox::TVDRK2Stage1(
     d_patch_hierarchy,
     d_phi_scr_handles[rk_stage+1],
     d_phi_scr_handles[rk_stage],
@@ -682,7 +680,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
 
   // advance reinitialization equation through the second stage of TVD-RK2
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK2Stage2(
+  LevelSetMethodToolbox::TVDRK2Stage2(
     d_patch_hierarchy,
     d_phi_handle,
     d_phi_scr_handles[rk_stage],
@@ -695,12 +693,11 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK2(
 
 
 /* advanceReinitializationEqnUsingTVDRK3() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
+void ReinitializationAlgorithm::advanceReinitializationEqnUsingTVDRK3(
   const LSMLIB_REAL dt,
   const int phi_component,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc)
+  const IntVector& lower_bc,
+  const IntVector& upper_bc)
 {
   // { begin Stage 1
 
@@ -713,12 +710,12 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
    */
 
   // copy component of field data to scratch space
-  LevelSetMethodToolbox<DIM>::copySAMRAIData(
+  LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
     d_phi_scr_handles[0], d_phi_handle,
     0, phi_component);
 
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
     // NOTE: 0.0 is "current time" and true indicates that physical 
     //       boundary conditions should be set.
@@ -734,7 +731,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
 
   // advance reinitialization equation through the first stage of TVD-RK3
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage1(
+  LevelSetMethodToolbox::TVDRK3Stage1(
     d_patch_hierarchy,
     d_phi_scr_handles[rk_stage+1],
     d_phi_scr_handles[rk_stage],
@@ -765,7 +762,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
 
   // advance reinitialization equation through the second stage of TVD-RK3
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage2(
+  LevelSetMethodToolbox::TVDRK3Stage2(
     d_patch_hierarchy,
     d_phi_scr_handles[rk_stage+1],
     d_phi_scr_handles[rk_stage],
@@ -797,7 +794,7 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
 
   // advance reinitialization equation through the third stage of TVD-RK3
   computeReinitializationEqnRHS(d_phi_scr_handles[rk_stage]);
-  LevelSetMethodToolbox<DIM>::TVDRK3Stage3(
+  LevelSetMethodToolbox::TVDRK3Stage3(
     d_patch_hierarchy,
     d_phi_handle,
     d_phi_scr_handles[rk_stage],
@@ -810,13 +807,12 @@ void ReinitializationAlgorithm<DIM>::advanceReinitializationEqnUsingTVDRK3(
 
 
 /* computeReinitializationEqnRHS() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS( 
+void ReinitializationAlgorithm::computeReinitializationEqnRHS( 
   const int phi_handle)
 {
 
   // compute spatial derivatives for the current stage
-  LevelSetMethodToolbox<DIM>::computePlusAndMinusSpatialDerivatives(
+  LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
     d_patch_hierarchy,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
@@ -826,16 +822,13 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
 
   // loop over PatchHierarchy and compute RHS for level set equation
   // by calling Fortran routines
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
-    
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+      boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::computeReinitializationEqnRHS(): "
                   << "Cannot find patch. Null patch pointer."
@@ -843,52 +836,59 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
       }
 
       // get pointers to data and index space ranges
-      Pointer< CellData<DIM,LSMLIB_REAL> > rhs_data =
-        patch->getPatchData( d_rhs_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
-        patch->getPatchData( phi_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_plus_data =
-        patch->getPatchData( d_grad_phi_plus_handle );
-      Pointer< CellData<DIM,LSMLIB_REAL> > grad_phi_minus_data =
-        patch->getPatchData( d_grad_phi_minus_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( d_rhs_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( phi_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_plus_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( d_grad_phi_plus_handle ));
+      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_phi_minus_data =
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch->getPatchData( d_grad_phi_minus_handle ));
 
-      Box<DIM> rhs_ghostbox = rhs_data->getGhostBox();
-      const IntVector<DIM> rhs_ghostbox_lower = rhs_ghostbox.lower();
-      const IntVector<DIM> rhs_ghostbox_upper = rhs_ghostbox.upper();
+      Box rhs_ghostbox = rhs_data->getGhostBox();
+      const IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
+      const IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
 
-      Box<DIM> phi_ghostbox = phi_data->getGhostBox();
-      const IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
-      const IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
+      Box phi_ghostbox = phi_data->getGhostBox();
+      const IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+      const IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
-      Box<DIM> grad_phi_plus_ghostbox = grad_phi_plus_data->getGhostBox();
-      const IntVector<DIM> grad_phi_plus_ghostbox_lower = 
+      Box grad_phi_plus_ghostbox = grad_phi_plus_data->getGhostBox();
+      const IntVector grad_phi_plus_ghostbox_lower = 
         grad_phi_plus_ghostbox.lower();
-      const IntVector<DIM> grad_phi_plus_ghostbox_upper = 
+      const IntVector grad_phi_plus_ghostbox_upper = 
         grad_phi_plus_ghostbox.upper();
 
-      Box<DIM> grad_phi_minus_ghostbox = grad_phi_minus_data->getGhostBox();
-      const IntVector<DIM> grad_phi_minus_ghostbox_lower = 
+      Box grad_phi_minus_ghostbox = grad_phi_minus_data->getGhostBox();
+      const IntVector grad_phi_minus_ghostbox_lower = 
         grad_phi_minus_ghostbox.lower();
-      const IntVector<DIM> grad_phi_minus_ghostbox_upper = 
+      const IntVector grad_phi_minus_ghostbox_upper = 
         grad_phi_minus_ghostbox.upper();
 
       // fill box
-      Box<DIM> fillbox = rhs_data->getBox();
-      const IntVector<DIM> fillbox_lower = fillbox.lower();
-      const IntVector<DIM> fillbox_upper = fillbox.upper();
+      Box fillbox = rhs_data->getBox();
+      const IntVector fillbox_lower = fillbox.lower();
+      const IntVector fillbox_upper = fillbox.upper();
 
       LSMLIB_REAL* rhs = rhs_data->getPointer();
       LSMLIB_REAL* phi = phi_data->getPointer();
       LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
-      for (int dim = 0; dim < DIM; dim++) {
+      
+     int DIM = d_patch_hierarchy->getDim().getValue();
+       for (int dim = 0; dim < DIM; dim++) {
         grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
         grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
       }
 
       // get dx
-      Pointer< CartesianPatchGeometry<DIM> > patch_geom =
-        patch->getPatchGeometry();
+      boost::shared_ptr< CartesianPatchGeometry > patch_geom =
+        BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+        patch->getPatchGeometry());
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -1020,8 +1020,7 @@ void ReinitializationAlgorithm<DIM>::computeReinitializationEqnRHS(
 
 
 /* initializeVariables() */
-template <int DIM>
-void ReinitializationAlgorithm<DIM>::initializeVariables()
+void ReinitializationAlgorithm::initializeVariables()
 {
   // initialize d_num_phi_components to zero
   d_num_phi_components = 0;
@@ -1047,21 +1046,22 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   }
 
   d_phi_scratch_ghostcell_width = 
-    IntVector<DIM>(scratch_ghostcell_width_for_grad);
-  IntVector<DIM> zero_ghostcell_width(0);
+    IntVector(d_patch_hierarchy->getDim(), scratch_ghostcell_width_for_grad);
+  IntVector zero_ghostcell_width(d_patch_hierarchy->getDim(),0);
 
   /*
    * create variables and PatchData for scratch data
    */
-  VariableDatabase<DIM> *var_db = VariableDatabase<DIM>::getDatabase();
+  VariableDatabase *var_db = VariableDatabase::getDatabase();
   
   // get variable associated with phi_handle
-  Pointer< Variable<DIM> > tmp_variable;
-  Pointer<VariableContext> tmp_context;
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_variable;
+  boost::shared_ptr< Variable > tmp_variable;
+  boost::shared_ptr<VariableContext> tmp_context;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle, 
                                            tmp_variable, tmp_context)) {
-    phi_variable = tmp_variable;
+    phi_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >
+     (tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeVariables(): "
@@ -1071,7 +1071,7 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   }
 
   // create scratch context for reinitialization 
-  Pointer<VariableContext> scratch_context = 
+  boost::shared_ptr<VariableContext> scratch_context = 
     var_db->getContext("REINITIALIZATION_SCRATCH");
 
   // reserve space for scratch PatchData handles
@@ -1084,13 +1084,13 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   stringstream phi_scratch_variable_name("");
   phi_scratch_variable_name << phi_variable->getName() 
                             << "::REINITIALIZATION_PHI_SCRATCH";
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_scratch_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_scratch_variable;
   if (var_db->checkVariableExists(phi_scratch_variable_name.str())) {
-   phi_scratch_variable = var_db->getVariable(
-     phi_scratch_variable_name.str());
+   phi_scratch_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >
+     (var_db->getVariable(phi_scratch_variable_name.str()));
   } else {
-   phi_scratch_variable = new CellVariable<DIM,LSMLIB_REAL>(
-     phi_scratch_variable_name.str(), 1);
+   phi_scratch_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> > (
+     new CellVariable<LSMLIB_REAL>( d_patch_hierarchy->getDim(), phi_scratch_variable_name.str(), 1));
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
     stringstream context_name("");
@@ -1108,11 +1108,13 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << phi_variable->getName() << "::REINITIALIZATION_RHS";
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > rhs_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
-   rhs_variable = var_db->getVariable(rhs_name.str());
+   rhs_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >
+     (var_db->getVariable(rhs_name.str()));
   } else {
-   rhs_variable = new CellVariable<DIM,LSMLIB_REAL>(rhs_name.str(), 1);
+   rhs_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> > 
+    (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), rhs_name.str(), 1));
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1122,15 +1124,17 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName() 
                 << "::REINITIALIZATION_GRAD_PHI";
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > grad_phi_variable;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
-   grad_phi_variable = var_db->getVariable(grad_phi_name.str());
+   grad_phi_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >
+     (var_db->getVariable(grad_phi_name.str()));
   } else {
-   grad_phi_variable = new CellVariable<DIM,LSMLIB_REAL>(grad_phi_name.str(), DIM);
+   grad_phi_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> >
+    (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_phi_name.str()));
   }
-  Pointer<VariableContext> grad_phi_plus_context =  
+  boost::shared_ptr<VariableContext> grad_phi_plus_context =  
     var_db->getContext("REINITIALIZATION_GRAD_PHI_PLUS");
-  Pointer<VariableContext> grad_phi_minus_context =  
+  boost::shared_ptr<VariableContext> grad_phi_minus_context =  
     var_db->getContext("REINITIALIZATION_GRAD_PHI_MINUS");
   d_grad_phi_plus_handle = var_db->registerVariableAndContext(
     grad_phi_variable, grad_phi_plus_context, zero_ghostcell_width);
@@ -1143,27 +1147,27 @@ void ReinitializationAlgorithm<DIM>::initializeVariables()
 
 
 /* initializeCommunicationObjects() */
-template <int DIM>
-void ReinitializationAlgorithm<DIM>::initializeCommunicationObjects()
+void ReinitializationAlgorithm::initializeCommunicationObjects()
 {
 
   // initialize d_hierarchy_configuration_needs_reset to true
   d_hierarchy_configuration_needs_reset = true;
 
   // get pointer to VariableDatabase
-  VariableDatabase<DIM> *var_db = VariableDatabase<DIM>::getDatabase();
+  VariableDatabase *var_db = VariableDatabase::getDatabase();
 
 
   /*
    * Lookup refine operations
    */
   // get CellVariable associated with d_phi_handle
-  Pointer< CellVariable<DIM,LSMLIB_REAL> > phi_variable;
-  Pointer< Variable<DIM> > tmp_variable;
-  Pointer<VariableContext> tmp_context;
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_variable;
+  boost::shared_ptr< Variable > tmp_variable;
+  boost::shared_ptr<VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
                                            tmp_variable, tmp_context)) {
-    phi_variable = tmp_variable;
+    phi_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >
+     (tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeCommunicationObjects(): "
@@ -1173,7 +1177,7 @@ void ReinitializationAlgorithm<DIM>::initializeCommunicationObjects()
   }
 
   // lookup refine operations
-  Pointer< RefineOperator<DIM> > refine_op =
+  boost::shared_ptr< RefineOperator > refine_op =
     d_grid_geometry->lookupRefineOperator(phi_variable, "LINEAR_REFINE");
 
 
@@ -1183,7 +1187,8 @@ void ReinitializationAlgorithm<DIM>::initializeCommunicationObjects()
   d_phi_fill_bdry_alg.resizeArray(d_tvd_runge_kutta_order);
   d_phi_fill_bdry_sched.resizeArray(d_tvd_runge_kutta_order);
   for (int k = 0; k < d_tvd_runge_kutta_order; k++) {
-    d_phi_fill_bdry_alg[k] = new RefineAlgorithm<DIM>;
+    d_phi_fill_bdry_alg[k] = boost::shared_ptr< RefineAlgorithm >
+     (new RefineAlgorithm);
 
     // empty out the boundary bdry fill schedules
     d_phi_fill_bdry_sched[k].setNull();
@@ -1206,9 +1211,8 @@ void ReinitializationAlgorithm<DIM>::initializeCommunicationObjects()
 
 
 /* getFromInput() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::getFromInput(
-  Pointer<Database> db)
+void ReinitializationAlgorithm::getFromInput(
+  boost::shared_ptr<Database> db)
 {
 
   // get numerical parameters
@@ -1247,6 +1251,7 @@ void ReinitializationAlgorithm<DIM>::getFromInput(
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+    int DIM = d_patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
@@ -1276,8 +1281,7 @@ void ReinitializationAlgorithm<DIM>::getFromInput(
 
 
 /* checkParameters() */
-template <int DIM> 
-void ReinitializationAlgorithm<DIM>::checkParameters()
+void ReinitializationAlgorithm::checkParameters()
 {
   // check that spatial derivative type, spatial derivative order,
   // and TVD Runge-Kutta order are valid.
