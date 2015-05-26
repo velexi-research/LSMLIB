@@ -94,7 +94,6 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 /* Constructor - parameters from arguments */
 FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   boost::shared_ptr< PatchHierarchy > hierarchy,
-  const tbox::Dimension& dim,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,

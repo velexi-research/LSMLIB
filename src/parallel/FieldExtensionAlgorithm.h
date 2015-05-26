@@ -244,7 +244,6 @@ public:
 
   FieldExtensionAlgorithm(
     boost::shared_ptr< PatchHierarchy > hierarchy,
-    const tbox::Dimension& dim,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,

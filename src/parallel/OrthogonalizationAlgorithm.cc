@@ -23,11 +23,11 @@ extern "C" {
 #include "OrthogonalizationAlgorithm.h" 
 
 // SAMRAI Headers
-#include "CartesianPatchGeometry.h" 
-#include "CellData.h" 
-#include "IntVector.h" 
-#include "Patch.h" 
-#include "PatchLevel.h" 
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/PatchLevel.h"
 
 // Headers for Fortran kernels
 extern "C" {
@@ -59,7 +59,7 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = hierarchy->getGridGeometry();
+  d_grid_geometry = BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(hierarchy->getGridGeometry());
 
   // set data field handles
   d_phi_handle = phi_handle;
@@ -76,11 +76,13 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
   d_num_field_components = 0;
 
   // create FieldExtensionAlgorithm objects
-  d_fixed_phi_field_ext_alg = new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm >d_fixed_phi_field_ext_alg = 
+  boost::shared_ptr< FieldExtensionAlgorithm >(new FieldExtensionAlgorithm(
     d_patch_hierarchy,
     psi_handle,
     phi_handle,
     control_volume_handle,
+    phi_ghostcell_width,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
     d_tvd_runge_kutta_order,
@@ -89,14 +91,15 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
     d_max_iterations,
     d_iteration_stop_tol,
     d_verbose_mode,
-    object_name + "::FIXED_PHI",
-    phi_ghostcell_width);
+    object_name + "::FIXED_PHI"));
 
-  d_fixed_psi_field_ext_alg = new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm >d_fixed_psi_field_ext_alg = 
+  boost::shared_ptr< FieldExtensionAlgorithm >(new FieldExtensionAlgorithm(
     d_patch_hierarchy,
     phi_handle,
     psi_handle,
     control_volume_handle,
+    phi_ghostcell_width,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
     d_tvd_runge_kutta_order,
@@ -105,8 +108,7 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
     d_max_iterations,
     d_iteration_stop_tol,
     d_verbose_mode,
-    object_name + "::FIXED_PSI",
-    psi_ghostcell_width);
+    object_name + "::FIXED_PSI"));
 
 }
 
@@ -134,7 +136,7 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = hierarchy->getGridGeometry();
+  d_grid_geometry = BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(hierarchy->getGridGeometry());
 
   // set data field handles
   d_phi_handle = phi_handle;
@@ -165,7 +167,8 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
     d_stop_distance = X_upper[0]-X_lower[0];
-    for (int dim = 1; dim < DIM; dim++) {
+      int DIM = d_patch_hierarchy->getDim().getValue();
+     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
         d_stop_distance = X_upper[dim]-X_lower[dim];
       }
@@ -182,11 +185,13 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
   d_num_field_components = 0;
 
   // create FieldExtensionAlgorithm objects
-  d_fixed_phi_field_ext_alg = new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm >d_fixed_phi_field_ext_alg = 
+  boost::shared_ptr< FieldExtensionAlgorithm >(new FieldExtensionAlgorithm(
     d_patch_hierarchy,
     psi_handle,
     phi_handle,
     control_volume_handle,
+    phi_ghostcell_width,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
     d_tvd_runge_kutta_order,
@@ -195,14 +200,15 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
     d_max_iterations,
     d_iteration_stop_tol,
     d_verbose_mode,
-    object_name + "::FIXED_PHI",
-    phi_ghostcell_width);
+    object_name + "::FIXED_PHI"));
 
-  d_fixed_psi_field_ext_alg = new FieldExtensionAlgorithm<DIM>(
+  boost::shared_ptr< FieldExtensionAlgorithm >d_fixed_psi_field_ext_alg = 
+  boost::shared_ptr< FieldExtensionAlgorithm >(new FieldExtensionAlgorithm(
     d_patch_hierarchy,
     phi_handle,
     psi_handle,
     control_volume_handle,
+    phi_ghostcell_width,
     d_spatial_derivative_type,
     d_spatial_derivative_order,
     d_tvd_runge_kutta_order,
@@ -211,8 +217,7 @@ OrthogonalizationAlgorithm::OrthogonalizationAlgorithm(
     d_max_iterations,
     d_iteration_stop_tol,
     d_verbose_mode,
-    object_name + "::FIXED_PSI",
-    psi_ghostcell_width);
+    object_name + "::FIXED_PSI"));
 
 }
 
@@ -228,20 +233,18 @@ void OrthogonalizationAlgorithm::orthogonalizeLevelSetFunctions(
 {
   // compute the number of components of level set function
   if (d_num_field_components == 0) {
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(0);
-    typename PatchLevel<DIM>::Iterator pi;
-    for (pi.initialize(level); pi; pi++) { // loop over patches
-      const int pn = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(pn);
-      if ( patch.isNull() ) {
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::orthogonalizeLevelSetFunctions(): " 
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
   
-      Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
-        patch->getPatchData( d_phi_handle );
+      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data = 
+        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(patch->getPatchData( d_phi_handle ));
       d_num_field_components = phi_data->getDepth();
   
       break;  // only need PatchData from one patch for computation
@@ -297,9 +300,8 @@ void OrthogonalizationAlgorithm::
 
 
 /* resetHierarchyConfiguration() */
-template <int DIM>
-void OrthogonalizationAlgorithm<DIM>::resetHierarchyConfiguration(
-  Pointer< PatchHierarchy<DIM> > hierarchy,
+void OrthogonalizationAlgorithm::resetHierarchyConfiguration(
+  boost::shared_ptr< PatchHierarchy > hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -313,9 +315,8 @@ void OrthogonalizationAlgorithm<DIM>::resetHierarchyConfiguration(
 
 
 /* getFromInput() */
-template <int DIM> 
-void OrthogonalizationAlgorithm<DIM>::getFromInput(
-  Pointer<Database> db)
+void OrthogonalizationAlgorithm::getFromInput(
+  boost::shared_ptr<Database> db)
 {
 
   // get numerical parameters
@@ -353,7 +354,8 @@ void OrthogonalizationAlgorithm<DIM>::getFromInput(
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
-   
+  
+    int DIM = d_patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
@@ -383,9 +385,9 @@ void OrthogonalizationAlgorithm<DIM>::getFromInput(
 
 
 /* checkParameters() */
-template <int DIM> 
-void OrthogonalizationAlgorithm<DIM>::checkParameters()
+void OrthogonalizationAlgorithm::checkParameters()
 {
+   int DIM = d_patch_hierarchy->getDim().getValue();
   // check that (DIM >= 2)
   if (DIM < 2) {
     TBOX_ERROR(  d_object_name
