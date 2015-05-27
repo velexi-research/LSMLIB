@@ -13,9 +13,9 @@
 
 #include "BoundaryConditionModule.h"
 
-// SAMRAI headers
-#include "CartesianPatchGeometry.h"
-#include "CellData.h"
+// SAMRAI Headers
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
 
 // Toolbox headers
 #include "lsm_boundary_conditions1d.h"
@@ -33,6 +33,9 @@ namespace LSMLIB {
 BoundaryConditionModule::BoundaryConditionModule(
   boost::shared_ptr< PatchHierarchy > patch_hierarchy,
   const IntVector& ghostcell_width)
+:
+d_ghostcell_width(ghostcell_width),
+d_geom_periodic_dirs(patch_hierarchy->getDim())
 {
   // invoke resetHierarchyConfiguration() to set up boundary boxes, etc.
   resetHierarchyConfiguration(
@@ -42,11 +45,12 @@ BoundaryConditionModule::BoundaryConditionModule(
 
 
 /* Default constructor */
-BoundaryConditionModule::BoundaryConditionModule():
-d_ghostcell_width(0),
-d_geom_periodic_dirs(0)
+BoundaryConditionModule::BoundaryConditionModule()
+:
+d_ghostcell_width(d_patch_hierarchy->getDim(),0),
+d_geom_periodic_dirs(d_patch_hierarchy->getDim(),0)
 {
-  d_patch_hierarchy.setNull(); 
+  d_patch_hierarchy = boost::shared_ptr< PatchHierarchy > (); 
   d_boundary_boxes.setNull();
   d_touches_boundary.setNull();
 }
@@ -69,22 +73,22 @@ d_geom_periodic_dirs(rhs.d_geom_periodic_dirs)
 /* imposeBoundaryConditions() */
 void BoundaryConditionModule::imposeBoundaryConditions(
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component)
 {
   // loop over hierarchy and impose boundary conditions
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
-
-    for (PatchLevelIterator<DIM> pi(level); pi; pi++) { // loop over patches
-      const int patch_num = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(patch_num);
-      if ( patch.isNull() ) {
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      //const int patch_num = *pi;
+      //boost::shared_ptr< Patch > patch = level->getPatch(patch_num);
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeBoundaryConditions(): "
                   << "Cannot find patch. Null patch pointer."
@@ -114,10 +118,10 @@ void BoundaryConditionModule::imposeBoundaryConditions(
 
 /* imposeBoundaryConditionsOnPatch() */
 void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
-  Patch<DIM>& patch,
+  Patch& patch,
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component)
@@ -156,7 +160,8 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
 
   } else {  // boundary conditions are incomplete, so use default BCs
 
-    IntVector<DIM> default_bc(HOMOGENEOUS_NEUMANN);
+    IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
+    int DIM = d_patch_hierarchy->getDim().getValue();
     for (int dim=0; dim<DIM; dim++) {
       if (d_geom_periodic_dirs(dim)) {
         default_bc(dim) = NONE;
@@ -179,20 +184,20 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
 /* imposeAntiPeriodicBCs() */
 void BoundaryConditionModule::imposeAntiPeriodicBCs( 
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose anti-periodic boundary conditions
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
-
-    for (PatchLevelIterator<DIM> pi(level); pi; pi++) { // loop over patches
-      const int patch_num = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(patch_num);
-      if ( patch.isNull() ) {
+    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      //const int patch_num = *pi;
+      //boost::shared_ptr< Patch > patch = level->getPatch(patch_num);
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeAntiPeriodicBCs(): "
                   << "Cannot find patch. Null patch pointer."
@@ -217,19 +222,19 @@ void BoundaryConditionModule::imposeAntiPeriodicBCs(
 
 /* imposeAntiPeriodicBCsOnPatch() */
 void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch( 
-  Patch<DIM>& patch,
+  Patch& patch,
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // get patch level number and patch number
   int level_num = patch.getPatchLevelNumber();
-  int patch_num = patch.getPatchNumber();
+  int patch_num = patch.getLocalId().getValue();
 
   // get PatchData
-  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data = 
-    patch.getPatchData( phi_handle );
+  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data = 
+    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
   // with the ghostcell width 
@@ -242,15 +247,15 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   }
 
   // get PatchGeometry
-  Pointer< CartesianPatchGeometry<DIM> > patch_geom = 
-    patch.getPatchGeometry();  
+  boost::shared_ptr< CartesianPatchGeometry > patch_geom = 
+    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());  
 
   // get interior box for patch (used to compute boundary fill box)
-  Box<DIM> interior_box(patch.getBox());
+  Box interior_box(patch.getBox());
 
   // get ghostcell width to fill
-  IntVector<DIM> phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box<DIM> phi_ghostbox = phi_data->getGhostBox();
+  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  Box phi_ghostbox = phi_data->getGhostBox();
 
   // get data components
   int comp_lo = component;
@@ -259,13 +264,13 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     comp_lo = 0;
     comp_hi = phi_data->getDepth();
   }
-
+  int DIM = d_patch_hierarchy->getDim().getValue();
   if (DIM == 3) {
 
     /*
      * fill face boundaries
      */
-    const Array< BoundaryBox<DIM> > face_bdry = 
+    const Array< BoundaryBox > face_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num];
     for (int i = 0; i < face_bdry.getSize(); i++) {
 
@@ -278,14 +283,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           face_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -320,7 +325,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /* 
      * fill edge boundaries
      */
-    const Array< BoundaryBox<DIM> > edge_bdry = 
+    const Array< BoundaryBox > edge_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num+1];
     for (int i = 0; i < edge_bdry.getSize(); i++) {
 
@@ -363,14 +368,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -404,7 +409,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /* 
      * fill node boundaries
      */
-    const Array< BoundaryBox<DIM> > node_bdry = 
+    const Array< BoundaryBox > node_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num+2];
     for (int i = 0; i < node_bdry.getSize(); i++) {
 
@@ -422,14 +427,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -483,7 +488,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill edge boundaries
      */
-    const Array< BoundaryBox<DIM> > edge_bdry = 
+    const Array< BoundaryBox > edge_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num];
     for (int i = 0; i < edge_bdry.getSize(); i++) {
 
