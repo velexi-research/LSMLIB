@@ -501,13 +501,13 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -537,7 +537,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /* 
      * fill node boundaries
      */
-    const Array< BoundaryBox<DIM> > node_bdry = 
+    const Array< BoundaryBox > node_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num+1];
     for (int i = 0; i < node_bdry.getSize(); i++) {
 
@@ -555,13 +555,13 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -610,7 +610,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill node boundaries
      */
-    const Array< BoundaryBox<DIM> > node_bdry = 
+    const Array< BoundaryBox > node_bdry = 
       d_boundary_boxes[level_num][DIM*patch_num];
     for (int i = 0; i < node_bdry.getSize(); i++) {
 
@@ -623,12 +623,12 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi 
          */
-        Box<DIM> phi_fillbox = patch_geom->getBoundaryFillBox(
+        Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
-        IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
+        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector<DIM> fillbox_lower = phi_fillbox.lower();
-        IntVector<DIM> fillbox_upper = phi_fillbox.upper();
+        IntVector fillbox_lower = phi_fillbox.lower();
+        IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -682,25 +682,22 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
 
 
 /* imposeHomogeneousNeumannBCs() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCs( 
+void BoundaryConditionModule::imposeHomogeneousNeumannBCs( 
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component )
 {
   // loop over hierarchy and impose homogeneous Neumann BCs
-  const int num_levels = d_patch_hierarchy->getNumberLevels();
+  const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    Pointer< PatchLevel<DIM> > level = d_patch_hierarchy->getPatchLevel(ln);
-
-    for (PatchLevelIterator<DIM> pi(level); pi; pi++) { // loop over patches
-      const int patch_num = *pi;
-      Pointer< Patch<DIM> > patch = level->getPatch(patch_num);
-      if ( patch.isNull() ) {
+        boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+      if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeHomogeneousNeumannBCs(): "
                   << "Cannot find patch. Null patch pointer."
@@ -727,23 +724,23 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCs(
 
 
 /* imposeHomogeneousNeumannBCsOnPatch() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch( 
-  Patch<DIM>& patch,
+void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch( 
+  Patch& patch,
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component )
 {
   // get patch level number and patch number
   int level_num = patch.getPatchLevelNumber();
-  int patch_num = patch.getPatchNumber();
+  int patch_num = patch.getLocalId().getValue();
 
   // get PatchData
-  Pointer< CellData<DIM,LSMLIB_REAL> > phi_data =
-    patch.getPatchData( phi_handle );
+  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+    patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
   // with the ghostcell width
@@ -756,19 +753,19 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
   }
 
   // get PatchGeometry
-  Pointer< CartesianPatchGeometry<DIM> > patch_geom =
-    patch.getPatchGeometry();
+  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
+    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
-  Box<DIM> interior_box(patch.getBox());
-  IntVector<DIM> interior_box_lower = interior_box.lower();
-  IntVector<DIM> interior_box_upper = interior_box.upper();
+  Box interior_box(patch.getBox());
+  IntVector interior_box_lower = interior_box.lower();
+  IntVector interior_box_upper = interior_box.upper();
 
   // get ghostcell width to fill
-  IntVector<DIM> phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box<DIM> phi_ghostbox = phi_data->getGhostBox();
-  IntVector<DIM> phi_ghostbox_lower = phi_ghostbox.lower();
-  IntVector<DIM> phi_ghostbox_upper = phi_ghostbox.upper();
+  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  Box phi_ghostbox = phi_data->getGhostBox();
+  IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+  IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
   // get data components
   int comp_lo = component;
@@ -778,7 +775,8 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
     comp_hi = phi_data->getDepth();
   }
 
-  const Array< BoundaryBox<DIM> > bdry_boxes =
+  int DIM = d_patch_hierarchy->getDim().getValue();
+  const Array< BoundaryBox > bdry_boxes =
     d_boundary_boxes[level_num][DIM*patch_num];
   for (int i = 0; i < bdry_boxes.getSize(); i++) {
 
@@ -1137,11 +1135,10 @@ void BoundaryConditionModule<DIM>::imposeHomogeneousNeumannBCsOnPatch(
 
 
 /* imposeLinearExtrapolationBCs() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCs( 
+void BoundaryConditionModule::imposeLinearExtrapolationBCs( 
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose homogeneous Neumann BCs
@@ -1178,12 +1175,11 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCs(
 
 
 /* imposeLinearExtrapolationBCsOnPatch() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch( 
-  Patch<DIM>& patch,
+void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch( 
+  Patch& patch,
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // get patch level number and patch number
@@ -1313,11 +1309,10 @@ void BoundaryConditionModule<DIM>::imposeLinearExtrapolationBCsOnPatch(
 
 
 /* imposeSignedLinearExtrapolationBCs() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCs( 
+void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs( 
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose homogeneous Neumann BCs
@@ -1354,12 +1349,11 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCs(
 
 
 /* imposeSignedLinearExtrapolationBCsOnPatch() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch( 
-  Patch<DIM>& patch,
+void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch( 
+  Patch& patch,
   const int phi_handle,
-  const IntVector<DIM>& lower_bc,
-  const IntVector<DIM>& upper_bc,
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
   const int component )
 {
   // get patch level number and patch number
@@ -1489,12 +1483,11 @@ void BoundaryConditionModule<DIM>::imposeSignedLinearExtrapolationBCsOnPatch(
 
 
 /* resetHierarchyConfiguration() */
-template <int DIM>
-void BoundaryConditionModule<DIM>::resetHierarchyConfiguration(
-  const Pointer< PatchHierarchy<DIM> > patch_hierarchy,
+void BoundaryConditionModule::resetHierarchyConfiguration(
+  const Pointer< PatchHierarchy > patch_hierarchy,
   const int coarsest_level,
   const int finest_level,
-  const IntVector<DIM>& ghostcell_width)
+  const IntVector& ghostcell_width)
 {
 
   // reset hierarchy
