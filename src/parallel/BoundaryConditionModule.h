@@ -85,6 +85,7 @@
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/BoundaryBox.h"
 #include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/PatchBoundaries.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/tbox/Array.h"
 #include "boost/shared_ptr.hpp"
@@ -904,7 +905,7 @@ protected:
   // parameters for imposing anti-periodic BCs
   IntVector d_ghostcell_width;
   IntVector d_geom_periodic_dirs;
-  Array< Array< Array< BoundaryBox > > > d_boundary_boxes;
+  Array<std::map<BoxId, PatchBoundaries> > d_boundary_boxes;
   Array< Array<bool> > d_touches_boundary;
   
 };
