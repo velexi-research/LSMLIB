@@ -269,7 +269,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill face boundaries
      */
     const std::vector<BoundaryBox> face_bdry = 
-      d_boundary_boxes[level_num][boxid][2];//dimensionality of a face??
+      d_boundary_boxes[level_num].find(boxid)->second[2];//dimensionality of a face??
     for (unsigned int i = 0; i < face_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -324,7 +324,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill edge boundaries
      */
    const std::vector<BoundaryBox> edge_bdry =
-      d_boundary_boxes[level_num][boxid][1];//dimensionality of a edge??
+      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a edge??
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -408,7 +408,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill node boundaries
      */
     const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num][boxid][1];//dimensionality of a node??
+      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -487,7 +487,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill edge boundaries
      */
    const std::vector<BoundaryBox> edge_bdry =
-      d_boundary_boxes[level_num][boxid][1];//dimensionality of an edge??
+      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of an edge??
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -536,7 +536,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill node boundaries
      */
    const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num][boxid][1];//dimensionality of a node??
+      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -609,7 +609,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
      * fill node boundaries
      */
     const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num][boxid][1];//dimensionality of a node??
+      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -774,7 +774,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   BoxId boxid = patch.getBox().getBoxId();
   int DIM = d_patch_hierarchy->getDim().getValue();
   const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num][boxid][3];//dimensionality of a box??
+    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
   for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
 
     // check that boundary is homogeneous Neumann boundary
@@ -1221,7 +1221,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   BoxId boxid = patch.getBox().getBoxId();
   int DIM = d_patch_hierarchy->getDim().getValue();
   const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num][boxid][3];//dimensionality of a box??
+    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
   for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
 
     // check that boundary is linear extrapolation boundary
@@ -1395,7 +1395,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
   BoxId boxid = patch.getBox().getBoxId();
   int DIM = d_patch_hierarchy->getDim().getValue();
   const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num][boxid][3];//dimensionality of a box??
+    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
   for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
 
     // check that boundary is linear extrapolation boundary
@@ -1516,21 +1516,12 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   boost::shared_ptr< GridGeometry > grid_geometry = 
    BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
 
-  // get domain at coarsest level of refinement
-  BoxContainer domain(grid_geometry->getPhysicalDomain());
 
   // loop over PatchHierarchy and compute boundary boxes in periodic
   // directions
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
     boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     const int num_patches = level->getNumberOfPatches();
-
-    // compute computational domain on current level
-    IntVector ratio_to_coarser(d_patch_hierarchy->getDim(),1);
-    if (ln > 0) {
-      ratio_to_coarser = level->getRatioToCoarserLevel();
-      domain.refine(ratio_to_coarser);
-    }
 
     // set periodic shift to zero so that ALL boundary boxes
     // (including periodic boundaries) are computed
@@ -1552,11 +1543,11 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
       
       d_touches_boundary[ln][patch_num] = false;
 
-     for (int dim = 0; dim < DIM; dim++) {
-        if ( touches_regular_bdry[boxid](dim,0)  ||
-             touches_regular_bdry[boxid](dim,1)  ||
-             touches_periodic_bdry[boxid](dim,0) ||
-             touches_periodic_bdry[boxid](dim,1) ) {
+     for (int dim = 0; dim < DIM; dim++) {//find if the patch touches a boundary
+        if ( touches_regular_bdry.find(boxid)->second(dim,0)  ||
+             touches_regular_bdry.find(boxid)->second(dim,1)  ||
+             touches_periodic_bdry.find(boxid)->second(dim,0) ||
+             touches_periodic_bdry.find(boxid)->second(dim,1) ) {
 
           d_touches_boundary[ln][patch_num] = true;
 
@@ -1565,13 +1556,12 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
     }
 
     // compute boundary boxes for patches in current level
-    d_boundary_boxes[ln].resize(3);
     grid_geometry->computeBoundaryBoxesOnLevel(
-      d_boundary_boxes[ln].getPointer(),
+      d_boundary_boxes[ln],
       *level,
       periodic_shift,
       d_ghostcell_width,
-      domain,
+      level->getPhysicalDomainArray(),
       true);  // true indicates that boundary boxes should be computed for
               // ALL patches (including those touching periodic boundaries)
 

@@ -32,8 +32,7 @@ CXX_OBJS = LevelSetMethodAlgorithm.o                    \
            OrthogonalizationAlgorithm.o                 \
            BoundaryConditionModule.o
 
-SUBDIRS = fortran                                       \
-          templates
+SUBDIRS = fortran                                      
 
 all:  includes library
 
