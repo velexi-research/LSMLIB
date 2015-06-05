@@ -145,13 +145,13 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
     
+    int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
 #else 
     const double *X_lower_double = d_grid_geometry->getXLower();
     const double *X_upper_double = d_grid_geometry->getXUpper();
-    int DIM = hierarchy->getDim().getValue();
     float X_lower[DIM];
     float X_upper[DIM];
     for (int i = 0; i < DIM; i++) {
