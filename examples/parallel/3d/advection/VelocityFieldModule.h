@@ -23,14 +23,14 @@
  
 // SAMRAI configuration header must be included
 // before any other SAMRAI header files
-#include "SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"
 
 #include <string>
-#include "CartesianGridGeometry.h"
-#include "PatchHierarchy.h"
-#include "PatchLevel.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/tbox/Database.h"
+#include "boost/shared_ptr.hpp"
 
 // Level set method felocity field interface definition 
 // LevelSetMethod configuration header must be included
@@ -47,7 +47,7 @@ using namespace tbox;
 using namespace LSMLIB;
 
 class VelocityFieldModule:
-  public LevelSetMethodVelocityFieldStrategy<3>
+  public LevelSetMethodVelocityFieldStrategy
 {
 public:
 
@@ -66,9 +66,9 @@ public:
    * 
    */
   VelocityFieldModule(
-    Pointer<Database> input_db,
-    Pointer< PatchHierarchy<3> > patch_hierarchy,
-    Pointer< CartesianGridGeometry<3> > grid_geometry,
+    boost::shared_ptr<Database> input_db,
+    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    boost::shared_ptr< CartesianGridGeometry > grid_geometry,
     const string& object_name = "VelocityFieldModule");
 
   /*!
@@ -207,15 +207,15 @@ public:
    * Allocate and initialize data for a new level in the patch hierarchy.
    */
   virtual void initializeLevelData (
-    const Pointer< PatchHierarchy<3> > hierarchy,
+    const boost::shared_ptr< PatchHierarchy > hierarchy,
     const int level_number,
     const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
     const bool initial_time,
-    const Pointer< PatchLevel<3> > old_level
-      =Pointer< PatchLevel<3> >((0)),
+    const boost::shared_ptr< PatchLevel > old_level
+      =boost::shared_ptr< PatchLevel >(),
     const bool allocate_data = true);
 
   /*!
@@ -231,7 +231,7 @@ protected:
    * in the input database.
    */
   void computeVelocityFieldOnLevel(
-    const Pointer< PatchLevel<3> > level, 
+    const boost::shared_ptr< PatchLevel > level, 
     const LSMLIB_REAL time);
 
   /*
@@ -239,7 +239,7 @@ protected:
    *
    * An assertion results if the database pointer is null.
    */
-  void getFromInput(Pointer<Database> db);
+  void getFromInput(boost::shared_ptr<Database> db);
 
   /*
    * The object name is used for error/warning reporting and also as a 
@@ -250,13 +250,13 @@ protected:
   /*
    * Pointer to the patch hierarchy.
    */
-  Pointer< PatchHierarchy<3> > d_patch_hierarchy;
+  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
 
   /*
    * Ccache pointer to the grid geometry object to set up initial data, 
    * set physical boundary conditions, and register plot variables.
    */
-  Pointer< CartesianGridGeometry<3> > d_grid_geometry;
+  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
 
   /*
    * current time

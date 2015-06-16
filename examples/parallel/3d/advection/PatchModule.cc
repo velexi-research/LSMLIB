@@ -31,7 +31,7 @@ using namespace LSMLIB;
 const LSMLIB_REAL PatchModule::s_default_radius = 0.25;
 
 PatchModule::PatchModule(
-  Pointer<Database> input_db,
+  boost::shared_ptr<Database> input_db,
   const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -48,17 +48,17 @@ PatchModule::PatchModule(
 }
 
 void PatchModule::initializeLevelSetFunctionsOnPatch(
-  Patch<3>& patch,
+  Patch& patch,
   const LSMLIB_REAL data_time,
   const int phi_handle,
   const int psi_handle)
 {
-  Pointer< CellData<3,LSMLIB_REAL> > level_set_data =
+  boost::shared_ptr< CellData<LSMLIB_REAL> > level_set_data =
     patch.getPatchData( phi_handle );
 
   LSMLIB_REAL* level_set_data_ptr = level_set_data->getPointer();
 
-  Pointer< CartesianPatchGeometry<3> > patch_geom 
+  boost::shared_ptr< CartesianPatchGeometry > patch_geom 
     = patch.getPatchGeometry();
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
@@ -75,12 +75,12 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
   x_lower[2] = x_lower_double[2];
 #endif
 
-  Box<3> box = level_set_data->getBox();
-  Box<3> ghostbox = level_set_data->getGhostBox();
-  const IntVector<3> box_lower = box.lower();
-  const IntVector<3> box_upper = box.upper();
-  const IntVector<3> ghostbox_lower = ghostbox.lower();
-  const IntVector<3> ghostbox_upper = ghostbox.upper();
+  Box box = level_set_data->getBox();
+  Box ghostbox = level_set_data->getGhostBox();
+  const IntVector box_lower = box.lower();
+  const IntVector box_upper = box.upper();
+  const IntVector ghostbox_lower = ghostbox.lower();
+  const IntVector ghostbox_upper = ghostbox.upper();
 
   switch (d_initial_level_set) 
   {
@@ -112,11 +112,11 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 }
 
 void PatchModule::setLevelSetFunctionBoundaryConditions(
-    Patch<3>& patch,
+    Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector<3>& ghost_width_to_fill)
+    const IntVector& ghost_width_to_fill)
 {
 }
 
@@ -134,7 +134,7 @@ void PatchModule::printClassData(ostream &os) const
 
 
 void PatchModule::getFromInput(
-  Pointer<Database> db)
+  boost::shared_ptr<Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(!db.isNull());

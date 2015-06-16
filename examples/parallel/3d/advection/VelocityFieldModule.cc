@@ -34,9 +34,9 @@ using namespace LSMLIB;
 
 /* Constructor */
 VelocityFieldModule::VelocityFieldModule(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<3> > patch_hierarchy,
-  Pointer< CartesianGridGeometry<3> > grid_geom,
+  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  boost::shared_ptr< CartesianGridGeometry > grid_geom,
   const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -55,14 +55,14 @@ VelocityFieldModule::VelocityFieldModule(
   getFromInput(input_db);
 
   // Allocate velocity variable
-  Pointer< CellVariable<3,LSMLIB_REAL> > velocity = 
-    new CellVariable<3,LSMLIB_REAL>("velocity field",3); 
+  boost::shared_ptr< CellVariable<LSMLIB_REAL> > velocity = 
+    new CellVariable<LSMLIB_REAL>("velocity field",3); 
  
   // Register velocity variable with VariableDatabase.
-  VariableDatabase<3> *vdb = VariableDatabase<3>::getDatabase();
-  Pointer<VariableContext> cur_ctxt = vdb->getContext("CURRENT");
+  VariableDatabase *vdb = VariableDatabase::getDatabase();
+  boost::shared_ptr<VariableContext> cur_ctxt = vdb->getContext("CURRENT");
   d_velocity_handle = vdb->registerVariableAndContext(
-    velocity, cur_ctxt, IntVector<3>(0));
+    velocity, cur_ctxt, IntVector(0));
   vdb->registerPatchDataForRestart(d_velocity_handle);
 
   // set d_velocity_never_computed to true to ensure that velocity is
@@ -95,7 +95,7 @@ void VelocityFieldModule::computeVelocityField(
   const int finest_level = d_patch_hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<3> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
     computeVelocityFieldOnLevel(level,time);
 
   } // end loop over hierarchy
@@ -104,18 +104,18 @@ void VelocityFieldModule::computeVelocityField(
 
 /* initializeLevelData() */
 void VelocityFieldModule::initializeLevelData (
-  const Pointer< PatchHierarchy<3> > hierarchy ,
+  const boost::shared_ptr< PatchHierarchy > hierarchy ,
   const int level_number ,
   const LSMLIB_REAL init_data_time ,
   const int phi_handle,
   const int psi_handle,
   const bool can_be_refined ,
   const bool initial_time ,
-  const Pointer< PatchLevel<3> > old_level,
+  const boost::shared_ptr< PatchLevel > old_level,
   const bool allocate_data)
 {
 
-  Pointer< PatchLevel<3> > level = hierarchy->getPatchLevel(level_number);
+  boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(level_number);
   if (allocate_data) {
     level->allocatePatchData(d_velocity_handle);
   }
@@ -129,20 +129,20 @@ void VelocityFieldModule::initializeLevelData (
 
 /* computeVelocityFieldOnLevel() */
 void VelocityFieldModule::computeVelocityFieldOnLevel(
-  const Pointer< PatchLevel<3> > level,
+  const boost::shared_ptr< PatchLevel > level,
   const LSMLIB_REAL time) 
 {
-  for (PatchLevelIterator<3> pi(level); pi; pi++) { // loop over patches
+  for (PatchLevelIterator pi(level); pi; pi++) { // loop over patches
     const int pn = *pi;
-    Pointer< Patch<3> > patch = level->getPatch(pn);
+    boost::shared_ptr< Patch > patch = level->getPatch(pn);
     if ( patch.isNull() ) {
       TBOX_ERROR(d_object_name << ": Cannot find patch. Null patch pointer.");
     }
 
-    Pointer< CellData<3,LSMLIB_REAL> > velocity_data = 
+    boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data = 
       patch->getPatchData( d_velocity_handle );
 
-    Pointer< CartesianPatchGeometry<3> > patch_geom 
+    boost::shared_ptr< CartesianPatchGeometry > patch_geom 
       = patch->getPatchGeometry();
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
@@ -159,13 +159,13 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
   x_lower[2] = x_lower_double[2];
 #endif
 
-    Box<3> vel_ghostbox = velocity_data->getGhostBox();
-    const IntVector<3> vel_ghostbox_lower = vel_ghostbox.lower();
-    const IntVector<3> vel_ghostbox_upper = vel_ghostbox.upper();
+    Box vel_ghostbox = velocity_data->getGhostBox();
+    const IntVector vel_ghostbox_lower = vel_ghostbox.lower();
+    const IntVector vel_ghostbox_upper = vel_ghostbox.upper();
 
-    Box<3> vel_box = velocity_data->getBox();
-    const IntVector<3> vel_lower = vel_box.lower();
-    const IntVector<3> vel_upper = vel_box.upper();
+    Box vel_box = velocity_data->getBox();
+    const IntVector vel_lower = vel_box.lower();
+    const IntVector vel_upper = vel_box.upper();
 
     // get velocity data pointers
     LSMLIB_REAL* vel_x_data_ptr = velocity_data->getPointer(0);
@@ -298,7 +298,7 @@ void VelocityFieldModule::printClassData(ostream& os) const
 }
 
 void VelocityFieldModule::getFromInput(
-  Pointer<Database> db)
+  boost::shared_ptr<Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(!db.isNull());

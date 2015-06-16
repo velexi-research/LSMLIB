@@ -25,13 +25,13 @@
    
 // SAMRAI configuration header must be included
 // before any other SAMRAI header files
-#include "SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"
 
 #include <string>
-#include "IntVector.h"
-#include "Patch.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/tbox/Database.h"
+#include "boost/shared_ptr.hpp"
 
 // LevelSetMethod configuration header must be included
 // before any other LevelSetMethod header files
@@ -46,7 +46,7 @@ using namespace tbox;
 using namespace LSMLIB;
 
 class PatchModule:
-  public LevelSetMethodPatchStrategy<3>
+  public LevelSetMethodPatchStrategy
 {
 public:
 
@@ -67,7 +67,7 @@ public:
    *
    */
   PatchModule(
-    Pointer<Database> input_db,
+    boost::shared_ptr<Database> input_db,
     const string& object_name = "PatchModule");
 
   /*!
@@ -96,7 +96,7 @@ public:
    * Return value:             none
    *
    */
-  virtual void initializeLevelSetFunctionsOnPatch(Patch<3>& patch,
+  virtual void initializeLevelSetFunctionsOnPatch(Patch& patch,
                                                   const LSMLIB_REAL data_time,
                                                   const int phi_handle,
                                                   const int psi_handle);
@@ -106,11 +106,11 @@ public:
    * corresponding to boundary conditions.  
    */
   virtual void setLevelSetFunctionBoundaryConditions(
-    Patch<3>& patch,
+    Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector<3>& ghost_width_to_fill);
+    const IntVector& ghost_width_to_fill);
 
   /*!
    * Print all data members for FluidSolver class.
@@ -125,7 +125,7 @@ protected:
    *
    ****************************************************************/
 
-  void getFromInput(Pointer<Database> db);
+  void getFromInput(boost::shared_ptr<Database> db);
 
 
   /*

@@ -18,31 +18,31 @@
  ************************************************************************/
 
 // SAMRAI Configuration 
-#include "SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"
 
 /* 
  * Headers for basic SAMRAI objects
  */
 
 // variables and variable management
-#include "CellVariable.h"
-#include "FaceVariable.h"
-#include "VariableDatabase.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/pdat/FaceVariable.h"
+#include "SAMRAI/hier/VariableDatabase.h"
 
 // geometry and patch hierarchy
-#include "CartesianGridGeometry.h" 
-#include "PatchHierarchy.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h" 
+#include "SAMRAI/hier/PatchHierarchy.h"
 
 // basic SAMRAI classes
-#include "tbox/Database.h" 
-#include "tbox/InputDatabase.h" 
-#include "tbox/InputManager.h" 
-#include "tbox/MPI.h"
-#include "tbox/PIO.h"
-#include "tbox/Pointer.h"
-#include "tbox/RestartManager.h"
-#include "tbox/SAMRAIManager.h"
-#include "tbox/Utilities.h"
+#include "SAMRAI/tbox/Database.h" 
+#include "SAMRAI/tbox/InputDatabase.h" 
+#include "SAMRAI/tbox/InputManager.h" 
+#include "SAMRAI/tbox/SAMRAI_MPI.h"
+#include "SAMRAI/tbox/PIO.h"
+#include "boost/shared_ptr.hpp" 
+#include "SAMRAI/tbox/RestartManager.h"
+#include "SAMRAI/tbox/SAMRAIManager.h"
+#include "SAMRAI/tbox/Utilities.h"
 
 
 // Headers for level set method
@@ -54,18 +54,16 @@
 #include "PatchModule.h"
 
 // Header for data writers
-#include "VisItDataWriter.h"
-
+//#include "/work/02697/jrigelo/opt/SAMRAI/include/SAMRAI/appu/VisItDataWriter.h"
+#include "SAMRAI/appu/VisItDataWriter.h"
 
 // namespaces
 using namespace std;
 using namespace SAMRAI;
-using namespace appu;
 using namespace geom;
 using namespace hier;
 using namespace tbox;
 using namespace LSMLIB;
-
 
 int main(int argc, char *argv[])
 {
@@ -73,9 +71,9 @@ int main(int argc, char *argv[])
   /*
    * Initialize MPI and SAMRAI, enable logging, and process command line.
    */
-  tbox::MPI::init(&argc, &argv);
-  tbox::MPI::initialize();
-  SAMRAIManager::startup();
+  tbox::SAMRAI_MPI::init(&argc, &argv);
+  tbox::SAMRAIManager::initialize();
+  tbox::SAMRAIManager::startup(); 
 
   string input_filename;
   string restart_read_dirname;
@@ -90,7 +88,7 @@ int main(int argc, char *argv[])
          << "  options:\n"
          << "  none at this time"
          << endl;
-    tbox::MPI::abort();
+    tbox::SAMRAI_MPI::abort();
     return (-1);
   } else {
     input_filename = argv[1];
@@ -104,13 +102,14 @@ int main(int argc, char *argv[])
   /*
    * Create input database and parse all data in input file.  
    */
-  Pointer<Database> input_db = new InputDatabase("input_db");
+  boost::shared_ptr<MemoryDatabase> input_db =  boost::shared_ptr<MemoryDatabase>(
+   new InputDatabase("input_db"));
   InputManager::getManager()->parseInputFile(input_filename, input_db);
 
   /*
    * Read in the input from the "Main" section of the input database.  
    */
-  Pointer<Database> main_db = input_db->getDatabase("Main");
+  boost::shared_ptr<Database> main_db = input_db->getDatabase("Main");
 
   /* 
    * The base_name variable is a base name for all name strings in 
@@ -147,7 +146,7 @@ int main(int argc, char *argv[])
   if (is_from_restart) {
     restart_manager->
        openRestartFile(restart_read_dirname, restore_num, 
-                       tbox::MPI::getNodes() );
+                       tbox::SAMRAI_MPI::getNodes() );
   }
 
   // log the command-line args
@@ -159,16 +158,16 @@ int main(int argc, char *argv[])
    *  Create major algorithm and data objects. 
    */
 
-  Pointer< CartesianGridGeometry<3> > grid_geometry =
-    new CartesianGridGeometry<3>(
+  boost::shared_ptr< CartesianGridGeometry > grid_geometry =
+    new CartesianGridGeometry(
       base_name+"::CartesianGeometry",
       input_db->getDatabase("CartesianGeometry"));
   plog << "CartesianGridGeometry:" << endl;
   grid_geometry->printClassData(plog);
 
-  Pointer< PatchHierarchy<3> > patch_hierarchy =
-    new PatchHierarchy<3>(base_name+"::PatchHierarchy",
-                             grid_geometry);
+  boost::shared_ptr< PatchHierarchy > patch_hierarchy =
+    boost::shared_ptr< PatchHierarchy >(new PatchHierarchy(base_name+"::PatchHierarchy",
+                             grid_geometry));
 
   VelocityFieldModule* velocity_field_module = new VelocityFieldModule( 
       input_db->getDatabase("VelocityFieldModule"),
@@ -186,8 +185,8 @@ int main(int argc, char *argv[])
 
   int num_level_set_fcn_components = 1;
   int codimension = 1;
-  Pointer< LevelSetMethodAlgorithm<3> > lsm_algorithm = 
-    new LevelSetMethodAlgorithm<3>( 
+  boost::shared_ptr< LevelSetMethodAlgorithm > lsm_algorithm = 
+    new LevelSetMethodAlgorithm( 
       input_db->getDatabase("LevelSetMethodAlgorithm"),
       patch_hierarchy,
       patch_module,
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
   plog << "Input database..." << endl;
   input_db->printClassData(plog);
   plog << "\nVariable database..." << endl;
-  VariableDatabase<3>::getDatabase()->printClassData(plog);
+  VariableDatabase::getDatabase()->printClassData(plog);
 
 
   /*
@@ -245,10 +244,10 @@ int main(int argc, char *argv[])
     velocity_field_module
       ->getExternalVelocityFieldPatchDataHandle(0);
 
-  Pointer<VisItDataWriter<3> > visit_data_writer = 0;
+  boost::shared_ptr<VisItDataWriter > visit_data_writer = 0;
   if (use_visit) {
     string visit_data_dirname = base_name + ".visit";
-    visit_data_writer = new VisItDataWriter<3>("VisIt Writer",
+    boost::shared_ptr <appu::VisItDataWriter > visit_data_writer = new appu::VisItDataWriter("VisIt Writer",
                                                visit_data_dirname,
                                                visit_number_procs_per_file);
 
@@ -383,7 +382,7 @@ int main(int argc, char *argv[])
   delete velocity_field_module;
 
   SAMRAIManager::shutdown();
-  tbox::MPI::finalize();
+  tbox::SAMRAI_MPI::finalize();
 
   return(0);
 }
