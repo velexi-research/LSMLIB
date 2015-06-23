@@ -25,7 +25,8 @@ Main {
 
   // set to 0 to have no limit on maximum number of time steps
   max_num_time_steps = 0
-
+  //To set the dimension of our problem 
+  dim = 3 
 }
 
 CartesianGeometry {

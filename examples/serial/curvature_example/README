@@ -78,7 +78,7 @@ file), the level set function for the initial interface (binary data file
 'data_init'), grid structure (binary file 'grid') and masking level set 
 function (binary data file 'mask'). Output files can be used as input files 
 (see OUTPUT for more details).
-
+The examples need to be 3d.
 
 OUTPUT
 ------

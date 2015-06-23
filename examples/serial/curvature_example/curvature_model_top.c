@@ -140,6 +140,10 @@ int  curvatureModelTop(
     else
       curvatureModelMedium3dMainLoop(options,data_arrays,grid,fp_out);								
   }
+  else
+  { 
+     fprintf("\n2D currently not implemented.\n");
+  }
          
   /* If desired, output initial data */
   if( options->save_data )

@@ -64,7 +64,7 @@ using namespace geom;
 using namespace hier;
 using namespace tbox;
 using namespace LSMLIB;
-
+using namespace appu;
 int main(int argc, char *argv[])
 {
 
@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   tbox::SAMRAI_MPI::init(&argc, &argv);
   tbox::SAMRAIManager::initialize();
   tbox::SAMRAIManager::startup(); 
+  const tbox::SAMRAI_MPI& mpi(tbox::SAMRAI_MPI::getSAMRAIWorld());
 
   string input_filename;
   string restart_read_dirname;
@@ -146,7 +147,7 @@ int main(int argc, char *argv[])
   if (is_from_restart) {
     restart_manager->
        openRestartFile(restart_read_dirname, restore_num, 
-                       tbox::SAMRAI_MPI::getNodes() );
+                       mpi.getSize() );
   }
 
   // log the command-line args
@@ -157,11 +158,12 @@ int main(int argc, char *argv[])
   /*
    *  Create major algorithm and data objects. 
    */
-
+  const tbox::Dimension dim(static_cast<unsigned short>(main_db->getInteger("dim")));
+  
   boost::shared_ptr< CartesianGridGeometry > grid_geometry =
-    new CartesianGridGeometry(
-      base_name+"::CartesianGeometry",
-      input_db->getDatabase("CartesianGeometry"));
+    boost::shared_ptr< CartesianGridGeometry >(new CartesianGridGeometry(
+      dim, base_name+"::CartesianGeometry",
+      input_db->getDatabase("CartesianGeometry")));
   plog << "CartesianGridGeometry:" << endl;
   grid_geometry->printClassData(plog);
 
@@ -186,14 +188,15 @@ int main(int argc, char *argv[])
   int num_level_set_fcn_components = 1;
   int codimension = 1;
   boost::shared_ptr< LevelSetMethodAlgorithm > lsm_algorithm = 
-    new LevelSetMethodAlgorithm( 
+    boost::shared_ptr< LevelSetMethodAlgorithm > (new LevelSetMethodAlgorithm( 
+      dim,
       input_db->getDatabase("LevelSetMethodAlgorithm"),
       patch_hierarchy,
       patch_module,
       velocity_field_module,
       num_level_set_fcn_components,
       codimension,
-      base_name+"::LevelSetMethodAlgorithm");
+      base_name+"::LevelSetMethodAlgorithm"));
   plog << "LevelSetMethodAlgorithm:" << endl;
   lsm_algorithm->printClassData(plog);
 
@@ -244,12 +247,13 @@ int main(int argc, char *argv[])
     velocity_field_module
       ->getExternalVelocityFieldPatchDataHandle(0);
 
-  boost::shared_ptr<VisItDataWriter > visit_data_writer = 0;
+  boost::shared_ptr<VisItDataWriter > visit_data_writer = boost::shared_ptr<VisItDataWriter >();
   if (use_visit) {
     string visit_data_dirname = base_name + ".visit";
-    boost::shared_ptr <appu::VisItDataWriter > visit_data_writer = new appu::VisItDataWriter("VisIt Writer",
+    boost::shared_ptr <VisItDataWriter > visit_data_writer = 
+     boost::shared_ptr <VisItDataWriter > (new VisItDataWriter(dim, "VisIt Writer",
                                                visit_data_dirname,
-                                               visit_number_procs_per_file);
+                                               visit_number_procs_per_file));
 
     // register level set functions and velocity fields for plotting
     visit_data_writer->registerPlotQuantity(
