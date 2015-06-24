@@ -53,7 +53,7 @@ include Makefile.depend
 FORTRAN = fortran
 
 patchmodule_fort.o: $(FORTRAN)/patchmodule_fort.f
-	$(F77) @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^
+	$(F77) $(FFLAGS) $(FFLAGS_EXTRA) -c $^
 
 velocityfield_fort.o: $(FORTRAN)/velocityfield_fort.f
-	$(F77) @FFLAGS@ $(FFLAGS) $(FFLAGS_EXTRA) -c $^
+	$(F77) $(FFLAGS) $(FFLAGS_EXTRA) -c $^
