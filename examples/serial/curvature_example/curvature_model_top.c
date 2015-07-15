@@ -142,7 +142,7 @@ int  curvatureModelTop(
   }
   else
   { 
-     fprintf("\n2D currently not implemented.\n");
+     fprintf(fp_out, "\n2D currently not implemented.\n");
   }
          
   /* If desired, output initial data */
