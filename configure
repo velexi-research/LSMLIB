@@ -634,6 +634,9 @@ matlab_install_dir
 mex_extension
 mex_flags
 matlab_dir
+boost_lib
+boost_inc
+boost_dir
 LSMLIB_PARALLEL
 PARALLEL_PACKAGE
 mpi_libs
@@ -742,6 +745,7 @@ with_openmpi
 with_ibmmpi
 with_intelmpi
 with_sgimpi
+with_boost
 with_matlab
 with_matlab_install_dir
 enable_implicit_template_instantiation
@@ -1404,6 +1408,7 @@ Optional Packages:
   --with-ibmmpi=DIR       Specify the ibmmpi library path (default [NO])
   --with-intelmpi=DIR     Specify the intelmpi library path (default [NO])
   --with-sgimpi=DIR       Specify the sgimpi library path (default [NO])
+  --with-boost=DIR        Specify the location of BOOST (default [NO])
   --with-matlab=DIR       Specify the MATLAB patch (default [NO])
   --with-matlab-install-dir=DIR
                           Specify the location where MATLAB files should be
@@ -5489,6 +5494,58 @@ fi
 
 
 
+# check for boost library
+boost_dir=""  # initialize boost_dir
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking BOOST library" >&5
+$as_echo_n "checking BOOST library... " >&6; }
+
+# Check whether --with-boost was given.
+if test "${with_boost+set}" = set; then :
+  withval=$with_boost;
+else
+  withval=no
+fi
+
+if test $withval = no; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: configured without BOOST...parallel functionality unavailable" >&5
+$as_echo "configured without BOOST...parallel functionality unavailable" >&6; }
+else
+  boost_dir=$with_boost
+       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $boost_dir" >&5
+$as_echo "$boost_dir" >&6; }
+fi
+if ! test -z "$boost_dir"; then :
+  as_ac_File=`$as_echo "ac_cv_file_$boost_dir/include/boost/config.hpp" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $boost_dir/include/boost/config.hpp" >&5
+$as_echo_n "checking for $boost_dir/include/boost/config.hpp... " >&6; }
+if eval \${$as_ac_File+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  test "$cross_compiling" = yes &&
+  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+if test -r "$boost_dir/include/boost/config.hpp"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+eval ac_res=\$$as_ac_File
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
+  boost_inc="$boost_dir/include"
+                      boost_lib="$boost_dir/lib"
+
+
+
+else
+  as_fn_error $? "BOOST library appears to be incomplete or invalid" "$LINENO" 5
+
+fi
+
+
+fi
+
 # check for MATLAB libraries
 matlab_dir=""  # initialize matlab_dir
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking MATLAB configuration" >&5
@@ -8206,6 +8263,12 @@ echo "                       MPI LIB: $mpi_type"
 echo "              MPI include path: $mpi_include_dirs"
 echo "              MPI library path: $mpi_lib_dir"
 echo "                 MPI libraries: $mpi_libs"
+fi
+if test -z "$boost_dir"; then
+echo "                        boost: not configured"
+else
+echo "           boost include path: $boost_inc"
+echo "           boost library path: $boost_lib"
 fi
 if test -z "$matlab_dir"; then
 echo "                        MATLAB: not configured"

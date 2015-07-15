@@ -13,9 +13,11 @@
 
 #include "PatchModule.h"
 
-#include "Box.h"
-#include "CartesianPatchGeometry.h"
-#include "CellData.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
+//#include <boost/config.hpp>
+#include "boost/shared_ptr.hpp"
 
 // headers for level set method numerical kernels
 extern "C" {
@@ -35,7 +37,7 @@ PatchModule::PatchModule(
   const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!input_db.isNull());
+  assert(input_db!=NULL);
   assert(!object_name.empty());
 #endif
 
@@ -54,12 +56,14 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
   const int psi_handle)
 {
   boost::shared_ptr< CellData<LSMLIB_REAL> > level_set_data =
-    patch.getPatchData( phi_handle );
+    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+   patch.getPatchData( phi_handle ));
 
   LSMLIB_REAL* level_set_data_ptr = level_set_data->getPointer();
 
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom 
-    = patch.getPatchGeometry();
+  boost::shared_ptr< CartesianPatchGeometry > patch_geom = 
+    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+   patch.getPatchGeometry());
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
   const double* x_lower = patch_geom->getXLower();
@@ -137,7 +141,7 @@ void PatchModule::getFromInput(
   boost::shared_ptr<Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!db.isNull());
+  assert(db!=NULL);
 #endif
 
   // set initial level_set_selector

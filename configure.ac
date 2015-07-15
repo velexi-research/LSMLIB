@@ -124,6 +124,28 @@ AS_IF([test -z "$samrai_dir"],
 AC_SUBST([PARALLEL_PACKAGE])
 AC_SUBST([LSMLIB_PARALLEL])
 
+# check for boost library
+boost_dir=""  # initialize boost_dir
+AC_MSG_CHECKING([BOOST library])
+AC_ARG_WITH([boost],
+            [AC_HELP_STRING([--with-boost=DIR],
+            [Specify the location of BOOST (default [NO])])],
+            [], [withval=no])
+AS_IF([test $withval = no],
+      [AC_MSG_RESULT([m4_text_wrap([configured without BOOST...parallel functionality unavailable])])],
+      [boost_dir=$with_boost
+       AC_MSG_RESULT([$boost_dir])])
+AS_IF([! test -z "$boost_dir"],
+      [AC_CHECK_FILE([$boost_dir/include/boost/config.hpp],
+                     [boost_inc="$boost_dir/include"
+                      boost_lib="$boost_dir/lib"
+                      AC_SUBST(boost_dir)
+                      AC_SUBST(boost_inc)
+                      AC_SUBST(boost_lib)],
+                     [AC_MSG_ERROR([BOOST library appears to be incomplete or invalid])
+                     ])
+      ])
+
 # check for MATLAB libraries
 matlab_dir=""  # initialize matlab_dir
 AC_MSG_CHECKING([MATLAB configuration])
@@ -463,6 +485,12 @@ echo "                       MPI LIB: $mpi_type"
 echo "              MPI include path: $mpi_include_dirs"
 echo "              MPI library path: $mpi_lib_dir"
 echo "                 MPI libraries: $mpi_libs"
+fi
+if test -z "$boost_dir"; then
+echo "                        boost: not configured"
+else
+echo "           boost include path: $boost_inc"
+echo "           boost library path: $boost_lib"
 fi
 if test -z "$matlab_dir"; then
 echo "                        MATLAB: not configured"

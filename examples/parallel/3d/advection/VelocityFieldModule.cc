@@ -11,14 +11,17 @@
 
 #include "VelocityFieldModule.h" 
 
-#include "Box.h"
-#include "CartesianPatchGeometry.h"
-#include "CellData.h"
-#include "CellVariable.h"
-#include "IntVector.h"
-#include "Patch.h"
-#include "VariableContext.h"
-#include "VariableDatabase.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/VariableContext.h"
+#include "SAMRAI/hier/VariableDatabase.h"
+#include "SAMRAI/tbox/RestartManager.h"
+#include "SAMRAI/hier/PatchDataRestartManager.h"
+#include "boost/shared_ptr.hpp"
 
 #include <float.h>
 
@@ -40,9 +43,9 @@ VelocityFieldModule::VelocityFieldModule(
   const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!input_db.isNull());
-  assert(!patch_hierarchy.isNull());
-  assert(!grid_geom.isNull());
+  assert(input_db!=NULL);
+  assert(patch_hierarchy!=NULL);
+  assert(grid_geom!=NULL);
   assert(!object_name.empty());
 #endif
 
@@ -56,14 +59,16 @@ VelocityFieldModule::VelocityFieldModule(
 
   // Allocate velocity variable
   boost::shared_ptr< CellVariable<LSMLIB_REAL> > velocity = 
-    new CellVariable<LSMLIB_REAL>("velocity field",3); 
+    boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), "velocity field",3)); 
  
   // Register velocity variable with VariableDatabase.
   VariableDatabase *vdb = VariableDatabase::getDatabase();
+  hier::PatchDataRestartManager* pdrm =
+  hier::PatchDataRestartManager::getManager();
   boost::shared_ptr<VariableContext> cur_ctxt = vdb->getContext("CURRENT");
   d_velocity_handle = vdb->registerVariableAndContext(
-    velocity, cur_ctxt, IntVector(0));
-  vdb->registerPatchDataForRestart(d_velocity_handle);
+    velocity, cur_ctxt, IntVector(d_patch_hierarchy->getDim(),0));
+  pdrm->registerPatchDataForRestart(d_velocity_handle);
 
   // set d_velocity_never_computed to true to ensure that velocity is
   // computed on first call to computeVelocityField()
@@ -132,18 +137,19 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
   const boost::shared_ptr< PatchLevel > level,
   const LSMLIB_REAL time) 
 {
-  for (PatchLevelIterator pi(level); pi; pi++) { // loop over patches
-    const int pn = *pi;
-    boost::shared_ptr< Patch > patch = level->getPatch(pn);
-    if ( patch.isNull() ) {
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+    boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    if ( patch==NULL ) {
       TBOX_ERROR(d_object_name << ": Cannot find patch. Null patch pointer.");
     }
 
     boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data = 
-      patch->getPatchData( d_velocity_handle );
+      BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+     patch->getPatchData( d_velocity_handle ));
 
-    boost::shared_ptr< CartesianPatchGeometry > patch_geom 
-      = patch->getPatchGeometry();
+    boost::shared_ptr< CartesianPatchGeometry > patch_geom = 
+      BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+     patch->getPatchGeometry());
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
   const double* x_lower = patch_geom->getXLower();
@@ -301,7 +307,7 @@ void VelocityFieldModule::getFromInput(
   boost::shared_ptr<Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!db.isNull());
+  assert(db!=NULL);
 #endif
 
   // set d_min_dt (declared in parent class) 

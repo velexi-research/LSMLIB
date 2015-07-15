@@ -30,6 +30,7 @@ extern "C" {
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/hier/VariableContext.h"
 #include "SAMRAI/hier/VariableDatabase.h"
+#include "boost/shared_ptr.hpp"
 
 // Headers for Fortran kernels
 extern "C" {
