@@ -10,14 +10,14 @@
 
 
 main.o:                         \
-	main.cc                       \
+        main.cc                       \
 	PatchModule.h                 \
 	VelocityFieldModule.h
 
 PatchModule.o:                  \
-	PatchModule.h                 \
+        PatchModule.h                 \
 	PatchModule.cc
 
 VelocityFieldModule.o:          \
-	VelocityFieldModule.h         \
+        VelocityFieldModule.h         \
 	VelocityFieldModule.cc

@@ -25,70 +25,15 @@ CPPFLAGS_EXTRA = -I..
 # Set MAKE
 @SET_MAKE@
 
-library:        lib1d lib2d lib3d                      \
-                Array__Array__Array__bool.o            \
-                vector_template_instantiation.o
+library: LSMLIB_parallel_templates.o       
 
-lib1d:
-	@MAKE@ NDIM=1 libXd
 
-lib2d:
-	@MAKE@ NDIM=2 libXd
-
-lib3d:
-	@MAKE@ NDIM=3 libXd
-
-libXd:                                                                    \
-	BoundaryConditionModule-${NDIM}d.o                                \
-	FieldExtensionAlgorithm-${NDIM}d.o                                \
-	LevelSetFunctionIntegrator-${NDIM}d.o                             \
-	LevelSetFunctionIntegratorStrategy-${NDIM}d.o                     \
-	LevelSetMethodAlgorithm-${NDIM}d.o                                \
-	LevelSetMethodGriddingAlgorithm-${NDIM}d.o                        \
-	LevelSetMethodGriddingStrategy-${NDIM}d.o                         \
-	LevelSetMethodPatchStrategy-${NDIM}d.o                            \
-	LevelSetMethodToolbox-${NDIM}d.o                                  \
-	LevelSetMethodVelocityFieldStrategy-${NDIM}d.o                    \
-	OrthogonalizationAlgorithm-${NDIM}d.o                             \
-	ReinitializationAlgorithm-${NDIM}d.o                              \
-	Pointer__BoundaryConditionModule-${NDIM}d.o                       \
-	Pointer__FieldExtensionAlgorithm-${NDIM}d.o                       \
-	Pointer__LevelSetFunctionIntegrator-${NDIM}d.o                    \
-	Pointer__LevelSetFunctionIntegratorStrategy-${NDIM}d.o            \
-	Pointer__LevelSetMethodAlgorithm-${NDIM}d.o                       \
-	Pointer__LevelSetMethodGriddingAlgorithm-${NDIM}d.o               \
-	Pointer__LevelSetMethodGriddingStrategy-${NDIM}d.o                \
-	Pointer__LevelSetMethodVelocityFieldStrategy-${NDIM}d.o           \
-	Pointer__OrthogonalizationAlgorithm-${NDIM}d.o                    \
-	Pointer__ReinitializationAlgorithm-${NDIM}d.o                     \
-	Array__Pointer__FieldExtensionAlgorithm-${NDIM}d.o                \
-	Array__Pointer__LevelSetMethodVelocityFieldStrategy-${NDIM}d.o    \
-	Array__Pointer__RefineAlgorithm-${NDIM}d.o                        \
-	Array__Array__Pointer__RefineSchedule-${NDIM}d.o                  \
-	Array__Array__Array__BoundaryBox-${NDIM}d.o                       \
-
-include Makefile.depend
 
 clean:
 	@RM@ *.o
 
 
-# Pattern Rules for generating 1d, 2d, and 3d object code
-%-1d.o: %.NDIM.cc
-	$(CXX) @CXXFLAGS@ -I$(LSMLIB_INCLUDE) -DNDIM=1     \
-	$(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-
-%-2d.o: %.NDIM.cc
-	$(CXX) @CXXFLAGS@ -I$(LSMLIB_INCLUDE) -DNDIM=2     \
-	 $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-
-%-3d.o: %.NDIM.cc
-	$(CXX) @CXXFLAGS@ -I$(LSMLIB_INCLUDE) -DNDIM=3     \
-	 $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-
-Array__Array__Array_bool.o: Array__Array__Array_bool.cc
-	$(CXX) -c $< -o $@
 	
-vector_template_instantiation.o: vector_template_instantiation.cc
-	$(CXX) -c $< -o $@
+#LSMLIB_parallel_templates.o: LSMLIB_parallel_templates.cc
+	#$(CXX) -c $< -o $@
 	
