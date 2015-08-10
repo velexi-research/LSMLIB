@@ -490,6 +490,9 @@
 #include "OrthogonalizationAlgorithm.h"
 #include "BoundaryConditionModule.h"
 
+#include "LSMLIB_DefaultParameters.h"
+#include "LevelSetMethodGriddingAlgorithm.h"
+#include "LevelSetFunctionIntegrator.h"
 // namespaces
 using namespace std;
 using namespace SAMRAI;
@@ -1324,8 +1327,5 @@ private:
 
 } // end LSMLIB namespace
 
-#ifndef LSMLIB_DEBUG_NO_INLINE
-#include "LevelSetMethodAlgorithm.inline"
-#endif
 
 #endif

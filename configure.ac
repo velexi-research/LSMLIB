@@ -224,32 +224,6 @@ AC_C_CONST
 AC_C_INLINE
 
 
-#--------------------------------------------------------------------------
-# Determine if allow implicit-template-instantiation
-#--------------------------------------------------------------------------
-AC_MSG_CHECKING([whether to use implicit-template-instantiation])
-AC_ARG_ENABLE([implicit-template-instantiation],
-              [AC_HELP_STRING([--enable-implicit-template-instantiation],
-              [Enable implicit template instantiation (default [NO])])],
-              [], [enable_implicit_template_instantiation=no])
-AC_MSG_RESULT([$enable_implicit_template_instantiation])
-AS_IF([test $enable_implicit_template_instantiation = no],
-      [case "$CXX" in
-         g++)
-           CXXFLAGS="-fno-implicit-templates $CXXFLAGS"
-         ;;
-         xlC)
-           CXXFLAGS="-qnotempinc $CXXFLAGS"
-         ;;
-         icpc)
-           :
-         ;;
-         cc)
-           CXXFLAGS="-instances=explicit $CXXFLAGS"
-        ;;
-      esac])
-
-
 #==========================================================================
 # Process remaining configure options.
 #==========================================================================
@@ -355,8 +329,6 @@ AC_OUTPUT([config/Makefile.config
            src/parallel/Makefile
            src/parallel/Makefile.depend
            src/parallel/fortran/Makefile
-           src/parallel/templates/Makefile
-           src/parallel/templates/Makefile.depend
            src/serial/Makefile
            src/serial/Makefile.depend
            src/toolbox/Makefile

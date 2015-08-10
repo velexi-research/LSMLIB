@@ -17,12 +17,10 @@ BoundaryConditionModule.o: \
 LevelSetMethodAlgorithm.o: \
 	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
 	LevelSetMethodAlgorithm.h \
-	LevelSetMethodAlgorithm.inline \
 	LevelSetMethodAlgorithm.cc \
 	LevelSetMethodGriddingAlgorithm.h \
 	LevelSetMethodGriddingStrategy.h \
 	LevelSetFunctionIntegrator.h \
-	LevelSetFunctionIntegrator.inline \
 	LevelSetFunctionIntegratorStrategy.h \
 	LevelSetMethodPatchStrategy.h \
 	LevelSetMethodToolbox.h \
@@ -31,7 +29,6 @@ LevelSetMethodAlgorithm.o: \
 LevelSetFunctionIntegrator.o: \
 	$(SAMRAI)/include/SAMRAI/SAMRAI_config.h \
 	LevelSetFunctionIntegrator.h \
-	LevelSetFunctionIntegrator.inline \
 	LevelSetFunctionIntegrator.cc \
 	LevelSetFunctionIntegratorStrategy.h \
 	LSMLIB_DefaultParameters.h \

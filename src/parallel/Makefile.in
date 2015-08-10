@@ -32,21 +32,19 @@ CXX_OBJS = LevelSetMethodAlgorithm.o                    \
            OrthogonalizationAlgorithm.o                 \
            BoundaryConditionModule.o
 
-SUBDIRS = fortran templates                                      
+SUBDIRS = fortran                                       
 
 all:  includes library
 
 includes:   
 	@CP@ $(SRC_DIR)/LSMLIB_DefaultParameters.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.h $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.inline $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodAlgorithm.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingAlgorithm.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetMethodGriddingStrategy.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.h $(BUILD_DIR)/include/
-	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.inline $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegrator.cc $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.h $(BUILD_DIR)/include/
 	@CP@ $(SRC_DIR)/LevelSetFunctionIntegratorStrategy.cc $(BUILD_DIR)/include/

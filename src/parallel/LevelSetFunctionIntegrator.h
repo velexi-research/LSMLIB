@@ -1602,8 +1602,5 @@ private:
 
 } // end LSMLIB namespace
 
-#ifndef LSMLIB_DEBUG_NO_INLINE
-#include "LevelSetFunctionIntegrator.inline"
-#endif
 
 #endif

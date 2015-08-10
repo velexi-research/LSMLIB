@@ -13,9 +13,6 @@
 
 #include "LevelSetMethodAlgorithm.h" 
 
-#ifdef LSMLIB_DEBUG_NO_INLINE
-#include "LevelSetMethodAlgorithm.inline"
-#endif
 
 /****************************************************************
  *
@@ -288,6 +285,221 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   return field_extension_alg;
 }
 
+
+
+
+
+/* Destructor */
+LevelSetMethodAlgorithm::~LevelSetMethodAlgorithm(){}
+
+
+/* getPhiPatchDataHandle() */
+int LevelSetMethodAlgorithm::getPhiPatchDataHandle() const
+{
+  return d_lsm_integrator_strategy->getPhiPatchDataHandle();
+} 
+
+
+/* getPsiPatchDataHandle() */
+int LevelSetMethodAlgorithm::getPsiPatchDataHandle() const
+{
+  return d_lsm_integrator_strategy->getPsiPatchDataHandle();
+}
+
+
+/* getControlVolumePatchDataHandle() */
+int LevelSetMethodAlgorithm::getControlVolumePatchDataHandle() const
+{
+  return d_lsm_integrator_strategy->getControlVolumePatchDataHandle();
+} 
+
+
+/* getStartTime() */
+LSMLIB_REAL LevelSetMethodAlgorithm::getStartTime() const
+{
+  return d_lsm_integrator_strategy->getStartTime();
+}
+
+
+/* getEndTime() */
+LSMLIB_REAL LevelSetMethodAlgorithm::getEndTime() const
+{
+  return d_lsm_integrator_strategy->getEndTime();
+}
+
+
+/* getCurrentTime() */
+LSMLIB_REAL LevelSetMethodAlgorithm::getCurrentTime() const
+{
+  return d_lsm_integrator_strategy->getCurrentTime();
+}
+
+
+/* endTimeReached() */
+bool LevelSetMethodAlgorithm::endTimeReached() const
+{
+  return d_lsm_integrator_strategy->endTimeReached();
+}
+
+
+/* numIntegrationStepsTaken() */
+int LevelSetMethodAlgorithm::numIntegrationStepsTaken() const
+{
+  return d_lsm_integrator_strategy->numIntegrationStepsTaken();
+}
+
+
+/* getSpatialDerivativeType() */
+int LevelSetMethodAlgorithm::getSpatialDerivativeType() const
+{
+  if (!d_using_standard_level_set_fcn_integrator) {
+    TBOX_WARNING( d_object_name
+              << "::getSpatialDerivativeType(): "
+              << "not using standard LevelSetFunctionIntegrator..."
+              << "return value meaningless."
+              << endl );
+  } 
+
+  return d_spatial_derivative_type;
+}
+
+
+/* getSpatialDerivativeOrder() */
+int LevelSetMethodAlgorithm::getSpatialDerivativeOrder() const
+{
+  if (!d_using_standard_level_set_fcn_integrator) {
+    TBOX_WARNING( d_object_name
+              << "::getSpatialDerivativeOrder(): "
+              << "not using standard LevelSetFunctionIntegrator..."
+              << "return value meaningless."
+              << endl );
+  } 
+
+  return d_spatial_derivative_order;
+}
+
+
+/* getTVDRungeKuttaOrder() */
+int LevelSetMethodAlgorithm::getTVDRungeKuttaOrder() const
+{
+  if (!d_using_standard_level_set_fcn_integrator) {
+    TBOX_WARNING( d_object_name
+              << "::getTVDRungeKuttaOrder(): "
+              << "not using standard LevelSetFunctionIntegrator..."
+              << "return value meaningless."
+              << endl );
+  } 
+
+  return d_tvd_runge_kutta_order;
+}
+
+
+/* getCFLNumber() */
+LSMLIB_REAL LevelSetMethodAlgorithm::getCFLNumber() const
+{
+  if (!d_using_standard_level_set_fcn_integrator) {
+    TBOX_WARNING( d_object_name
+              << "::getCFLNumber(): "
+              << "not using standard LevelSetFunctionIntegrator..."
+              << "return value meaningless."
+              << endl );
+  } 
+
+  return d_cfl_number;
+}
+
+
+/* setBoundaryConditions() */
+void LevelSetMethodAlgorithm::setBoundaryConditions(
+  const IntVector& lower_bc,
+  const IntVector& upper_bc,
+  const LEVEL_SET_FCN_TYPE level_set_fcn,
+  const int component)
+{
+  d_lsm_integrator_strategy->setBoundaryConditions(
+    lower_bc, upper_bc, level_set_fcn, component);
+}
+
+
+/* initializeLevelSetMethodCalculation() */
+void LevelSetMethodAlgorithm::initializeLevelSetMethodCalculation() 
+{
+  d_lsm_gridding_strategy->initializePatchHierarchy(
+    d_lsm_integrator_strategy->getCurrentTime());
+}
+
+
+/* computeStableDt() */
+LSMLIB_REAL LevelSetMethodAlgorithm::computeStableDt() 
+{
+  return d_lsm_integrator_strategy->computeStableDt();
+}
+
+
+/* advanceLevelSetFunctions() */
+bool LevelSetMethodAlgorithm::advanceLevelSetFunctions(const LSMLIB_REAL dt) 
+{
+  return d_lsm_integrator_strategy->advanceLevelSetFunctions(dt);
+}
+
+
+/* getReinitializationInterval() */
+int LevelSetMethodAlgorithm::getReinitializationInterval() const
+{
+  return d_lsm_integrator_strategy->getReinitializationInterval();
+}
+
+
+/* setReinitializationInterval() */
+void LevelSetMethodAlgorithm::setReinitializationInterval(
+  const int interval)
+{
+  d_lsm_integrator_strategy->setReinitializationInterval(interval);
+}
+
+
+/* reinitializeLevelSetFunctions() */
+void LevelSetMethodAlgorithm::reinitializeLevelSetFunctions(
+  const LEVEL_SET_FCN_TYPE level_set_fcn,
+  const int max_iterations)
+{
+  return d_lsm_integrator_strategy->reinitializeLevelSetFunctions(
+           level_set_fcn, max_iterations);
+}
+
+
+/* getOrthogonalizationInterval() */
+int LevelSetMethodAlgorithm::getOrthogonalizationInterval() const
+{
+  return d_lsm_integrator_strategy->getOrthogonalizationInterval();
+}
+
+
+/* setOrthogonalizationInterval() */
+void LevelSetMethodAlgorithm::setOrthogonalizationInterval(
+  const int interval)
+{
+  d_lsm_integrator_strategy->setOrthogonalizationInterval(interval);
+}
+
+
+/* orthogonalizeLevelSetFunctions() */
+void LevelSetMethodAlgorithm::orthogonalizeLevelSetFunctions(
+  const LEVEL_SET_FCN_TYPE level_set_fcn,
+  const int max_reinit_iterations,
+  const int max_ortho_iterations)
+{
+  return d_lsm_integrator_strategy->orthogonalizeLevelSetFunctions(
+           level_set_fcn, max_reinit_iterations, max_ortho_iterations);
+}
+
+
+/* regridPatchHierarchy() */
+void LevelSetMethodAlgorithm::regridPatchHierarchy()
+{
+  d_lsm_gridding_strategy->regridPatchHierarchy(
+    d_lsm_integrator_strategy->getCurrentTime());
+}
 
 } // end LSMLIB namespace
 

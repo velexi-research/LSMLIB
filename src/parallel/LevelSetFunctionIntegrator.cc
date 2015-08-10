@@ -70,9 +70,6 @@ using namespace pdat;
 #define LSM_DEFAULT_VERBOSE_MODE                         (false)
 #define LSM_STOP_TOLERANCE_MAX_ITERATIONS                (1000)
 
-#ifdef LSMLIB_DEBUG_NO_INLINE
-#include "LevelSetFunctionIntegrator.inline"
-#endif
 
 /****************************************************************
  *
@@ -2659,6 +2656,167 @@ void LevelSetFunctionIntegrator::getFromRestart()
 //Finalize SAMRAI and MPI environments
 //tbox::SAMRAI_MPI::finalize();
 
+
+int LevelSetFunctionIntegrator::getPhiPatchDataHandle() const
+{
+  return d_phi_handles[0];
+}
+
+
+int LevelSetFunctionIntegrator::getPsiPatchDataHandle() const
+{
+  return d_psi_handles[0];
+}
+
+
+int LevelSetFunctionIntegrator::getControlVolumePatchDataHandle() const
+{
+  return d_control_volume_handle;
+}
+
+
+LSMLIB_REAL LevelSetFunctionIntegrator::getStartTime() const
+{
+  return d_start_time;
+}
+
+
+LSMLIB_REAL LevelSetFunctionIntegrator::getEndTime() const
+{
+  return d_end_time;
+}
+
+
+LSMLIB_REAL LevelSetFunctionIntegrator::getCurrentTime() const
+{
+  return d_current_time;
+}
+
+
+bool LevelSetFunctionIntegrator::endTimeReached() const
+{
+  return (d_current_time >= d_end_time);
+}
+
+
+int LevelSetFunctionIntegrator::numIntegrationStepsTaken() const
+{
+  return d_num_integration_steps_taken;
+}
+
+
+int LevelSetFunctionIntegrator::getSpatialDerivativeType() const
+{
+  return (int) d_spatial_derivative_type;
+}
+
+
+int LevelSetFunctionIntegrator::getSpatialDerivativeOrder() const
+{
+  return d_spatial_derivative_order;
+}
+
+
+int LevelSetFunctionIntegrator::getTVDRungeKuttaOrder() const
+{
+  return d_tvd_runge_kutta_order;
+}
+
+
+int LevelSetFunctionIntegrator::getReinitializationInterval() const
+{
+  return d_reinitialization_interval;
+}
+
+
+void LevelSetFunctionIntegrator::setReinitializationInterval(
+  const int interval) 
+{
+  d_reinitialization_interval = interval;
+  d_use_reinitialization = (d_reinitialization_interval != 0);
+}
+
+
+int LevelSetFunctionIntegrator::getOrthogonalizationInterval() const
+{
+  return d_orthogonalization_interval;
+}
+
+
+void LevelSetFunctionIntegrator::setOrthogonalizationInterval(
+  const int interval) 
+{
+  d_orthogonalization_interval = interval;
+  d_use_orthogonalization = ( (d_orthogonalization_interval != 0) &&
+                              (d_codimension == 2) );
+}
+
+
+IntVector LevelSetFunctionIntegrator::getRefineOpStencilWidth(const tbox::Dimension& dim) const
+{
+   return hier::IntVector::getZero(dim);
+}
+
+
+void LevelSetFunctionIntegrator::preprocessRefine(
+  Patch& fine,
+  const Patch& coarse,
+  const Box& fine_box,
+  const IntVector& ratio)
+{
+  (void)fine;
+  (void)coarse;
+  (void)fine_box;
+  (void)ratio;
+}
+
+
+void LevelSetFunctionIntegrator::postprocessRefine(
+  Patch& fine,
+  const Patch& coarse,
+  const Box& fine_box,
+  const IntVector& ratio)
+{
+  (void)fine;
+  (void)coarse;
+  (void)fine_box;
+  (void)ratio;
+}
+
+
+IntVector LevelSetFunctionIntegrator::getCoarsenOpStencilWidth(const tbox::Dimension& dim) const
+{
+   return hier::IntVector::getZero(dim);
+
+}
+  
+
+void LevelSetFunctionIntegrator::preprocessCoarsen(
+  Patch& coarse,
+  const Patch& fine,
+  const Box& coarse_box,
+  const IntVector& ratio)
+{
+  (void)coarse;
+  (void)fine;
+  (void)coarse_box;
+  (void)ratio;
+}
+
+
+void LevelSetFunctionIntegrator::postprocessCoarsen(
+  Patch& coarse,
+  const Patch& fine,
+  const Box& coarse_box,
+  const IntVector& ratio)
+{
+  (void)coarse;
+  (void)fine;
+  (void)coarse_box;
+  (void)ratio;
+}
+
 } // end LSMLIB namespace
+
 
 #endif
