@@ -54,7 +54,6 @@
 #include "PatchModule.h"
 
 // Header for data writers
-//#include "/work/02697/jrigelo/opt/SAMRAI/include/SAMRAI/appu/VisItDataWriter.h"
 #include "SAMRAI/appu/VisItDataWriter.h"
 
 // namespaces

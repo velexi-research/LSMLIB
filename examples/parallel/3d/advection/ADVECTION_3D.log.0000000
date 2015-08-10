@@ -1,0 +1,72 @@
+input_filename = advection_3d.input
+restart_read_dirname = 
+restore_num = 0
+
+
+PeriodicShiftCatalog has 27 shifts:
+Shift   Opposite
+Number  Shift     Shift
+  0        0      (0,0,0)
+  1        2      (-50,-50,-50)
+  2        1      (50,50,50)
+  3        4      (0,-50,-50)
+  4        3      (0,50,50)
+  5        6      (50,-50,-50)
+  6        5      (-50,50,50)
+  7        8      (-50,0,-50)
+  8        7      (50,0,50)
+  9       10      (0,0,-50)
+ 10        9      (0,0,50)
+ 11       12      (50,0,-50)
+ 12       11      (-50,0,50)
+ 13       14      (-50,50,-50)
+ 14       13      (50,-50,50)
+ 15       16      (0,50,-50)
+ 16       15      (0,-50,50)
+ 17       18      (50,50,-50)
+ 18       17      (-50,-50,50)
+ 19       20      (-50,-50,0)
+ 20       19      (50,50,0)
+ 21       22      (0,-50,0)
+ 22       21      (0,50,0)
+ 23       24      (50,-50,0)
+ 24       23      (-50,50,0)
+ 25       26      (-50,0,0)
+ 26       25      (50,0,0)
+
+
+CartesianGridGeometry:
+Printing CartesianGridGeometry data: this = 0x1c8cd320
+d_object_name = ADVECTION_3D::CartesianGeometry
+d_x_lo = -1   -1   -1   
+d_x_up = 1   1   1   
+d_dx = 0.04   0.04   0.04   
+d_domain_box = 0#0/0 [(0,0,0),(49,49,49)]
+
+BaseGridGeometry::printClassData...
+BaseGridGeometry: this = 0x1c8cd320
+d_object_name = ADVECTION_3D::CartesianGeometry
+Number of boxes describing physical domain = 1
+Boxes describing physical domain...
+1 boxes, unordered
+    0#0/0 [(0,0,0),(49,49,49)]   (50,50,50)|125000
+
+d_periodic_shift = (50,50,50)
+d_max_data_ghost_width = (-1,-1,-1)
+Block neighbor data:
+   Block 0
+      singularity Boxes (0)
+VelocityFieldModule:
+
+VelocityFieldModule::printClassData...
+VelocityFieldModule: this = 0x1c8e1930
+d_object_name = ADVECTION_3D::VelocityFieldModule
+d_velocity_field = 3
+
+PatchModule:
+
+PatchModule::printClassData...
+PatchModule: this = 0x1c8e14d0
+d_object_name = ADVECTION_3D::PatchModule
+d_initial_level_set = 0
+

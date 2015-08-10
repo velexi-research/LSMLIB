@@ -1,0 +1,29 @@
+##
+## File:        Makefile.in
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: makefile for field extension subroutines
+##
+
+SRC_DIR = .
+
+BUILD_DIR = ../../..
+include $(BUILD_DIR)/config/Makefile.config
+
+all:  includes library
+
+includes:  
+	cp -f $(SRC_DIR)/lsm_field_extension1d.h $(BUILD_DIR)/include/
+	cp -f $(SRC_DIR)/lsm_field_extension2d.h $(BUILD_DIR)/include/
+	cp -f $(SRC_DIR)/lsm_field_extension3d.h $(BUILD_DIR)/include/
+
+library:  lsm_field_extension1d.o    \
+          lsm_field_extension2d.o    \
+          lsm_field_extension3d.o
+
+clean:
+	rm -f *.o 
+

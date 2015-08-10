@@ -1,0 +1,17 @@
+##
+## File:        Makefile.depend.in
+## Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
+##                  Regents of the University of Texas.  All rights reserved.
+##              (c) 2009 Kevin T. Chu.  All rights reserved.
+## Revision:    $Revision$
+## Modified:    $Date$
+## Description: file dependencies for fast marching method functions
+##
+
+FMM_Heap.o:                                          \
+            FMM_Heap.h                               \
+            FMM_Heap.c
+
+FMM_Core.o:                                          \
+            FMM_Core.h                               \
+            FMM_Core.c
