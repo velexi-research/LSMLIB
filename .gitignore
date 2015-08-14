@@ -25,3 +25,6 @@ src/**/reinitialization/*.f
 src/**/spatial_derivatives/*.f
 src/**/utilities/lsm_calculus_toolbox*.f
 src/**/utilities/lsm_utilities*.f
+
+# Library files
+lib
