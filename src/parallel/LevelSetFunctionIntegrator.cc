@@ -122,23 +122,20 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
               << "dim must be positive."
               << endl );
   }
-
+cout<<" How about here0 patch: "<<patch_hierarchy<<endl;
   // set pointers to major objects 
   d_patch_hierarchy = patch_hierarchy; 
  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
   d_lsm_patch_strategy = lsm_patch_strategy;
   d_lsm_velocity_field_strategy = lsm_velocity_field_strategy;
   d_object_name = object_name;
-
   // set number of level set function components
   d_num_level_set_fcn_components = num_level_set_fcn_components;
 
   // set codimension for problem
   d_codimension = codimension;
-
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule >d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
-
+  boost::shared_ptr< BoundaryConditionModule >d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule(d_patch_hierarchy, d_level_set_ghostcell_width));
   // initialize boundary condition data
   d_lower_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
   d_upper_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
@@ -148,7 +145,6 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
       d_upper_bc_phi[comp](Dim) = BoundaryConditionModule::NONE;
     }
   }
-  
   if (d_codimension == 2) {
     d_lower_bc_psi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
     d_upper_bc_psi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
@@ -162,14 +158,13 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
 
   // register LevelSetFunctionIntegrator for restart
   RestartManager::getManager()->registerRestartItem(d_object_name, this);
-
   // initialize user-defined parameters from given input & restart databases
   bool is_from_restart = RestartManager::getManager()->isFromRestart();
   if (is_from_restart){
     getFromRestart();
   }
   getFromInput(input_db, is_from_restart);
-
+cout<<" How about here3 patch: "<<d_patch_hierarchy<<endl;
   // initialize current time, integrator step and counter variables
   if (!is_from_restart) {
     d_current_time = d_start_time;
@@ -183,7 +178,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   initializeVariables();
   initializeCommunicationObjects();
  // hier::VariableDatabase* var_db = hier::VariableDatabase::getDatabase();
-
+cout<<" How about here4 patch: "<<d_patch_hierarchy<<endl;
   // create reinitialization algorithm for phi
  boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
       d_patch_hierarchy,
@@ -198,7 +193,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
       d_reinitialization_stop_tol,
       d_verbose_mode,
       "phi reinitialization algorithm"));
-
+cout<<" How about here5 patch: "<<d_patch_hierarchy<<endl;
   // create reinitialization algorithm for psi (if necessary)
   if (d_codimension == 2) {
   boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
