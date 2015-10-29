@@ -58,7 +58,7 @@ ReinitializationAlgorithm::ReinitializationAlgorithm(
   const int control_volume_handle,
   const string& object_name)
 :
-d_phi_scratch_ghostcell_width(hierarchy->getDim())
+d_phi_scratch_ghostcell_width(hierarchy->getDim(),3)
 {
   // set object_name
   d_object_name = object_name;
@@ -77,8 +77,7 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule > d_bc_module = 
-  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
+  d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule(d_patch_hierarchy, d_phi_scratch_ghostcell_width));
 
   // initialize variables and communication objects
   initializeVariables();
@@ -102,7 +101,7 @@ ReinitializationAlgorithm::ReinitializationAlgorithm(
   const bool verbose_mode,
   const string& object_name)
 :
-d_phi_scratch_ghostcell_width(hierarchy->getDim())
+d_phi_scratch_ghostcell_width(hierarchy->getDim(),0)
 {
   // set object_name
   d_object_name = object_name;
@@ -164,15 +163,11 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 
   // check that the user-specifeid parameters are acceptable
   checkParameters();
-
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule > d_bc_module =
-  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
-
+  d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule(d_patch_hierarchy, d_phi_scratch_ghostcell_width));
   // initialize variables and communication objects
   initializeVariables();
   initializeCommunicationObjects();
-
 }
 
 
@@ -1157,7 +1152,6 @@ void ReinitializationAlgorithm::initializeCommunicationObjects()
   // get pointer to VariableDatabase
   VariableDatabase *var_db = VariableDatabase::getDatabase();
 
-
   /*
    * Lookup refine operations
    */
@@ -1176,7 +1170,6 @@ void ReinitializationAlgorithm::initializeCommunicationObjects()
               << "not correspond to cell-centered data"
               << endl);
   }
-
   // lookup refine operations
   boost::shared_ptr< RefineOperator > refine_op =
     d_grid_geometry->lookupRefineOperator(phi_variable, "LINEAR_REFINE");
@@ -1200,14 +1193,10 @@ void ReinitializationAlgorithm::initializeCommunicationObjects()
         d_phi_scr_handles[k],
         d_phi_scr_handles[k],
         refine_op);
-
   } // end loop over TVD-Runge-Kutta stages
-
-  // configure communications schedules for ALL levels using the 
+// configure communications schedules for ALL levels using the 
   // specified PatchHierarchy
-  resetHierarchyConfiguration(d_patch_hierarchy, 
-    0, d_patch_hierarchy->getFinestLevelNumber());
-
+    resetHierarchyConfiguration(d_patch_hierarchy, 0, d_patch_hierarchy->getFinestLevelNumber());
 }
 
 

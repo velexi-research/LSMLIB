@@ -51,7 +51,6 @@ lsm_integrator_strategy.get(), input_db)
   assert(lsm_integrator_strategy);
   assert(!object_name.empty());
 #endif
-
   // set d_object_name
   d_object_name = object_name;
 
@@ -60,30 +59,26 @@ lsm_integrator_strategy.get(), input_db)
 
   // set level set method integrator and initialize 
   d_lsm_integrator_strategy = lsm_integrator_strategy;
-
   // make sure that the d_velocity_field_strategies
   // is empty.
   d_velocity_field_strategies.setNull();
-
   // read input parameters
   getFromInput(input_db);
 
   /*
    * Set up LevelSetMethodGriddingAlgorithm
    */ 
-
   // construct box generator and load balancer objects
   boost::shared_ptr< BergerRigoutsos > box_generator = boost::shared_ptr< BergerRigoutsos > (new BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
   boost::shared_ptr<Database> load_balancer_input_db;
   boost::shared_ptr<ChopAndPackLoadBalancer > load_balancer;
   if (input_db->isDatabase("LoadBalancer")) {
     load_balancer_input_db = input_db->getDatabase("LoadBalancer");
-     boost::shared_ptr<ChopAndPackLoadBalancer > load_balancer = boost::shared_ptr<ChopAndPackLoadBalancer > (new 
-      ChopAndPackLoadBalancer (d_patch_hierarchy->getDim(), "LoadBalancer", load_balancer_input_db));
+    load_balancer = boost::shared_ptr<ChopAndPackLoadBalancer > (new ChopAndPackLoadBalancer (d_patch_hierarchy->getDim(), 
+       "LoadBalancer", load_balancer_input_db));
   } else {
     throw std::runtime_error ("LoadBalancer' section not found in input database");
   }
-
   // construct gridding algorithm using "this" as the 
   // TagAndInitializeStrategy.  
   // NOTE: "this" is passed to the SAMRAI::mesh::GriddingAlgorithm as an 
@@ -391,8 +386,8 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db!=NULL);
 #endif
-
   std::vector<std::string> tagging_method;
+  tagging_method.resize(nsize);
   if (input_db->keyExists("tagging_method")) {
     tagging_method = input_db->getStringVector("tagging_method");
   }
@@ -405,7 +400,6 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
               << "Maximum allowable is 3."
               << endl);
   }*/
-
   d_use_gradient_detector = false;
   d_use_richardson_extrapolation = false;
   d_use_refine_boxes = false;
@@ -423,14 +417,12 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
       found_method = true;
 
     }
-
     if (tagging_method[i] == "RICHARDSON_EXTRAPOLATION") {
 
       d_use_richardson_extrapolation = true;
       found_method = true;
 
     }
-
     if (tagging_method[i] == "REFINE_BOXES") {
 
       d_use_refine_boxes = true;
@@ -438,7 +430,6 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
 
     }
   }
-
   /*
    * Check for valid entries
    */

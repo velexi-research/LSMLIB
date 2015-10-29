@@ -36,14 +36,13 @@ BoundaryConditionModule::BoundaryConditionModule(
   const IntVector& ghostcell_width)
 :
 d_ghostcell_width(ghostcell_width),
-d_geom_periodic_dirs(patch_hierarchy->getDim())
+d_geom_periodic_dirs(patch_hierarchy->getDim(),0)
 {
  // invoke resetHierarchyConfiguration() to set up boundary boxes, etc.
   resetHierarchyConfiguration(
     patch_hierarchy, 0, patch_hierarchy->getFinestLevelNumber(), 
     ghostcell_width);
 }
-
 
 /* Default constructor */
 BoundaryConditionModule::BoundaryConditionModule()
@@ -1486,15 +1485,14 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   const int finest_level,
   const IntVector& ghostcell_width)
 {
-
   // reset hierarchy
   d_patch_hierarchy = patch_hierarchy;
-
   // reset ghostcell width and periodic directions
   d_ghostcell_width = ghostcell_width;
+  //Initialize with ratio to level 0 equal to 1 
+  IntVector ratio_to_level_zero(d_patch_hierarchy->getDim(),1); 
   d_geom_periodic_dirs = 
-    d_patch_hierarchy->getGridGeometry()->getPeriodicShift(ghostcell_width);
-
+    d_patch_hierarchy->getGridGeometry()->getPeriodicShift(ratio_to_level_zero);
   // check if the patch_hierarchy has already been constructed
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   if (num_levels <= 0) {
@@ -1504,18 +1502,15 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
     d_geom_periodic_dirs = zero_int_vect;
     d_boundary_boxes.setNull();
     d_touches_boundary.setNull();
-
     return;
   }
 
   // resize output arrays 
   d_boundary_boxes.resizeArray(num_levels);
   d_touches_boundary.resizeArray(num_levels);
-
   // get grid geometry
   boost::shared_ptr< GridGeometry > grid_geometry = 
    BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
-
 
   // loop over PatchHierarchy and compute boundary boxes in periodic
   // directions
@@ -1526,7 +1521,6 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
     // set periodic shift to zero so that ALL boundary boxes
     // (including periodic boundaries) are computed
     IntVector periodic_shift(d_patch_hierarchy->getDim(),0);
-
     // find the patches in the current level touching the boundaries
     // of the computational domain
     std::map<BoxId,TwoDimBool> touches_regular_bdry;

@@ -94,7 +94,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   const string& object_name) 
 :
   d_dim(patch_hierarchy->getDim()),
-  d_level_set_ghostcell_width(patch_hierarchy->getDim()),
+  d_level_set_ghostcell_width(patch_hierarchy->getDim(),0),
   d_grad_psi_plus_handle(-1),
   d_grad_psi_minus_handle(-1),
   d_grad_psi_upwind_handle(-1),
@@ -122,7 +122,6 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
               << "dim must be positive."
               << endl );
   }
-cout<<" How about here0 patch: "<<patch_hierarchy<<endl;
   // set pointers to major objects 
   d_patch_hierarchy = patch_hierarchy; 
  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
@@ -164,7 +163,6 @@ cout<<" How about here0 patch: "<<patch_hierarchy<<endl;
     getFromRestart();
   }
   getFromInput(input_db, is_from_restart);
-cout<<" How about here3 patch: "<<d_patch_hierarchy<<endl;
   // initialize current time, integrator step and counter variables
   if (!is_from_restart) {
     d_current_time = d_start_time;
@@ -173,12 +171,10 @@ cout<<" How about here3 patch: "<<d_patch_hierarchy<<endl;
     d_reinitialization_count = 0;
     d_orthogonalization_count = 0;
   }
-
   // initialize variables and communication objects
   initializeVariables();
   initializeCommunicationObjects();
  // hier::VariableDatabase* var_db = hier::VariableDatabase::getDatabase();
-cout<<" How about here4 patch: "<<d_patch_hierarchy<<endl;
   // create reinitialization algorithm for phi
  boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
       d_patch_hierarchy,
@@ -193,7 +189,6 @@ cout<<" How about here4 patch: "<<d_patch_hierarchy<<endl;
       d_reinitialization_stop_tol,
       d_verbose_mode,
       "phi reinitialization algorithm"));
-cout<<" How about here5 patch: "<<d_patch_hierarchy<<endl;
   // create reinitialization algorithm for psi (if necessary)
   if (d_codimension == 2) {
   boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
@@ -234,7 +229,6 @@ cout<<" How about here5 patch: "<<d_patch_hierarchy<<endl;
   }
   d_orthogonalization_evolved_field = PHI;  // first orthogonalization
                                             // evolves phi
-
 }
 
 
@@ -2031,13 +2025,11 @@ void LevelSetFunctionIntegrator::initializeVariables()
               << "Only ENO and WENO derivatives are supported."
               << endl );
   }
-
   d_level_set_ghostcell_width = IntVector(d_dim,scratch_ghostcell_width);
   IntVector zero_ghostcell_width(d_dim,0);
 
   // get pointer to VariableDatabase
   VariableDatabase *var_db = VariableDatabase::getDatabase();
-
   // get contexts used by level set method algorithm
   boost::shared_ptr<VariableContext> current_context = var_db->getContext("CURRENT");
   boost::shared_ptr<VariableContext> scratch_context = hier::VariableDatabase::getDatabase()->getContext("SCRATCH");
@@ -2045,7 +2037,6 @@ void LevelSetFunctionIntegrator::initializeVariables()
   boost::shared_ptr<VariableContext> plus_context = hier::VariableDatabase::getDatabase()->getContext("PLUS_DERIVATIVE");
   boost::shared_ptr<VariableContext> minus_context = 
     hier::VariableDatabase::getDatabase()->getContext("MINUS_DERIVATIVE");
-
   // initialize LevelSetFunctionIntegrator component selectors
   d_solution_variables.clrAllFlags();
   d_compute_stable_dt_scratch_variables.clrAllFlags();
@@ -2092,7 +2083,6 @@ void LevelSetFunctionIntegrator::initializeVariables()
       d_level_set_ghostcell_width);
     d_time_advance_scratch_variables.setFlag(d_phi_handles[k]);
   }
-
   // upwind grad(phi)
   d_grad_phi_upwind_handle = hier::VariableDatabase::getDatabase()->registerVariableAndContext(
     grad_phi_variable, upwind_context, zero_ghostcell_width);
@@ -2209,7 +2199,6 @@ void LevelSetFunctionIntegrator::initializeVariables()
     for (int k=0; k < d_tvd_runge_kutta_order; k++) 
       d_psi_handles[k] = -1;
   }
-
   /*
    * Initialize control volume variables
    */
@@ -2222,16 +2211,17 @@ void LevelSetFunctionIntegrator::initializeVariables()
   d_control_volume_handle = var_db->registerVariableAndContext(
     control_volume, current_context, zero_ghostcell_width);
   d_persistent_variables.setFlag(d_control_volume_handle);
-
-  /*
+   /*
    * Register phi, psi, and control volume as restart PatchData items.
    */
-  pdrm->registerPatchDataForRestart(d_phi_handles[0]);
+    hier::PatchDataRestartManager::getManager()->
+    registerPatchDataForRestart(d_phi_handles[0]);
   if (d_codimension == 2) {
-    pdrm->registerPatchDataForRestart(d_psi_handles[0]);
+    hier::PatchDataRestartManager::getManager()->
+    registerPatchDataForRestart(d_phi_handles[0]);
   }
-  pdrm->registerPatchDataForRestart(d_control_volume_handle);
-
+     hier::PatchDataRestartManager::getManager()->
+     registerPatchDataForRestart(d_phi_handles[0]);
 }
 
 /* initializeCommunicationObjects() */

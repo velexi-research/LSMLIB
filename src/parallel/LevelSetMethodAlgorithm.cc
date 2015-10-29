@@ -41,10 +41,8 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   assert(velocity_field_strategy);
   assert(!object_name.empty());
 #endif
-
   d_patch_hierarchy = patch_hierarchy;
   d_object_name = object_name;
-
   // create new LevelSetFunctionIntegrator object
   boost::shared_ptr<Database> level_set_fcn_integrator_db =
     lsm_algorithm_input_db->getDatabase("LevelSetFunctionIntegrator");
@@ -57,7 +55,6 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
     num_level_set_fcn_components,
     codimension,
     object_name + "::LevelSetFunctionIntegrator"));
-
   // cache simulation parameters for standard LevelSetFunctionIntegrator
   d_using_standard_level_set_fcn_integrator = true;
   string spatial_derivative_type = 
@@ -83,21 +80,17 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
     level_set_fcn_integrator_db->getDoubleWithDefault("cfl_number",
                                                        LSM_DEFAULT_CFL_NUMBER);
 
-
   // create new LevelSetMethodGriddingAlgorithm object
   d_lsm_gridding_strategy = boost::shared_ptr<LevelSetMethodGriddingAlgorithm> (new LevelSetMethodGriddingAlgorithm(
     lsm_algorithm_input_db->getDatabase("LevelSetMethodGriddingAlgorithm"),
     patch_hierarchy,
     d_lsm_integrator_strategy,
     object_name + "::LevelSetMethodGriddingAlgorithm"));
-
   // register velocity_field_strategy with d_lsm_gridding_strategy
   d_lsm_gridding_strategy->registerVelocityFieldStrategy(
     velocity_field_strategy);
 
 }
-
-
 /* Constructor for custom integrator and gridding strategy */
 LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
