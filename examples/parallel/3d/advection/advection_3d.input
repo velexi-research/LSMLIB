@@ -100,7 +100,8 @@ LevelSetMethodAlgorithm{
     //    level_0 = [(10,10), (16,16)] , [(0,0),(9,15)]
     //etc.
     }
-
+    load_balance = TRUE, TRUE, TRUE
+    load_balancer_type = "ChopAndPackLoadBalancer"
     LoadBalancer {
       // the default load balancer input parameters are usually sufficient
     }

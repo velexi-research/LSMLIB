@@ -16,7 +16,6 @@
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/pdat/CellData.h"
-//#include <boost/config.hpp>
 #include "boost/shared_ptr.hpp"
 
 // headers for level set method numerical kernels

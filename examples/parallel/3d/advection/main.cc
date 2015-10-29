@@ -177,13 +177,11 @@ int main(int argc, char *argv[])
       base_name+"::VelocityFieldModule");
   plog << "VelocityFieldModule:" << endl;
   velocity_field_module->printClassData(plog);
-
   PatchModule* patch_module = new PatchModule(
       input_db->getDatabase("PatchModule"),
       base_name+"::PatchModule");
   plog << "PatchModule:" << endl;
   patch_module->printClassData(plog);
-
   int num_level_set_fcn_components = 1;
   int codimension = 1;
   boost::shared_ptr< LevelSetMethodAlgorithm > lsm_algorithm = 
@@ -198,7 +196,6 @@ int main(int argc, char *argv[])
       base_name+"::LevelSetMethodAlgorithm"));
   plog << "LevelSetMethodAlgorithm:" << endl;
   lsm_algorithm->printClassData(plog);
-
 
   /*
    * After creating all objects and initializing their state, 
