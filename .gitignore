@@ -28,3 +28,6 @@ src/**/utilities/lsm_utilities*.f
 
 # Library files
 lib
+
+# Executables
+main
