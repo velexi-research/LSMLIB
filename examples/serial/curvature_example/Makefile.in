@@ -11,6 +11,7 @@
 BUILD_DIR = @top_builddir@
 include $(BUILD_DIR)/config/Makefile.config
 
+INCLUDE      = -I$(LSMLIB_INCLUDE) -I.
 LIB_DIRS     = -L$(LSMLIB_LIB_DIR) -L.
 
 PROGS   = curvature_model
