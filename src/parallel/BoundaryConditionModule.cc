@@ -92,10 +92,9 @@ void BoundaryConditionModule::imposeBoundaryConditions(
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
-
       // check that patch touches boundary of computational domain
       if ( d_touches_boundary[ln][patch->getLocalId().getValue()] ) {
-
+cout<<"boundarycond1"<<endl;
         imposeBoundaryConditionsOnPatch(
           *patch,
           phi_handle,
@@ -106,9 +105,8 @@ void BoundaryConditionModule::imposeBoundaryConditions(
           component); 
 
       } // end case: Patch touches boundary
-
+cout<<"boundarycond2"<<endl;
     } // end loop over Patches
-
   } // end loop over PatchLevels
 
 }
@@ -124,16 +122,15 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
   const int spatial_derivative_order,
   const int component)
 {
-
   if ( (lower_bc(0) != -1) && (upper_bc(0) != -1) ) {
-
+cout<<"imposeBoundaryConditionsOnPatch1"<<endl;
     // set linear extrapolation boundary conditions
     imposeLinearExtrapolationBCsOnPatch(patch, 
                                         phi_handle,
                                         lower_bc,
                                         upper_bc,
                                         component);
-
+cout<<"imposeBoundaryConditionsOnPatch2"<<endl;
     // set signed linear extrapolation boundary conditions
     imposeSignedLinearExtrapolationBCsOnPatch(patch, 
                                               phi_handle,
@@ -146,7 +143,7 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
                                  lower_bc,
                                  upper_bc,
                                  component);
-
+cout<<"imposeBoundaryConditionsOnPatch3"<<endl;
     // set homogeneous Neumann boundary conditions
     imposeHomogeneousNeumannBCsOnPatch(patch, 
                                        phi_handle,
@@ -157,15 +154,14 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
                                        component);
 
   } else {  // boundary conditions are incomplete, so use default BCs
-
     IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
+    cout<<"imposeBoundaryConditionsOnPatch4"<<endl;
     int DIM = d_patch_hierarchy->getDim().getValue();
     for (int dim=0; dim<DIM; dim++) {
       if (d_geom_periodic_dirs(dim)) {
         default_bc(dim) = NONE;
       }
     }
-
     // set homogeneous Neumann boundary conditions
     imposeHomogeneousNeumannBCsOnPatch(patch,
                                        phi_handle,
@@ -176,6 +172,7 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
                                        component);
 
   }
+cout<<"imposeBoundaryConditionsOnPatch5"<<endl;
 }
 
 
@@ -1183,7 +1180,6 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
     patch.getPatchData( phi_handle ));
-
   // check that the ghostcell width for phi is compatible
   // with the ghostcell width
   if (d_ghostcell_width != phi_data->getGhostCellWidth()) {
@@ -1193,7 +1189,6 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
               << "with ghostcell width for this object."
               << endl );
   }
-
   // get PatchGeometry
   boost::shared_ptr< CartesianPatchGeometry > patch_geom =
     BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());
@@ -1202,13 +1197,11 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   Box interior_box(patch.getBox());
   IntVector interior_box_lower = interior_box.lower();
   IntVector interior_box_upper = interior_box.upper();
-
   // get ghostcell width to fill
   IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
   Box phi_ghostbox = phi_data->getGhostBox();
   IntVector phi_ghostbox_lower = phi_ghostbox.lower();
   IntVector phi_ghostbox_upper = phi_ghostbox.upper();
-
   // get data components
   int comp_lo = component;
   int comp_hi = component+1;
@@ -1216,20 +1209,42 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
     comp_lo = 0;
     comp_hi = phi_data->getDepth();
   }
+ int btype;
+ int DIM = d_patch_hierarchy->getDim().getValue();
+#ifdef DEBUG_CHECK_ASSERTIONS
+   if (DIM == tbox::Dimension(2)) {
+      TBOX_ASSERT(btype == Bdry::EDGE2D ||
+         btype == Bdry::NODE2D);
+   }
+   if (DIM == tbox::Dimension(3)) {
+      TBOX_ASSERT(btype == Bdry::FACE3D ||
+         btype == Bdry::EDGE3D ||
+         btype == Bdry::NODE3D);
+   }
+#endif
+
+   const boost::shared_ptr<hier::PatchGeometry> pgeom(
+      patch.getPatchGeometry());
+   const std::vector<hier::BoundaryBox>& bdry_boxes =
+      pgeom->getCodimensionBoundaries(btype);
+   hier::VariableDatabase* vdb = hier::VariableDatabase::getDatabase();
 
   BoxId boxid = patch.getBox().getBoxId();
-  int DIM = d_patch_hierarchy->getDim().getValue();
-  const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
+  //int DIM = d_patch_hierarchy->getDim().getValue();
+//  const std::vector<BoundaryBox> bdry_boxes =
+  //  d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
   for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
-
+cout<<"imposeLinearExtrapolationBCsOnPatch1"<<endl;
     // check that boundary is linear extrapolation boundary
     int bdry_loc_idx = bdry_boxes[i].getLocationIndex();
+    //int bdry_loc_idx = 6;
+cout<<"imposeLinearExtrapolationBCsOnPatch2 & bdry_loc_idx is "<< bdry_loc_idx<<endl;
+cout<<"imposeLinearExtrapolationBCsOnPatch2 & bdry_boxes.size() is"<< bdry_boxes.size()<<endl;
     if ( ((bdry_loc_idx%2==0) && 
           (lower_bc[bdry_loc_idx/2] == LINEAR_EXTRAPOLATION)) ||
          ((bdry_loc_idx%2==1) && 
           (upper_bc[bdry_loc_idx/2] == LINEAR_EXTRAPOLATION)) ) {
-
+cout<<"imposeLinearExtrapolationBCsOnPatch3"<<endl;
       if ( DIM == 3 ) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -1253,7 +1268,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
             &bdry_loc_idx);
 
         } // end loop over components of PatchData
-
+cout<<"imposeLinearExtrapolationBCsOnPatch4"<<endl;
       } else if ( DIM == 2 ) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -1301,6 +1316,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
       } // end switch over dimensions
     } // end check that boundary is linear extrapolation boundary
   } // end loop over boundary boxes
+cout<<"imposeLinearExtrapolationBCsOnPatch5"<<endl;
 }
 
 

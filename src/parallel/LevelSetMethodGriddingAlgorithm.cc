@@ -116,7 +116,6 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
    */
   if (RestartManager::getManager()->isFromRestart()) { 
     // from restart
-
     d_patch_hierarchy->getMaxNumberOfLevels();
 
     resetHierarchyConfiguration(d_patch_hierarchy,
@@ -125,20 +124,17 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
 
   } else {  
     // not from restart
-
     d_gridding_alg->makeCoarsestLevel(time);
     bool done = false;
     for (int level_num = 1; 
          d_patch_hierarchy->levelCanBeRefined(level_num) && !done;
          level_num++) {
-
       plog << "Adding finer level with level_num = " << level_num << endl;
       d_gridding_alg->makeFinerLevel(time, true, 0, d_patch_hierarchy->getFinestLevelNumber());
 
       plog << "Just added finer level with level_num = " << level_num << endl;
       done = !(d_patch_hierarchy->finerLevelExists(level_num));
     }
-
 
     //KTC - temporarily left out - need to fix for AMR
     /*

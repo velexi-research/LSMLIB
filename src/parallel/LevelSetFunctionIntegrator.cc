@@ -134,7 +134,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   // set codimension for problem
   d_codimension = codimension;
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule >d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule(d_patch_hierarchy, d_level_set_ghostcell_width));
+  d_bc_module = boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule(d_patch_hierarchy, d_level_set_ghostcell_width));
   // initialize boundary condition data
   d_lower_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
   d_upper_bc_phi.resizeArray(d_num_level_set_fcn_components, IntVector(d_dim));
@@ -176,7 +176,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
   initializeCommunicationObjects();
  // hier::VariableDatabase* var_db = hier::VariableDatabase::getDatabase();
   // create reinitialization algorithm for phi
- boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
+  d_phi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
       d_patch_hierarchy,
       d_phi_handles[0],
       d_control_volume_handle,
@@ -191,7 +191,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
       "phi reinitialization algorithm"));
   // create reinitialization algorithm for psi (if necessary)
   if (d_codimension == 2) {
-  boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
+  d_psi_reinitialization_alg = boost::shared_ptr< ReinitializationAlgorithm > (new ReinitializationAlgorithm(
         d_patch_hierarchy,
         d_psi_handles[0],
         d_control_volume_handle,
@@ -208,7 +208,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
  
   // create orthogonalization algorithm for codimension-two problems
   if (d_codimension == 2) {
- boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg = boost::shared_ptr< OrthogonalizationAlgorithm > (new OrthogonalizationAlgorithm(
+  d_orthogonalization_alg = boost::shared_ptr< OrthogonalizationAlgorithm > (new OrthogonalizationAlgorithm(
         d_patch_hierarchy,
         d_phi_handles[0],
         d_psi_handles[0],
@@ -225,7 +225,7 @@ LevelSetFunctionIntegrator::LevelSetFunctionIntegrator(
         d_verbose_mode,
         "orthogonalization algorithm"));
   } else {
-    boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg= boost::shared_ptr< OrthogonalizationAlgorithm > (); 
+    d_orthogonalization_alg= boost::shared_ptr< OrthogonalizationAlgorithm > (); 
   }
   d_orthogonalization_evolved_field = PHI;  // first orthogonalization
                                             // evolves phi
@@ -349,7 +349,6 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
   LSMLIB_REAL max_advection_dt = LSMLIB_REAL_MAX;
   LSMLIB_REAL max_normal_vel_dt = LSMLIB_REAL_MAX;
   LSMLIB_REAL max_user_specified_dt = LSMLIB_REAL_MAX;
-
   // allocate scratch space
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
@@ -357,7 +356,6 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData( d_compute_stable_dt_scratch_variables );
   }
- 
   // fill boundary data to for phi/psi to be used for computing
   // velocity field
   for ( int ln=0 ; ln < num_levels; ln++ ) {
@@ -365,6 +363,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
     //       be set.
     d_fill_bdry_sched_compute_stable_dt[ln]->fillData(d_current_time,true);
   }
+cout<<"functionintegrator_stabledt1"<<endl;
   for (int comp = 0; comp < d_num_level_set_fcn_components; comp++) {
     d_bc_module->imposeBoundaryConditions(
       d_phi_handles[0],
@@ -373,7 +372,8 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
       d_spatial_derivative_type,
       d_spatial_derivative_order,
       comp);
-    if (d_codimension == 2) {
+    cout<<"functionintegrator_stabledt2"<<endl;
+     if (d_codimension == 2) {
       d_bc_module->imposeBoundaryConditions(
         d_psi_handles[0],
         d_lower_bc_psi[comp], 
@@ -383,7 +383,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
         comp);
     }
   }
-
+cout<<"functionintegrator_stabledt3"<<endl;
   // loop over PatchHierarchy and compute the maximum stable
   // user-specified dt 
   for ( int ln=0 ; ln < num_levels; ln++ ) {
@@ -398,7 +398,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
-
+cout<<"functionintegrator_stabledt4"<<endl;
       /*
        *  Compute the user-specified dt for the current patch.
        */
