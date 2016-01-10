@@ -36,7 +36,7 @@ Number  Shift     Shift
 
 
 CartesianGridGeometry:
-Printing CartesianGridGeometry data: this = 0xe5b1320
+Printing CartesianGridGeometry data: this = 0xfd742f0
 d_object_name = ADVECTION_3D::CartesianGeometry
 d_x_lo = -1   -1   -1   
 d_x_up = 1   1   1   
@@ -44,7 +44,7 @@ d_dx = 0.04   0.04   0.04
 d_domain_box = 0#0/0 [(0,0,0),(49,49,49)]
 
 BaseGridGeometry::printClassData...
-BaseGridGeometry: this = 0xe5b1320
+BaseGridGeometry: this = 0xfd742f0
 d_object_name = ADVECTION_3D::CartesianGeometry
 Number of boxes describing physical domain = 1
 Boxes describing physical domain...
@@ -59,14 +59,14 @@ Block neighbor data:
 VelocityFieldModule:
 
 VelocityFieldModule::printClassData...
-VelocityFieldModule: this = 0xe5c5e20
+VelocityFieldModule: this = 0xfd88df0
 d_object_name = ADVECTION_3D::VelocityFieldModule
 d_velocity_field = 3
 
 PatchModule:
 
 PatchModule::printClassData...
-PatchModule: this = 0xe5c59c0
+PatchModule: this = 0xfd88990
 d_object_name = ADVECTION_3D::PatchModule
 d_initial_level_set = 0
 
@@ -76,9 +76,9 @@ LevelSetMethodAlgorithm:
 LevelSetMethodAlgorithm
 Object Pointers
 ---------------
-(LevelSetMethodAlgorithm*) this = 0xe5c9540
-d_lsm_integrator_strategy = 0xe5c9670
-d_lsm_gridding_strategy = 0xe5cd650
+(LevelSetMethodAlgorithm*) this = 0xfd8c510
+d_lsm_integrator_strategy = 0xfd8c640
+d_lsm_gridding_strategy = 0xfd91540
 ===================================
 
 
@@ -324,7 +324,7 @@ Printing contents of patch descriptor for comparison to database...
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Printing PatchDescriptor state ...
-this = 0xe5c0bc0
+this = 0xfd83b90
 d_max_number_registered_components = 17
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -385,3 +385,10 @@ Patch Data Index=16
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Load mark 0 proc 1 load 125000 nbox 1
+++++++++++++++++++++++++++++++++++++++++++
+  Time step (in current run): 0
+  Integrator time step: 0
+  Current time:  0
+P=0000000:Program abort called in file ``/work/02697/jrigelo/opt/SAMRAI/include/SAMRAI/hier/IntVector.h'' at line 126
+P=0000000:ERROR MESSAGE: 
+P=0000000:Failed assertion: i >= 0 && i < getDim().getValue()

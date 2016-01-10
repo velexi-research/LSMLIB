@@ -235,22 +235,17 @@ int main(int argc, char *argv[])
         main_db->getInteger("visit_number_procs_per_file");
     } 
   }
-
   // get PatchData handles
   int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
   int psi_patch_data_handle = lsm_algorithm->getPsiPatchDataHandle();
   int velocity_patch_data_handle = 
     velocity_field_module
       ->getExternalVelocityFieldPatchDataHandle(0);
-
   boost::shared_ptr<VisItDataWriter > visit_data_writer = boost::shared_ptr<VisItDataWriter >();
   if (use_visit) {
     string visit_data_dirname = base_name + ".visit";
-    boost::shared_ptr <VisItDataWriter > visit_data_writer = 
-     boost::shared_ptr <VisItDataWriter > (new VisItDataWriter(dim, "VisIt Writer",
-                                               visit_data_dirname,
-                                               visit_number_procs_per_file));
-
+    visit_data_writer = boost::shared_ptr <VisItDataWriter > 
+          (new VisItDataWriter(dim, "VisIt Writer", visit_data_dirname, visit_number_procs_per_file));
     // register level set functions and velocity fields for plotting
     visit_data_writer->registerPlotQuantity(
       "phi", "SCALAR", 
@@ -265,19 +260,16 @@ int main(int argc, char *argv[])
     visit_data_writer->registerPlotQuantity(
       "velocity", "VECTOR", 
       velocity_patch_data_handle, 0, 1.0, "CELL");
-  }  
-
+  }
   /*
    * Initialize level set method calculation
    */ 
   lsm_algorithm->initializeLevelSetMethodCalculation();
 
-
   /*
    * Close restart file before starting main time-stepping loop.
    */ 
   restart_manager->closeRestartFile();
-
 
   /* 
    * Set up loop variables
@@ -295,37 +287,35 @@ int main(int argc, char *argv[])
     restart_manager->writeRestartFile(restart_write_dirname,
                                       cur_integrator_step);
   }
-
   // write VisIt data for first time step
   if ( use_visit && (!is_from_restart) ) {
     visit_data_writer->writePlotData(patch_hierarchy, cur_integrator_step,
                                      current_time);
   }
 
-
   /*
    * Main time loop
    */ 
   while ( !lsm_algorithm->endTimeReached() && 
           ((max_num_time_steps <= 0) || (count < max_num_time_steps)) ) {
-
     pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
     pout << "  Time step (in current run): " << count << endl;
     pout << "  Integrator time step: " << cur_integrator_step << endl;
     pout << "  Current time:  " << current_time << endl;
-
+cout<<"Main 1"<<endl;
     // compute next time step
     dt = lsm_algorithm->computeStableDt();
+   cout<<"Main 2"<<endl;
     LSMLIB_REAL end_time = lsm_algorithm->getEndTime(); 
     if (end_time - current_time < dt) dt = end_time - current_time;
     pout << "  dt:  " << dt << endl;
-
+cout<<"Main 3"<<endl;
     // advance level set functions
     lsm_algorithm->advanceLevelSetFunctions(dt);
  
     // add an extra line to output for aesthetic reasons
     pout << endl;
-
+cout<<"Main 4"<<endl;
     /* 
      * output data for current time step if this is the
      * initial time step or if the next write interval has
@@ -338,7 +328,6 @@ int main(int argc, char *argv[])
       restart_manager->writeRestartFile(restart_write_dirname,
                                         cur_integrator_step);
     }
-
     // write VisIt data
     if ( use_visit && (0==cur_integrator_step%viz_write_interval) ) {
       visit_data_writer->writePlotData(patch_hierarchy, cur_integrator_step, 
@@ -350,7 +339,6 @@ int main(int argc, char *argv[])
     current_time = lsm_algorithm->getCurrentTime();
 
   }
-
   // output information for final time step 
   // (if it hasn't already been output)
   current_time = lsm_algorithm->getCurrentTime();
@@ -374,7 +362,6 @@ int main(int argc, char *argv[])
                                        
   }
 
-
   /*
    * At conclusion of simulation, deallocate objects.
    */
@@ -383,6 +370,5 @@ int main(int argc, char *argv[])
 
   SAMRAIManager::shutdown();
   tbox::SAMRAI_MPI::finalize();
-
   return(0);
 }
