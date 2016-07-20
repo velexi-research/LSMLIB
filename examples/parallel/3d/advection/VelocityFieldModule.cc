@@ -100,7 +100,8 @@ void VelocityFieldModule::computeVelocityField(
   const int finest_level = d_patch_hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< PatchLevel > level =
+        d_patch_hierarchy->getPatchLevel(ln);
     computeVelocityFieldOnLevel(level,time);
 
   } // end loop over hierarchy
@@ -137,8 +138,8 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
   const boost::shared_ptr< PatchLevel > level,
   const LSMLIB_REAL time) 
 {
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-    boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+  for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+    boost::shared_ptr< Patch > patch = *pi;
     if ( patch==NULL ) {
       TBOX_ERROR(d_object_name << ": Cannot find patch. Null patch pointer.");
     }
