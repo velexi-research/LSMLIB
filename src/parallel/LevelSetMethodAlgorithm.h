@@ -1297,7 +1297,6 @@ protected:
   int d_tvd_runge_kutta_order;
   LSMLIB_REAL d_cfl_number;
 
- 
 private:
  
   /*
