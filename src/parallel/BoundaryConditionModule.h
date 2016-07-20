@@ -327,14 +327,6 @@ public:
    *                      of boundary condition to impose at 
    *                      the lower boundary in the i-th 
    *                      coordinate direction.
-   *  - upper_bc (in):    vector of integers specifying the
-   *                      type of boundary conditions to impose
-   *                      on the upper face of the computational
-   *                      domain in each coordinate direction.
-   *                      The i-th entry should contain the type
-   *                      of boundary condition to impose at 
-   *                      the upper boundary in the i-th 
-   *                      coordinate direction.
    *  - component (in):   component of phi on which to impose 
    *                      anti-periodic boundary conditions
    *                      (default = -1)
@@ -370,7 +362,6 @@ public:
   virtual void imposeAntiPeriodicBCs(
     const int phi_handle,
     const IntVector& lower_bc,
-    const IntVector& upper_bc,
     const int component = -1);
 
 
@@ -391,14 +382,6 @@ public:
    *                      The i-th entry should contain the type
    *                      of boundary condition to impose at 
    *                      the lower boundary in the i-th 
-   *                      coordinate direction.
-   *  - upper_bc (in):    vector of integers specifying the
-   *                      type of boundary conditions to impose
-   *                      on the upper face of the computational
-   *                      domain in each coordinate direction.
-   *                      The i-th entry should contain the type
-   *                      of boundary condition to impose at 
-   *                      the upper boundary in the i-th 
    *                      coordinate direction.
    *  - component (in):   component of phi on which to impose 
    *                      anti-periodic boundary conditions
@@ -436,7 +419,6 @@ public:
     Patch& patch,
     const int phi_handle,
     const IntVector& lower_bc,
-    const IntVector& upper_bc,
     const int component = -1);
 
 

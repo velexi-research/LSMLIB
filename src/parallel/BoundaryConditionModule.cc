@@ -7,13 +7,14 @@
  * Modified:    $Date$
  * Description: Header file for anti-periodic bc module
  */
- 
+
 #ifndef included_BoundaryConditionModule_cc
 #define included_BoundaryConditionModule_cc
 
 #include "BoundaryConditionModule.h"
 
 // SAMRAI Headers
+#include "SAMRAI/appu/CartesianBoundaryDefines.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/pdat/CellData.h"
 #include "SAMRAI/hier/PatchGeometry.h"
@@ -40,7 +41,7 @@ d_geom_periodic_dirs(patch_hierarchy->getDim(),0)
 {
  // invoke resetHierarchyConfiguration() to set up boundary boxes, etc.
   resetHierarchyConfiguration(
-    patch_hierarchy, 0, patch_hierarchy->getFinestLevelNumber(), 
+    patch_hierarchy, 0, patch_hierarchy->getFinestLevelNumber(),
     ghostcell_width);
 }
 
@@ -50,7 +51,7 @@ BoundaryConditionModule::BoundaryConditionModule()
 d_ghostcell_width(d_patch_hierarchy->getDim(),0),
 d_geom_periodic_dirs(d_patch_hierarchy->getDim(),0)
 {
-  d_patch_hierarchy = boost::shared_ptr< PatchHierarchy > (); 
+  d_patch_hierarchy = boost::shared_ptr< PatchHierarchy > ();
   d_boundary_boxes.setNull();
   d_touches_boundary.setNull();
 }
@@ -94,7 +95,6 @@ void BoundaryConditionModule::imposeBoundaryConditions(
       }
       // check that patch touches boundary of computational domain
       if ( d_touches_boundary[ln][patch->getLocalId().getValue()] ) {
-cout<<"boundarycond1"<<endl;
         imposeBoundaryConditionsOnPatch(
           *patch,
           phi_handle,
@@ -102,10 +102,9 @@ cout<<"boundarycond1"<<endl;
           upper_bc,
           spatial_derivative_type,
           spatial_derivative_order,
-          component); 
+          component);
 
       } // end case: Patch touches boundary
-cout<<"boundarycond2"<<endl;
     } // end loop over Patches
   } // end loop over PatchLevels
 
@@ -123,29 +122,28 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
   const int component)
 {
   if ( (lower_bc(0) != -1) && (upper_bc(0) != -1) ) {
-cout<<"imposeBoundaryConditionsOnPatch1"<<endl;
     // set linear extrapolation boundary conditions
-    imposeLinearExtrapolationBCsOnPatch(patch, 
+    imposeLinearExtrapolationBCsOnPatch(patch,
                                         phi_handle,
                                         lower_bc,
                                         upper_bc,
                                         component);
-cout<<"imposeBoundaryConditionsOnPatch2"<<endl;
+
     // set signed linear extrapolation boundary conditions
-    imposeSignedLinearExtrapolationBCsOnPatch(patch, 
+    imposeSignedLinearExtrapolationBCsOnPatch(patch,
                                               phi_handle,
                                               lower_bc,
                                               upper_bc,
                                               component);
+
     // set anti-periodic boundary conditions
-    imposeAntiPeriodicBCsOnPatch(patch, 
+    imposeAntiPeriodicBCsOnPatch(patch,
                                  phi_handle,
                                  lower_bc,
-                                 upper_bc,
                                  component);
-cout<<"imposeBoundaryConditionsOnPatch3"<<endl;
+
     // set homogeneous Neumann boundary conditions
-    imposeHomogeneousNeumannBCsOnPatch(patch, 
+    imposeHomogeneousNeumannBCsOnPatch(patch,
                                        phi_handle,
                                        lower_bc,
                                        upper_bc,
@@ -153,11 +151,12 @@ cout<<"imposeBoundaryConditionsOnPatch3"<<endl;
                                        spatial_derivative_order,
                                        component);
 
+
   } else {  // boundary conditions are incomplete, so use default BCs
     IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
-    cout<<"imposeBoundaryConditionsOnPatch4"<<endl;
-    int DIM = d_patch_hierarchy->getDim().getValue();
-    for (int dim=0; dim<DIM; dim++) {
+
+    int dim = d_patch_hierarchy->getDim().getValue();
+    for (int axis = 0; axis < dim; axis++) {
       if (d_geom_periodic_dirs(dim)) {
         default_bc(dim) = NONE;
       }
@@ -172,15 +171,13 @@ cout<<"imposeBoundaryConditionsOnPatch3"<<endl;
                                        component);
 
   }
-cout<<"imposeBoundaryConditionsOnPatch5"<<endl;
 }
 
 
 /* imposeAntiPeriodicBCs() */
-void BoundaryConditionModule::imposeAntiPeriodicBCs( 
+void BoundaryConditionModule::imposeAntiPeriodicBCs(
   const int phi_handle,
   const IntVector& lower_bc,
-  const IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose anti-periodic boundary conditions
@@ -188,10 +185,8 @@ void BoundaryConditionModule::imposeAntiPeriodicBCs(
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
     boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      //const int patch_num = *pi;
-      //boost::shared_ptr< Patch > patch = level->getPatch(patch_num);
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      boost::shared_ptr< Patch > patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeAntiPeriodicBCs(): "
@@ -205,7 +200,6 @@ void BoundaryConditionModule::imposeAntiPeriodicBCs(
         imposeAntiPeriodicBCsOnPatch(*patch,
                                      phi_handle,
                                      lower_bc,
-                                     upper_bc,
                                      component);
 
       } // end case: Patch touches boundary of computational domain
@@ -216,22 +210,19 @@ void BoundaryConditionModule::imposeAntiPeriodicBCs(
 
 
 /* imposeAntiPeriodicBCsOnPatch() */
-void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch( 
+void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   Patch& patch,
   const int phi_handle,
   const IntVector& lower_bc,
-  const IntVector& upper_bc,
   const int component )
 {
-  // get patch level number and patch number
-  int level_num = patch.getPatchLevelNumber();
-  BoxId boxid = patch.getBox().getBoxId();
   // get PatchData
-  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data = 
-    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(patch.getPatchData( phi_handle ));
+  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+        patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
-  // with the ghostcell width 
+  // with the ghostcell width
   if (d_ghostcell_width != phi_data->getGhostCellWidth()) {
     TBOX_ERROR(  "BoundaryConditionModule::"
               << "imposeAntiPeriodicBCsOnPatch(): "
@@ -241,8 +232,9 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   }
 
   // get PatchGeometry
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom = 
-    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());  
+  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
+    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+        patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
   Box interior_box(patch.getBox());
@@ -258,14 +250,15 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     comp_lo = 0;
     comp_hi = phi_data->getDepth();
   }
-  int DIM = d_patch_hierarchy->getDim().getValue();
-  if (DIM == 3) {
+
+  int dim = d_patch_hierarchy->getDim().getValue();
+  if (dim == 3) {
 
     /*
      * fill face boundaries
      */
-    const std::vector<BoundaryBox> face_bdry = 
-      d_boundary_boxes[level_num].find(boxid)->second[2];//dimensionality of a face??
+    const std::vector<hier::BoundaryBox>& face_bdry =
+        patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < face_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -275,7 +268,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
             (lower_bc[bdry_location_idx/2] == ANTI_PERIODIC) ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           face_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -303,7 +296,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
                              *phi_ghostbox_num_cells_y;
 
                 phi[phi_idx] *= -1.0;  // flip sign of boundary data
-                
+
               }
             }
           } // end loop over grid
@@ -316,11 +309,11 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     } // end loop over face boundaries
 
 
-    /* 
+    /*
      * fill edge boundaries
      */
-   const std::vector<BoundaryBox> edge_bdry =
-      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a edge??
+    const std::vector<hier::BoundaryBox>& edge_bdry =
+        patch_geom->getCodimensionBoundaries(2);
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -343,15 +336,16 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
           check_dir_b = 1;
           break;
         }
-        default: { 
+        default: {
           TBOX_ERROR(  "BoundaryConditionModule::"
                     << "imposeAntiPeriodicBCsOnPatch(): "
-                    << "Invalid boundary location index for edge type when DIM = 3"
+                    << "Invalid boundary location index for edge type when "
+                    << "dim = 3"
                     << endl );
         }
       }
       if ( ( (d_geom_periodic_dirs(check_dir_a) &&
-              (lower_bc[check_dir_a] == ANTI_PERIODIC)) && 
+              (lower_bc[check_dir_a] == ANTI_PERIODIC)) &&
              !(d_geom_periodic_dirs(check_dir_b) &&
               (lower_bc[check_dir_b] == ANTI_PERIODIC)) ) ||
            (!(d_geom_periodic_dirs(check_dir_a) &&
@@ -360,7 +354,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
               (lower_bc[check_dir_b] == ANTI_PERIODIC)) ) ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -388,7 +382,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
                              *phi_ghostbox_num_cells_y;
 
                 phi[phi_idx] *= -1.0;  // flip sign of boundary data
-                
+
               }
             }
           } // end loop over grid
@@ -400,26 +394,26 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
 
     } // end loop over edge boundaries
 
-    /* 
+    /*
      * fill node boundaries
      */
-    const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
+    const std::vector<hier::BoundaryBox>& node_bdry =
+        patch_geom->getCodimensionBoundaries(3);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
       // set functions
       bool anti_periodic = false;
       for (int k = 0; k < 3; k++) {
-        if ( d_geom_periodic_dirs(k) && 
-             (lower_bc[k] == ANTI_PERIODIC) ) 
+        if ( d_geom_periodic_dirs(k) &&
+             (lower_bc[k] == ANTI_PERIODIC) )
           anti_periodic = !anti_periodic;
       }
 
       if ( anti_periodic ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -447,7 +441,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
                              *phi_ghostbox_num_cells_y;
 
                 phi[phi_idx] *= -1.0;  // flip sign of boundary data
-                
+
               }
             }
           } // end loop over grid
@@ -477,23 +471,23 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
 */
 // } END DEBUGGING
 
-  } else if (DIM == 2) {
+  } else if (dim == 2) {
 
     /*
      * fill edge boundaries
      */
-   const std::vector<BoundaryBox> edge_bdry =
-      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of an edge??
+    const std::vector<hier::BoundaryBox>& edge_bdry =
+        patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
       // set functions
       int bdry_location_idx = edge_bdry[i].getLocationIndex();
       if ( d_geom_periodic_dirs(bdry_location_idx/2) &&
-           (lower_bc[bdry_location_idx/2] == ANTI_PERIODIC) ) { 
+           (lower_bc[bdry_location_idx/2] == ANTI_PERIODIC) ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -528,26 +522,26 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     } // end loop over edge boundaries
 
 
-    /* 
+    /*
      * fill node boundaries
      */
-   const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
+    const std::vector<hier::BoundaryBox>& node_bdry =
+        patch_geom->getCodimensionBoundaries(2);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
       // set functions
-      if ( ( (d_geom_periodic_dirs(0) && 
+      if ( ( (d_geom_periodic_dirs(0) &&
              (lower_bc[0] == ANTI_PERIODIC)) &&
             !(d_geom_periodic_dirs(1) &&
              (lower_bc[1] == ANTI_PERIODIC)) ) ||
-           (!(d_geom_periodic_dirs(0) && 
+           (!(d_geom_periodic_dirs(0) &&
              (lower_bc[0] == ANTI_PERIODIC)) &&
              (d_geom_periodic_dirs(1) &&
              (lower_bc[1] == ANTI_PERIODIC)) ) ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -570,7 +564,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
                             *phi_ghostbox_num_cells_x;
 
               phi[phi_idx] *= -1.0;  // flip sign of boundary data
-                
+
             }
           } // end loop over grid
 
@@ -596,16 +590,16 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
       }
       pout << "--------------------" << endl;
     } // end loop over grid
-*/  
+*/
 // } END DEBUGGING
 
-  } else if (DIM == 1) {
+  } else if (dim == 1) {
 
     /*
      * fill node boundaries
      */
-    const std::vector<BoundaryBox> node_bdry =
-      d_boundary_boxes[level_num].find(boxid)->second[1];//dimensionality of a node??
+    const std::vector<hier::BoundaryBox>& node_bdry =
+        patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
       // check that boundary is a periodic boundary for level
@@ -615,7 +609,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
              (lower_bc[bdry_location_idx/2] == ANTI_PERIODIC) ) {
 
         /*
-         * impose anti-periodic boundary conditions for phi 
+         * impose anti-periodic boundary conditions for phi
          */
         Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
@@ -634,7 +628,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
                 int phi_idx = i - phi_ghostbox_lower(0);
 
                 phi[phi_idx] *= -1.0;  // flip sign of boundary data
-                
+
           } // end loop over grid
 
         } // end loop over components
@@ -663,20 +657,20 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
 */
 // } END DEBUGGING
 
-  } else { 
+  } else {
 
     TBOX_ERROR(  "BoundaryConditionModule::"
               << "imposeAntiPeriodicBCsOnPatch()"
-              << "Invalid value of DIM.  "
-              << "Only DIM = 1, 2, and 3 are supported."
+              << "Invalid value of dim.  "
+              << "Only dim = 1, 2, and 3 are supported."
               << endl );
 
-  } // end switch over DIM
+  } // end switch over dim
 }
 
 
 /* imposeHomogeneousNeumannBCs() */
-void BoundaryConditionModule::imposeHomogeneousNeumannBCs( 
+void BoundaryConditionModule::imposeHomogeneousNeumannBCs(
   const int phi_handle,
   const IntVector& lower_bc,
   const IntVector& upper_bc,
@@ -716,9 +710,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCs(
 }
 
 
-
 /* imposeHomogeneousNeumannBCsOnPatch() */
-void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch( 
+void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   Patch& patch,
   const int phi_handle,
   const IntVector& lower_bc,
@@ -727,9 +720,6 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   const int spatial_derivative_order,
   const int component )
 {
-  // get patch level number and patch number
-  int level_num = patch.getPatchLevelNumber();
-
   // get PatchData
   boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
@@ -744,10 +734,6 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
               << "with ghostcell width for this object."
               << endl );
   }
-
-  // get PatchGeometry
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
-    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
   Box interior_box(patch.getBox());
@@ -767,17 +753,20 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
     comp_lo = 0;
     comp_hi = phi_data->getDepth();
   }
-  BoxId boxid = patch.getBox().getBoxId();
-  int DIM = d_patch_hierarchy->getDim().getValue();
-  const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
-  for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
 
+  // get get boundary boxes
+  const boost::shared_ptr<hier::PatchGeometry> patch_geom(
+      patch.getPatchGeometry());
+  const std::vector<hier::BoundaryBox>& bdry_boxes =
+    patch_geom->getCodimensionBoundaries(1);
+  int dim = d_patch_hierarchy->getDim().getValue();
+
+  for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
     // check that boundary is homogeneous Neumann boundary
     int bdry_loc_idx = bdry_boxes[i].getLocationIndex();
-    if ( ((bdry_loc_idx%2==0) && 
+    if ( ((bdry_loc_idx%2==0) &&
           (lower_bc[bdry_loc_idx/2] == HOMOGENEOUS_NEUMANN)) ||
-         ((bdry_loc_idx%2==1) && 
+         ((bdry_loc_idx%2==1) &&
           (upper_bc[bdry_loc_idx/2] == HOMOGENEOUS_NEUMANN)) ) {
 
       switch (spatial_derivative_type) {
@@ -785,7 +774,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
           switch (spatial_derivative_order) {
             case 1: {
 
-              if ( DIM == 3 ) {
+              if ( dim == 3 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -809,7 +798,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 2 ) {
+              } else if ( dim == 2 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -829,7 +818,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 1 ) {
+              } else if ( dim == 1 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -849,8 +838,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 TBOX_ERROR(  "BoundaryConditionModule::"
                           << "imposeHomogeneousNeumannBCsOnPatch(): "
-                          << "Invalid value of DIM.  "
-                          << "Only DIM = 1, 2, and 3 are supported."
+                          << "Invalid value of dim.  "
+                          << "Only dim = 1, 2, and 3 are supported."
                           << endl );
 
               } // end switch over dimensions
@@ -860,7 +849,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
             case 2: {
 
-              if ( DIM == 3 ) {
+              if ( dim == 3 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -884,7 +873,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 2 ) {
+              } else if ( dim == 2 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -904,7 +893,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 1 ) {
+              } else if ( dim == 1 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -924,8 +913,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 TBOX_ERROR(  "BoundaryConditionModule::"
                           << "imposeHomogeneousNeumannBCsOnPatch(): "
-                          << "Invalid value of DIM.  "
-                          << "Only DIM = 1, 2, and 3 are supported."
+                          << "Invalid value of dim.  "
+                          << "Only dim = 1, 2, and 3 are supported."
                           << endl );
 
               } // end switch over dimensions
@@ -935,7 +924,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
             case 3: {
 
-              if ( DIM == 3 ) {
+              if ( dim == 3 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -959,7 +948,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 2 ) {
+              } else if ( dim == 2 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -979,7 +968,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 1 ) {
+              } else if ( dim == 1 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -999,8 +988,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 TBOX_ERROR(  "BoundaryConditionModule::"
                           << "imposeHomogeneousNeumannBCsOnPatch(): "
-                          << "Invalid value of DIM.  "
-                          << "Only DIM = 1, 2, and 3 are supported."
+                          << "Invalid value of dim.  "
+                          << "Only dim = 1, 2, and 3 are supported."
                           << endl );
 
               } // end switch over dimensions
@@ -1012,9 +1001,9 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
               TBOX_ERROR(  "BoundaryConditionModule::"
                         << "imposeHomogeneousNeumannBCsOnPatch(): "
                         << "Unsupported order for ENO derivative.  "
-                        << "Only ENO1, ENO2, and ENO3 supported."  
+                        << "Only ENO1, ENO2, and ENO3 supported."
                         << endl );
- 
+
             }
           } // end switch on spatial derivative order
 
@@ -1025,7 +1014,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
           switch (spatial_derivative_order) {
             case 5: {
 
-              if ( DIM == 3 ) {
+              if ( dim == 3 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1049,7 +1038,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 2 ) {
+              } else if ( dim == 2 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1069,7 +1058,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 } // end loop over components of PatchData
 
-              } else if ( DIM == 1 ) {
+              } else if ( dim == 1 ) {
 
                 for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1089,8 +1078,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
                 TBOX_ERROR(  "BoundaryConditionModule::"
                           << "imposeHomogeneousNeumannBCsOnPatch(): "
-                          << "Invalid value of DIM.  "
-                          << "Only DIM = 1, 2, and 3 are supported."
+                          << "Invalid value of dim.  "
+                          << "Only dim = 1, 2, and 3 are supported."
                           << endl );
 
               } // end switch over dimensions
@@ -1118,7 +1107,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
                     << "Unsupported spatial derivative type.  "
                     << "Only ENO and WENO derivatives are supported."
                     << endl );
-        } 
+        }
 
       } // end switch on spatial derivative type
 
@@ -1128,7 +1117,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 
 
 /* imposeLinearExtrapolationBCs() */
-void BoundaryConditionModule::imposeLinearExtrapolationBCs( 
+void BoundaryConditionModule::imposeLinearExtrapolationBCs(
   const int phi_handle,
   const IntVector& lower_bc,
   const IntVector& upper_bc,
@@ -1139,7 +1128,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCs(
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
     boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
       boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
@@ -1164,22 +1153,19 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCs(
 }
 
 
-
 /* imposeLinearExtrapolationBCsOnPatch() */
-void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch( 
+void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   Patch& patch,
   const int phi_handle,
   const IntVector& lower_bc,
   const IntVector& upper_bc,
   const int component )
 {
-  // get patch level number and patch number
-  int level_num = patch.getPatchLevelNumber();
-  
-// get PatchData
+  // get PatchData
   boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
     patch.getPatchData( phi_handle ));
+
   // check that the ghostcell width for phi is compatible
   // with the ghostcell width
   if (d_ghostcell_width != phi_data->getGhostCellWidth()) {
@@ -1189,19 +1175,18 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
               << "with ghostcell width for this object."
               << endl );
   }
-  // get PatchGeometry
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
-    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
   Box interior_box(patch.getBox());
   IntVector interior_box_lower = interior_box.lower();
   IntVector interior_box_upper = interior_box.upper();
+
   // get ghostcell width to fill
   IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
   Box phi_ghostbox = phi_data->getGhostBox();
   IntVector phi_ghostbox_lower = phi_ghostbox.lower();
   IntVector phi_ghostbox_upper = phi_ghostbox.upper();
+
   // get data components
   int comp_lo = component;
   int comp_hi = component+1;
@@ -1209,43 +1194,23 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
     comp_lo = 0;
     comp_hi = phi_data->getDepth();
   }
- int btype;
- int DIM = d_patch_hierarchy->getDim().getValue();
-#ifdef DEBUG_CHECK_ASSERTIONS
-   if (DIM == tbox::Dimension(2)) {
-      TBOX_ASSERT(btype == Bdry::EDGE2D ||
-         btype == Bdry::NODE2D);
-   }
-   if (DIM == tbox::Dimension(3)) {
-      TBOX_ASSERT(btype == Bdry::FACE3D ||
-         btype == Bdry::EDGE3D ||
-         btype == Bdry::NODE3D);
-   }
-#endif
 
-   const boost::shared_ptr<hier::PatchGeometry> pgeom(
+  // get get boundary boxes
+  const boost::shared_ptr<hier::PatchGeometry> patch_geom(
       patch.getPatchGeometry());
-   const std::vector<hier::BoundaryBox>& bdry_boxes =
-      pgeom->getCodimensionBoundaries(btype);
-   hier::VariableDatabase* vdb = hier::VariableDatabase::getDatabase();
+  const std::vector<hier::BoundaryBox>& bdry_boxes =
+    patch_geom->getCodimensionBoundaries(1);
+  int dim = d_patch_hierarchy->getDim().getValue();
 
-  BoxId boxid = patch.getBox().getBoxId();
-  //int DIM = d_patch_hierarchy->getDim().getValue();
-//  const std::vector<BoundaryBox> bdry_boxes =
-  //  d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
   for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
-cout<<"imposeLinearExtrapolationBCsOnPatch1"<<endl;
     // check that boundary is linear extrapolation boundary
     int bdry_loc_idx = bdry_boxes[i].getLocationIndex();
-    //int bdry_loc_idx = 6;
-cout<<"imposeLinearExtrapolationBCsOnPatch2 & bdry_loc_idx is "<< bdry_loc_idx<<endl;
-cout<<"imposeLinearExtrapolationBCsOnPatch2 & bdry_boxes.size() is"<< bdry_boxes.size()<<endl;
-    if ( ((bdry_loc_idx%2==0) && 
+    if ( ((bdry_loc_idx%2==0) &&
           (lower_bc[bdry_loc_idx/2] == LINEAR_EXTRAPOLATION)) ||
-         ((bdry_loc_idx%2==1) && 
+         ((bdry_loc_idx%2==1) &&
           (upper_bc[bdry_loc_idx/2] == LINEAR_EXTRAPOLATION)) ) {
-cout<<"imposeLinearExtrapolationBCsOnPatch3"<<endl;
-      if ( DIM == 3 ) {
+
+      if (dim == 3) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1268,8 +1233,8 @@ cout<<"imposeLinearExtrapolationBCsOnPatch3"<<endl;
             &bdry_loc_idx);
 
         } // end loop over components of PatchData
-cout<<"imposeLinearExtrapolationBCsOnPatch4"<<endl;
-      } else if ( DIM == 2 ) {
+
+      } else if (dim == 2) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1289,7 +1254,7 @@ cout<<"imposeLinearExtrapolationBCsOnPatch4"<<endl;
 
         } // end loop over components of PatchData
 
-      } else if ( DIM == 1 ) {
+      } else if (dim == 1) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1309,19 +1274,18 @@ cout<<"imposeLinearExtrapolationBCsOnPatch4"<<endl;
 
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeLinearExtrapolationBCsOnPatch(): "
-                  << "Invalid value of DIM.  "
-                  << "Only DIM = 1, 2, and 3 are supported."
+                  << "Invalid value of dim.  "
+                  << "Only dim = 1, 2, and 3 are supported."
                   << endl );
 
       } // end switch over dimensions
     } // end check that boundary is linear extrapolation boundary
   } // end loop over boundary boxes
-cout<<"imposeLinearExtrapolationBCsOnPatch5"<<endl;
 }
 
 
 /* imposeSignedLinearExtrapolationBCs() */
-void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs( 
+void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs(
   const int phi_handle,
   const IntVector& lower_bc,
   const IntVector& upper_bc,
@@ -1357,18 +1321,14 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs(
 }
 
 
-
 /* imposeSignedLinearExtrapolationBCsOnPatch() */
-void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch( 
+void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
   Patch& patch,
   const int phi_handle,
   const IntVector& lower_bc,
   const IntVector& upper_bc,
   const int component )
 {
-  // get patch level number and patch number
-  int level_num = patch.getPatchLevelNumber();
-  
   // get PatchData
   boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
@@ -1383,10 +1343,6 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
               << "with ghostcell width for this object."
               << endl );
   }
-
-  // get PatchGeometry
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
-    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
   Box interior_box(patch.getBox());
@@ -1407,20 +1363,22 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
     comp_hi = phi_data->getDepth();
   }
 
-  BoxId boxid = patch.getBox().getBoxId();
-  int DIM = d_patch_hierarchy->getDim().getValue();
-  const std::vector<BoundaryBox> bdry_boxes =
-    d_boundary_boxes[level_num].find(boxid)->second[DIM-1];//dimensionality of a box??
-  for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
+  const boost::shared_ptr<hier::PatchGeometry> patch_geom(
+      patch.getPatchGeometry());
+  const std::vector<hier::BoundaryBox>& bdry_boxes =
+      patch_geom->getCodimensionBoundaries(1);
+  int dim = d_patch_hierarchy->getDim().getValue();
 
-    // check that boundary is linear extrapolation boundary
+  for (unsigned int i = 0; i < bdry_boxes.size(); i++) {
+    // check that boundary is signed linear extrapolation boundary
     int bdry_loc_idx = bdry_boxes[i].getLocationIndex();
-    if ( ((bdry_loc_idx%2==0) && 
+
+    if ( ((bdry_loc_idx%2==0) &&
           (lower_bc[bdry_loc_idx/2] == SIGNED_LINEAR_EXTRAPOLATION)) ||
-         ((bdry_loc_idx%2==1) && 
+         ((bdry_loc_idx%2==1) &&
           (upper_bc[bdry_loc_idx/2] == SIGNED_LINEAR_EXTRAPOLATION)) ) {
 
-      if ( DIM == 3 ) {
+      if ( dim == 3 ) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1444,7 +1402,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
 
         } // end loop over components of PatchData
 
-      } else if ( DIM == 2 ) {
+      } else if ( dim == 2 ) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1464,7 +1422,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
 
         } // end loop over components of PatchData
 
-      } else if ( DIM == 1 ) {
+      } else if ( dim == 1 ) {
 
         for (int comp = comp_lo; comp < comp_hi; comp++) {
 
@@ -1484,13 +1442,13 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
 
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeSignedLinearExtrapolationBCsOnPatch(): "
-                  << "Invalid value of DIM.  "
-                  << "Only DIM = 1, 2, and 3 are supported."
+                  << "Invalid value of dim.  "
+                  << "Only dim = 1, 2, and 3 are supported."
                   << endl );
 
       } // end switch over dimensions
     } // end check that boundary is linear extrapolation boundary
-  } // end loop over boundary boxes
+  } // end loop over PatchLevels
 }
 
 
@@ -1503,17 +1461,21 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
 {
   // reset hierarchy
   d_patch_hierarchy = patch_hierarchy;
+
   // reset ghostcell width and periodic directions
   d_ghostcell_width = ghostcell_width;
-  //Initialize with ratio to level 0 equal to 1 
-  IntVector ratio_to_level_zero(d_patch_hierarchy->getDim(),1); 
-  d_geom_periodic_dirs = 
+
+  // initialize with ratio to level 0 equal to 1
+  IntVector ratio_to_level_zero(d_patch_hierarchy->getDim(), 1);
+  d_geom_periodic_dirs =
     d_patch_hierarchy->getGridGeometry()->getPeriodicShift(ratio_to_level_zero);
-  // check if the patch_hierarchy has already been constructed
+
+  // set boundary condition parameters "null" state if the patch_hierarchy has
+  // not yet been constructed
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   if (num_levels <= 0) {
 
-    IntVector zero_int_vect(d_patch_hierarchy->getDim(),0);
+    IntVector zero_int_vect(d_patch_hierarchy->getDim(), 0);
     d_ghostcell_width = zero_int_vect;
     d_geom_periodic_dirs = zero_int_vect;
     d_boundary_boxes.setNull();
@@ -1521,49 +1483,54 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
     return;
   }
 
-  // resize output arrays 
+  // resize output arrays
   d_boundary_boxes.resizeArray(num_levels);
   d_touches_boundary.resizeArray(num_levels);
+
   // get grid geometry
-  boost::shared_ptr< GridGeometry > grid_geometry = 
-   BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
+  boost::shared_ptr< GridGeometry > grid_geometry =
+    BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(
+        d_patch_hierarchy->getGridGeometry());
 
   // loop over PatchHierarchy and compute boundary boxes in periodic
   // directions
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
-    boost::shared_ptr< PatchLevel > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr<PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
     const int num_patches = level->getNumberOfPatches();
 
     // set periodic shift to zero so that ALL boundary boxes
     // (including periodic boundaries) are computed
-    IntVector periodic_shift(d_patch_hierarchy->getDim(),0);
+    IntVector periodic_shift(d_patch_hierarchy->getDim(), 0);
+
     // find the patches in the current level touching the boundaries
     // of the computational domain
-    std::map<BoxId,TwoDimBool> touches_regular_bdry;
-    std::map<BoxId,TwoDimBool> touches_periodic_bdry;
+    std::map<BoxId, TwoDimBool> touches_regular_bdry;
+    std::map<BoxId, TwoDimBool> touches_periodic_bdry;
     grid_geometry->findPatchesTouchingBoundaries(
       touches_regular_bdry,
       touches_periodic_bdry,
       *level);
     d_touches_boundary[ln].resizeArray(num_patches);
-    int DIM = d_patch_hierarchy->getDim().getValue();
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
+
+    int dim = d_patch_hierarchy->getDim().getValue();
+    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
       BoxId boxid = pi->getBox().getBoxId();
       int patch_num = pi->getLocalId().getValue();
-      
+
       d_touches_boundary[ln][patch_num] = false;
 
-     for (int dim = 0; dim < DIM; dim++) {//find if the patch touches a boundary
-        if ( touches_regular_bdry.find(boxid)->second(dim,0)  ||
-             touches_regular_bdry.find(boxid)->second(dim,1)  ||
-             touches_periodic_bdry.find(boxid)->second(dim,0) ||
-             touches_periodic_bdry.find(boxid)->second(dim,1) ) {
+     // find if the patch touches a boundary
+     for (int axis = 0; axis < dim; axis++) {
+        if ( touches_regular_bdry.find(boxid)->second(axis, 0)  ||
+             touches_regular_bdry.find(boxid)->second(axis, 1)  ||
+             touches_periodic_bdry.find(boxid)->second(axis, 0) ||
+             touches_periodic_bdry.find(boxid)->second(axis, 1) ) {
 
           d_touches_boundary[ln][patch_num] = true;
 
-        } 
+        }
       } // end loop over dimension
-    }
+    } // end loop over patches
 
     // compute boundary boxes for patches in current level
     grid_geometry->computeBoundaryBoxesOnLevel(
