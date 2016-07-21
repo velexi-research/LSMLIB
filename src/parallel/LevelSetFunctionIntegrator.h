@@ -1474,10 +1474,9 @@ protected:
   boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg;
 
   // Boost pointer to orthogonalization algorithm which manages the 
-  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg; 
- // orthogonalization of gradients of phi and psi for 
+  // orthogonalization of gradients of phi and psi for 
   // codimension-two problems
-
+  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg; 
   
   /*
    * PatchData handles for data required by level set method
