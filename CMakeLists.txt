@@ -162,8 +162,7 @@ else (SINGLE_PRECISION)
     # Set Fortran compiler flags
     get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER}
                             NAME)
-    message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
-    message ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+    message ("-- Fortran compiler: " ${CMAKE_Fortran_COMPILER})
 
     if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
@@ -204,6 +203,9 @@ configure_file(config/LSMLIB_config.h.in
 
 # lsm_toolbox
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/toolbox)
+
+# lsm_serial
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/serial)
 
 #add_library(lsm_parallel
 #    ${LSMLIB_PARALLEL_SRCDIR}/LevelSetMethodToolbox.cc
