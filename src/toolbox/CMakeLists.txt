@@ -9,11 +9,8 @@
 # Build parameters
 # --------------------------------------------------------------
 
-# Path variables
-set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/toolbox)
-
 # Search path for header files
-include_directories(${SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR})
 
 # --------------------------------------------------------------
 # Process template files
@@ -106,8 +103,8 @@ configure_file(lsm_utilities3d_local.f.in
 
 # Source files
 file(GLOB SOURCE_FILES
-     ${SOURCE_DIR}/*.c
-     ${SOURCE_DIR}/*.f
+     ${CMAKE_SOURCE_DIR}/*.c
+     ${CMAKE_SOURCE_DIR}/*.f
      ${CMAKE_CURRENT_BINARY_DIR}/*.f)
 add_library(lsm_toolbox ${SOURCE_FILES})
 
