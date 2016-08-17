@@ -10,7 +10,7 @@
 # --------------------------------------------------------------
 
 # Search path for header files
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # --------------------------------------------------------------
 # Process template files
@@ -99,9 +99,10 @@ configure_file(lsm_utilities3d_local.f.in
 
 # Source files
 file(GLOB SOURCE_FILES
-     ${CMAKE_SOURCE_DIR}/*.c
-     ${CMAKE_SOURCE_DIR}/*.f
-     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.f
+    ${CMAKE_CURRENT_BINARY_DIR}/*.f)
 add_library(lsm_toolbox ${SOURCE_FILES})
 
 # --------------------------------------------------------------
@@ -109,7 +110,7 @@ add_library(lsm_toolbox ${SOURCE_FILES})
 # --------------------------------------------------------------
 
 # Header files
-file(GLOB HEADER_FILES ${SRCDIR}/*.h)
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install(FILES ${HEADER_FILES} DESTINATION include/lsmlib)
 
 # Library files
