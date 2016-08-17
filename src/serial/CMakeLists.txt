@@ -11,7 +11,6 @@
 
 # Search path for header files
 include_directories(${CMAKE_SOURCE_DIR}/src/toolbox)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # --------------------------------------------------------------
 # Build targets

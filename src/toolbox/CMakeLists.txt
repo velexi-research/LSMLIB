@@ -3,14 +3,8 @@
 # --------------------------------------------------------------
 
 # CMake initialization: No customizations
+# Build parameters: No customizations
 # Build requirements: No customizations
-
-# --------------------------------------------------------------
-# Build parameters
-# --------------------------------------------------------------
-
-# Search path for header files
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # --------------------------------------------------------------
 # Process template files
