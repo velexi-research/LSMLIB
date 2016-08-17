@@ -99,10 +99,10 @@ configure_file(lsm_utilities3d_local.f.in
 
 # Source files
 file(GLOB SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.f
-    ${CMAKE_CURRENT_BINARY_DIR}/*.f)
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
+     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
 add_library(lsm_toolbox ${SOURCE_FILES})
 
 # --------------------------------------------------------------
