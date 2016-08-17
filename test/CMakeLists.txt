@@ -1,0 +1,41 @@
+# --------------------------------------------------------------
+# Testing customizations
+# --------------------------------------------------------------
+
+# CMake initialization: No customizations
+# Build requirements: No customizations
+
+# --------------------------------------------------------------
+# Build parameters
+# --------------------------------------------------------------
+
+# Include search path
+include_directories(${GTEST_INCLUDE_DIR})
+
+# --------------------------------------------------------------
+# Build targets
+# --------------------------------------------------------------
+
+# --- lsm_parallel tests
+
+if (ENABLE_PARALLEL)
+
+    # Source files containing tests
+    file(GLOB TEST_SRC_FILES
+         ${PROJECT_SOURCE_DIR}/test/parallel/*.cc)
+
+    add_executable(LSM_PARALLEL_TESTS ${TEST_SRC_FILES})
+    add_dependencies(LSM_PARALLEL_TESTS lsm_parallel googletest)
+    target_link_libraries(LSM_PARALLEL_TESTS
+        lsm_parallel
+        ${GTEST_LIBS_DIR}/libgtest.a
+        ${GTEST_LIBS_DIR}/libgtest_main.a
+        ${CMAKE_THREAD_LIBS_INIT})
+
+endif (ENABLE_PARALLEL)
+
+# --------------------------------------------------------------
+# Test setup
+# --------------------------------------------------------------
+
+add_test(run_LSM_PARALLEL_TESTS ${EXECUTABLE_OUTPUT_PATH}/lsm-parallel-tests)
