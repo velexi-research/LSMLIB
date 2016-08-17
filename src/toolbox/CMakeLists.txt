@@ -1,5 +1,5 @@
 # --------------------------------------------------------------
-# Customizations for LSMLIB Toolbox
+# Customizations for lsm_toolbox library
 # --------------------------------------------------------------
 
 # CMake initialization: No customizations
