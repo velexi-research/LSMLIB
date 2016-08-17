@@ -16,10 +16,6 @@ include_directories(${CMAKE_SOURCE_DIR})
 # Process template files
 # --------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Process template files
-# --------------------------------------------------------------
-
 # Floating-point precision
 if (SINGLE_PRECISION)
 
