@@ -40,5 +40,6 @@ endif (ENABLE_PARALLEL)
 # Test setup
 # --------------------------------------------------------------
 
-add_test(run_LSM_PARALLEL_TESTS
+add_test(${LSM_PARALLEL_TESTS}
          ${CMAKE_CURRENT_BINARY_DIR}/${LSM_PARALLEL_TESTS})
+add_dependencies(check ${LSM_PARALLEL_TESTS})

@@ -52,6 +52,9 @@ set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
 # Search path for header files
 include_directories(${BINARY_INCLUDE_DIR})
 
+# CMake options
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # --------------------------------------------------------------
 # Build requirements
 # --------------------------------------------------------------
@@ -215,6 +218,9 @@ if (ENABLE_PARALLEL)
     add_subdirectory(${PROJECT_SOURCE_DIR}/src/parallel)
 endif (ENABLE_PARALLEL)
 
+# examples
+add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
+
 # --------------------------------------------------------------
 # Testing
 # --------------------------------------------------------------
@@ -222,11 +228,14 @@ endif (ENABLE_PARALLEL)
 # Enable CMake testing
 enable_testing()
 
+# Emulate 'make check'
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+
 # Add googletest directory to build
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
 
 # Add test directory to build
-add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/test EXCLUDE_FROM_ALL)
 
 # --------------------------------------------------------------
 # Installation
