@@ -58,6 +58,7 @@ include_directories(${BINARY_INCLUDE_DIR})
 
 # --- Software with pre-defined CMake package modules
 
+find_package(Threads REQUIRED)
 find_package(Git)
 
 # --- include-what-you-use
@@ -214,19 +215,6 @@ if (ENABLE_PARALLEL)
     add_subdirectory(${PROJECT_SOURCE_DIR}/src/parallel)
 endif (ENABLE_PARALLEL)
 
-#add_library(lsm_parallel
-#    ${LSMLIB_PARALLEL_SRCDIR}/LevelSetMethodToolbox.cc
-#    ${LSMLIB_TOOLBOX_HEADER_FILES}
-#    ${LSMLIB_SERIAL_HEADER_FILES}
-#    ${LSMLIB_PARALLEL_HEADER_FILES})
-#target_include_directories(lsm_parallel PRIVATE
-#                           ${LSMLIB_TOOLBOX_SRCDIR}
-#                           ${LSMLIB_SERIAL_SRCDIR}
-#                           ${LSMLIB_PARALLEL_SRCDIR}
-#                           ${BOOST_INCLUDE_DIR}
-#                           ${MPI_INCLUDE_DIR}
-#                           ${SAMRAI}/include)
-
 # --------------------------------------------------------------
 # Testing
 # --------------------------------------------------------------
@@ -238,7 +226,7 @@ enable_testing()
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
 
 # Add test directory to build
-#add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 
 # --------------------------------------------------------------
 # Installation
