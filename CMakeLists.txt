@@ -83,7 +83,7 @@ if (ENABLE_PARALLEL)
     # Verify that BOOST header files were found
     if (BOOST_CONFIG_H)
         message("-- Found Boost header files: TRUE (${BOOST_CONFIG_H})")
-        get_filename_component(BOOST_INCLUDE_DIR ${BOOST_CONFIG_H} DIRECTORY)
+        set(BOOST_INCLUDE_DIR ${BOOST}/include)
     else (BOOST_CONFIG_H)
         message(FATAL_ERROR "Could NOT find Boost header files.")
     endif (BOOST_CONFIG_H)
@@ -124,6 +124,7 @@ if (ENABLE_PARALLEL)
     # Verify that SAMRAI header files were found
     if (SAMRAI_CONFIG_H)
         message("-- Found SAMRAI header files: TRUE (${SAMRAI_CONFIG_H})")
+        set(SAMRAI_INCLUDE_DIR ${SAMRAI}/include)
     else (SAMRAI_CONFIG_H)
         message(FATAL_ERROR "Could NOT find SAMRAI header files.")
     endif (SAMRAI_CONFIG_H)
@@ -142,7 +143,6 @@ endif (ENABLE_PARALLEL)
 # --------------------------------------------------------------
 
 # Floating-point precision
-set(LSMLIB_SINGLE_PRECISION ${SINGLE_PRECISION})
 if (SINGLE_PRECISION)
 
     set(LSMLIB_REAL "float")
@@ -152,6 +152,8 @@ if (SINGLE_PRECISION)
     set(LSMLIB_REAL_EPSILON "FLT_EPSILON")
 
 else (SINGLE_PRECISION)
+
+    set(LSMLIB_DOUBLE_PRECISION ON)
 
     set(LSMLIB_REAL "double")
     set(LSMLIB_ZERO_TOL 1.e-11)
@@ -206,6 +208,11 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/toolbox)
 
 # lsm_serial
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/serial)
+
+# lsm_parallel
+if (ENABLE_PARALLEL)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/src/parallel)
+endif (ENABLE_PARALLEL)
 
 #add_library(lsm_parallel
 #    ${LSMLIB_PARALLEL_SRCDIR}/LevelSetMethodToolbox.cc
