@@ -10,14 +10,14 @@
 # Build targets
 # --------------------------------------------------------------
 
-# grid management example
-#add_subdirectory(grid_management)
-
-# curvature example
-add_subdirectory(curvature_example)
+# curvature-driven motion
+add_subdirectory(curvature_driven_motion)
 
 # fast marching method example
-#add_subdirectory(fast_marching_method)
+add_subdirector(fast_marching_method)
+
+# grid management example
+add_subdirectory(grid_management)
 
 # reinitialization example
-#add_subdirectory(reinitialization_example)
+add_subdirectory(reinitialization)
