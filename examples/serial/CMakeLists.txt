@@ -14,7 +14,7 @@
 add_subdirectory(curvature_driven_motion)
 
 # fast marching method example
-add_subdirector(fast_marching_method)
+add_subdirectory(fast_marching_method)
 
 # grid management example
 add_subdirectory(grid_management)
