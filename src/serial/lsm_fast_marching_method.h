@@ -125,7 +125,7 @@ int computeExtensionFields2d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
   LSMLIB_REAL *phi,
-  LSMLIB_REAL *mark,
+  LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
   LSMLIB_REAL *extension_mask,
   int num_extension_fields,
@@ -179,7 +179,7 @@ int computeExtensionFields2d(
 int computeDistanceFunction2d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL *phi,
-  LSMLIB_REAL *mark,
+  LSMLIB_REAL *mask,
   int spatial_discretization_order,
   int *grid_dims,
   LSMLIB_REAL *dx);
