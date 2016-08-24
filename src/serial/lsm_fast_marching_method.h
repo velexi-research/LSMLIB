@@ -7,7 +7,7 @@
  * Modified:    $Date$
  * Description: Header file for 2D and 3D Fast Marching Method Algorithms
  */
- 
+
 #ifndef included_fast_marching_method_h
 #define included_fast_marching_method_h
 
@@ -19,21 +19,21 @@ extern "C" {
 #endif
 
 /*! \file lsm_fast_marching_method.h
- * 
- * \brief 
- * @ref lsm_fast_marching_method.h provides support for basic fast 
- * marching method calculations:  computing distance functions, 
- * extensions of field variables (e.g. extension velocities, etc.) 
+ *
+ * \brief
+ * @ref lsm_fast_marching_method.h provides support for basic fast
+ * marching method calculations:  computing distance functions,
+ * extensions of field variables (e.g. extension velocities, etc.)
  * off of the zero contour of a level set function, and solving the
  * Eikonal equation.
  *
- * The algorithm (and naming) closely follows the description in 
+ * The algorithm (and naming) closely follows the description in
  * "Level Set Methods and Fast Marching Methods" by J.A. Sethian
  * and "The Fast Construction of Extension Velocities in Level Set
- * Methods" by D. Adalsteinsson and J.A. Sethian (J. Comp. Phys, 
+ * Methods" by D. Adalsteinsson and J.A. Sethian (J. Comp. Phys,
  * vol 148, p 2-22, 1999).
- * 
- * 
+ *
+ *
  * <h3> NOTES </h3>
  * - The fast marching method library assumes that the field data
  *   are stored in Fortran order (i.e. column-major order).
@@ -42,11 +42,11 @@ extern "C" {
  *                 1 - FMM_Data creation error,
  *                 2 - invalid spatial discretization order
  *
- * - While @ref lsm_fast_marching_method.h only provides functions 
- *   for 2D and 3D FMM calculations, LSMLIB is capable of supporting higher 
- *   dimensional calculations (currently as high as 8, set by 
- *   FMM_HEAP_MAX_NDIM in @ref FMM_Heap.h).  To use LSMLIB to do 
- *   higher dimensional fast marching method calculations, just modify 
+ * - While @ref lsm_fast_marching_method.h only provides functions
+ *   for 2D and 3D FMM calculations, LSMLIB is capable of supporting higher
+ *   dimensional calculations (currently as high as 8, set by
+ *   FMM_HEAP_MAX_NDIM in @ref FMM_Heap.h).  To use LSMLIB to do
+ *   higher dimensional fast marching method calculations, just modify
  *   lsm_FMM_field_extension*d.c and/or lsm_FMM_eikonal*d.c so that
  *   the data array sizes and index calculations are appropriate
  *   for the dimensionality of the problem of interest.
@@ -55,31 +55,31 @@ extern "C" {
 
 
 /*!
- * computeExtensionFields2d uses the FMM algorithm to compute the 
+ * computeExtensionFields2d uses the FMM algorithm to compute the
  * distance function and extension fields from the original level set
- * function, phi, and the specified source fields.  
+ * function, phi, and the specified source fields.
  *
  * Arguments:
  *  - distance_function (out):            updated distance function
  *  - extension_fields (out):             extension fields
+ *  - phi (in):                           original level set function
+ *  - source_fields(in):                  source fields used to compute
+ *                                        extension fields
+ *  - num_extension_fields (in):          number of extension fields to compute
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a
+ *                                        negative value.
  *  - extension_mask(in):                 extension velocities to
  *                                        ignore when evaluating the
  *                                        interface values; masked
  *                                        grid points should be
  *                                        negative
- *  - phi (in):                           original level set function
- *  - mask (in):                          mask for domain of problem;
- *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
- *                                        negative value.  
- *  - source_fields(in):                  source fields used to compute 
- *                                        extension fields
- *  - num_extension_fields (in):          number of extension fields to compute
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
@@ -88,20 +88,20 @@ extern "C" {
  * NOTES:
  *  - When the second-order spatial discretization is requested, only
  *    the distance function is computed using the second-order scheme.
- *    The extension fields are computed using a first-order 
- *    discretization of the gradient for the extension field and a 
- *    second-order accurate discretization of the gradient for the 
+ *    The extension fields are computed using a first-order
+ *    discretization of the gradient for the extension field and a
+ *    second-order accurate discretization of the gradient for the
  *    distance function.  We use a first-order discretization when
- *    computing extension fields because the second-order 
+ *    computing extension fields because the second-order
  *    discretization is "unstable" and leads to amplification of the
- *    errors introduced when initializing the extension fields in 
+ *    errors introduced when initializing the extension fields in
  *    the region around the zero level set.
  *
- *  - The distance function computed when using a second-order spatial 
- *    discretization are approximately second-order accurate in the 
- *    L2 norm but are only first-order accurate in the L-infinity norm.  
- *    The reason for this behavior is that the current implementation 
- *    uses only a first-order accurate scheme for initializing the grid 
+ *  - The distance function computed when using a second-order spatial
+ *    discretization are approximately second-order accurate in the
+ *    L2 norm but are only first-order accurate in the L-infinity norm.
+ *    The reason for this behavior is that the current implementation
+ *    uses only a first-order accurate scheme for initializing the grid
  *    points around the zero-level set.
  *
  *  - For grid points that are masked out, the distance function and
@@ -110,8 +110,8 @@ extern "C" {
  *  - It is assumed that the user has allocated the memory for the
  *    distance function, extension fields, phi, and source fields.
  *
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.  That is, all data fields are assumed to have 
+ *  - It is assumed that the phi and mask data arrays are both of
+ *    the same size.  That is, all data fields are assumed to have
  *    the same index space extents.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
@@ -124,17 +124,17 @@ extern "C" {
 int computeExtensionFields2d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
-  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
-  LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
   int num_extension_fields,
+  LSMLIB_REAL *mask,
+  LSMLIB_REAL *extension_field_mask,
   int spatial_discretization_order,
   int *grid_dims,
   LSMLIB_REAL *dx);
 
 /*!
- * computeDistanceFunction2d uses the FMM algorithm to compute the 
+ * computeDistanceFunction2d uses the FMM algorithm to compute the
  * a distance function from the original level set function, phi.
  *
  * Arguments:
@@ -142,24 +142,24 @@ int computeExtensionFields2d(
  *  - phi (in):                           original level set function
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
+ *                                        of the problem should be set to a
  *                                        negative value.
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
- *  - The distance function computed when using a second-order spatial 
- *    discretization are approximately second-order accurate in the 
- *    L2 norm but are only first-order accurate in the L-infinity norm.  
- *    The reason for this behavior is that the current implementation 
- *    uses only a first-order accurate scheme for initializing the grid 
+ *  - The distance function computed when using a second-order spatial
+ *    discretization are approximately second-order accurate in the
+ *    L2 norm but are only first-order accurate in the L-infinity norm.
+ *    The reason for this behavior is that the current implementation
+ *    uses only a first-order accurate scheme for initializing the grid
  *    points around the zero-level set.
  *
  *  - For grid points that are masked out, the distance function is
@@ -171,8 +171,8 @@ int computeExtensionFields2d(
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
  *
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.  That is, all data fields are assumed to have 
+ *  - It is assumed that the phi and mask data arrays are both of
+ *    the same size.  That is, all data fields are assumed to have
  *    the same index space extents.
  *
  */
@@ -186,63 +186,63 @@ int computeDistanceFunction2d(
 
 /*!
  * solveEikonalEquation2d uses the FMM algorithm to solve the Eikonal
- * equation 
+ * equation
  *
  *   |grad(phi)| = 1/speed(x,y)
  *
  * in two space dimensions with the specified boundary data and
- * speed function.  
+ * speed function.
  *
- * This function assumes that the solution phi is assumed to be 
- * strictly non-negative with values in the interior of the domain 
- * greater than the values on the boundaries.  For problems where 
- * phi takes on negative values with interior values greater than 
- * boundary values, this function can be used to solve for 
- * psi = phi + C, where C is a constant offset that ensures that psi 
- * is strictly non-negative.  For problems where interior values are 
+ * This function assumes that the solution phi is assumed to be
+ * strictly non-negative with values in the interior of the domain
+ * greater than the values on the boundaries.  For problems where
+ * phi takes on negative values with interior values greater than
+ * boundary values, this function can be used to solve for
+ * psi = phi + C, where C is a constant offset that ensures that psi
+ * is strictly non-negative.  For problems where interior values are
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
  *
  *
  * Arguments:
- *  - phi (in/out):                       pointer to solution to Eikonal 
- *                                        equation phi must be initialized as 
- *                                        specified in the NOTES below. 
+ *  - phi (in/out):                       pointer to solution to Eikonal
+ *                                        equation phi must be initialized as
+ *                                        specified in the NOTES below.
  *  - speed (in):                         pointer to speed field
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
+ *                                        of the problem should be set to a
  *                                        negative value.
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
  *
- * 
+ *
  * NOTES:
  *  - When using the second-order spatial discretization, the solution
- *    phi is second-order accurate in the L-infinity norm only if the 
- *    "boundary values" of phi are specified in a layer of grid cells at 
- *    least two deep near the mathematical/physical domain boundary.  
- *    Otherwise, the values of the solution near the boundary will only 
- *    be first-order accurate.  Close to second-order convergence in the 
- *    L2 norm is achieved using the second-order scheme even if only one 
+ *    phi is second-order accurate in the L-infinity norm only if the
+ *    "boundary values" of phi are specified in a layer of grid cells at
+ *    least two deep near the mathematical/physical domain boundary.
+ *    Otherwise, the values of the solution near the boundary will only
+ *    be first-order accurate.  Close to second-order convergence in the
+ *    L2 norm is achieved using the second-order scheme even if only one
  *    layer of boundary values is specified.
  *
- *  - phi MUST be initialized so that the values for phi at grid points on 
- *    or adjacent to the boundary of the domain for the Eikonal equation 
+ *  - phi MUST be initialized so that the values for phi at grid points on
+ *    or adjacent to the boundary of the domain for the Eikonal equation
  *    are correctly set.  All other grid points should be set to have
  *    negative values for phi.
  *
- *  - For grid points that are masked out or have speed equal to zero, phi 
+ *  - For grid points that are masked out or have speed equal to zero, phi
  *    is set to LSMLIB_REAL_MAX.
  *
- *  - It is assumed that the phi, speed, and mask data arrays are all of 
- *    the same size.  That is, all data fields are assumed to have the 
+ *  - It is assumed that the phi, speed, and mask data arrays are all of
+ *    the same size.  That is, all data fields are assumed to have the
  *    same index space extents.
  *
  *  - Both phi and the speed function MUST be strictly non-negative.
@@ -262,31 +262,31 @@ int solveEikonalEquation2d(
   LSMLIB_REAL *dx);
 
 /*!
- * computeExtensionFields3d uses the FMM algorithm to compute the 
+ * computeExtensionFields3d uses the FMM algorithm to compute the
  * distance function and extension fields from the original level set
- * function, phi, and the specified source fields.  
+ * function, phi, and the specified source fields.
  *
  * Arguments:
  *  - distance_function (out):            updated distance function
  *  - extension_fields (out):             extension fields
+ *  - source_fields(in):                  source fields used to compute
+ *                                        extension fields
+ *  - num_extension_fields (in):          number of extension fields to compute
+ *  - mask (in):                          mask for domain of problem;
+ *                                        grid points outside of the domain
+ *                                        of the problem should be set to a
+ *                                        negative value.
  *  - extension_field_mask(in):           extension velocities to
  *                                        ignore when evaluating the
  *                                        interface values; masked
  *                                        grid points should be
  *                                        negative
  *  - phi (in):                           original level set function
- *  - mask (in):                          mask for domain of problem;
- *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
- *                                        negative value.
- *  - source_fields(in):                  source fields used to compute 
- *                                        extension fields
- *  - num_extension_fields (in):          number of extension fields to compute
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
@@ -295,20 +295,20 @@ int solveEikonalEquation2d(
  * NOTES:
  *  - When the second-order spatial discretization is requested, only
  *    the distance function is computed using the second-order scheme.
- *    The extension fields are computed using a first-order 
- *    discretization of the gradient for the extension field and a 
- *    second-order accurate discretization of the gradient for the 
+ *    The extension fields are computed using a first-order
+ *    discretization of the gradient for the extension field and a
+ *    second-order accurate discretization of the gradient for the
  *    distance function.  We use a first-order discretization when
- *    computing extension fields because the second-order 
+ *    computing extension fields because the second-order
  *    discretization is "unstable" and leads to amplification of the
- *    errors introduced when initializing the extension fields in 
+ *    errors introduced when initializing the extension fields in
  *    the region around the zero level set.
  *
- * -  The distance function computed when using a second-order spatial 
- *    discretization are approximately second-order accurate in the 
- *    L2 norm but are only first-order accurate in the L-infinity norm.  
- *    The reason for this behavior is that the current implementation 
- *    uses only a first-order accurate scheme for initializing the grid 
+ * -  The distance function computed when using a second-order spatial
+ *    discretization are approximately second-order accurate in the
+ *    L2 norm but are only first-order accurate in the L-infinity norm.
+ *    The reason for this behavior is that the current implementation
+ *    uses only a first-order accurate scheme for initializing the grid
  *    points around the zero-level set.
  *
  *  - For grid points that are masked out, the distance function and
@@ -317,8 +317,8 @@ int solveEikonalEquation2d(
  *  - It is assumed that the user has allocated the memory for the
  *    distance function, extension fields, phi, and source fields.
  *
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.  That is, all data fields are assumed to have 
+ *  - It is assumed that the phi and mask data arrays are both of
+ *    the same size.  That is, all data fields are assumed to have
  *    the same index space extents.
  *
  *  - If mask is set to a NULL pointer, then all grid points are treated
@@ -331,17 +331,17 @@ int solveEikonalEquation2d(
 int computeExtensionFields3d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
-  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
-  LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
   int num_extension_fields,
+  LSMLIB_REAL *mask,
+  LSMLIB_REAL *extension_field_mask,
   int spatial_discretization_order,
   int *grid_dims,
   LSMLIB_REAL *dx);
 
 /*!
- * computeDistanceFunction3d uses the FMM algorithm to compute the 
+ * computeDistanceFunction3d uses the FMM algorithm to compute the
  * a distance function from the original level set function, phi.
  *
  * Arguments:
@@ -349,24 +349,24 @@ int computeExtensionFields3d(
  *  - phi (in):                           original level set function
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
+ *                                        of the problem should be set to a
  *                                        negative value.
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
  *
  *
  * NOTES:
- *  - The distance function computed when using a second-order spatial 
- *    discretization are approximately second-order accurate in the 
- *    L2 norm but are only first-order accurate in the L-infinity norm.  
- *    The reason for this behavior is that the current implementation 
- *    uses only a first-order accurate scheme for initializing the grid 
+ *  - The distance function computed when using a second-order spatial
+ *    discretization are approximately second-order accurate in the
+ *    L2 norm but are only first-order accurate in the L-infinity norm.
+ *    The reason for this behavior is that the current implementation
+ *    uses only a first-order accurate scheme for initializing the grid
  *    points around the zero-level set.
  *
  *  - For grid points that are masked out, the distance function is
@@ -378,8 +378,8 @@ int computeExtensionFields3d(
  *  - If mask is set to a NULL pointer, then all grid points are treated
  *    as being in the interior of the domain.
  *
- *  - It is assumed that the phi and mask data arrays are both of 
- *    the same size.  That is, all data fields are assumed to have 
+ *  - It is assumed that the phi and mask data arrays are both of
+ *    the same size.  That is, all data fields are assumed to have
  *    the same index space extents.
  *
  */
@@ -393,38 +393,38 @@ int computeDistanceFunction3d(
 
 /*!
  * solveEikonalEquation3d uses the FMM algorithm to solve the Eikonal
- * equation 
+ * equation
  *
  *   |grad(phi)| = 1/speed(x,y,z)
  *
- * in three space dimensions with the specified boundary data 
- * and speed function. 
+ * in three space dimensions with the specified boundary data
+ * and speed function.
  *
- * This function assumes that the solution phi is assumed to be 
- * strictly non-negative with values in the interior of the domain 
- * greater than the values on the boundaries.  For problems where 
- * phi takes on negative values with interior values greater than 
- * boundary values, this function can be used to solve for 
- * psi = phi + C, where C is a constant offset that ensures that psi 
- * is strictly non-negative.  For problems where interior values are 
+ * This function assumes that the solution phi is assumed to be
+ * strictly non-negative with values in the interior of the domain
+ * greater than the values on the boundaries.  For problems where
+ * phi takes on negative values with interior values greater than
+ * boundary values, this function can be used to solve for
+ * psi = phi + C, where C is a constant offset that ensures that psi
+ * is strictly non-negative.  For problems where interior values are
  * less than boundary values, this function can be used to solve for
  * psi = -phi.
  *
  *
  * Arguments:
- *  - phi (in/out):                       pointer to solution to Eikonal 
+ *  - phi (in/out):                       pointer to solution to Eikonal
  *                                        equation phi must be initialized as
- *                                        specified in the NOTES below. 
+ *                                        specified in the NOTES below.
  *  - speed (in):                         pointer to speed field
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
- *                                        of the problem should be set to a 
+ *                                        of the problem should be set to a
  *                                        negative value.
- *  - spatial_discretization_order (in):  order of finite differences used 
+ *  - spatial_discretization_order (in):  order of finite differences used
  *                                        to compute spatial derivatives
- *  - grid_dims (in):                     array of index space extents for all 
- *                                        fields 
- *  - dx (in):                            array of grid cell sizes in each 
+ *  - grid_dims (in):                     array of index space extents for all
+ *                                        fields
+ *  - dx (in):                            array of grid cell sizes in each
  *                                        coordinate direction
  *
  * Return value:                          error code (see NOTES for translation)
@@ -432,24 +432,24 @@ int computeDistanceFunction3d(
  *
  * NOTES:
  *  - When using the second-order spatial discretization, the solution
- *    phi is second-order accurate in the L-infinity norm only if the 
- *    "boundary values" of phi are specified in a layer of grid cells at 
- *    least two deep near the mathematical/physical domain boundary.  
- *    Otherwise, the values of the solution near the boundary will only 
- *    be first-order accurate.  Close to second-order convergence in the 
- *    L2 norm is achieved using the second-order scheme even if only one 
+ *    phi is second-order accurate in the L-infinity norm only if the
+ *    "boundary values" of phi are specified in a layer of grid cells at
+ *    least two deep near the mathematical/physical domain boundary.
+ *    Otherwise, the values of the solution near the boundary will only
+ *    be first-order accurate.  Close to second-order convergence in the
+ *    L2 norm is achieved using the second-order scheme even if only one
  *    layer of boundary values is specified.
  *
- *  - phi MUST be initialized so that the values for phi at grid points on 
- *    or adjacent to the boundary of the domain for the Eikonal equation 
+ *  - phi MUST be initialized so that the values for phi at grid points on
+ *    or adjacent to the boundary of the domain for the Eikonal equation
  *    are correctly set.  All other grid points should be set to have
  *    negative values for phi.
  *
- *  - For grid points that are masked out or have speed equal to zero, phi 
+ *  - For grid points that are masked out or have speed equal to zero, phi
  *    is set to LSMLIB_REAL_MAX.
  *
- *  - It is assumed that the phi, speed, and mask data arrays are all of 
- *    the same size.  That is, all data fields are assumed to have the 
+ *  - It is assumed that the phi, speed, and mask data arrays are all of
+ *    the same size.  That is, all data fields are assumed to have the
  *    same index space extents.
  *
  *  - Both phi and the speed function MUST be strictly non-negative.

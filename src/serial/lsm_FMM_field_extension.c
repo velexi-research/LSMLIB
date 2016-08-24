@@ -60,6 +60,7 @@
 #ifndef included_lsm_FMM_field_extension_c
 #define included_lsm_FMM_field_extension_c
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -208,11 +209,11 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
 int FMM_COMPUTE_EXTENSION_FIELDS(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
-  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
-  LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
   int num_extension_fields,
+  LSMLIB_REAL *mask,
+  LSMLIB_REAL *extension_field_mask,
   int spatial_discretization_order,
   int *grid_dims,
   LSMLIB_REAL *dx)
@@ -385,12 +386,12 @@ int FMM_COMPUTE_DISTANCE_FUNCTION(
 {
   return FMM_COMPUTE_EXTENSION_FIELDS(
            distance_function,
-           0, /*  NULL extension fields pointer */
+           NULL, /* NULL extension fields pointer */
            phi,
+           NULL, /* NULL source fields pointer */
+           0, /* zero extension fields to compute */
            mask,
-           0, /*  NULL source fields pointer */
-       0, /*  NULL extension_field_mask pointer */
-           0, /*  zero extension fields to compute */
+           NULL, /* NULL extension_field_mask pointer */
            spatial_discretization_order,
            grid_dims,
            dx);
@@ -537,19 +538,20 @@ void FMM_INITIALIZE_FRONT_ORDER1(
             /* locate zero level set using linear interpolant */
             dist_minus = phi_cur/(phi_cur-phi_minus);
 
-        for (m = 0; m < num_extension_fields; m++) {
-          if ((extension_field_mask) && (extension_field_mask[idx] < 0))
-            extension_fields_minus[m] = source_fields[m][idx_neighbor];
-          else if ((extension_field_mask) &&
-                   (extension_field_mask[idx_neighbor] < 0))
-            extension_fields_minus[m] = extension_fields_cur[m];
-          else
-        /* use linear interpolation for value of source field */
-        /* at interface                                       */
-        extension_fields_minus[m] = extension_fields_cur[m]
-          + dist_minus*(source_fields[m][idx_neighbor]
-          - extension_fields_cur[m]);
-        }
+            for (m = 0; m < num_extension_fields; m++) {
+              if ((extension_field_mask) && (extension_field_mask[idx] < 0)) {
+                extension_fields_minus[m] = source_fields[m][idx_neighbor];
+              } else if ((extension_field_mask) &&
+                         (extension_field_mask[idx_neighbor] < 0)) {
+                extension_fields_minus[m] = extension_fields_cur[m];
+              } else {
+                /* use linear interpolation for value of source field */
+                /* at interface                                       */
+                extension_fields_minus[m] = extension_fields_cur[m]
+                  + dist_minus*(source_fields[m][idx_neighbor]
+                  - extension_fields_cur[m]);
+              }
+            }
 
             /* multiply back in the units for dist_minus */
             dist_minus *= dx[dir];
@@ -571,17 +573,18 @@ void FMM_INITIALIZE_FRONT_ORDER1(
             dist_plus = phi_cur/(phi_cur-phi_plus);
 
             for (m = 0; m < num_extension_fields; m++) {
-          if ((extension_field_mask) && (extension_field_mask[idx] < 0))
-            extension_fields_plus[m] = source_fields[m][idx_neighbor];
-          else if ((extension_field_mask) &&
-                   (extension_field_mask[idx_neighbor] < 0))
-            extension_fields_plus[m] = extension_fields_cur[m];
-          else
-            /* use linear interpolation for value of source field */
-            /* at interface */
-            extension_fields_plus[m] = extension_fields_cur[m]
-              + dist_plus*(source_fields[m][idx_neighbor]
-              - extension_fields_cur[m]);
+              if ((extension_field_mask) && (extension_field_mask[idx] < 0)) {
+                extension_fields_plus[m] = source_fields[m][idx_neighbor];
+              } else if ((extension_field_mask) &&
+                         (extension_field_mask[idx_neighbor] < 0)) {
+                extension_fields_plus[m] = extension_fields_cur[m];
+              } else {
+                /* use linear interpolation for value of source field */
+                /* at interface */
+                extension_fields_plus[m] = extension_fields_cur[m]
+                  + dist_plus*(source_fields[m][idx_neighbor]
+                  - extension_fields_cur[m]);
+              }
             }
 
             /* multiply back in the units for dist_plus */
