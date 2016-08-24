@@ -1,5 +1,5 @@
 # --------------------------------------------------------------
-# Customizations for serial curvature examples
+# Customizations for serial curvature example
 # --------------------------------------------------------------
 
 # CMake initialization: No customizations
