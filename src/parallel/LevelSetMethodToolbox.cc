@@ -22,7 +22,6 @@
 
 // headers for level set method numerical kernels
 extern "C" {
-  #include "lsm_fast_marching_method.h"
   #include "lsm_geometry1d.h"
   #include "lsm_geometry2d.h"
   #include "lsm_geometry3d.h"
