@@ -36,4 +36,3 @@
 /* Include "templated" implementation of Fast Marching Method */
 /* signed distance functions and extension fields.            */
 #include "lsm_FMM_field_extension.c"
-
