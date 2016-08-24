@@ -26,7 +26,7 @@ if (ENABLE_PARALLEL)
     file(GLOB TEST_SOURCE_FILES
          ${PROJECT_SOURCE_DIR}/test/parallel/*.cc)
 
-    add_executable(${LSM_PARALLEL_TESTS} ${TEST_SOURCE_FILES})
+    add_executable(${LSM_PARALLEL_TESTS} EXCLUDE_FROM_ALL ${TEST_SOURCE_FILES})
     add_dependencies(${LSM_PARALLEL_TESTS} lsm_parallel googletest)
     target_link_libraries(${LSM_PARALLEL_TESTS}
         lsm_parallel
