@@ -34,6 +34,7 @@ int main( int argc, char *argv[])
   LSMLIB_REAL **source_fields;
   LSMLIB_REAL **ext_fields;
   LSMLIB_REAL *mask = 0;
+  LSMLIB_REAL *extension_field_mask = 0;
 
   /* grid parameters */
   LSMLIB_REAL X_lo[2] = {-1.0,-1.0}; 
@@ -123,9 +124,10 @@ int main( int argc, char *argv[])
     distance_function,
     ext_fields,
     phi,
-    mask,
     source_fields,
     num_ext_fields,
+    mask,
+    extension_field_mask,
     spatial_derivative_order,
     grid_dims,
     dx);
