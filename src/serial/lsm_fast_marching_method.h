@@ -62,6 +62,11 @@ extern "C" {
  * Arguments:
  *  - distance_function (out):            updated distance function
  *  - extension_fields (out):             extension fields
+ *  - extension_mask(in):                 extension velocities to
+ *                                        ignore when evaluating the
+ *                                        interface values; masked
+ *                                        grid points should be
+ *                                        negative
  *  - phi (in):                           original level set function
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
@@ -69,11 +74,6 @@ extern "C" {
  *                                        negative value.  
  *  - source_fields(in):                  source fields used to compute 
  *                                        extension fields
- *  - extension_mask(in):                 extension velocities to
- *                                        ignore when evaluating the
- *                                        interface values; masked
- *                                        grid points should be
- *                                        negative
  *  - num_extension_fields (in):          number of extension fields to compute
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
@@ -124,10 +124,10 @@ extern "C" {
 int computeExtensionFields2d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
+  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
   LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
-  LSMLIB_REAL *extension_mask,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,
@@ -269,6 +269,11 @@ int solveEikonalEquation2d(
  * Arguments:
  *  - distance_function (out):            updated distance function
  *  - extension_fields (out):             extension fields
+ *  - extension_field_mask(in):           extension velocities to
+ *                                        ignore when evaluating the
+ *                                        interface values; masked
+ *                                        grid points should be
+ *                                        negative
  *  - phi (in):                           original level set function
  *  - mask (in):                          mask for domain of problem;
  *                                        grid points outside of the domain
@@ -276,11 +281,6 @@ int solveEikonalEquation2d(
  *                                        negative value.
  *  - source_fields(in):                  source fields used to compute 
  *                                        extension fields
- *  - extension_mask(in):                 extension velocities to
- *                                        ignore when evaluating the
- *                                        interface values; masked
- *                                        grid points should be
- *                                        negative
  *  - num_extension_fields (in):          number of extension fields to compute
  *  - spatial_discretization_order (in):  order of finite differences used 
  *                                        to compute spatial derivatives
@@ -331,10 +331,10 @@ int solveEikonalEquation2d(
 int computeExtensionFields3d(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
+  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
   LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
-  LSMLIB_REAL *extension_mask,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,

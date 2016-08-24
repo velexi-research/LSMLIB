@@ -12,11 +12,11 @@
 /*! \file lsm_FMM_field_extension.c
  *
  * \brief
- * @ref lsm_FMM_field_extension.c provides "generic" implementations 
- *      first- and second-order accurate Fast Marching Method schemes 
- *      for computing signed distance functions and extension fields.  
- *      The code is "templated" on  the number of dimensions through the 
- *      use of macro definitions that MUST be provided by the user.  
+ * @ref lsm_FMM_field_extension.c provides "generic" implementations
+ *      first- and second-order accurate Fast Marching Method schemes
+ *      for computing signed distance functions and extension fields.
+ *      The code is "templated" on  the number of dimensions through the
+ *      use of macro definitions that MUST be provided by the user.
  *
  *
  * <h3> Usage: </h3>
@@ -27,8 +27,8 @@
  *       that computes the distance function given a level set
  *       function
  *    -# FMM_COMPUTE_EXTENSION_FIELDS:  desired name of function
- *       that computes the extensions of fields off of the zero 
- *       level set 
+ *       that computes the extensions of fields off of the zero
+ *       level set
  *    -# FMM_INITIALIZE_FRONT_ORDER1:  desired name of function that
  *       initializes the values on the front using a first-order scheme
  *    -# FMM_INITIALIZE_FRONT_ORDER2:  desired name of function that
@@ -49,9 +49,9 @@
  *   initialization grid points adjacent to the zero level set.
  *   As a consequence, the computed signed distance function and
  *   extension fields are only first-order accurate in the L-infinity
- *   norm.  All results should, however, be second-order accurate in 
+ *   norm.  All results should, however, be second-order accurate in
  *   the L2 norm.
- * 
+ *
  * - Because this code depends on macros, care must be taken to
  *   ensure that macros do not conflict.
  *
@@ -99,19 +99,21 @@
 
 /*=============== lsm_FMM_field_extension Data Structures =============*/
 struct FMM_FieldData {
-  LSMLIB_REAL *phi;                 /* original level set function (input) */
-  LSMLIB_REAL *distance_function;   /* distance function (output)          */
+  LSMLIB_REAL *phi;                  /* original level set function (input) */
+  LSMLIB_REAL *distance_function;    /* distance function (output)          */
 
-  int num_extension_fields;         /* number of extension fields          */
-  LSMLIB_REAL **source_fields;      /* source fields to extend off of zero */
-                                    /* level set (input)                   */
-  LSMLIB_REAL **extension_fields;   /* computed extension field (output)   */
-  LSMLIB_REAL *extension_mask;      /* mask the initial extension interface values */
+  int num_extension_fields;          /* number of extension fields          */
+  LSMLIB_REAL **source_fields;       /* source fields to extend off of zero */
+                                     /* level set (input)                   */
+  LSMLIB_REAL **extension_fields;    /* computed extension field (output)   */
+  LSMLIB_REAL *extension_field_mask; /* mask the initial extension interface
+                                        values */
+
   /* data arrays used for initializing and updating extension fields */
   LSMLIB_REAL *extension_fields_numerator;
   LSMLIB_REAL *extension_fields_denominator;
-  LSMLIB_REAL *extension_fields_cur; 
-  LSMLIB_REAL *extension_fields_sum_div_dist_sq; 
+  LSMLIB_REAL *extension_fields_cur;
+  LSMLIB_REAL *extension_fields_sum_div_dist_sq;
   LSMLIB_REAL *extension_fields_minus;
   LSMLIB_REAL *extension_fields_plus;
 };
@@ -120,15 +122,15 @@ struct FMM_FieldData {
 /*============================ FMM Functions ===========================*/
 
 /*
- * FMM_INITIALIZE_FRONT_ORDER1() implements the callback function 
- * required by FMM_Core::FMM_initializeFront() to find and initialize 
- * the front.  
+ * FMM_INITIALIZE_FRONT_ORDER1() implements the callback function
+ * required by FMM_Core::FMM_initializeFront() to find and initialize
+ * the front.
  *
  * The approximation to the distance function is computed using
- * a first-order scheme.  The values of the extension fields on 
- * the zero level set are computed using linear interpolation.  
+ * a first-order scheme.  The values of the extension fields on
+ * the zero level set are computed using linear interpolation.
  * The extension fields for points adjacent to the zero level set
- * are calculated using a first-order approximation to the 
+ * are calculated using a first-order approximation to the
  * grad(F)*grad(dist) = 0 equation.
  */
 void FMM_INITIALIZE_FRONT_ORDER1(
@@ -139,15 +141,15 @@ void FMM_INITIALIZE_FRONT_ORDER1(
   LSMLIB_REAL *dx);
 
 /*
- * FMM_INITIALIZE_FRONT_ORDER2() implements the callback function 
- * required by FMM_Core::FMM_initializeFront() to find and initialize 
- * the front.  
+ * FMM_INITIALIZE_FRONT_ORDER2() implements the callback function
+ * required by FMM_Core::FMM_initializeFront() to find and initialize
+ * the front.
  *
  * The approximation to the distance function is computed using
- * a first-order scheme.  The values of the extension fields on 
- * the zero level set are computed using quadratic interpolation.  
+ * a first-order scheme.  The values of the extension fields on
+ * the zero level set are computed using quadratic interpolation.
  * The extension fields for points adjacent to the zero level set
- * are calculated using a first-order approximation to the 
+ * are calculated using a first-order approximation to the
  * grad(F)*grad(dist) = 0 equation.
  */
 void FMM_INITIALIZE_FRONT_ORDER2(
@@ -157,10 +159,10 @@ void FMM_INITIALIZE_FRONT_ORDER2(
   int *grid_dims,
   LSMLIB_REAL *dx);
 
-/* 
- * FMM_UPDATE_GRID_POINT_ORDER1() implements the callback function 
+/*
+ * FMM_UPDATE_GRID_POINT_ORDER1() implements the callback function
  * required by FMM_Core::FMM_Core_updateNeighbors() to update the
- * distance function and extension fields at a grid point.  It 
+ * distance function and extension fields at a grid point.  It
  * computes and returns the updated distance function and extension
  * field values of the specified grid point using values of neighbors
  * that have status "KNOWN".
@@ -178,16 +180,16 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   int *grid_dims,
   LSMLIB_REAL *dx);
 
-/* 
- * FMM_UPDATE_GRID_POINT_ORDER2() implements the callback function 
+/*
+ * FMM_UPDATE_GRID_POINT_ORDER2() implements the callback function
  * required by FMM_Core::FMM_Core_updateNeighbors() to update the
- * distance function and extension fields at a grid point.  It 
+ * distance function and extension fields at a grid point.  It
  * computes and returns the updated distance function and extension
  * field values of the specified grid point using values of neighbors
  * that have status "KNOWN".
  *
  * The approximation to the distance function is computed
- * using a second-order finite-difference scheme.  
+ * using a second-order finite-difference scheme.
  * The extension fields are calculated using a second-order
  * approximation to the grad(F)*grad(dist) = 0 equation.
  */
@@ -206,10 +208,10 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
 int FMM_COMPUTE_EXTENSION_FIELDS(
   LSMLIB_REAL *distance_function,
   LSMLIB_REAL **extension_fields,
+  LSMLIB_REAL *extension_field_mask,
   LSMLIB_REAL *phi,
   LSMLIB_REAL *mask,
   LSMLIB_REAL **source_fields,
-  LSMLIB_REAL *extension_mask,
   int num_extension_fields,
   int spatial_discretization_order,
   int *grid_dims,
@@ -243,7 +245,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
     /* NOTE: we use first-order initialization of values      */
     /*       on the front because higher-order initialization */
     /*       is not fully implemented yet.                    */
-    initializeFront = &FMM_INITIALIZE_FRONT_ORDER1; 
+    initializeFront = &FMM_INITIALIZE_FRONT_ORDER1;
     updateGridPoint = &FMM_UPDATE_GRID_POINT_ORDER2;
 
   } else {
@@ -257,7 +259,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
   /********************************************
    * set up FMM Field Data
    ********************************************/
-  FMM_FieldData *fmm_field_data = 
+  FMM_FieldData *fmm_field_data =
     (FMM_FieldData*) malloc(sizeof(FMM_FieldData));
   if (!fmm_field_data) return LSM_FMM_ERR_FMM_DATA_CREATION_ERROR;
   fmm_field_data->phi = phi;
@@ -265,21 +267,21 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
   fmm_field_data->num_extension_fields = num_extension_fields;
   fmm_field_data->source_fields = source_fields;
   fmm_field_data->extension_fields = extension_fields;
-  fmm_field_data->extension_mask = extension_mask;
+  fmm_field_data->extension_field_mask = extension_field_mask;
 
   /* allocate memory for extension field calculations */
   if (num_extension_fields > 0) {
-    fmm_field_data->extension_fields_cur = 
+    fmm_field_data->extension_fields_cur =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
-    fmm_field_data->extension_fields_sum_div_dist_sq = 
+    fmm_field_data->extension_fields_sum_div_dist_sq =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
-    fmm_field_data->extension_fields_minus = 
+    fmm_field_data->extension_fields_minus =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
-    fmm_field_data->extension_fields_plus = 
+    fmm_field_data->extension_fields_plus =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
-    fmm_field_data->extension_fields_numerator = 
+    fmm_field_data->extension_fields_numerator =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
-    fmm_field_data->extension_fields_denominator = 
+    fmm_field_data->extension_fields_denominator =
       (LSMLIB_REAL*) malloc(num_extension_fields*sizeof(LSMLIB_REAL));
   } else {
     fmm_field_data->extension_fields_cur = 0;
@@ -325,7 +327,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
     /* temporary variables */
     int grid_idx[FMM_NDIM];   /* grid index */
     int idx_remainder = idx;
-   
+
     /* compute grid_idx */
     for (i = 0; i < FMM_NDIM; i++) {
       grid_idx[i] = idx_remainder%grid_dims[i];
@@ -345,8 +347,8 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
     }
   } /* end loop over grid to mark points outside of domain */
 
-  /* initialize grid points around the front */ 
-  FMM_Core_initializeFront(fmm_core_data); 
+  /* initialize grid points around the front */
+  FMM_Core_initializeFront(fmm_core_data);
 
   /* update remaining grid points */
   while (FMM_Core_moreGridPointsToUpdate(fmm_core_data)) {
@@ -368,7 +370,7 @@ int FMM_COMPUTE_EXTENSION_FIELDS(
   return LSM_FMM_ERR_SUCCESS;
 }
 
-/* 
+/*
  * FMM_COMPUTE_DISTANCE_FUNCTION() just calls FMM_COMPUTE_EXTENSION_FIELDS()
  * with no source/extension fields (i.e. NULL source/extension field
  * pointers).
@@ -387,7 +389,7 @@ int FMM_COMPUTE_DISTANCE_FUNCTION(
            phi,
            mask,
            0, /*  NULL source fields pointer */
-	   0, /*  NULL extension_mask pointer */
+       0, /*  NULL extension_field_mask pointer */
            0, /*  zero extension fields to compute */
            spatial_discretization_order,
            grid_dims,
@@ -405,12 +407,12 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
   /* FMM Field Data variables */
   LSMLIB_REAL *phi = fmm_field_data->phi;
-  LSMLIB_REAL *distance_function = fmm_field_data->distance_function; 
-  int num_extension_fields = fmm_field_data->num_extension_fields; 
-  LSMLIB_REAL **source_fields = fmm_field_data->source_fields; 
+  LSMLIB_REAL *distance_function = fmm_field_data->distance_function;
+  int num_extension_fields = fmm_field_data->num_extension_fields;
+  LSMLIB_REAL **source_fields = fmm_field_data->source_fields;
   LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields;
-  LSMLIB_REAL *extension_mask = fmm_field_data->extension_mask;
-   
+  LSMLIB_REAL *extension_field_mask = fmm_field_data->extension_field_mask;
+
   /* grid variables */
   int offset[FMM_NDIM];
   int neighbor[FMM_NDIM];
@@ -424,20 +426,20 @@ void FMM_INITIALIZE_FRONT_ORDER1(
   LSMLIB_REAL dist_minus;
   LSMLIB_REAL dist_plus;
   LSMLIB_REAL dist_dir;
-  int use_plus; 
+  int use_plus;
 
-  LSMLIB_REAL sum_dist_inv_sq; 
-  LSMLIB_REAL dist_inv_sq_dir; 
+  LSMLIB_REAL sum_dist_inv_sq;
+  LSMLIB_REAL dist_inv_sq_dir;
 
   /* variables for extension field calculations */
   LSMLIB_REAL *extension_fields_cur = fmm_field_data->extension_fields_cur;
-  LSMLIB_REAL *extension_fields_sum_div_dist_sq = 
+  LSMLIB_REAL *extension_fields_sum_div_dist_sq =
     fmm_field_data->extension_fields_sum_div_dist_sq;
   LSMLIB_REAL *extension_fields_minus = fmm_field_data->extension_fields_minus;
   LSMLIB_REAL *extension_fields_plus = fmm_field_data->extension_fields_plus;
 
   /* auxilliary variables */
-  int num_gridpoints;       /* number of grid points */ 
+  int num_gridpoints;       /* number of grid points */
   int i,idx;  /* loop variables for grid */
   int idx_neighbor;
   int m;    /* loop variable for extension fields */
@@ -464,7 +466,7 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
     /* temporary variables */
     int grid_idx[FMM_NDIM];
-    int idx_remainder; 
+    int idx_remainder;
 
     /* skip point if it is out of the mathematical/physical domain */
     if (OUTSIDE_DOMAIN == gridpoint_status[idx]) {
@@ -490,17 +492,17 @@ void FMM_INITIALIZE_FRONT_ORDER1(
     }
 
     /* zero out accumulation variables */
-    sum_dist_inv_sq = 0; 
+    sum_dist_inv_sq = 0;
     for (m = 0; m < num_extension_fields; m++) {
       extension_fields_sum_div_dist_sq[m] = 0;
     }
-  
+
     /* check if current grid point is on the zero level set. */
     /* if so, there is no need compute the distance to the   */
     /* zero level set.                                       */
     if (LSM_FMM_ABS(phi_cur) < LSMLIB_ZERO_TOL) {
 
-      on_interface = LSM_FMM_TRUE; 
+      on_interface = LSM_FMM_TRUE;
 
     } else {
 
@@ -508,7 +510,7 @@ void FMM_INITIALIZE_FRONT_ORDER1(
       for (dir = 0; dir < FMM_NDIM; dir++) {
 
         for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-          offset[l] = 0; 
+          offset[l] = 0;
         }
 
         /* reset plus and minus distances */
@@ -531,28 +533,29 @@ void FMM_INITIALIZE_FRONT_ORDER1(
           LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
           phi_minus = phi[idx_neighbor];
           if (phi_minus*phi_cur <= 0) {
-	    
+
             /* locate zero level set using linear interpolant */
             dist_minus = phi_cur/(phi_cur-phi_minus);
-	    
-	    for (m = 0; m < num_extension_fields; m++) {
-	      if ((extension_mask) && (extension_mask[idx] < 0))
-	      	extension_fields_minus[m] = source_fields[m][idx_neighbor];
-	      else if ((extension_mask) && (extension_mask[idx_neighbor] < 0))
-	      	extension_fields_minus[m] = extension_fields_cur[m];
-	      else
-		/* use linear interpolation for value of source field */
-		/* at interface                                       */
-		extension_fields_minus[m] = extension_fields_cur[m]
-		  + dist_minus*(source_fields[m][idx_neighbor]
-				-extension_fields_cur[m]); 
-	    }
+
+        for (m = 0; m < num_extension_fields; m++) {
+          if ((extension_field_mask) && (extension_field_mask[idx] < 0))
+            extension_fields_minus[m] = source_fields[m][idx_neighbor];
+          else if ((extension_field_mask) &&
+                   (extension_field_mask[idx_neighbor] < 0))
+            extension_fields_minus[m] = extension_fields_cur[m];
+          else
+        /* use linear interpolation for value of source field */
+        /* at interface                                       */
+        extension_fields_minus[m] = extension_fields_cur[m]
+          + dist_minus*(source_fields[m][idx_neighbor]
+          - extension_fields_cur[m]);
+        }
 
             /* multiply back in the units for dist_minus */
             dist_minus *= dx[dir];
           }
         }
-      
+
         /* calculate distance to interface in plus direction */
         offset[dir] = 1;
         for (l = 0; l < FMM_NDIM; l++) {
@@ -566,18 +569,19 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
             /* locate zero level set using linear interpolant */
             dist_plus = phi_cur/(phi_cur-phi_plus);
-	    
+
             for (m = 0; m < num_extension_fields; m++) {
-	      if ((extension_mask) && (extension_mask[idx] < 0))
-	      	extension_fields_plus[m] = source_fields[m][idx_neighbor];
-	      else if ((extension_mask) && (extension_mask[idx_neighbor] < 0))
-	      	extension_fields_plus[m] = extension_fields_cur[m];
-	      else
-		/* use linear interpolation for value of source field */
-		/* at interface */
-		extension_fields_plus[m] = extension_fields_cur[m]
-		  + dist_plus*(source_fields[m][idx_neighbor]
-			       -extension_fields_cur[m]);
+          if ((extension_field_mask) && (extension_field_mask[idx] < 0))
+            extension_fields_plus[m] = source_fields[m][idx_neighbor];
+          else if ((extension_field_mask) &&
+                   (extension_field_mask[idx_neighbor] < 0))
+            extension_fields_plus[m] = extension_fields_cur[m];
+          else
+            /* use linear interpolation for value of source field */
+            /* at interface */
+            extension_fields_plus[m] = extension_fields_cur[m]
+              + dist_plus*(source_fields[m][idx_neighbor]
+              - extension_fields_cur[m]);
             }
 
             /* multiply back in the units for dist_plus */
@@ -586,10 +590,10 @@ void FMM_INITIALIZE_FRONT_ORDER1(
         }
 
         /* check if current grid point borders the interface */
-        if (  (dist_plus < LSMLIB_REAL_MAX) 
+        if (  (dist_plus < LSMLIB_REAL_MAX)
            || (dist_minus < LSMLIB_REAL_MAX) ) {
 
-          borders_interface = LSM_FMM_TRUE; 
+          borders_interface = LSM_FMM_TRUE;
 
           if (dist_plus < dist_minus) {
             dist_dir = dist_plus;
@@ -602,16 +606,16 @@ void FMM_INITIALIZE_FRONT_ORDER1(
           /* update 1/dist^2 and ext_field/dist^2 values with */
           /* information from current coordinate direction    */
           dist_inv_sq_dir = 1/dist_dir/dist_dir;
-          sum_dist_inv_sq += dist_inv_sq_dir; 
+          sum_dist_inv_sq += dist_inv_sq_dir;
 
           if (use_plus) {
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_sum_div_dist_sq[m] += 
+              extension_fields_sum_div_dist_sq[m] +=
                 extension_fields_plus[m]*dist_inv_sq_dir;
             }
           } else {
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_sum_div_dist_sq[m] += 
+              extension_fields_sum_div_dist_sq[m] +=
                 extension_fields_minus[m]*dist_inv_sq_dir;
             }
           }
@@ -625,30 +629,30 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
     /* set distance function and extension field of grid points */
     /* on or bordering the zero level set                       */
-    if (on_interface) { 
+    if (on_interface) {
 
       /* Set distance function.  We ensure the correct sign */
       /* by introducing a very small error.                 */
-      if (phi_cur > 0) 
+      if (phi_cur > 0)
         distance_function[idx] = LSMLIB_ZERO_TOL;
-      else 
+      else
         distance_function[idx] = -LSMLIB_ZERO_TOL;
 
       /* compute extension field value */
       for (m = 0; m < num_extension_fields; m++) {
         extension_fields[m][idx] = extension_fields_cur[m];
       }
- 
+
       /* set grid point as an initial front point */
       FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx,
                                     distance_function[idx]);
 
-    } else if (borders_interface) { 
+    } else if (borders_interface) {
 
       /* compute updated value for the signed distance function */
       if (phi_cur > 0)
         distance_function[idx] = sqrt(1.0/sum_dist_inv_sq);
-      else 
+      else
         distance_function[idx] = -sqrt(1.0/sum_dist_inv_sq);
 
       /* compute extension field value */
@@ -659,7 +663,7 @@ void FMM_INITIALIZE_FRONT_ORDER1(
 
       /* set grid point as an initial front point */
       FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx,
-				    distance_function[idx]);
+                                    distance_function[idx]);
 
     } /* end handling grid points on or near interface */
 
@@ -679,11 +683,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
 
   /* FMM Field Data variables */
   LSMLIB_REAL *phi = fmm_field_data->phi;
-  LSMLIB_REAL *distance_function = fmm_field_data->distance_function; 
-  int num_extension_fields = fmm_field_data->num_extension_fields; 
-  LSMLIB_REAL **source_fields = fmm_field_data->source_fields; 
-  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields; 
-   
+  LSMLIB_REAL *distance_function = fmm_field_data->distance_function;
+  int num_extension_fields = fmm_field_data->num_extension_fields;
+  LSMLIB_REAL **source_fields = fmm_field_data->source_fields;
+  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields;
+
   /* grid variables */
   int neighbor_plus[FMM_NDIM], neighbor_minus[FMM_NDIM];
   int on_interface = LSM_FMM_FALSE;
@@ -696,20 +700,20 @@ void FMM_INITIALIZE_FRONT_ORDER2(
   LSMLIB_REAL dist_minus;
   LSMLIB_REAL dist_plus;
   LSMLIB_REAL dist_dir;
-  int use_plus; 
+  int use_plus;
 
-  LSMLIB_REAL sum_dist_inv_sq; 
-  LSMLIB_REAL dist_inv_sq_dir; 
+  LSMLIB_REAL sum_dist_inv_sq;
+  LSMLIB_REAL dist_inv_sq_dir;
 
   /* variables for extension field calculations */
   LSMLIB_REAL *extension_fields_cur = fmm_field_data->extension_fields_cur;
-  LSMLIB_REAL *extension_fields_sum_div_dist_sq = 
+  LSMLIB_REAL *extension_fields_sum_div_dist_sq =
     fmm_field_data->extension_fields_sum_div_dist_sq;
   LSMLIB_REAL *extension_fields_minus = fmm_field_data->extension_fields_minus;
   LSMLIB_REAL *extension_fields_plus = fmm_field_data->extension_fields_plus;
 
   /* auxilliary variables */
-  int num_gridpoints;       /* number of grid points */ 
+  int num_gridpoints;       /* number of grid points */
   int i,idx;  /* loop variables for grid */
   int idx_neighbor_plus, idx_neighbor_minus;
   int m;    /* loop variable for extension fields */
@@ -736,7 +740,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
 
     /* temporary variables */
     int grid_idx[FMM_NDIM];
-    int idx_remainder; 
+    int idx_remainder;
 
     /* skip point if it is out of the mathematical/physical domain */
     if (OUTSIDE_DOMAIN == gridpoint_status[idx]) {
@@ -762,11 +766,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
     }
 
     /* zero out accumulation variables */
-    sum_dist_inv_sq = 0; 
+    sum_dist_inv_sq = 0;
     for (m = 0; m < num_extension_fields; m++) {
       extension_fields_sum_div_dist_sq[m] = 0;
     }
-  
+
     /* loop over directions */
     for (dir = 0; dir < FMM_NDIM; dir++) {
 
@@ -774,7 +778,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
       /* if so, there is no need to check other directions,    */
       /* so break out of loop.                                 */
       if (LSM_FMM_ABS(phi_cur) < LSMLIB_ZERO_TOL) {
-        on_interface = LSM_FMM_TRUE; 
+        on_interface = LSM_FMM_TRUE;
         break;
       }
 
@@ -815,11 +819,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
             /* use quadratic interpolation for value of source field */
             /* at interface                                          */
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_minus[m] = 
+              extension_fields_minus[m] =
                   0.5*dist_minus*(dist_minus+1.0)
                                 *source_fields[m][idx_neighbor_minus]
                 - (dist_minus-1.0)*(dist_minus+1.0)
-                                  *extension_fields_cur[m] 
+                                  *extension_fields_cur[m]
                 + 0.5*dist_minus*(dist_minus-1.0)
                                 *source_fields[m][idx_neighbor_plus];
             }
@@ -829,7 +833,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
             /* drop to linear interpolation for value of source field */
             /* at interface since plus neighbor is out of bounds      */
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_minus[m] = extension_fields_cur[m] 
+              extension_fields_minus[m] = extension_fields_cur[m]
                 + dist_minus*(source_fields[m][idx_neighbor_minus]
                              -extension_fields_cur[m]);
             }
@@ -840,7 +844,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
           dist_minus *= dx[dir];
         }
       }
-      
+
       /* calculate distance to interface in plus direction */
       LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,
                                 neighbor_plus,grid_dims);
@@ -859,11 +863,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
             /* use quadratic interpolation for value of source field */
             /* at interface                                          */
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_plus[m] = 
+              extension_fields_plus[m] =
                   0.5*dist_plus*(dist_plus-1.0)
                                *source_fields[m][idx_neighbor_minus]
                 - (dist_plus-1.0)*(dist_plus+1.0)
-                                  *extension_fields_cur[m] 
+                                  *extension_fields_cur[m]
                 + 0.5*dist_plus*(dist_plus+1.0)
                                *source_fields[m][idx_neighbor_plus];
             }
@@ -873,7 +877,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
             /* drop to linear interpolation for value of source field */
             /* at interface since minus neighbor is out of bounds     */
             for (m = 0; m < num_extension_fields; m++) {
-              extension_fields_plus[m] = extension_fields_cur[m] 
+              extension_fields_plus[m] = extension_fields_cur[m]
                 + dist_plus*(source_fields[m][idx_neighbor_plus]
                             -extension_fields_cur[m]);
             }
@@ -888,7 +892,7 @@ void FMM_INITIALIZE_FRONT_ORDER2(
       /* check if current grid point borders the interface */
       if ( (dist_plus < LSMLIB_REAL_MAX) || (dist_minus < LSMLIB_REAL_MAX) ) {
 
-        borders_interface = LSM_FMM_TRUE; 
+        borders_interface = LSM_FMM_TRUE;
 
         if (dist_plus < dist_minus) {
           dist_dir = dist_plus;
@@ -901,16 +905,16 @@ void FMM_INITIALIZE_FRONT_ORDER2(
         /* update 1/dist^2 and ext_field/dist^2 values with */
         /* information from current coordinate direction    */
         dist_inv_sq_dir = 1/dist_dir/dist_dir;
-        sum_dist_inv_sq += dist_inv_sq_dir; 
+        sum_dist_inv_sq += dist_inv_sq_dir;
 
         if (use_plus) {
           for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_sum_div_dist_sq[m] += 
+            extension_fields_sum_div_dist_sq[m] +=
               extension_fields_plus[m]*dist_inv_sq_dir;
           }
         } else {
           for (m = 0; m < num_extension_fields; m++) {
-            extension_fields_sum_div_dist_sq[m] += 
+            extension_fields_sum_div_dist_sq[m] +=
               extension_fields_minus[m]*dist_inv_sq_dir;
           }
         }
@@ -921,11 +925,11 @@ void FMM_INITIALIZE_FRONT_ORDER2(
 
     /* set distance function and extension field of grid points */
     /* on or bordering the zero level set                       */
-    if (on_interface) { 
+    if (on_interface) {
 
       /* Set distance function.  We ensure the correct sign */
       /* by introducing a very small error.                 */
-      if (phi_cur > 0) 
+      if (phi_cur > 0)
         distance_function[idx] = LSMLIB_REAL_MIN;
       else
         distance_function[idx] = -LSMLIB_REAL_MIN;
@@ -939,17 +943,17 @@ void FMM_INITIALIZE_FRONT_ORDER2(
       FMM_Core_setInitialFrontPoint(fmm_core_data, grid_idx,
                                     distance_function[idx]);
 
-    } else if (borders_interface) { 
+    } else if (borders_interface) {
 
       /* compute updated value for the signed distance function */
       if (phi_cur > 0)
         distance_function[idx] = sqrt(1.0/sum_dist_inv_sq);
-      else 
+      else
         distance_function[idx] = -sqrt(1.0/sum_dist_inv_sq);
 
       /* compute extension field value */
       for (m = 0; m < num_extension_fields; m++) {
-        extension_fields[m][idx] = 
+        extension_fields[m][idx] =
           extension_fields_sum_div_dist_sq[m]/sum_dist_inv_sq;
       }
 
@@ -975,12 +979,12 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   int *gridpoint_status = FMM_Core_getGridPointStatusDataArray(fmm_core_data);
 
   /* FMM Field Data variables */
-  LSMLIB_REAL *distance_function = fmm_field_data->distance_function; 
-  int num_extension_fields = fmm_field_data->num_extension_fields; 
-  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields; 
+  LSMLIB_REAL *distance_function = fmm_field_data->distance_function;
+  int num_extension_fields = fmm_field_data->num_extension_fields;
+  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields;
 
   /* variables for extension field calculations */
-  LSMLIB_REAL *extension_fields_numerator = 
+  LSMLIB_REAL *extension_fields_numerator =
     fmm_field_data->extension_fields_numerator;
   LSMLIB_REAL *extension_fields_denominator =
     fmm_field_data->extension_fields_denominator;
@@ -991,8 +995,8 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   int dir_used[FMM_NDIM];
   LSMLIB_REAL phi_upwind[FMM_NDIM];
   LSMLIB_REAL phi_plus;
-  LSMLIB_REAL inv_dx_sq; 
-  int offset[FMM_NDIM]; 
+  LSMLIB_REAL inv_dx_sq;
+  int offset[FMM_NDIM];
   int neighbor[FMM_NDIM];
 
   /* coefficients of quadratic equation for the updated distance function */
@@ -1005,7 +1009,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
   int k;    /* loop variable for extension fields */
-  int l;    /* extra loop variable */ 
+  int l;    /* extra loop variable */
   int idx_cur_gridpoint, idx_neighbor;
   int grid_idx_out_of_bounds;
 
@@ -1021,11 +1025,11 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   /* calculate update to distance function */
   for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
     for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-      offset[l] = 0; 
+      offset[l] = 0;
     }
 
     /* changed to true if has KNOWN neighbor */
-    dir_used[dir] = LSM_FMM_FALSE;  
+    dir_used[dir] = LSM_FMM_FALSE;
 
     /* find "upwind" direction and phi value */
     phi_upwind[dir] = LSMLIB_REAL_MAX;
@@ -1058,9 +1062,9 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
       if (KNOWN == neighbor_status) {
         phi_plus = distance_function[idx_neighbor];
 
-        /* 
+        /*
          * choosing the upwind direction to be the direction
-         * with the smaller abs(phi) value gives a consistent 
+         * with the smaller abs(phi) value gives a consistent
          * solution to the "upwind" Eikonal equation.
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind[dir])) {
@@ -1076,7 +1080,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
      * if either of the neighbors are "known"
      */
     if (phi_upwind[dir] < LSMLIB_REAL_MAX) {
-      /* accumulate coefs for updated distance function */ 
+      /* accumulate coefs for updated distance function */
       inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
       phi_A += inv_dx_sq;
       phi_B += inv_dx_sq*phi_upwind[dir];
@@ -1094,7 +1098,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
 
   /* complete computation of phi_B and phi_C */
   phi_B *= -2.0;
-  phi_C -= 1.0;  
+  phi_C -= 1.0;
 
   /* compute index of current grid point */
   LSM_FMM_IDX(idx_cur_gridpoint, grid_idx, grid_dims);
@@ -1104,16 +1108,16 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
   dist_updated = LSMLIB_REAL_MAX;
   if (discriminant >= 0) {
 
-    if (phi_B == 0) { 
+    if (phi_B == 0) {
       /* grid point is ON the interface, so keep it there */
       dist_updated = 0;
-    } else if (phi_B < LSMLIB_ZERO_TOL) { 
+    } else if (phi_B < LSMLIB_ZERO_TOL) {
       /* distance function of neighbors is positive */
       dist_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
     } else {
       /* distance function of neighbors is negative */
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
-    } 
+    }
 
   } else {
 
@@ -1127,7 +1131,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
     /* discretized Eikonal equation.  Using the previously    */
     /* computed value does not introduce any significant      */
     /* errors into the numerical solution.                    */
-    dist_updated = distance_function[idx_cur_gridpoint]; 
+    dist_updated = distance_function[idx_cur_gridpoint];
 
   } /* end switch on value of discriminant */
 
@@ -1143,19 +1147,19 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER1(
        */
       if (dir_used[dir]) {
         for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-          offset[l] = 0; 
+          offset[l] = 0;
         }
         offset[dir] = (use_plus[dir] ? 1 : -1);
         for (l = 0; l < FMM_NDIM; l++) {
           neighbor[l] = grid_idx[l] + offset[l];
         }
         LSM_FMM_IDX(idx_neighbor, neighbor, grid_dims);
-  
+
         inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
 
         for (k = 0; k < num_extension_fields; k++) {
           LSMLIB_REAL dist_diff = dist_updated - phi_upwind[dir];
-          extension_fields_numerator[k] += 
+          extension_fields_numerator[k] +=
             inv_dx_sq*dist_diff*extension_fields[k][idx_neighbor];
           extension_fields_denominator[k] += inv_dx_sq*dist_diff;
         }
@@ -1188,12 +1192,12 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   int *gridpoint_status = FMM_Core_getGridPointStatusDataArray(fmm_core_data);
 
   /* FMM Field Data variables */
-  LSMLIB_REAL *distance_function = fmm_field_data->distance_function; 
-  int num_extension_fields = fmm_field_data->num_extension_fields; 
-  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields; 
+  LSMLIB_REAL *distance_function = fmm_field_data->distance_function;
+  int num_extension_fields = fmm_field_data->num_extension_fields;
+  LSMLIB_REAL **extension_fields = fmm_field_data->extension_fields;
 
   /* variables for extension field calculations */
-  LSMLIB_REAL *extension_fields_numerator = 
+  LSMLIB_REAL *extension_fields_numerator =
     fmm_field_data->extension_fields_numerator;
   LSMLIB_REAL *extension_fields_denominator =
     fmm_field_data->extension_fields_denominator;
@@ -1205,8 +1209,8 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   LSMLIB_REAL phi_upwind1[FMM_NDIM], phi_upwind2[FMM_NDIM];
   int second_order_switch[FMM_NDIM];
   LSMLIB_REAL phi_plus;
-  LSMLIB_REAL inv_dx_sq; 
-  int offset[FMM_NDIM]; 
+  LSMLIB_REAL inv_dx_sq;
+  int offset[FMM_NDIM];
   int neighbor1[FMM_NDIM];
   int neighbor2[FMM_NDIM];
 
@@ -1220,7 +1224,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   /* auxilliary variables */
   int dir;  /* loop variable for spatial directions */
   int k;    /* loop variable for extension fields */
-  int l;    /* extra loop variable */ 
+  int l;    /* extra loop variable */
   int idx_cur_gridpoint, idx_neighbor1, idx_neighbor2;
   int grid_idx_out_of_bounds;
 
@@ -1236,11 +1240,11 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   /* calculate update to distance function */
   for (dir = 0; dir < FMM_NDIM; dir++) { /* loop over coord directions */
     for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-      offset[l] = 0; 
+      offset[l] = 0;
     }
 
     /* changed to true if has KNOWN neighbor */
-    dir_used[dir] = LSM_FMM_FALSE;  
+    dir_used[dir] = LSM_FMM_FALSE;
 
     /* reset phi_upwind1 and phi_upwind2 to LSMLIB_REAL_MAX */
     phi_upwind1[dir] = LSMLIB_REAL_MAX;
@@ -1294,9 +1298,9 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
       if (KNOWN == neighbor_status) {
         phi_plus = distance_function[idx_neighbor1];
 
-        /* 
+        /*
          * choosing the upwind direction to be the direction
-         * with the smaller abs(phi) value gives a consistent 
+         * with the smaller abs(phi) value gives a consistent
          * solution to the "upwind" Eikonal equation.
          */
         if (LSM_FMM_ABS(phi_plus) < LSM_FMM_ABS(phi_upwind1[dir])) {
@@ -1305,7 +1309,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
           second_order_switch[dir] = 0;
           use_plus[dir] = LSM_FMM_TRUE;
           dir_used[dir] = LSM_FMM_TRUE;
-          
+
           /* check for neighbor required for second-order accuracy */
           LSM_FMM_IDX_OUT_OF_BOUNDS(grid_idx_out_of_bounds,neighbor2,grid_dims);
           if (!grid_idx_out_of_bounds) {
@@ -1318,20 +1322,20 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
               second_order_switch[dir] = 1;
             }
           }
-        
+
         }  /* end if: plus is upwind direction */
       } /* end case: first-order neighbor is KNOWN */
 
     }
 
-    /* 
+    /*
      * accumulate coefficients for phi if any of the neighbors are "KNOWN"
      */
     if (phi_upwind1[dir] < LSMLIB_REAL_MAX) {
       /* temporary variables */
       LSMLIB_REAL one_plus_switch_over_two = 1.0+0.5*second_order_switch[dir];
       LSMLIB_REAL phi_upwind_contrib;
-      
+
       /* set phi_upwind_contrib to be first- or second-order */
       /* contribution based on value of second_order_switch  */
       if (second_order_switch[dir] == 1) {
@@ -1339,7 +1343,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
       } else {
         phi_upwind_contrib = phi_upwind1[dir];
       }
-      
+
       /* accumulate coefs for phi */
       inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
       phi_A += inv_dx_sq*one_plus_switch_over_two*one_plus_switch_over_two;
@@ -1358,7 +1362,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
 
   /* complete computation of phi_B and phi_C */
   phi_B *= -2.0;
-  phi_C -= 1.0;  
+  phi_C -= 1.0;
 
   /* compute index of current grid point */
   LSM_FMM_IDX(idx_cur_gridpoint, grid_idx, grid_dims);
@@ -1368,16 +1372,16 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
   dist_updated = LSMLIB_REAL_MAX;
   if (discriminant >= 0) {
 
-    if (phi_B == 0) { 
+    if (phi_B == 0) {
       /* grid point is ON the interface, so keep it there */
       dist_updated = 0;
-    } else if (phi_B < LSMLIB_ZERO_TOL) { 
+    } else if (phi_B < LSMLIB_ZERO_TOL) {
       /* distance function of neighbors is positive */
       dist_updated = 0.5*(-phi_B + sqrt(discriminant))/phi_A;
     } else {
       /* distance function of neighbors is negative */
       dist_updated = 0.5*(-phi_B - sqrt(discriminant))/phi_A;
-    } 
+    }
 
   } else {
 
@@ -1391,7 +1395,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
     /* discretized Eikonal equation.  Using the previously    */
     /* computed value does not introduce any significant      */
     /* errors into the numerical solution.                    */
-    dist_updated = distance_function[idx_cur_gridpoint]; 
+    dist_updated = distance_function[idx_cur_gridpoint];
 
   } /* end switch on value of discriminant */
 
@@ -1407,7 +1411,7 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
        */
       if (dir_used[dir]) {
         for (l = 0; l < FMM_NDIM; l++) { /* reset offset */
-          offset[l] = 0; 
+          offset[l] = 0;
         }
         offset[dir] = (use_plus[dir] == LSM_FMM_TRUE ? 1 : -1);
         for (l = 0; l < FMM_NDIM; l++) {
@@ -1416,28 +1420,28 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
         }
         LSM_FMM_IDX(idx_neighbor1, neighbor1, grid_dims);
         LSM_FMM_IDX(idx_neighbor2, neighbor2, grid_dims);
-  
+
         inv_dx_sq = 1/dx[dir]; inv_dx_sq *= inv_dx_sq;
         if (second_order_switch[dir] == 1) {
 
-          LSMLIB_REAL grad_dist = 1.5*dist_updated - 2.0*phi_upwind1[dir] 
-                                + 0.5*phi_upwind2[dir]; 
+          LSMLIB_REAL grad_dist = 1.5*dist_updated - 2.0*phi_upwind1[dir]
+                                + 0.5*phi_upwind2[dir];
 
           for (k = 0; k < num_extension_fields; k++) {
-  
+
           /* KTC - second-order discretization seems to lead to  */
           /*       larger errors than first-order discretization */
           /*       Currently using first-order discretization.   */
           /*       FIX ME!!!                                     */
           /*
-            extension_fields_numerator[k] +=  
+            extension_fields_numerator[k] +=
                inv_dx_sq*grad_dist
               *( 2.0*extension_fields[k][idx_neighbor1]
                - 0.5*extension_fields[k][idx_neighbor2] );
             extension_fields_denominator[k] += 1.5*inv_dx_sq*grad_dist;
            */
 
-            extension_fields_numerator[k] += 
+            extension_fields_numerator[k] +=
               inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
             extension_fields_denominator[k] += inv_dx_sq*grad_dist;
           }
@@ -1447,13 +1451,13 @@ LSMLIB_REAL FMM_UPDATE_GRID_POINT_ORDER2(
           LSMLIB_REAL grad_dist = dist_updated - phi_upwind1[dir];
 
           for (k = 0; k < num_extension_fields; k++) {
-            extension_fields_numerator[k] += 
+            extension_fields_numerator[k] +=
               inv_dx_sq*grad_dist*extension_fields[k][idx_neighbor1];
           extension_fields_denominator[k] += inv_dx_sq*grad_dist;
-          } 
+          }
 
         } /* end switch on second_order_switch[dir] */
- 
+
       } /* end case: current direction used */
     } /* loop over coordinate directions */
   } /* end case: num_extension_fields > 0 */
