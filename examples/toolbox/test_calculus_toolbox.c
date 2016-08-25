@@ -1,5 +1,5 @@
 /*
- * File:        calculus_toolbox_demo.c
+ * File:        test_calculus_toolbox.c
  * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
