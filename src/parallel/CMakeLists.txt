@@ -12,8 +12,8 @@
 # Search path for header files
 include_directories(${CMAKE_SOURCE_DIR}/src/toolbox)
 include_directories(${CMAKE_SOURCE_DIR}/src/serial)
-include_directories(${BOOST_INCLUDE_DIR})
-include_directories(${MPI_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${SAMRAI_INCLUDE_DIR})
 
 # --------------------------------------------------------------
