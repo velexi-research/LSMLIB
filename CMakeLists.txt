@@ -25,14 +25,11 @@ endif (SINGLE_PRECISION)
 # Enable parallel library
 option(ENABLE_PARALLEL "Enable parallel library" OFF)
 
-# Boost
-set(BOOST "/usr" CACHE FILEPATH "Location of Boost library")
-
-# MPI
-set(MPI "/usr" CACHE FILEPATH "Location of MPI library")
-
 # SAMRAI
 set(SAMRAI "/usr" CACHE FILEPATH "Location of SAMRAI library")
+
+# OpenMPI
+set(OPENMPI "/usr" CACHE FILEPATH "Location of OpenMPI library")
 
 # --------------------------------------------------------------
 # Build parameters
@@ -79,47 +76,6 @@ endif (IWYU)
 # Enable parallel library
 if (ENABLE_PARALLEL)
 
-    # --- BOOST
-
-    find_file(BOOST_CONFIG_H config.hpp ${BOOST}/include/boost)
-    find_library(LIBBOOST_PYTHON boost_python ${BOOST}/lib)
-
-    # Verify that BOOST header files were found
-    if (BOOST_CONFIG_H)
-        message("-- Found Boost header files: TRUE (${BOOST_CONFIG_H})")
-        set(BOOST_INCLUDE_DIR ${BOOST}/include)
-    else (BOOST_CONFIG_H)
-        message(FATAL_ERROR "Could NOT find Boost header files.")
-    endif (BOOST_CONFIG_H)
-
-    # Verify that BOOST library files were found
-    if (LIBBOOST_PYTHON)
-        message("-- Found Boost libraries: TRUE")
-    else (LIBBOOST_PYTHON)
-        message(FATAL_ERROR "Could NOT find Boost libraries.")
-    endif (LIBBOOST_PYTHON)
-
-    # --- MPI
-
-    find_file(MPI_H mpi.h
-              ${MPI}/include ${MPI}/include/mpi ${MPI}/include/openmpi)
-    find_library(LIBMPI mpi ${MPI}/lib)
-
-    # Verify that MPI header files were found
-    if (MPI_H)
-        message("-- Found MPI.h: TRUE (${MPI_H})")
-        get_filename_component(MPI_INCLUDE_DIR ${MPI_H} DIRECTORY)
-    else (MPI_H)
-        message(FATAL_ERROR "Could NOT find MPI.h.")
-    endif (MPI_H)
-
-    # Verify that MPI library files were found
-    if (LIBMPI)
-        message("-- Found libmpi: TRUE (${LIBMPI})")
-    else (LIBMPI)
-        message(FATAL_ERROR "Could NOT find libmpi.")
-    endif (LIBMPI)
-
     # --- SAMRAI
 
     find_file(SAMRAI_CONFIG_H SAMRAI/SAMRAI_config.h ${SAMRAI}/include)
@@ -139,6 +95,17 @@ if (ENABLE_PARALLEL)
     else (LIBSAMRAI_TBOX)
         message(FATAL_ERROR "Could NOT find SAMRAI libraries.")
     endif (LIBSAMRAI_TBOX)
+
+    # --- Supporting libraries
+
+    # Boost
+    find_package(Boost REQUIRED)
+
+    # MPI
+    find_package(MPI REQUIRED)
+
+    # HDF5
+    find_package(HDF5)
 
 endif (ENABLE_PARALLEL)
 
@@ -219,7 +186,9 @@ if (ENABLE_PARALLEL)
 endif (ENABLE_PARALLEL)
 
 # examples
+add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
 add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
+add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
 
 # --------------------------------------------------------------
 # Testing
