@@ -7,43 +7,43 @@
  * Modified:    $09/17/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
  * Description: Header file for level set method integrator strategy class
  */
- 
+
 #ifndef included_LevelSetFunctionIntegratorStrategy_h
 #define included_LevelSetFunctionIntegratorStrategy_h
 
 /*! \class LSMLIB::LevelSetFunctionIntegratorStrategy
  *
- * \brief 
+ * \brief
  * The LevelSetFunctionIntegratorStrategy class defines the interface
  * for the time integration of the level set functions in the level set
- * method.  
- * 
- * In particular, it defines interfaces for the time integration 
- * of level set functions, initialization of data for the level set 
- * method calculation, choice of numerical schemes for computing spatial 
- * derivatives, and access to level set function data and status 
+ * method.
+ *
+ * In particular, it defines interfaces for the time integration
+ * of level set functions, initialization of data for the level set
+ * method calculation, choice of numerical schemes for computing spatial
+ * derivatives, and access to level set function data and status
  * information (e.g. current time).
- * 
+ *
  */
 
+// Boost headers
+#include "boost/smart_ptr/shared_ptr.hpp"
 
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-//#include "SAMRAI/hier/BasePatchHierarchy.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/mesh/StandardTagAndInitStrategy.h"
-#include "boost/shared_ptr.hpp" 
 
-#include "LSMLIB_config.h"     
+// LSMLIB headers
+#include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
-#include "BoundaryConditionModule.h"
 
-// namespaces
-using namespace std;
+// Namespaces
 using namespace SAMRAI;
-using namespace hier;
-using namespace mesh;
-using namespace tbox;
 
+// Class/type declarations
+namespace SAMRAI { namespace hier { class IntVector; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace hier { class PatchLevel; } }
 
 /******************************************************************
  *
@@ -54,7 +54,7 @@ using namespace tbox;
 namespace LSMLIB {
 
 class LevelSetFunctionIntegratorStrategy:
-  public StandardTagAndInitStrategy
+  public mesh::StandardTagAndInitStrategy
 {
 public:
 
@@ -68,30 +68,30 @@ public:
 
   /*!
    * getPhiPatchDataHandle() returns the patch data handle for phi.
-   * 
+   *
    * Arguments:     none
-   * 
-   * Return value:  PatchData handle for phi 
+   *
+   * Return value:  PatchData handle for phi
    *
    */
   virtual int getPhiPatchDataHandle() const = 0;
 
   /*!
    * getPsiPatchDataHandle() returns the patch data handle for psi.
-   * 
+   *
    * Arguments:     none
-   * 
+   *
    * Return value:  PatchData handle for psi
    *
    */
   virtual int getPsiPatchDataHandle() const = 0;
 
   /*!
-   * getControlVolumePatchDataHandle() returns the patch data handle for 
+   * getControlVolumePatchDataHandle() returns the patch data handle for
    * the control volume.
-   * 
+   *
    * Arguments:     none
-   * 
+   *
    * Return value:  PatchData handle for control volume
    *
    */
@@ -110,9 +110,9 @@ public:
 
   /*!
    * getStartTime() returns the start time value for the time integration.
-   * 
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  start time
    *
    */
@@ -120,9 +120,9 @@ public:
 
   /*!
    * getEndTime() returns the end time value for the time integration.
-   * 
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  end time
    *
    */
@@ -130,28 +130,28 @@ public:
 
   /*!
    * getCurrentTime() returns the current time value in the time integration.
-   * 
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  current time
    *
    */
   virtual LSMLIB_REAL getCurrentTime() const = 0;
 
   /*!
-   * endTimeReached() returns true if the end time for the integration has 
+   * endTimeReached() returns true if the end time for the integration has
    * been reached; otherwise, it returns false.
-   * 
+   *
    * Arguments:     none
-   * 
-   * Return value:  true if the current time is equal to or after 
+   *
+   * Return value:  true if the current time is equal to or after
    *                the end time for the integration; false otherwise
    *
    */
   virtual bool endTimeReached() const = 0;
 
   /*!
-   * numIntegrationStepsTaken() returns the number of integration steps 
+   * numIntegrationStepsTaken() returns the number of integration steps
    * that have been taken during the level set method calculation.
    *
    * Arguments:      none
@@ -208,9 +208,9 @@ public:
    *  - component (in):      component of level set function for
    *                         which to set boundary conditions
    *                         (default = -1)
-   *                          
+   *
    * Return value:           none
-   * 
+   *
    * NOTES:
    *  - The boundary condition types are as follows:
    *    NONE, HOMOEGENEOUS_NEUMANN, LINEAR_EXTRAPOLATION,
@@ -254,8 +254,8 @@ public:
    ****************************************************************/
 
   /*!
-   * computeStableDt() computes the maximum allowable dt for the 
-   * next time step of the level set functions.  
+   * computeStableDt() computes the maximum allowable dt for the
+   * next time step of the level set functions.
    *
    * Arguments:     none
    *
@@ -268,11 +268,11 @@ public:
    * advanceLevelSetFunctions() advances the level set function
    * phi (and psi for codimension-two problems) by the specified
    * time increment, dt.
-   * 
-   * Arguments: 
+   *
+   * Arguments:
    *  - dt (in):    time increment to advance the level set functions
    *
-   * Return value:  true if patch hierarchy needs to be regridded after 
+   * Return value:  true if patch hierarchy needs to be regridded after
    *                this time step; false otherwise.
    *
    */
@@ -290,7 +290,7 @@ public:
    ****************************************************************/
 
   /*!
-   * getReinitializationInterval() should return the number of time 
+   * getReinitializationInterval() should return the number of time
    * steps between reinitializations of the level set functions.
    *
    * Arguments:     none
@@ -304,8 +304,8 @@ public:
    * setReinitializationInterval() should set the number of time
    * steps between reinitializations of the level set functions.
    *
-   * Arguments:     
-   *  - interval (in):  number of time steps to take between 
+   * Arguments:
+   *  - interval (in):  number of time steps to take between
    *                    reinitializations of the level set functions
    *
    * Return value:      none
@@ -333,8 +333,8 @@ public:
    * is used to select whether the appropriate spatial derivative
    * approximation for each component of grad(phi).
    *
-   * Arguments:     
-   *  - level_set_fcn (in):   level set function (i.e. PHI or PSI) to 
+   * Arguments:
+   *  - level_set_fcn (in):   level set function (i.e. PHI or PSI) to
    *                          reinitialize (default = PHI)
    *  - max_iterations (in):  maximum number of iterations to use
    *                          for reinitialization.  Set max_iterations
@@ -354,7 +354,7 @@ public:
     const int max_iterations = -1) = 0;
 
   /*!
-   * getOrthogonalizationInterval() should return the number of time 
+   * getOrthogonalizationInterval() should return the number of time
    * steps between orthogonalizations of the level set functions.
    *
    * Arguments:     none
@@ -368,8 +368,8 @@ public:
    * setOrthogonalizationInterval() should set the number of time
    * steps between orthogonalizations of the level set functions.
    *
-   * Arguments:     
-   *  - interval (in):  number of time steps to take between 
+   * Arguments:
+   *  - interval (in):  number of time steps to take between
    *                    orthogonalizations of the level set functions
    *
    * Return value:      none
@@ -386,7 +386,7 @@ public:
    * This goal is achieved by solving the orthogonalization equation:
    *
    *   phi_t + sgn(psi) * ( grad(psi)/|grad(psi)| ) dot grad(phi) = 0
-   * 
+   *
    * This Hamilton-Jacobi equation is advanced in time towards steady-state
    * using the same TVD Runge-Kutta method selected to advance the level
    * set equation.  The number of steps taken is a function of the
@@ -397,10 +397,10 @@ public:
    * computed using by taking the average of the forward and backward
    * spatial derivatives.  grad(phi) is computed via a simple upwinding
    * scheme that treats grad(psi) as the velocity.
-   * 
+   *
    * Arguments:
-   *  - level_set_fcn (in):          level set function (i.e. PHI or PSI) to 
-   *                                 evolve to orthogonalize grad(phi) and 
+   *  - level_set_fcn (in):          level set function (i.e. PHI or PSI) to
+   *                                 evolve to orthogonalize grad(phi) and
    *                                 grad(psi)
    *  - max_reinit_iterations (in):  maximum number of iterations to use
    *                                 for reinitialization.  Set max_iterations
@@ -414,27 +414,27 @@ public:
    *                                 (default = -1)
    *
 
-   * 
+   *
    * Return value:                   none
-   * 
+   *
    * NOTES:
    *  - This method is ONLY used for codimension-two problems.  For
    *    codimension-one problems, this method is never invoked.
-   * 
+   *
    *  - If max_reinit_iterations is set to a non-negative value, it overrides
    *    ALL of the reinitialization stopping criteria specified in the input
    *    file.
    *
    *  - If max_ortho_iterations is set to a non-negative value, it overrides
-   *    ALL of the orthogonalization stopping criteria specified in the input 
-   *    file.                        
+   *    ALL of the orthogonalization stopping criteria specified in the input
+   *    file.
    *
    */
   virtual void orthogonalizeLevelSetFunctions(
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int max_reinit_iterations = -1,
     const int max_ortho_iterations = -1) = 0;
-  
+
   //! @}
 
 
@@ -442,7 +442,7 @@ public:
   /*!
    ****************************************************************
    *
-   * @name Methods for managing grid configuration 
+   * @name Methods for managing grid configuration
    *
    * NOTES:
    *  - initializeLevelData(), applyGradientDetector(), and
@@ -450,7 +450,7 @@ public:
    *    declared in the StandardTagAndInitStrategy base class.
    *
    ****************************************************************/
- 
+
   /*!
    * initializeLevelData() allocates and initializes the level
    * set function(s) for a new patch level in the patch hierarchy.
@@ -483,9 +483,9 @@ public:
     const bool allocate_data = true ) = 0;
 
   /*!
-   * applyGradientDetector() sets integer tags to "1" in cells where 
-   * refinement of the given level should occur according to the criteria 
-   * that the absolute value of the level set functions, phi and psi, is 
+   * applyGradientDetector() sets integer tags to "1" in cells where
+   * refinement of the given level should occur according to the criteria
+   * that the absolute value of the level set functions, phi and psi, is
    * less than some user-supplied threshold.
    *
    * Arguments:
@@ -504,7 +504,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const boost::shared_ptr< PatchHierarchy > hierarchy,
+      const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -535,7 +535,7 @@ public:
   /*!
    *******************************************************************
    *
-   * @name Methods for pre-/post-processing level set function data 
+   * @name Methods for pre-/post-processing level set function data
    *
    *******************************************************************/
 
@@ -543,45 +543,45 @@ public:
    * preprocessInitializeVelocityField() pre-processes level set
    * function data for use in initializing velocity field data.
    *
-   * Arguments:     
+   * Arguments:
    *  - phi_handle (out):   PatchData handle for phi
    *  - psi_handle (out):   PatchData handle for psi
-   *  - hierarchy (in):     PatchHierarchy containing level to 
+   *  - hierarchy (in):     PatchHierarchy containing level to
    *                        pre-process
-   *  - level_number (in):  level number for level to be 
+   *  - level_number (in):  level number for level to be
    *                        pre-processed
    *
    * Return value:          none
    *
    * NOTES:
    *  - phi_handle and psi_handle are intended to be set to be handles
-   *    to scratch data that possess a sufficient number of ghostcells 
-   *    to compute the initial velocity field 
-   *  - for codimension-one problems, psi_handle may be set arbitrarily 
+   *    to scratch data that possess a sufficient number of ghostcells
+   *    to compute the initial velocity field
+   *  - for codimension-one problems, psi_handle may be set arbitrarily
    *    because psi has no meaning for codimension-one problems.
    *
    */
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number) = 0;
 
   /*!
    * postprocessInitializeVelocityField() post-processes level set
    * function data after initializing velocity field data.
    *
-   * Arguments:     
-   *  - hierarchy (in):     PatchHierarchy containing level to 
+   * Arguments:
+   *  - hierarchy (in):     PatchHierarchy containing level to
    *                        post-process
-   *  - level_number (in):  level number for level to be 
+   *  - level_number (in):  level number for level to be
    *                        post-processed
    *
    * Return value:          none
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number) = 0;
 
   //! @}
@@ -590,13 +590,13 @@ public:
   //! @{
   /*!
    ****************************************************************
-   * 
+   *
    * @name Destructors
    *
    ****************************************************************/
 
   /*!
-   * Destructor does nothing but must be declared virtual so that 
+   * Destructor does nothing but must be declared virtual so that
    * concrete subclasses are properly destroyed.
    */
   virtual ~LevelSetFunctionIntegratorStrategy(){}
