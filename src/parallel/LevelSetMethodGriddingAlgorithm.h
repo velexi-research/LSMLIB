@@ -135,7 +135,7 @@ namespace LSMLIB {
 
 class LevelSetMethodGriddingAlgorithm:
   public LevelSetMethodGriddingStrategy,
-  public StandardTagAndInitialize
+  public mesh::StandardTagAndInitialize
 {
 public:
 
