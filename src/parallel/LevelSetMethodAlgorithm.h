@@ -4,47 +4,47 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $Date$ 
+ * Modified:    $Date$
  * Description: Header file for the main level set method algorithm class
  */
- 
+
 #ifndef included_LevelSetMethodAlgorithm_h
 #define included_LevelSetMethodAlgorithm_h
 
 /*! \class LSMLIB::LevelSetMethodAlgorithm
  *
  * \brief
- * The LevelSetMethodAlgorithm class provides a simple interface for using 
- * the LevelSetMethod classes to capture the dynamics of implicit surfaces 
+ * The LevelSetMethodAlgorithm class provides a simple interface for using
+ * the LevelSetMethod classes to capture the dynamics of implicit surfaces
  * and curves in one-, two- and three-dimensions.  It also provides support
  * for vector level set method calculations.
  *
- * It provides the flexibility of (a) managing the level set method 
- * calculation with the standard LevelSetFunctionIntegrator and 
- * LevelSetMethodGriddingAlgorithm classes or (b) using custom integrator 
- * and gridding algorithm classes (by subclassing the 
- * LevelSetFunctionIntegratorStrategy and 
+ * It provides the flexibility of (a) managing the level set method
+ * calculation with the standard LevelSetFunctionIntegrator and
+ * LevelSetMethodGriddingAlgorithm classes or (b) using custom integrator
+ * and gridding algorithm classes (by subclassing the
+ * LevelSetFunctionIntegratorStrategy and
  * LevelSetMethodGriddingStrategy classes).
  *
  * For more details about the numerical algorithms used by the standard
  * LevelSetFunctionIntegrator class, see the documentation at the beginning
  * of the header file for that class.
- * 
+ *
  *
  * <h3> NOTES </h3>
  *
  *  - AMR is NOT yet supported.  It is still currently under development.
  *
- * 
- * <h3> USAGE </h3>
- * There are two ways to use the LevelSetMethodAlgorithm: 
  *
- * (A) use the standard LevelSetFunctionIntegrator and 
+ * <h3> USAGE </h3>
+ * There are two ways to use the LevelSetMethodAlgorithm:
+ *
+ * (A) use the standard LevelSetFunctionIntegrator and
  *     LevelSetMethodGriddingAlgorithm classes or
  *
- * (B) use custom level set function integrator and level set method 
- *     gridding algorithm classes that conform to the interfaces defined 
- *     by the LevelSetFunctionIntegratorStrategy and 
+ * (B) use custom level set function integrator and level set method
+ *     gridding algorithm classes that conform to the interfaces defined
+ *     by the LevelSetFunctionIntegratorStrategy and
  *     LevelSetMethodGriddingStrategy classes.
  *
  *
@@ -52,41 +52,41 @@
  *
  * Method (A) should be sufficient for most applications.  To use (A),
  * an application developer should use the following steps:
- * 
- * -# Provide a concrete implementation of the LevelSetMethodPatchStrategy 
+ *
+ * -# Provide a concrete implementation of the LevelSetMethodPatchStrategy
  *    class.  This class must provide numerical routines for computations
  *    on a single patch (i.e., logically rectangular, uniform grid).
  *    In particular, methods must be provided for initialization of
- *    data, setting the physical boundary conditions for the level set 
- *    functions, and computing a stable time step size for the next 
- *    TVD Runge-Kutta time step.  For more details, see the header file 
- *    for the LevelSetMethodPatchStrategy class. 
- * -# Provide a concrete implementation of the 
- *    LevelSetMethodVelocityFieldStrategy class.  This class must 
- *    provide routines associated with computing the velocity field 
+ *    data, setting the physical boundary conditions for the level set
+ *    functions, and computing a stable time step size for the next
+ *    TVD Runge-Kutta time step.  For more details, see the header file
+ *    for the LevelSetMethodPatchStrategy class.
+ * -# Provide a concrete implementation of the
+ *    LevelSetMethodVelocityFieldStrategy class.  This class must
+ *    provide routines associated with computing the velocity field
  *    that is used to advance the level set functions.  In particular,
- *    methods must be provided for computing the velocity field used 
- *    in a level set method calculation, computing a stable time step 
- *    size based on the velocity field computation, initializing data 
+ *    methods must be provided for computing the velocity field used
+ *    in a level set method calculation, computing a stable time step
+ *    size based on the velocity field computation, initializing data
  *    required for the velocity computation, and returning the PatchData
  *    handle for the velocity field data.  For more details, see the
- *    header file for the LevelSetMethodVelocityFieldStrategy class. 
+ *    header file for the LevelSetMethodVelocityFieldStrategy class.
  * -# Create a LevelSetMethodAlgorithm object using the constructor
- *    that takes boost pointers to LevelSetMethodVelocityFieldStrategy and 
+ *    that takes boost pointers to LevelSetMethodVelocityFieldStrategy and
  *    LevelSetMethodPatchStrategy objects as arguments.
  * -# Begin the level set method calculation by invoking the
- *    @ref initializeLevelSetMethodCalculation() method.  This will 
+ *    @ref initializeLevelSetMethodCalculation() method.  This will
  *    initialize the data on the PatchHierarchy.
  * -# Integrate the level set functions in time by invoking the
- *    @ref advanceLevelSetFunctions() method for each time step.  
- *    Stable time step sizes can be computed for each time step using 
+ *    @ref advanceLevelSetFunctions() method for each time step.
+ *    Stable time step sizes can be computed for each time step using
  *    the @ref computeStableDt() method.
  * -# Access to level set function data and other integration data
  *    is available through several accessor method defined below.
  *
  * Users interested in the details of the level set method calculation
- * used by the LevelSetFunctionIntegrator should consult the class 
- * definitions in the header files for the LevelSetFunctionIntegrator and 
+ * used by the LevelSetFunctionIntegrator should consult the class
+ * definitions in the header files for the LevelSetFunctionIntegrator and
  * LevelSetMethodToolbox classes.
  *
  *
@@ -101,7 +101,7 @@
  *    the interface defined by the LevelSetMethodGriddingStrategy
  *    class.
  * -# Create a LevelSetMethodAlgorithm object using the constructor
- *    that takes a boost pointer to a LevelSetFunctionIntegratorStrategy 
+ *    that takes a boost pointer to a LevelSetFunctionIntegratorStrategy
  *    and a LevelSetMethodGriddingStrategy as arguments.
  * -# Follow steps 4 through 6 from Method (A).
  *
@@ -110,10 +110,10 @@
  *
  * When using the standard LevelSetFunctionIntegrator, it is possible
  * to modify the behavior of the integrator through an input file.
- * The input data parameters available for/required by the user are 
- * described below. In the input file, the LevelSetFunctionIntegrator 
- * database and LevelSetMethodGriddingAlgorithm database must be organized 
- * as separate sub-databases of a single, high-level LevelSetMethodAlgorithm 
+ * The input data parameters available for/required by the user are
+ * described below. In the input file, the LevelSetFunctionIntegrator
+ * database and LevelSetMethodGriddingAlgorithm database must be organized
+ * as separate sub-databases of a single, high-level LevelSetMethodAlgorithm
  * database.  That is, the input file should have the following form:
  *
  * <pre>
@@ -129,20 +129,20 @@
  *
  * } // end input database for LevelSetMethodAlgorithm
  * </pre>
- * 
+ *
  *
  * <h4> LevelSetFunctionIntegrator Input Database Parameters </h4>
  *
  *   <h5> Level Set Method Parameters: </h5>
  *
- *   - start_time                  = start time for calculation 
+ *   - start_time                  = start time for calculation
  *                                   (default = 0.0)
- *   - end_time                    = end time for calculation 
+ *   - end_time                    = end time for calculation
  *                                   (default = 10.0)
  *   - cfl_number                  = CFL number (default = 0.5)
  *   - spatial_derivative_type     = type of spatial derivative
  *                                   (default = "WENO")
- *   - spatial_derivative_order    = order of spatial derivative 
+ *   - spatial_derivative_order    = order of spatial derivative
  *                                   (default = 5)
  *   - tvd_runge_kutta_order       = order of Runge-Kutta time integration
  *                                   (default = 3)
@@ -183,72 +183,72 @@
  *                                   (default = 25)
  *
  *   <h5> Boundary Condition Parameters: </h5>
- *                                 
+ *
  *   - lower_bc_phi_[i]            = boundary conditions for the lower
- *                                   face of the computational domain in 
+ *                                   face of the computational domain in
  *                                   each coordinate direction for the i-th
  *                                   component of the PHI level set function.
- *                                   lower_bc_phi_[i] is a vector of length 
- *                                   DIM.  The j-th entry should contain the 
- *                                   type of boundary condition to impose at 
- *                                   the lower boundary in the j-th coordinate 
- *                                   direction.  See NOTES ON INPUT PARAMETERS 
- *                                   section for boundary condition types.  
- *                                   For information about the boundary 
+ *                                   lower_bc_phi_[i] is a vector of length
+ *                                   DIM.  The j-th entry should contain the
+ *                                   type of boundary condition to impose at
+ *                                   the lower boundary in the j-th coordinate
+ *                                   direction.  See NOTES ON INPUT PARAMETERS
+ *                                   section for boundary condition types.
+ *                                   For information about the boundary
  *                                   condition types, see documentation
  *                                   of the BoundaryConditionModule class.
  *                                   (default = vector of zeros)
  *   - upper_bc_phi_[i]            = boundary conditions for the upper
- *                                   face of the computational domain in 
+ *                                   face of the computational domain in
  *                                   each coordinate direction for the i-th
  *                                   component of the PHI level set function.
- *                                   upper_bc_phi_[i] is a vector of length 
- *                                   DIM.  The j-th entry should contain the 
- *                                   type of boundary condition to impose at 
- *                                   the upper boundary in the j-th coordinate 
- *                                   direction.  See NOTES ON INPUT PARAMETERS 
- *                                   section for boundary condition types.  
- *                                   For information about the boundary 
+ *                                   upper_bc_phi_[i] is a vector of length
+ *                                   DIM.  The j-th entry should contain the
+ *                                   type of boundary condition to impose at
+ *                                   the upper boundary in the j-th coordinate
+ *                                   direction.  See NOTES ON INPUT PARAMETERS
+ *                                   section for boundary condition types.
+ *                                   For information about the boundary
  *                                   condition types, see documentation
  *                                   of the BoundaryConditionModule class.
  *                                   (default = vector of zeros)
  *   - lower_bc_psi_[i]            = boundary conditions for the lower
- *                                   face of the computational domain in 
+ *                                   face of the computational domain in
  *                                   each coordinate direction for the i-th
  *                                   component of the PSI level set function.
- *                                   lower_bc_psi_[i] is a vector of length 
- *                                   DIM.  The j-th entry should contain the 
- *                                   type of boundary condition to impose at 
- *                                   the lower boundary in the j-th coordinate 
- *                                   direction.  See NOTES ON INPUT PARAMETERS 
- *                                   section for boundary condition types.  
- *                                   For information about the boundary 
+ *                                   lower_bc_psi_[i] is a vector of length
+ *                                   DIM.  The j-th entry should contain the
+ *                                   type of boundary condition to impose at
+ *                                   the lower boundary in the j-th coordinate
+ *                                   direction.  See NOTES ON INPUT PARAMETERS
+ *                                   section for boundary condition types.
+ *                                   For information about the boundary
  *                                   condition types, see documentation
  *                                   of the BoundaryConditionModule class.
  *                                   (default = vector of zeros)
  *   - upper_bc_psi_[i]            = boundary conditions for the upper
- *                                   face of the computational domain in 
+ *                                   face of the computational domain in
  *                                   each coordinate direction for the i-th
  *                                   component of the PSI level set function.
- *                                   upper_bc_psi_[i] is a vector of length 
- *                                   DIM.  The j-th entry should contain the 
- *                                   type of boundary condition to impose at 
- *                                   the upper boundary in the j-th coordinate 
- *                                   direction.  See NOTES ON INPUT PARAMETERS 
- *                                   section for boundary condition types.  
- *                                   For information about the boundary 
+ *                                   upper_bc_psi_[i] is a vector of length
+ *                                   DIM.  The j-th entry should contain the
+ *                                   type of boundary condition to impose at
+ *                                   the upper boundary in the j-th coordinate
+ *                                   direction.  See NOTES ON INPUT PARAMETERS
+ *                                   section for boundary condition types.
+ *                                   For information about the boundary
  *                                   condition types, see documentation
  *                                   of the BoundaryConditionModule class.
  *                                   (default = vector of zeros)
  *
  *   <h5> Miscellaneous Parameters: </h5>
  *
- *   - verbose_mode                = TRUE if status should be output during 
+ *   - verbose_mode                = TRUE if status should be output during
  *                                   integration (default = TRUE)
  *
  *   <h5> AMR Parameters (CURRENTLY UNUSED): </h5>
  *
- *   - use_AMR                     = TRUE if AMR should be used 
+ *   - use_AMR                     = TRUE if AMR should be used
  *                                   (default = FALSE)
  *   - regrid_interval             = regridding interval (default = 5)
  *   - tag_buffer_width            = number of buffer cells to use around
@@ -262,27 +262,27 @@
  *
  *   <h5> Hierarchy Structure Input: </h5>
  *
- *   - max_levels (REQUIRED)          =  integer value specifying maximum 
- *                                       number of levels allowed in the AMR 
+ *   - max_levels (REQUIRED)          =  integer value specifying maximum
+ *                                       number of levels allowed in the AMR
  *                                       PatchHierarchy.
  *   - largest_patch_size  (REQUIRED) =  an array of integer vectors (each has
  *                                       length = DIM) that specify the
  *                                       dimensions of largest patch allowed
  *                                       on each level in the hierarchy.  If
- *                                       more than max_levels entries are 
- *                                       given, extra entries will be ignored. 
- *                                       If fewer than max_levels entries are 
- *                                       given, then the last element in the 
- *                                       array will be used on each level 
+ *                                       more than max_levels entries are
+ *                                       given, extra entries will be ignored.
+ *                                       If fewer than max_levels entries are
+ *                                       given, then the last element in the
+ *                                       array will be used on each level
  *                                       without a specified input value.
- *   - ratio_to_coarser (REQUIRED)    =  set of (max_levels - 1) integer 
- *                                       vectors, each of which indicates the 
- *                                       ratio of the index space of a  
- *                                       PatchLevel to that of the next 
- *                                       coarser level.  The input for each 
- *                                       level must correspond to the format 
- *                                       ``level_n = vector'', where n is the 
- *                                       level number and each vector must 
+ *   - ratio_to_coarser (REQUIRED)    =  set of (max_levels - 1) integer
+ *                                       vectors, each of which indicates the
+ *                                       ratio of the index space of a
+ *                                       PatchLevel to that of the next
+ *                                       coarser level.  The input for each
+ *                                       level must correspond to the format
+ *                                       ``level_n = vector'', where n is the
+ *                                       level number and each vector must
  *                                       have length DIM.
  *
  *   <h5> Adaptive Refinement Input (CURRENTLY UNUSED): </h5>
@@ -301,7 +301,7 @@
  *                                       user-specified refinement is to occur
  *                                       on Level ln.
  *       - times (OPTIONAL)           =  LSMLIB_REAL array specifying times at which
- *                                       a particular box sequence is to be 
+ *                                       a particular box sequence is to be
  *                                       used.
  *       - cycles (OPTIONAL)          =  integer array specifying regrid cycles
  *                                       at which a particular box seqence is
@@ -320,8 +320,8 @@
  *
  *  <h4> NOTES ON INPUT PARAMETERS </h4>
  *
- *    - When restarting a computation, the following input parameters 
- *      override the values from the restart file:  
+ *    - When restarting a computation, the following input parameters
+ *      override the values from the restart file:
  *        end_time,
  *        reinitialization_interval,
  *        reinitialization_stop_tol,
@@ -337,17 +337,17 @@
  *      and orthogonalization is as follows:
  *      -# if provided, the stop tolerance is used with a maximum
  *         number of iterations determined from the calculation in (b)
- *         or a default value of 1000 iterations (to avoid failure to 
+ *         or a default value of 1000 iterations (to avoid failure to
  *         terminate)
- *      -# when both the stop distance and maximum number of iterations  
+ *      -# when both the stop distance and maximum number of iterations
  *         are specified, the one that results in the smaller number of
- *         iterations is used.  when only one is specified, it is the 
- *         sole parameter used to compute the maximum number of time steps 
+ *         iterations is used.  when only one is specified, it is the
+ *         sole parameter used to compute the maximum number of time steps
  *         to take when advancing the reinitialization/orthogonalization
  *         equation
- *      -# when no stopping criteria are supplied, the maximum number of 
+ *      -# when no stopping criteria are supplied, the maximum number of
  *         time steps taken defaults to 25.
- * 
+ *
  *    - The names of the sub-databases, LevelSetFunctionIntegrator and
  *      LevelSetMethodGriddingAlgorithm, MUST be named exactly as above.
  *      The name of the top-level database, LevelSetMethodAlgorithm, may
@@ -363,29 +363,29 @@
  *      - SIGNED_LINEAR_EXTRAPOLATION:  3
  *      - ANTI_PERIODIC:                4
  *
- *      By default, no boundary conditions are imposed at any 
+ *      By default, no boundary conditions are imposed at any
  *      non-periodic boundary of the computational domain.
- * 
- *    - Non-periodic boundary conditions MAY be imposed at 
- *      boundaries that are specified to be periodic directions 
- *      for the GridGeometry object associated with the 
+ *
+ *    - Non-periodic boundary conditions MAY be imposed at
+ *      boundaries that are specified to be periodic directions
+ *      for the GridGeometry object associated with the
  *      PatchHierarchy set in the constructor.  The non-periodic
- *      boundary conditions will override the periodic boundary 
+ *      boundary conditions will override the periodic boundary
  *      conditions.
  *
  *    - In order to use custom boundary conditions at a particular
- *      boundary location, the boundary condition type for that 
- *      boundary location MUST be set to NONE.  Otherwise, the 
+ *      boundary location, the boundary condition type for that
+ *      boundary location MUST be set to NONE.  Otherwise, the
  *      boundary condition will be overwritten by specified boundary
  *      condition type.
  *
  *    - When using a custom level set function integrator, all input
  *      parameters are ignored.
- * 
- *    - The descriptions of the input parameters for the 
- *      LevelSetGriddingAlgorithm were taken almost verbatim from the class 
- *      descriptions of the SAMRAI::mesh::GriddingAlgorithm, 
- *      SAMRAI::mesh::StandardTagAndInitialize, and 
+ *
+ *    - The descriptions of the input parameters for the
+ *      LevelSetGriddingAlgorithm were taken almost verbatim from the class
+ *      descriptions of the SAMRAI::mesh::GriddingAlgorithm,
+ *      SAMRAI::mesh::StandardTagAndInitialize, and
  *      SAMRAI::mesh::TagAndInitializeStrategy classes in the files
  *      GriddingAlgorithm.h, StandardTagAndInitialize.h, and
  *      TagAndInitializeStrategy.h.   For more details about the input
@@ -399,32 +399,32 @@
  *    - For a list and description of optional load balancer input
  *      fields, see the documentation for the SAMRAI::mesh::LoadBalancer
  *      class.
- * 
+ *
  * <h4> Sample Input File </h4>
  *
  *  <pre>
  *  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- *  LevelSetMethodAlgorithm{ 
+ *  LevelSetMethodAlgorithm{
  *
  *    LevelSetFunctionIntegrator {
  *      start_time  = 0.0
  *      end_time    = 0.5
- *   
+ *
  *      cfl_number               = 0.5
  *      spatial_derivative_type  = "WENO"
  *      spatial_derivative_order = 5
  *      tvd_runge_kutta_order    = 3
- *    
+ *
  *      reinitialization_interval = 0
  *      reinitialization_max_iters = 20
  *      reinitialization_stop_dist = 0.2
  *      orthogonalization_interval = 0
  *      orthogonalization_max_iters = 20
  *      orthogonalization_stop_dist = 0.2
- *  
- *      lower_bc_phi_0 = 1, 1, 1 
- *      upper_bc_phi_0 = 1, 1, 1 
- *  
+ *
+ *      lower_bc_phi_0 = 1, 1, 1
+ *      upper_bc_phi_0 = 1, 1, 1
+ *
  *      use_AMR = FALSE
  *      refinement_cutoff_value = 0.25
  *      tag_buffer = 2,2,2,2,2,2
@@ -433,16 +433,16 @@
  *
  *    } // end of LevelSetFunctionIntegrator database
  *
- *   
+ *
  *    LevelSetMethodGriddingAlgorithm {
  *      max_levels = 4
- * 
+ *
  *      ratio_to_coarser {
  *         level_1            = 2, 2
  *         level_2            = 2, 2
  *         level_3            = 2, 2
  *      }
- *  
+ *
  *      largest_patch_size {
  *        level_0 = 50,50
  *        level_1 = 100,100
@@ -451,15 +451,15 @@
  *
  *      tagging_method = "GRADIENT_DETECTOR","REFINE_BOXES"
  *
- *      RefineBoxes {  
+ *      RefineBoxes {
  *        level_0 = [(15,0),(29,14)]
  *        level_1 = [(65,10),(114,40)]
  *      }
  *
- *      LoadBalancer {  
+ *      LoadBalancer {
  *        // load balancer input parameters
  *      }
- *  
+ *
  *    } // end of LevelSetMethodGriddingAlgorithm database
  *
  *  } // end of LevelSetMethodAlgorithm database
@@ -469,35 +469,35 @@
  *
  */
 
-
+// Standard library headers
 #include <ostream>
 #include <string>
-#include <vector>
 
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
+
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/tbox/Database.h"
-#include "boost/shared_ptr.hpp"
+#include "SAMRAI/tbox/Array.h"
 
+// LSMLIB header
 #include "LSMLIB_config.h"
-#include "LevelSetMethodGriddingStrategy.h"
-#include "LevelSetFunctionIntegratorStrategy.h"
-#include "LevelSetMethodPatchStrategy.h"
 #include "LevelSetMethodToolbox.h"
-#include "LevelSetMethodVelocityFieldStrategy.h"
-#include "FieldExtensionAlgorithm.h"
-#include "ReinitializationAlgorithm.h"
-#include "OrthogonalizationAlgorithm.h"
-#include "BoundaryConditionModule.h"
 
-#include "LSMLIB_DefaultParameters.h"
-#include "LevelSetMethodGriddingAlgorithm.h"
-#include "LevelSetFunctionIntegrator.h"
-// namespaces
+// Namespaces
 using namespace std;
 using namespace SAMRAI;
-using namespace hier;
-using namespace tbox;
+
+// Class/type declarations
+namespace LSMLIB { class FieldExtensionAlgorithm; }
+namespace LSMLIB { class LevelSetFunctionIntegratorStrategy; }
+namespace LSMLIB { class LevelSetMethodGriddingStrategy; }
+namespace LSMLIB { class LevelSetMethodPatchStrategy; }
+namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
+namespace SAMRAI { namespace hier { class IntVector; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace tbox { class Database; } }
+namespace SAMRAI { namespace tbox { class Dimension; } }
 
 
 /******************************************************************
@@ -539,29 +539,29 @@ public:
    *                                        functions (default = 1)
    *  - codimension (in):                   codimension of problem
    *                                        (default = 1)
-   *  - object_name (in):                   name for object (default = 
+   *  - object_name (in):                   name for object (default =
    *                                        "LevelSetMethodAlgorithm")
    *
    */
   LevelSetMethodAlgorithm(
     const tbox::Dimension& dim,
-    boost::shared_ptr<Database> lsm_algorithm_input_db,
-    boost::shared_ptr<PatchHierarchy > patch_hierarchy,
+    boost::shared_ptr<tbox::Database> lsm_algorithm_input_db,
+    boost::shared_ptr<hier::PatchHierarchy > patch_hierarchy,
     LevelSetMethodPatchStrategy* patch_strategy,
     LevelSetMethodVelocityFieldStrategy* velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
     const int codimension = 1,
-    const string& object_name = "LevelSetMethodAlgorithm"); 
+    const string& object_name = "LevelSetMethodAlgorithm");
 
   /*!
    * This constructor for LevelSetMethodAlgorithm uses a user-specified
-   * concrete subclass of the LevelSetFunctionIntegratorStrategy class to 
+   * concrete subclass of the LevelSetFunctionIntegratorStrategy class to
    * manage the time integration of the level set functions.
    *
    * Arguments:
-   *  - lsm_integrator_strategy (in): boost pointer to concrete subclass of the 
-   *                                   LevelSetFunctionIntegratorStrategy 
-   *  - lsm_gridding_strategy (in):   boost pointer to concrete subclass of the 
+   *  - lsm_integrator_strategy (in): boost pointer to concrete subclass of the
+   *                                   LevelSetFunctionIntegratorStrategy
+   *  - lsm_gridding_strategy (in):   boost pointer to concrete subclass of the
    *                                   LevelSetMethodGriddingStrategy
    *  - object_name (in):              name for object
    *
@@ -569,7 +569,7 @@ public:
   LevelSetMethodAlgorithm(
     boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
     boost::shared_ptr< LevelSetMethodGriddingStrategy > lsm_gridding_strategy,
-    const string& object_name = "LevelSetMethodAlgorithm"); 
+    const string& object_name = "LevelSetMethodAlgorithm");
 
   /*!
    * The destructor for LevelSetMethodAlgorithm does nothing.
@@ -589,48 +589,48 @@ public:
 
   /*!
    * getPhiPatchDataHandle() returns the patch data handle for phi.
-   * 
+   *
    * Arguments:     none
-   * 
-   * Return value:  PatchData handle for phi 
+   *
+   * Return value:  PatchData handle for phi
    *
    * NOTES:
    *  - When the standard constructor for the LevelSetMethodAlgorithm
-   *    is used, the PatchData for phi associated with the returned 
-   *    PatchData handle has the number of ghostcells required for the 
-   *    spatial derivative type and order specified when the 
+   *    is used, the PatchData for phi associated with the returned
+   *    PatchData handle has the number of ghostcells required for the
+   *    spatial derivative type and order specified when the
    *    LevelSetMethodAlgorithm object was constructed.
    *
    */
-  virtual int getPhiPatchDataHandle() const; 
+  virtual int getPhiPatchDataHandle() const;
 
   /*!
    * getPsiPatchDataHandle() returns the patch data handle for psi.
-   * 
+   *
    * Arguments:     none
-   * 
+   *
    * Return value:  PatchData handle for psi
    *
    * NOTES:
    *  - When the standard constructor for the LevelSetMethodAlgorithm
-   *    is used, the PatchData for psi associated with the returned 
-   *    PatchData handle has the number of ghostcells required for the 
-   *    spatial derivative type and order specified when the 
+   *    is used, the PatchData for psi associated with the returned
+   *    PatchData handle has the number of ghostcells required for the
+   *    spatial derivative type and order specified when the
    *    LevelSetMethodAlgorithm object was constructed.
    *
    */
-  virtual int getPsiPatchDataHandle() const; 
+  virtual int getPsiPatchDataHandle() const;
 
   /*!
-   * getControlVolumePatchDataHandle() returns the patch data handle for 
+   * getControlVolumePatchDataHandle() returns the patch data handle for
    * the control volume.
-   * 
+   *
    * Arguments:     none
-   * 
+   *
    * Return value:  PatchData handle for control volume
    *
    */
-  virtual int getControlVolumePatchDataHandle() const; 
+  virtual int getControlVolumePatchDataHandle() const;
 
   //! @}
 
@@ -644,49 +644,49 @@ public:
    *******************************************************************/
 
   /*!
-   * getStartTime() returns the simulation start time. 
-   * 
+   * getStartTime() returns the simulation start time.
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  start time
    *
    */
-  virtual LSMLIB_REAL getStartTime() const; 
+  virtual LSMLIB_REAL getStartTime() const;
 
   /*!
    * getEndTime() returns the simulation end time.
-   * 
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  end time
    *
    */
   virtual LSMLIB_REAL getEndTime() const;
 
   /*!
-   * getCurrentTime() returns the current simulation time. 
-   * 
+   * getCurrentTime() returns the current simulation time.
+   *
    * Arguments:      none
-   * 
+   *
    * Return value :  current time
    *
    */
   virtual LSMLIB_REAL getCurrentTime() const;
 
   /*!
-   * endTimeReached() returns true if the end time for the 
+   * endTimeReached() returns true if the end time for the
    * integration has been reached; otherwise, it returns false.
-   * 
+   *
    * Arguments:     none
-   * 
-   * Return value:  true if the current time is equal to or after 
+   *
+   * Return value:  true if the current time is equal to or after
    *                the end time for the integration; false otherwise
    *
    */
   virtual bool endTimeReached() const;
 
   /*!
-   * numIntegrationStepsTaken() returns the number of integration steps 
+   * numIntegrationStepsTaken() returns the number of integration steps
    * that have been taken during the level set method calculation.
    *
    * Arguments:      none
@@ -699,8 +699,8 @@ public:
   /*!
    * printClassData() prints the values of the data members for
    * an instance of the LevelSetMethodAlgorithm class.
-   * 
-   * Arguments: 
+   *
+   * Arguments:
    *  - os (in):     output stream to write object information
    *
    * Return value:   none
@@ -734,7 +734,7 @@ public:
   virtual int getSpatialDerivativeType() const;
 
   /*!
-   * getSpatialDerivativeOrder() returns order of the spatial derivative 
+   * getSpatialDerivativeOrder() returns order of the spatial derivative
    * discretization used by the standard LevelSetFunctionIntegrator object.
    *
    * Arguments:      none
@@ -745,7 +745,7 @@ public:
   virtual int getSpatialDerivativeOrder() const;
 
   /*!
-   * getTVDRungeKuttaOrder() returns order of the TVD Runge-Kutta 
+   * getTVDRungeKuttaOrder() returns order of the TVD Runge-Kutta
    * integration scheme used by the standard LevelSetFunctionIntegrator
    * object.
    *
@@ -780,9 +780,9 @@ public:
 
   /*!
    * setBoundaryConditions() sets the boundary conditions to impose
-   * at the outer faces of the computational domain for the 
-   * specified components of the vector level set function.  If no 
-   * component is specified, then ALL components of a vector level  
+   * at the outer faces of the computational domain for the
+   * specified components of the vector level set function.  If no
+   * component is specified, then ALL components of a vector level
    * set function will be set to have the same boundary conditions
    * imposed.
    *
@@ -790,13 +790,13 @@ public:
    *  - lower_bc (in):       vector of integers specifying the
    *                         type of boundary conditions to impose
    *                         on the lower face of the computational
-   *                         domain in each coordinate direction. 
+   *                         domain in each coordinate direction.
    *                         The i-th entry should contain the type
    *                         of boundary condition to impose at the lower
    *                         boundary in the i-th coordinate direction.
    *                         See NOTES for boundary condition
-   *                         types.  For information about the 
-   *                         boundary condition types, see documentation 
+   *                         types.  For information about the
+   *                         boundary condition types, see documentation
    *                         of the BoundaryConditionModule class.
    *  - upper_bc (in):       vector of integers specifying the
    *                         type of boundary conditions to impose
@@ -806,8 +806,8 @@ public:
    *                         of boundary condition to impose at the upper
    *                         boundary in the i-th coordinate direction.
    *                         See NOTES for boundary condition
-   *                         types.  For information about the 
-   *                         boundary condition types, see documentation 
+   *                         types.  For information about the
+   *                         boundary condition types, see documentation
    *                         of the BoundaryConditionModule class.
    *  - level_set_fcn (in):  level set function (i.e. PHI or PSI) for
    *                         which to set boundary conditions
@@ -816,7 +816,7 @@ public:
    *                         (default = -1)
    *
    * Return value:           none
-   * 
+   *
    * NOTES:
    *  - The boundary condition types are as follows:
    *    NONE, HOMOEGENEOUS_NEUMANN, LINEAR_EXTRAPOLATION,
@@ -830,21 +830,21 @@ public:
    *    see the documentation for the BoundaryConditionModule class.
    *
    *  - Anti-periodic boundary conditions are only imposed for those
-   *    directions that are specified by bc AND that are periodic 
-   *    directions for the GridGeometry object associated with the 
-   *    PatchHierarchy set in the constructor.  If a direction is 
-   *    specified to be anti-periodic by the bc variable but 
+   *    directions that are specified by bc AND that are periodic
+   *    directions for the GridGeometry object associated with the
+   *    PatchHierarchy set in the constructor.  If a direction is
+   *    specified to be anti-periodic by the bc variable but
    *    is not a periodic direction for the GridGeometry object, then
    *    that direction is NOT treated as an anti-periodic direction.
-   *  
+   *
    *  - If component is set to a negative number, than ALL components of
    *    the level set function will be set to have the specified
    *    homogeneous Neumann boundaries.
-   * 
-   */ 
+   *
+   */
   virtual void setBoundaryConditions(
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component = -1);
 
@@ -860,22 +860,22 @@ public:
    ****************************************************************/
 
   /*!
-   * initializeLevelSetMethodCalculation() initializes the 
-   * data on the PatchHierarchy in preparation for a level 
+   * initializeLevelSetMethodCalculation() initializes the
+   * data on the PatchHierarchy in preparation for a level
    * set method calculation.
    *
    * Arguments:     none
-   * 
+   *
    * Return value:  none
    *
    */
   virtual void initializeLevelSetMethodCalculation();
 
   /*!
-   * computeStableDt() computes the maximum allowable dt for the 
+   * computeStableDt() computes the maximum allowable dt for the
    * next time step of the level set functions.
    *
-   * If the standard LevelSetFunctionIntegrator is used, the 
+   * If the standard LevelSetFunctionIntegrator is used, the
    * maximum stable dt is computed using the algorithm:
    *
    * <pre>
@@ -928,19 +928,19 @@ public:
    * advanceLevelSetFunctions() advances the level set function
    * phi (and psi for codimension-two problems) by the specified
    * time increment, dt.
-   * 
-   * Arguments: 
+   *
+   * Arguments:
    *  - dt (in):     time increment to advance the level set functions
    *
-   * Return value:   true if patch hierarchy needs to be regridded after 
+   * Return value:   true if patch hierarchy needs to be regridded after
    *                 this time step; false otherwise.
    *
    * NOTES:
-   *  - AMR is NOT yet implemented, so advanceLevelSetFunctions() 
+   *  - AMR is NOT yet implemented, so advanceLevelSetFunctions()
    *    currently always returns false.
    *
    */
-  virtual bool advanceLevelSetFunctions(const LSMLIB_REAL dt); 
+  virtual bool advanceLevelSetFunctions(const LSMLIB_REAL dt);
 
   //! @}
 
@@ -953,14 +953,14 @@ public:
    *
    ****************************************************************/
 
-  /*!                         
+  /*!
    * getReinitializationInterval() should return the number of time
    * steps between reinitializations of the level set functions.
-   *                          
-   * Arguments:     none      
-   *                          
+   *
+   * Arguments:     none
+   *
    * Return value:  reinitialization interval
-   * 
+   *
    */
   virtual int getReinitializationInterval() const;
 
@@ -997,7 +997,7 @@ public:
    * is used to select whether the appropriate spatial derivative
    * approximation for each component of grad(phi).
    *
-   * Arguments:  
+   * Arguments:
    *  - level_set_fcn (in):   level set function (i.e. PHI or PSI) to
    *                          reinitialize (default = PHI)
    *  - max_iterations (in):  maximum number of iterations to use
@@ -1046,7 +1046,7 @@ public:
 
   /*!
    * orthogonalizeLevelSetFunctions() reinitializes the level set functions
-   * phi and psi and evolves them so that they have orthogonal gradients.     
+   * phi and psi and evolves them so that they have orthogonal gradients.
    * This goal is achieved by solving the orthogonalization equation:
    *
    *   phi_t + sgn(psi) * ( grad(psi)/|grad(psi)| ) dot grad(phi) = 0
@@ -1063,8 +1063,8 @@ public:
    * scheme that treats grad(psi) as the velocity.
    *
    * Arguments:
-   *  - level_set_fcn (in):          level set function (i.e. PHI or PSI) to 
-   *                                 evolve to orthogonalize grad(phi) and 
+   *  - level_set_fcn (in):          level set function (i.e. PHI or PSI) to
+   *                                 evolve to orthogonalize grad(phi) and
    *                                 grad(psi)
    *  - max_reinit_iterations (in):  maximum number of iterations to use
    *                                 for reinitialization.  Set max_iterations
@@ -1084,11 +1084,11 @@ public:
    *    codimension-one problems, this method is never invoked.
    *
    *  - If max_reinit_iterations is set to a non-negative value, it overrides
-   *    ALL of the reinitialization stopping criteria specified in the input 
+   *    ALL of the reinitialization stopping criteria specified in the input
    *    file.
    *
    *  - If max_ortho_iterations is set to a non-negative value, it overrides
-   *    ALL of the orthogonalization stopping criteria specified in the input 
+   *    ALL of the orthogonalization stopping criteria specified in the input
    *    file.
    *
    */
@@ -1104,14 +1104,14 @@ public:
   /*!
    ****************************************************************
    *
-   * @name Methods for managing the grid configuration 
+   * @name Methods for managing the grid configuration
    *
    ****************************************************************/
 
   /*!
    * resetHierarchyConfiguration() resets the configuration of the
-   * calculation and communication objects to be consistent with 
-   * the specified PatchHierarchy. 
+   * calculation and communication objects to be consistent with
+   * the specified PatchHierarchy.
    *
    * Arguments:
    *  - hierarchy (in):       PatchHierarchy to reconfigure
@@ -1122,17 +1122,17 @@ public:
    *
    */
   void resetHierarchyConfiguration(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int coarsest_level,
     const int finest_level);
 
   /*!
    * regridPatchHierarchy() regrids the entire PatchHierarchy
-   * and reinitializes the data on the PatchHierarchy using 
+   * and reinitializes the data on the PatchHierarchy using
    * interpolation and averaging, as necessary.
    *
    * Arguments:      none
-   * 
+   *
    * Return value:   none
    *
    */
@@ -1153,12 +1153,12 @@ public:
    * getFieldExtensionAlgorithm() creates a FieldExtensionAlgorithm
    * object that can be used to extend the specified field off of the
    * zero level set of the specified level set function (PHI or PSI).
-   * The PatchHierarchy used for by the FieldExtensionAlgorithm is the 
+   * The PatchHierarchy used for by the FieldExtensionAlgorithm is the
    * same as the one that is used by the LevelSetMethodAlgorithm.
    * This version of getFieldExtensionAlgorithm() read the parameters
    * for the field extension calculation from specified input database.
    *
-   * Arguments:     
+   * Arguments:
    *  - input_db (in):                  input database containing user-defined
    *                                    parameters
    *  - field_handle (in):              PatchData handle for field to
@@ -1169,37 +1169,38 @@ public:
    *                                    verbose-mode (default = false)
    *  - object_name (in):               string name for object (default =
    *                                    "FieldExtensionAlgorithm")
-   * 
+   *
    * Return value:                      none
    *
    * NOTES:
-   *  - getFieldExtensionAlgorithm() may only be used when using the 
+   *  - getFieldExtensionAlgorithm() may only be used when using the
    *    standard LevelSetFunctionIntegrator.
    *
    *  - FieldExtensionAlgorithm objects creted using this method do
    *    NOT need to have the
-   *    FieldExtensionAlgorithm::resetHierarchyConfiguration() method 
-   *    invoked when the hierarchy configuration changes.  The 
-   *    LevelSetMethodAlgorithm automatically handles the reset when 
+   *    FieldExtensionAlgorithm::resetHierarchyConfiguration() method
+   *    invoked when the hierarchy configuration changes.  The
+   *    LevelSetMethodAlgorithm automatically handles the reset when
    *    LevelSetMethodAlgorithm::resetHierarchyConfiguration() is invoked.
-   * 
+   *
    */
-  virtual boost::shared_ptr< FieldExtensionAlgorithm > getFieldExtensionAlgorithm(
-    boost::shared_ptr<Database> input_db,     
-    const int field_handle,
-    const LEVEL_SET_FCN_TYPE level_set_fcn,
-    const string& object_name = "FieldExtensionAlgorithm");
+  virtual boost::shared_ptr<FieldExtensionAlgorithm>
+    getFieldExtensionAlgorithm(
+      boost::shared_ptr<tbox::Database> input_db,
+      const int field_handle,
+      const LEVEL_SET_FCN_TYPE level_set_fcn,
+      const string& object_name = "FieldExtensionAlgorithm");
 
   /*!
    * getFieldExtensionAlgorithm() creates a FieldExtensionAlgorithm
    * object that can be used to extend the specified field off of the
    * zero level set of the specified level set function (PHI or PSI).
-   * The PatchHierarchy used for by the FieldExtensionAlgorithm is the 
-   * same as the one that is used by the LevelSetMethodAlgorithm.  
+   * The PatchHierarchy used for by the FieldExtensionAlgorithm is the
+   * same as the one that is used by the LevelSetMethodAlgorithm.
    * This version of getFieldExtensionAlgorithm() takes the parameters
    * for the field extension calculation as explicit arguments.
    *
-   * Arguments:     
+   * Arguments:
    *  - field_handle (in):              PatchData handle for field to
    *                                    extend off of the interface
    *  - level_set_fcn (in):             the level set function to use
@@ -1214,7 +1215,7 @@ public:
    *                                    (default = TVD Runge-Kutta order
    *                                     used for evolving level set function)
    *  - cfl_number (in):                CFL number used to compute dt
-   *                                    (default = CFL number used for 
+   *                                    (default = CFL number used for
    *                                     evolving level set function)
    *  - stop_distance (in):             approximate stopping criterion for
    *                                    evolution of field extension equation.
@@ -1235,20 +1236,20 @@ public:
    *                                    verbose-mode (default = false)
    *  - object_name (in):               string name for object (default =
    *                                    "FieldExtensionAlgorithm")
-   * 
+   *
    * Return value:                      none
    *
    * NOTES:
-   *  - getFieldExtensionAlgorithm() may only be used when using the 
+   *  - getFieldExtensionAlgorithm() may only be used when using the
    *    standard LevelSetFunctionIntegrator.
    *
    *  - FieldExtensionAlgorithm objects created using this method do
    *    NOT need to have the
-   *    FieldExtensionAlgorithm::resetHierarchyConfiguration() method 
-   *    invoked when the hierarchy configuration changes.  The 
-   *    LevelSetMethodAlgorithm automatically handles the reset when 
+   *    FieldExtensionAlgorithm::resetHierarchyConfiguration() method
+   *    invoked when the hierarchy configuration changes.  The
+   *    LevelSetMethodAlgorithm automatically handles the reset when
    *    LevelSetMethodAlgorithm::resetHierarchyConfiguration() is invoked.
-   * 
+   *
    */
   virtual boost::shared_ptr< FieldExtensionAlgorithm > getFieldExtensionAlgorithm(
     const tbox::Dimension& dim,
@@ -1277,20 +1278,20 @@ protected:
   // object name
   string d_object_name;
 
-  // boost pointers to LevelSetFunctionIntegratorStrategy and 
+  // boost pointers to LevelSetFunctionIntegratorStrategy and
   // LevelSetMethodGriddingStrategy objects
-  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > d_lsm_integrator_strategy; 
-  boost::shared_ptr< LevelSetMethodGriddingStrategy > d_lsm_gridding_strategy; 
+  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > d_lsm_integrator_strategy;
+  boost::shared_ptr< LevelSetMethodGriddingStrategy > d_lsm_gridding_strategy;
 
 
-  // lists of FieldExtensionAlgorithm objects 
+  // lists of FieldExtensionAlgorithm objects
   // ( used in resetHierarchyConfiguration() )
   Array< boost::shared_ptr< FieldExtensionAlgorithm > > d_field_extension_alg_list;
 
 
   // simulation parameters when using standard LevelSetFunctionIntegrator
   // class
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
   bool d_using_standard_level_set_fcn_integrator;
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
@@ -1298,16 +1299,16 @@ protected:
   LSMLIB_REAL d_cfl_number;
 
 private:
- 
+
   /*
    * Private copy constructor to prevent use.
-   * 
+   *
    * Arguments:
    *  - rhs (in):  LevelSetMethodAlgorithm object to copy
-   * 
+   *
    */
   LevelSetMethodAlgorithm(const LevelSetMethodAlgorithm& rhs){}
-   
+
   /*
    * Private assignment operator to prevent use.
    *

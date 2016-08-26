@@ -11,8 +11,28 @@
 #ifndef included_LevelSetMethodAlgorithm_cc
 #define included_LevelSetMethodAlgorithm_cc
 
-#include "LevelSetMethodAlgorithm.h" 
+#include "LevelSetMethodAlgorithm.h"
 
+// Standard library headers
+#include <cstddef>
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/tbox/Utilities.h"
+
+// LSMLIB headers
+#include "LSMLIB_config.h"
+#include "LSMLIB_DefaultParameters.h"
+#include "FieldExtensionAlgorithm.h"
+#include "LevelSetMethodGriddingAlgorithm.h"
+#include "LevelSetFunctionIntegrator.h"
+
+#ifdef DEBUG_CHECK_ASSERTIONS
+#ifndef included_assert
+#define included_assert
+#include <cassert>
+#endif
+#endif
 
 /****************************************************************
  *
@@ -35,48 +55,52 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
 {
 
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(lsm_algorithm_input_db !=NULL);
-  assert(patch_hierarchy !=NULL);
-  assert(patch_strategy);
-  assert(velocity_field_strategy);
+  assert(lsm_algorithm_input_db != NULL);
+  assert(patch_hierarchy != NULL);
+  assert(patch_strategy != NULL);
+  assert(velocity_field_strategy != NULL);
   assert(!object_name.empty());
 #endif
   d_patch_hierarchy = patch_hierarchy;
   d_object_name = object_name;
+
   // create new LevelSetFunctionIntegrator object
   boost::shared_ptr<Database> level_set_fcn_integrator_db =
     lsm_algorithm_input_db->getDatabase("LevelSetFunctionIntegrator");
-  d_lsm_integrator_strategy = boost::shared_ptr<LevelSetFunctionIntegrator> ( new LevelSetFunctionIntegrator(
-    dim,
-    level_set_fcn_integrator_db,
-    patch_hierarchy,
-    patch_strategy,
-    velocity_field_strategy,
-    num_level_set_fcn_components,
-    codimension,
-    object_name + "::LevelSetFunctionIntegrator"));
+  d_lsm_integrator_strategy =
+    boost::shared_ptr<LevelSetFunctionIntegrator> (
+      new LevelSetFunctionIntegrator(
+        dim,
+        level_set_fcn_integrator_db,
+        patch_hierarchy,
+        patch_strategy,
+        velocity_field_strategy,
+        num_level_set_fcn_components,
+        codimension,
+        object_name + "::LevelSetFunctionIntegrator"));
+
   // cache simulation parameters for standard LevelSetFunctionIntegrator
   d_using_standard_level_set_fcn_integrator = true;
-  string spatial_derivative_type = 
+  string spatial_derivative_type =
     level_set_fcn_integrator_db->getStringWithDefault(
       "spatial_derivative_type", LSM_DEFAULT_SPATIAL_DERIVATIVE_TYPE);
   if (spatial_derivative_type == "WENO") {
     d_spatial_derivative_type = WENO;
-    d_spatial_derivative_order = 
+    d_spatial_derivative_order =
       level_set_fcn_integrator_db->getIntegerWithDefault(
         "spatial_derivative_order", LSM_DEFAULT_SPATIAL_DERIVATIVE_WENO_ORDER);
   } else if (spatial_derivative_type == "ENO") {
     d_spatial_derivative_type = ENO;
-    d_spatial_derivative_order = 
+    d_spatial_derivative_order =
       level_set_fcn_integrator_db->getIntegerWithDefault(
         "spatial_derivative_order", LSM_DEFAULT_SPATIAL_DERIVATIVE_ENO_ORDER);
   } else {
     d_spatial_derivative_type = UNKNOWN;
   }
-  d_tvd_runge_kutta_order = 
+  d_tvd_runge_kutta_order =
     level_set_fcn_integrator_db->getIntegerWithDefault(
       "tvd_runge_kutta_order", LSM_DEFAULT_TVD_RUNGE_KUTTA_ORDER);
-  d_cfl_number = 
+  d_cfl_number =
     level_set_fcn_integrator_db->getDoubleWithDefault("cfl_number",
                                                        LSM_DEFAULT_CFL_NUMBER);
 
@@ -86,6 +110,7 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
     patch_hierarchy,
     d_lsm_integrator_strategy,
     object_name + "::LevelSetMethodGriddingAlgorithm"));
+
   // register velocity_field_strategy with d_lsm_gridding_strategy
   d_lsm_gridding_strategy->registerVelocityFieldStrategy(
     velocity_field_strategy);
@@ -103,7 +128,7 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   assert(lsm_gridding_strategy);
   assert(!object_name.empty());
 #endif
- 
+
   d_lsm_integrator_strategy = lsm_integrator_strategy;
   d_lsm_gridding_strategy = lsm_gridding_strategy;
   d_object_name = object_name;
@@ -111,7 +136,7 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   // set simulation parameters used by standard LevelSetFunctionIntegrator
   // class to invalid values
   d_using_standard_level_set_fcn_integrator = false;
-  d_patch_hierarchy = boost::shared_ptr<PatchHierarchy>(); 
+  d_patch_hierarchy = boost::shared_ptr<PatchHierarchy>();
   d_spatial_derivative_type = UNKNOWN;
   d_spatial_derivative_order = 0;
   d_tvd_runge_kutta_order = 0;
@@ -132,7 +157,7 @@ void LevelSetMethodAlgorithm::printClassData(ostream& os) const
      << (LevelSetMethodAlgorithm*) this << endl;
   os << "d_lsm_integrator_strategy = "
      << d_lsm_integrator_strategy.get() << endl;
-  os << "d_lsm_gridding_strategy = " 
+  os << "d_lsm_gridding_strategy = "
      << d_lsm_gridding_strategy.get() << endl;
   os << "===================================" << endl << endl;
 }
@@ -153,13 +178,13 @@ void LevelSetMethodAlgorithm::resetHierarchyConfiguration(
   for (int k = 0; k < num_field_extension_algs; k++) {
     d_field_extension_alg_list[k]->resetHierarchyConfiguration(
       hierarchy, coarsest_level, finest_level);
-  }  
+  }
 
-} 
+}
 
 
 /* getFieldExtensionAlgorithm() */
-boost::shared_ptr< FieldExtensionAlgorithm > 
+boost::shared_ptr< FieldExtensionAlgorithm >
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   boost::shared_ptr<Database> input_db,
   const int field_handle,
@@ -189,12 +214,12 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
       input_db,
       d_patch_hierarchy,
       field_handle,
-      level_set_fcn_handle,  
+      level_set_fcn_handle,
       getControlVolumePatchDataHandle(),
       IntVector(d_patch_hierarchy->getDim(), 0),
       object_name));
 
-  // add new object to list of FieldExtensionAlgorithms to be 
+  // add new object to list of FieldExtensionAlgorithms to be
   // reset by resetHierarchyConfiguration
   int length = d_field_extension_alg_list.size();
   d_field_extension_alg_list.resizeArray(length+1);
@@ -205,7 +230,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
 
 
 /* getFieldExtensionAlgorithm() */
-boost::shared_ptr< FieldExtensionAlgorithm > 
+boost::shared_ptr< FieldExtensionAlgorithm >
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   const tbox::Dimension& dim,
   const int field_handle,
@@ -256,7 +281,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
     boost::shared_ptr< FieldExtensionAlgorithm > (new FieldExtensionAlgorithm(
       d_patch_hierarchy,
       field_handle,
-      level_set_fcn_handle,  
+      level_set_fcn_handle,
       getControlVolumePatchDataHandle(),
       IntVector(d_patch_hierarchy->getDim(), 0),
       (SPATIAL_DERIVATIVE_TYPE) spatial_derivative_type,
@@ -269,7 +294,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
       verbose_mode,
       object_name));
 
-  // add new object to list of FieldExtensionAlgorithms to be 
+  // add new object to list of FieldExtensionAlgorithms to be
   // reset by resetHierarchyConfiguration
   int length = d_field_extension_alg_list.size();
   d_field_extension_alg_list.resizeArray(length+1);
@@ -290,7 +315,7 @@ LevelSetMethodAlgorithm::~LevelSetMethodAlgorithm(){}
 int LevelSetMethodAlgorithm::getPhiPatchDataHandle() const
 {
   return d_lsm_integrator_strategy->getPhiPatchDataHandle();
-} 
+}
 
 
 /* getPsiPatchDataHandle() */
@@ -304,7 +329,7 @@ int LevelSetMethodAlgorithm::getPsiPatchDataHandle() const
 int LevelSetMethodAlgorithm::getControlVolumePatchDataHandle() const
 {
   return d_lsm_integrator_strategy->getControlVolumePatchDataHandle();
-} 
+}
 
 
 /* getStartTime() */
@@ -351,7 +376,7 @@ int LevelSetMethodAlgorithm::getSpatialDerivativeType() const
               << "not using standard LevelSetFunctionIntegrator..."
               << "return value meaningless."
               << endl );
-  } 
+  }
 
   return d_spatial_derivative_type;
 }
@@ -366,7 +391,7 @@ int LevelSetMethodAlgorithm::getSpatialDerivativeOrder() const
               << "not using standard LevelSetFunctionIntegrator..."
               << "return value meaningless."
               << endl );
-  } 
+  }
 
   return d_spatial_derivative_order;
 }
@@ -381,7 +406,7 @@ int LevelSetMethodAlgorithm::getTVDRungeKuttaOrder() const
               << "not using standard LevelSetFunctionIntegrator..."
               << "return value meaningless."
               << endl );
-  } 
+  }
 
   return d_tvd_runge_kutta_order;
 }
@@ -396,7 +421,7 @@ LSMLIB_REAL LevelSetMethodAlgorithm::getCFLNumber() const
               << "not using standard LevelSetFunctionIntegrator..."
               << "return value meaningless."
               << endl );
-  } 
+  }
 
   return d_cfl_number;
 }
@@ -415,7 +440,7 @@ void LevelSetMethodAlgorithm::setBoundaryConditions(
 
 
 /* initializeLevelSetMethodCalculation() */
-void LevelSetMethodAlgorithm::initializeLevelSetMethodCalculation() 
+void LevelSetMethodAlgorithm::initializeLevelSetMethodCalculation()
 {
   d_lsm_gridding_strategy->initializePatchHierarchy(
     d_lsm_integrator_strategy->getCurrentTime());
@@ -423,14 +448,14 @@ void LevelSetMethodAlgorithm::initializeLevelSetMethodCalculation()
 
 
 /* computeStableDt() */
-LSMLIB_REAL LevelSetMethodAlgorithm::computeStableDt() 
+LSMLIB_REAL LevelSetMethodAlgorithm::computeStableDt()
 {
   return d_lsm_integrator_strategy->computeStableDt();
 }
 
 
 /* advanceLevelSetFunctions() */
-bool LevelSetMethodAlgorithm::advanceLevelSetFunctions(const LSMLIB_REAL dt) 
+bool LevelSetMethodAlgorithm::advanceLevelSetFunctions(const LSMLIB_REAL dt)
 {
   return d_lsm_integrator_strategy->advanceLevelSetFunctions(dt);
 }
