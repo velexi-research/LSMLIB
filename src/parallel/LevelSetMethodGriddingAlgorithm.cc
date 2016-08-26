@@ -11,22 +11,34 @@
 #ifndef included_LevelSetMethodGriddingAlgorithm_cc
 #define included_LevelSetMethodGriddingAlgorithm_cc
 
-#include "LevelSetMethodGriddingAlgorithm.h" 
-#include "SAMRAI/mesh/BergerRigoutsos.h" 
-#include "SAMRAI/pdat/CellData.h" 
-#include "SAMRAI/mesh/ChopAndPackLoadBalancer.h" 
-#include "SAMRAI/tbox/RestartManager.h" 
-#include "SAMRAI/mesh/StandardTagAndInitialize.h"
+// Standard library headers
+#include <cstddef>
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/BoxContainer.h"
-#include <stdexcept>   
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/mesh/BergerRigoutsos.h"
+#include "SAMRAI/mesh/ChopAndPackLoadBalancer.h"
+#include "SAMRAI/mesh/GriddingAlgorithm.h"
+#include "SAMRAI/tbox/RestartManager.h"
+#include "SAMRAI/tbox/Utilities.h"
+
+// LSMLIB headers
+#include "LevelSetMethodGriddingAlgorithm.h"
+#include "LevelSetFunctionIntegratorStrategy.h"
 
 #ifdef DEBUG_CHECK_ASSERTIONS
 #ifndef included_assert
 #define included_assert
-#include <assert.h>
+#include <cassert>
 #endif
 #endif
 
+// Class/type declarations
+namespace SAMRAI { namespace hier { class Patch; } }
+namespace SAMRAI { namespace pdat { template <class TYPE> class CellData; } }
 
 /****************************************************************
  *
@@ -39,11 +51,12 @@ namespace LSMLIB {
 /* Constructor */
 LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
   boost::shared_ptr<Database> input_db,
-  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
-  boost::shared_ptr< LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
+  boost::shared_ptr<PatchHierarchy> patch_hierarchy,
+  boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
   const string& object_name) :
-StandardTagAndInitialize( object_name,
-lsm_integrator_strategy.get(), input_db)
+  StandardTagAndInitialize(object_name,
+                           lsm_integrator_strategy.get(),
+                           input_db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db);
@@ -51,45 +64,59 @@ lsm_integrator_strategy.get(), input_db)
   assert(lsm_integrator_strategy);
   assert(!object_name.empty());
 #endif
+  cout << "LevelSetMethodGriddingAlgorithm::constructor "
+       << lsm_integrator_strategy.get() << endl;
   // set d_object_name
   d_object_name = object_name;
 
   // set d_patch_hierarchy
   d_patch_hierarchy = patch_hierarchy;
 
-  // set level set method integrator and initialize 
+  // set level set method integrator and initialize
   d_lsm_integrator_strategy = lsm_integrator_strategy;
+
   // make sure that the d_velocity_field_strategies
   // is empty.
+
   d_velocity_field_strategies.setNull();
+
   // read input parameters
   getFromInput(input_db);
 
   /*
    * Set up LevelSetMethodGriddingAlgorithm
-   */ 
+   */
   // construct box generator and load balancer objects
-  boost::shared_ptr< BergerRigoutsos > box_generator = boost::shared_ptr< BergerRigoutsos > (new BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
+  boost::shared_ptr<BergerRigoutsos> box_generator =
+    boost::shared_ptr<BergerRigoutsos> (
+      new BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
+
   boost::shared_ptr<Database> load_balancer_input_db;
-  boost::shared_ptr<ChopAndPackLoadBalancer > load_balancer;
+
+  boost::shared_ptr<ChopAndPackLoadBalancer> load_balancer;
   if (input_db->isDatabase("LoadBalancer")) {
     load_balancer_input_db = input_db->getDatabase("LoadBalancer");
-    load_balancer = boost::shared_ptr<ChopAndPackLoadBalancer > (new ChopAndPackLoadBalancer (d_patch_hierarchy->getDim(), 
-       "LoadBalancer", load_balancer_input_db));
+    load_balancer = boost::shared_ptr<ChopAndPackLoadBalancer> (
+       new ChopAndPackLoadBalancer(d_patch_hierarchy->getDim(),
+                                   "LoadBalancer",
+                                   load_balancer_input_db));
+
   } else {
-    throw std::runtime_error ("LoadBalancer' section not found in input database");
+    throw std::runtime_error(
+      "LoadBalancer' section not found in input database");
   }
-  // construct gridding algorithm using "this" as the 
-  // TagAndInitializeStrategy.  
-  // NOTE: "this" is passed to the SAMRAI::mesh::GriddingAlgorithm as an 
-  // unmanaged smart-pointer to avoid having two distinct smart-pointers 
-  // reference the same SAMRAI::mesh::TagAndInitializeStrategy<DIM>*.
- d_gridding_alg = boost::shared_ptr< SAMRAI::mesh::GriddingAlgorithm > (new SAMRAI::mesh::GriddingAlgorithm(
-    patch_hierarchy,"LevelSetMethodGriddingAlgorithm", 
-    input_db, 
-    boost::shared_ptr< LevelSetMethodGriddingAlgorithm >(this),
-    box_generator, 
-    load_balancer));
+
+  // construct gridding algorithm using "this" as the TagAndInitializeStrategy
+  cout << this << endl;
+  d_gridding_alg = boost::shared_ptr<GriddingAlgorithm> (
+    new SAMRAI::mesh::GriddingAlgorithm(
+      patch_hierarchy,
+      "LevelSetMethodGriddingAlgorithm",
+      input_db,
+//      boost::shared_ptr<TagAndInitializeStrategy>(this),
+      boost::shared_ptr<LevelSetMethodGriddingAlgorithm>(this),
+      box_generator,
+      load_balancer));
 }
 
 
@@ -101,7 +128,7 @@ void LevelSetMethodGriddingAlgorithm::registerVelocityFieldStrategy(
   d_velocity_field_strategies.resizeArray(size+1);
 
   // velocity field strategy
- d_velocity_field_strategies[size] = 
+ d_velocity_field_strategies[size] =
    boost::shared_ptr< LevelSetMethodVelocityFieldStrategy >(
       velocity_field_strategy);
 }
@@ -114,7 +141,9 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
   /*
    * Construct and initialize the levels of hierarchy.
    */
-  if (RestartManager::getManager()->isFromRestart()) { 
+  if (RestartManager::getManager()->isFromRestart()) {
+    cout << "initializePatchHierarchy from restart" << endl;
+
     // from restart
     d_patch_hierarchy->getMaxNumberOfLevels();
 
@@ -122,15 +151,19 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
                                 0,
                                 d_patch_hierarchy->getFinestLevelNumber());
 
-  } else {  
+  } else {
+    cout << "initializePatchHierarchy not from restart 1" << endl;
     // not from restart
     d_gridding_alg->makeCoarsestLevel(time);
+    cout << "initializePatchHierarchy not from restart 2" << endl;
+
     bool done = false;
-    for (int level_num = 1; 
+    for (int level_num = 1;
          d_patch_hierarchy->levelCanBeRefined(level_num) && !done;
          level_num++) {
       plog << "Adding finer level with level_num = " << level_num << endl;
-      d_gridding_alg->makeFinerLevel(time, true, 0, d_patch_hierarchy->getFinestLevelNumber());
+      d_gridding_alg->makeFinerLevel(time, true, 0,
+                                     d_patch_hierarchy->getFinestLevelNumber());
 
       plog << "Just added finer level with level_num = " << level_num << endl;
       done = !(d_patch_hierarchy->finerLevelExists(level_num));
@@ -163,20 +196,20 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
 }
 
 
-/* 
+/*
  * regridPatchHierarchy() invokes the method
  * SAMRAI::LevelSetMethodGriddingAlgorithm::regridAllFinerLevels()
- * to carry out the regridding.   
+ * to carry out the regridding.
  */
 void LevelSetMethodGriddingAlgorithm::regridPatchHierarchy(
   const double time)
 {
   int num_levels = d_patch_hierarchy->getNumberOfLevels();
   std::vector<int> tag_buffer(num_levels, true);
-  for (int ln=0; ln < num_levels ; ln++) 
+  for (int ln=0; ln < num_levels ; ln++)
     tag_buffer[ln] = d_patch_hierarchy->getProperNestingBuffer(ln);
 
-  d_gridding_alg->regridAllFinerLevels( 
+  d_gridding_alg->regridAllFinerLevels(
     0, // regrid all levels finer than the coarsest level
     tag_buffer,
     0, //unused, look for iteration_number if iteration is needed
@@ -188,26 +221,27 @@ void LevelSetMethodGriddingAlgorithm::regridPatchHierarchy(
 void LevelSetMethodGriddingAlgorithm::initializeLevelData(
   const boost::shared_ptr< PatchHierarchy > hierarchy,
   const int level_number,
-//  const int regrid_cycle,
   const double init_data_time,
   const bool can_be_refined,
   const bool initial_time,
   const boost::shared_ptr< PatchLevel > old_level,
-  const bool allocate_data) 
+  const bool allocate_data)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(hierarchy!=NULL);
   assert( (level_number >= 0)
           && (level_number <= hierarchy->getFinestLevelNumber()) );
   if ( old_level!=NULL ) {
-    assert( level_number == old_level->getLevelNumber() );            
+    assert( level_number == old_level->getLevelNumber() );
   }
-  assert((hierarchy->getPatchLevel(level_number))!=NULL); 
+  assert((hierarchy->getPatchLevel(level_number))!=NULL);
 #endif
-
-  if (d_lsm_integrator_strategy!=NULL) { 
-    d_lsm_integrator_strategy->initializeLevelData(hierarchy, 
-      level_number, init_data_time, can_be_refined, initial_time, old_level, 
+  cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData"
+       << d_lsm_integrator_strategy.get()
+       << endl;
+  if (d_lsm_integrator_strategy!=NULL) {
+    d_lsm_integrator_strategy->initializeLevelData(hierarchy,
+      level_number, init_data_time, can_be_refined, initial_time, old_level,
       allocate_data);
   }
 
@@ -215,9 +249,13 @@ void LevelSetMethodGriddingAlgorithm::initializeLevelData(
   int psi_handle;
   d_lsm_integrator_strategy->preprocessInitializeVelocityField(
     phi_handle,psi_handle, hierarchy,level_number);
-  int num_velocity_field_strategies = 
+  int num_velocity_field_strategies =
     d_velocity_field_strategies.size();
+  cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData "
+       << num_velocity_field_strategies << endl;
   for (int k = 0; k < num_velocity_field_strategies; k++) {
+    cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData "
+         << d_velocity_field_strategies[k] << endl;
     if (d_velocity_field_strategies[k]!=NULL) {
       d_velocity_field_strategies[k]
         ->initializeLevelData(hierarchy,
@@ -253,12 +291,12 @@ void LevelSetMethodGriddingAlgorithm::resetHierarchyConfiguration(
   }
 #endif
 
-  if (d_lsm_integrator_strategy!=NULL) { 
+  if (d_lsm_integrator_strategy!=NULL) {
     d_lsm_integrator_strategy->resetHierarchyConfiguration(
       hierarchy, coarsest_level, finest_level);
   }
 
-  int num_velocity_field_strategies = 
+  int num_velocity_field_strategies =
     d_velocity_field_strategies.size();
   for (int k = 0; k < num_velocity_field_strategies; k++) {
     if (d_velocity_field_strategies[k]!=NULL) {
@@ -271,9 +309,9 @@ void LevelSetMethodGriddingAlgorithm::resetHierarchyConfiguration(
 }
 
 
-/* tagCellsForRefinements() 
+/* tagCellsForRefinements()
  *
- * The implementation of this method is essentially copied from 
+ * The implementation of this method is essentially copied from
  * SAMRAI::StandardTagAndInitialize::tagCellsForRefinement().  The
  * main difference is that Richardson extrapolation is not a valid
  * way to set the refinement cells.
@@ -282,7 +320,7 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
   const boost::shared_ptr< PatchHierarchy > hierarchy,
   const int level_number,
   const double regrid_time,
-  const int tag_index, 
+  const int tag_index,
   const bool initial_time,
   const bool coarsest_sync_level,
   const bool can_be_refined,
@@ -290,14 +328,14 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(hierarchy!=NULL);
-  assert( (level_number>=0) 
+  assert( (level_number>=0)
           && (level_number <= hierarchy->getFinestLevelNumber()) );
   assert((hierarchy->getPatchLevel(level_number)!=NULL));
   assert(tag_index>=0);
 #endif
 
   if (d_use_richardson_extrapolation)  {
-    TBOX_WARNING(   d_object_name 
+    TBOX_WARNING(   d_object_name
                  << "::tagCellsForRefinement(): "
                  << "Richardson extrapolation is NOT implemented in "
                  << "the LevelSetMethodGriddingAlgorithm.");
@@ -312,11 +350,11 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
 #ifdef DEBUG_CHECK_ASSERTIONS
     assert(d_lsm_integrator_strategy!=NULL);
 #endif
-    d_lsm_integrator_strategy->applyGradientDetector(hierarchy, 
-      level_number, regrid_time, tag_index, initial_time, 
+    d_lsm_integrator_strategy->applyGradientDetector(hierarchy,
+      level_number, regrid_time, tag_index, initial_time,
       d_use_richardson_extrapolation);
 
-    int num_velocity_field_strategies = 
+    int num_velocity_field_strategies =
       d_velocity_field_strategies.size();
     for (int k = 0; k < num_velocity_field_strategies; k++) {
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -339,7 +377,7 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
   if (d_use_refine_boxes) {
     hier::BoxContainer  refine_boxes;
     getUserSuppliedRefineBoxes(refine_boxes, level_number,0, regrid_time);
-// 0 is an unused regrid_cycle 
+// 0 is an unused regrid_cycle
     boost::shared_ptr< hier::PatchLevel > level =
        hierarchy->getPatchLevel(level_number);
 
@@ -367,11 +405,11 @@ hier::Box pbox = patch->getBox();
 }
 
 
-/* getFromInput() 
+/* getFromInput()
  *
- * This method is essentially copied from 
- * StandardTagAndInitialize::getFromInput(). 
- * It just does not read in the input related to 
+ * This method is essentially copied from
+ * StandardTagAndInitialize::getFromInput().
+ * It just does not read in the input related to
  * the explicitly-specified refinement boxes.
  */
 
@@ -389,9 +427,9 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
   }
 
  /* if (tagging_method.getSize() > 3) {
-    TBOX_ERROR(  d_object_name 
+    TBOX_ERROR(  d_object_name
               << "::getFromInput(): "
-              << tagging_method.getSize() 
+              << tagging_method.getSize()
               << " entries specified in `tagging_method' input.  "
               << "Maximum allowable is 3."
               << endl);
