@@ -13,19 +13,31 @@
 
 #include "BoundaryConditionModule.h"
 
-// SAMRAI Headers
-#include "SAMRAI/appu/CartesianBoundaryDefines.h"
-#include "SAMRAI/geom/CartesianPatchGeometry.h"
-#include "SAMRAI/pdat/CellData.h"
-#include "SAMRAI/hier/PatchGeometry.h"
+// Standard library headers
+#include <cstddef>
 
-// Toolbox headers
+// Boost headers
+#include "boost/smart_ptr/shared_ptr.hpp"
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/BoxId.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/PatchGeometry.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Utilities.h"
+
+// LSMLIB headers
+#include "LSMLIB_config.h"
 #include "lsm_boundary_conditions1d.h"
 #include "lsm_boundary_conditions2d.h"
 #include "lsm_boundary_conditions3d.h"
 
-using namespace geom;
-using namespace pdat;
+// Class/type declarations
+namespace SAMRAI { namespace geom { class GridGeometry; } }
 typedef PatchGeometry::TwoDimBool TwoDimBool;
 
 namespace LSMLIB {
@@ -217,8 +229,8 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -721,8 +733,8 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -1162,8 +1174,8 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -1330,8 +1342,8 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
