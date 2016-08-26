@@ -13,6 +13,5 @@
 #define included_LevelSetMethodPatchStrategy_cc
 
 #include "LevelSetMethodPatchStrategy.h"
-#include "LevelSetFunctionIntegrator.h"
 
 #endif

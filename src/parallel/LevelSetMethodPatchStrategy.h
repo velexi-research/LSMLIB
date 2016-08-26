@@ -36,24 +36,23 @@
  *
  */
 
-
-#include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/hier/IntVector.h"
-#include "SAMRAI/hier/Patch.h"
+// Boost headers
 #include "boost/shared_ptr.hpp"
 
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+
+// LSMLIB headers
 #include "LSMLIB_config.h"
-#include "LevelSetFunctionIntegrator.h"
-#include "LevelSetMethodVelocityFieldStrategy.h"
 
-// System Headers
-#include <float.h>
-
-// SAMRAI namespaces
+// Namespaces
 using namespace SAMRAI;
-using namespace hier;
 
+// Class/type declarations
+namespace LSMLIB { class LevelSetFunctionIntegrator; }
+namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
 
 /******************************************************************
  *
@@ -97,7 +96,7 @@ public:
    *    order to use the LevelSetFunctionIntegrator class.
    * 
    */
-  virtual void initializeLevelSetFunctionsOnPatch(Patch& patch,
+  virtual void initializeLevelSetFunctionsOnPatch(hier::Patch& patch,
                                                   const LSMLIB_REAL time,
                                                   const int phi_handle,
                                                   const int psi_handle) = 0;
@@ -137,11 +136,11 @@ public:
    * 
    */
   virtual void setLevelSetFunctionBoundaryConditions(
-    Patch& patch,
+    hier::Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector& ghost_width_to_fill){}
+    const hier::IntVector& ghost_width_to_fill){}
 
   //! @}
 
@@ -187,7 +186,7 @@ public:
    * 
    */
   inline virtual LSMLIB_REAL computeStableDtOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     LevelSetFunctionIntegrator* lsm_integrator,
     LevelSetMethodVelocityFieldStrategy* velocity_field_strategy) {
       return LSMLIB_REAL_MAX;
