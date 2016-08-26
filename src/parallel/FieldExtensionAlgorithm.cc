@@ -11,44 +11,52 @@
 #ifndef included_FieldExtensionAlgorithm_cc
 #define included_FieldExtensionAlgorithm_cc
 
-// System Headers
+// System headers
+#include <cstddef>
 #include <sstream>
-extern "C" {
-  #include <limits.h>
-  #include <math.h>
-}
 
-#include "FieldExtensionAlgorithm.h" 
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/VariableDatabase.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/tbox/Utilities.h"
+
+// LSMLIB headers
 #include "LSMLIB_DefaultParameters.h"
-
-// SAMRAI Headers
-#include "SAMRAI/geom/CartesianPatchGeometry.h" 
-#include "SAMRAI/pdat/CellData.h" 
-#include "SAMRAI/pdat/CellVariable.h" 
-#include "SAMRAI/hier/Patch.h" 
-#include "SAMRAI/hier/PatchLevel.h" 
-#include "SAMRAI/hier/VariableContext.h" 
-#include "SAMRAI/hier/VariableDatabase.h" 
+#include "BoundaryConditionModule.h"
+#include "FieldExtensionAlgorithm.h"
 
 // Headers for Fortran kernels
 extern "C" {
   #include "lsm_field_extension1d.h"
   #include "lsm_field_extension2d.h"
   #include "lsm_field_extension3d.h"
-  #include "lsm_samrai_f77_utilities.h"
 }
 
 // SAMRAI namespaces
 using namespace std;
-using namespace pdat;
-using namespace geom;
+using namespace SAMRAI;
+
+// Class/type declarations
+namespace SAMRAI { namespace hier { class Patch; } }
+namespace SAMRAI { namespace hier { class RefineOperator; } }
+namespace SAMRAI { namespace hier { class Variable; } }
+namespace SAMRAI { namespace hier { class VariableContext; } }
+
 // Constant
 #define LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS                   (1000)
 
 namespace LSMLIB {
 
 /* Constructor - parameters from input database */
- 
+
 FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   boost::shared_ptr<Database> input_db,
   boost::shared_ptr< PatchHierarchy > hierarchy,
@@ -66,8 +74,10 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 
   //set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
-// set data field handles
+  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry,
+    hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
+
+  // set data field handles
   d_extension_field_handle = field_handle;
   d_phi_handle = phi_handle;
   d_control_volume_handle = control_volume_handle;
@@ -79,9 +89,9 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   //create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module = 
-  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
-  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module = 
+  boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module =
+  boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
+  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module =
   boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
 
   // initialize variables and communication objects
@@ -102,7 +112,7 @@ FieldExtensionAlgorithm::FieldExtensionAlgorithm(
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
   const LSMLIB_REAL cfl_number,
-  const LSMLIB_REAL stop_distance, 
+  const LSMLIB_REAL stop_distance,
   const int max_iterations,
   const LSMLIB_REAL iteration_stop_tolerance,
   const bool verbose_mode,
@@ -116,7 +126,8 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 
   // set d_patch_hierarchy and d_grid_geometry
   d_patch_hierarchy = hierarchy;
-  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
+  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry,
+    hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
 
   // set data field handles
   d_extension_field_handle = field_handle;
@@ -134,22 +145,22 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   d_max_iterations = max_iterations;
   d_iteration_stop_tol = iteration_stop_tolerance;
 
-  // set termination criteria flags 
+  // set termination criteria flags
   d_use_stop_distance = (d_stop_distance > 0.0);
   d_use_max_iterations = (d_max_iterations > 0);
   d_use_iteration_stop_tol = (d_iteration_stop_tol > 0.0);
 
-  // if no stopping criteria are specified, use the length of the 
+  // if no stopping criteria are specified, use the length of the
   // largest dimension of the computational domain as stop distance
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
-    
+
     int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
-#else 
+#else
     const double *X_lower_double = d_grid_geometry->getXLower();
     const double *X_upper_double = d_grid_geometry->getXUpper();
     float X_lower[DIM];
@@ -162,7 +173,7 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
-        d_stop_distance = X_upper[dim]-X_lower[dim]; 
+        d_stop_distance = X_upper[dim]-X_lower[dim];
       }
     }
   }
@@ -174,9 +185,9 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module =
   boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
-  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module = 
+  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module =
   boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
 
   // initialize variables and communication objects
@@ -197,14 +208,14 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // reset hierarchy configuration if necessary
   if (d_hierarchy_configuration_needs_reset) {
-    resetHierarchyConfiguration(d_patch_hierarchy, 
+    resetHierarchyConfiguration(d_patch_hierarchy,
       0, d_patch_hierarchy->getFinestLevelNumber());
   }
 
   // allocate patch data for requird to compute extension field
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level = 
+    boost::shared_ptr< PatchLevel > level =
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -215,7 +226,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  boost::shared_ptr< PatchLevel > patch_level = 
+  boost::shared_ptr< PatchLevel > patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
@@ -230,14 +241,14 @@ void FieldExtensionAlgorithm::computeExtensionField(
   }
 
   // compute dt
-  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;
 
   // compute the maximum number of iterations
   int num_steps = LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS;
   if (max_iterations >= 0) {
     num_steps = max_iterations;
   } else {
-    if (d_use_max_iterations) num_steps = d_max_iterations; 
+    if (d_use_max_iterations) num_steps = d_max_iterations;
     if (d_use_stop_distance) {
       int stop_dist_num_steps = (int) (d_stop_distance/dt);
       if (d_use_max_iterations) {
@@ -245,8 +256,8 @@ void FieldExtensionAlgorithm::computeExtensionField(
       } else {
         num_steps = stop_dist_num_steps;
       }
-    } 
-  } 
+    }
+  }
 
 
   /*
@@ -256,17 +267,17 @@ void FieldExtensionAlgorithm::computeExtensionField(
   if (d_phi_scr_handle != d_phi_handle) {
     LevelSetMethodToolbox::copySAMRAIData(
       d_patch_hierarchy,
-      d_phi_scr_handle, d_phi_handle, 
+      d_phi_scr_handle, d_phi_handle,
       0, phi_component);
   }
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_phi_fill_bdry_sched[ln]->fillData(0.0,true);
   }
   if (d_phi_scr_handle != d_phi_handle) {
     d_phi_bc_module->imposeBoundaryConditions(
-      d_phi_scr_handle, 
+      d_phi_scr_handle,
       lower_bc_phi,
       upper_bc_phi,
       d_spatial_derivative_type,
@@ -274,7 +285,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
       0);
   } else {
     d_phi_bc_module->imposeBoundaryConditions(
-      d_phi_scr_handle, 
+      d_phi_scr_handle,
       lower_bc_phi,
       upper_bc_phi,
       d_spatial_derivative_type,
@@ -282,7 +293,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
       phi_component);
   }
 
-  if (d_phi_scr_handle != d_phi_handle) {  
+  if (d_phi_scr_handle != d_phi_handle) {
 
     // case:  use FieldExtensionAlgorithm's scratch space for phi
     LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
@@ -292,7 +303,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
       d_normal_vector_handle,
       d_phi_scr_handle,
       LevelSetMethodToolbox::PHI_UPWIND,
-      0);  // phi scratch data is stored in component 0 
+      0);  // phi scratch data is stored in component 0
 
   } else {
 
@@ -305,13 +316,13 @@ void FieldExtensionAlgorithm::computeExtensionField(
       d_phi_handle,
       LevelSetMethodToolbox::PHI_UPWIND,
       phi_component);  // phi data to use for field extension calculation
-                       // stored in phi_component 
+                       // stored in phi_component
 
   }
-  
+
   /*
    *  compute the number of components in the extension field data
-   *  (if it has not already been computed) 
+   *  (if it has not already been computed)
    */
   if (d_num_field_components == 0) {
     boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
@@ -319,16 +330,16 @@ void FieldExtensionAlgorithm::computeExtensionField(
       boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
       if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
-                  << "::computeExtensionField(): " 
+                  << "::computeExtensionField(): "
                   << "Cannot find patch. Null patch pointer."
                   << endl);
       }
-  
-      boost::shared_ptr< CellData<LSMLIB_REAL> > field_data= 
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data=
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( d_extension_field_handle ));
       d_num_field_components = field_data->getDepth();
-  
+
       break;  // only need PatchData from one patch for computation
     }
   }
@@ -349,10 +360,10 @@ void FieldExtensionAlgorithm::computeExtensionField(
     // loop over components in extension field
     for (int component = 0; component < d_num_field_components; component++) {
 
-      // advance extension field equation using TVD Runge-Kutta 
+      // advance extension field equation using TVD Runge-Kutta
       switch(d_tvd_runge_kutta_order) {
         case 1: { // first-order TVD RK (e.g. Forward Euler)
-          if (d_phi_scr_handle != d_phi_handle) {  
+          if (d_phi_scr_handle != d_phi_handle) {
             advanceFieldExtensionEqnUsingTVDRK1(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
           } else {
@@ -361,8 +372,8 @@ void FieldExtensionAlgorithm::computeExtensionField(
           }
           break;
         }
-        case 2: { // second-order TVD RK 
-          if (d_phi_scr_handle != d_phi_handle) {  
+        case 2: { // second-order TVD RK
+          if (d_phi_scr_handle != d_phi_handle) {
             advanceFieldExtensionEqnUsingTVDRK2(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
           } else {
@@ -371,19 +382,19 @@ void FieldExtensionAlgorithm::computeExtensionField(
           }
           break;
         }
-        case 3: { // third-order TVD RK 
-          if (d_phi_scr_handle != d_phi_handle) {  
+        case 3: { // third-order TVD RK
+          if (d_phi_scr_handle != d_phi_handle) {
             advanceFieldExtensionEqnUsingTVDRK3(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
           } else {
             advanceFieldExtensionEqnUsingTVDRK3(
               dt, component, phi_component, lower_bc_ext, upper_bc_ext);
-          } 
+          }
           break;
         }
         default: { // UNSUPPORTED ORDER
           TBOX_ERROR(  d_object_name
-                    << "::computeExtensionField(): " 
+                    << "::computeExtensionField(): "
                     << "Unsupported TVD Runge-Kutta order.  "
                     << "Only TVD-RK1, TVD-RK2, and TVD-RK3 supported."
                     << endl);
@@ -393,7 +404,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
       // update count and delta
       if (d_use_iteration_stop_tol) {
         delta += LevelSetMethodToolbox::maxNormOfDifference(
-          d_patch_hierarchy, field_handle_after_step, field_handle_before_step, 
+          d_patch_hierarchy, field_handle_after_step, field_handle_before_step,
           d_control_volume_handle, component, 0);  // 0 is component of field
                                                    // before the time step
                                                    // which is just a single
@@ -405,16 +416,16 @@ void FieldExtensionAlgorithm::computeExtensionField(
     if (d_verbose_mode) {
       pout << endl;
       pout << d_object_name << " iteration count: " << count << endl;
-      if (d_use_stop_distance) { 
-        pout << "  Fields on zero level set extended to a distance " 
+      if (d_use_stop_distance) {
+        pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;
-      } 
+      }
       if (d_use_iteration_stop_tol) {
-        pout << "  Max norm of change in extension fields: " 
+        pout << "  Max norm of change in extension fields: "
              << delta << endl;
       }
     }
-  
+
     count++;
 
   } // end loop over evolution of extension field equation
@@ -423,7 +434,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
   if ( d_use_iteration_stop_tol && (delta > d_iteration_stop_tol) ) {
     TBOX_WARNING(  d_object_name
                 << "::computeExtensionField(): "
-                << "target stop tolerance (" 
+                << "target stop tolerance ("
                 << d_iteration_stop_tol << ") NOT reached after "
                 << count << " time steps. "
                 << "delta = " << delta
@@ -434,25 +445,25 @@ void FieldExtensionAlgorithm::computeExtensionField(
   if (d_verbose_mode) {
     pout << endl;
     pout << "Total number of iterations: " << count << endl;
-    if (d_use_stop_distance) { 
-      pout << "  Fields on zero level set extended to a distance " 
+    if (d_use_stop_distance) {
+      pout << "  Fields on zero level set extended to a distance "
            << "of approximately " << dt*count << endl;
-    } 
+    }
     if (d_use_iteration_stop_tol)
-      pout << "  Last change in max norm of extension field: " 
+      pout << "  Last change in max norm of extension field: "
            << delta << endl;
   }
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level 
+    boost::shared_ptr< PatchLevel > level
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
 }
 
 
-/* computeExtensionFieldForSingleComponent() */ 
+/* computeExtensionFieldForSingleComponent() */
 void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   const int component,
   const int phi_component,
@@ -465,14 +476,14 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // reset hierarchy configuration if necessary
   if (d_hierarchy_configuration_needs_reset) {
-    resetHierarchyConfiguration(d_patch_hierarchy, 
+    resetHierarchyConfiguration(d_patch_hierarchy,
       0, d_patch_hierarchy->getFinestLevelNumber());
   }
 
   // allocate patch data for required to compute extension field
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level = 
+    boost::shared_ptr< PatchLevel > level =
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -483,11 +494,11 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  boost::shared_ptr< PatchLevel > patch_level = 
+  boost::shared_ptr< PatchLevel > patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
   IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
-  int DIM = d_patch_hierarchy->getDim().getValue(); 
+  int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
@@ -497,15 +508,15 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
 
-  // compute dt 
-  const LSMLIB_REAL dt = d_cfl_number*min_dx;  
+  // compute dt
+  const LSMLIB_REAL dt = d_cfl_number*min_dx;
 
   // compute the maximum number of iterations
   int num_steps = LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS;
   if (max_iterations >= 0) {
     num_steps = max_iterations;
   } else {
-    if (d_use_max_iterations) num_steps = d_max_iterations; 
+    if (d_use_max_iterations) num_steps = d_max_iterations;
     if (d_use_stop_distance) {
       int stop_dist_num_steps = (int) (d_stop_distance/dt);
       if (d_use_max_iterations) {
@@ -513,8 +524,8 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
       } else {
         num_steps = stop_dist_num_steps;
       }
-    } 
-  } 
+    }
+  }
 
 
   /*
@@ -524,17 +535,17 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   if (d_phi_scr_handle != d_phi_handle) {
     LevelSetMethodToolbox::copySAMRAIData(
       d_patch_hierarchy,
-      d_phi_scr_handle, d_phi_handle, 
+      d_phi_scr_handle, d_phi_handle,
       0, phi_component);
   }
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_phi_fill_bdry_sched[ln]->fillData(0.0,true);
   }
   if (d_phi_scr_handle != d_phi_handle) {
     d_phi_bc_module->imposeBoundaryConditions(
-      d_phi_scr_handle, 
+      d_phi_scr_handle,
       lower_bc_phi,
       upper_bc_phi,
       d_spatial_derivative_type,
@@ -542,7 +553,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
       0);
   } else {
     d_phi_bc_module->imposeBoundaryConditions(
-      d_phi_scr_handle, 
+      d_phi_scr_handle,
       lower_bc_phi,
       upper_bc_phi,
       d_spatial_derivative_type,
@@ -550,7 +561,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
       phi_component);
   }
 
-  if (d_phi_scr_handle != d_phi_handle) {  
+  if (d_phi_scr_handle != d_phi_handle) {
 
     // case:  use FieldExtensionAlgorithm's scratch space for phi
     LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
@@ -560,7 +571,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
       d_normal_vector_handle,
       d_phi_scr_handle,
       LevelSetMethodToolbox::PHI_UPWIND,
-      0);  // phi scratch data is stored in component 0 
+      0);  // phi scratch data is stored in component 0
 
   } else {
 
@@ -573,10 +584,10 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
       d_phi_handle,
       LevelSetMethodToolbox::PHI_UPWIND,
       phi_component);  // phi data to use for field extension calculation
-                       // stored in phi_component 
+                       // stored in phi_component
 
   }
-  
+
   /*
    *  main field extension loop
    */
@@ -587,10 +598,10 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   while ( (count < num_steps) &&
           (!d_use_iteration_stop_tol || (delta > d_iteration_stop_tol)) ) {
 
-    // advance extension field equation using TVD Runge-Kutta 
+    // advance extension field equation using TVD Runge-Kutta
     switch(d_tvd_runge_kutta_order) {
       case 1: { // first-order TVD RK (e.g. Forward Euler)
-        if (d_phi_scr_handle != d_phi_handle) {  
+        if (d_phi_scr_handle != d_phi_handle) {
           advanceFieldExtensionEqnUsingTVDRK1(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
         } else {
@@ -599,8 +610,8 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
         }
         break;
       }
-      case 2: { // second-order TVD RK 
-        if (d_phi_scr_handle != d_phi_handle) {  
+      case 2: { // second-order TVD RK
+        if (d_phi_scr_handle != d_phi_handle) {
           advanceFieldExtensionEqnUsingTVDRK2(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
         } else {
@@ -609,19 +620,19 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
         }
         break;
       }
-      case 3: { // third-order TVD RK 
-        if (d_phi_scr_handle != d_phi_handle) {  
+      case 3: { // third-order TVD RK
+        if (d_phi_scr_handle != d_phi_handle) {
           advanceFieldExtensionEqnUsingTVDRK3(
               dt, component, 0, lower_bc_ext, upper_bc_ext);
         } else {
           advanceFieldExtensionEqnUsingTVDRK3(
               dt, component, phi_component, lower_bc_ext, upper_bc_ext);
-        } 
+        }
         break;
       }
       default: { // UNSUPPORTED ORDER
         TBOX_ERROR(  d_object_name
-                  << "::computeExtensionFieldForSingleComponent(): " 
+                  << "::computeExtensionFieldForSingleComponent(): "
                   << "Unsupported TVD Runge-Kutta order.  "
                   << "Only TVD-RK1, TVD-RK2, and TVD-RK3 supported."
                   << endl);
@@ -631,7 +642,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
     // update count and delta
     if (d_use_iteration_stop_tol) {
       delta = LevelSetMethodToolbox::maxNormOfDifference(
-        d_patch_hierarchy, field_handle_after_step, field_handle_before_step, 
+        d_patch_hierarchy, field_handle_after_step, field_handle_before_step,
         d_control_volume_handle, component, 0);  // 0 is component of field
                                                  // before the time step
                                                  // which is just a single
@@ -642,16 +653,16 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
     if (d_verbose_mode) {
       pout << endl;
       pout << d_object_name << " iteration count: " << count << endl;
-      if (d_use_stop_distance) { 
-        pout << "  Fields on zero level set extended to a distance " 
+      if (d_use_stop_distance) {
+        pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;
-      } 
+      }
       if (d_use_iteration_stop_tol) {
-        pout << "  Max norm of change in extension field: " 
+        pout << "  Max norm of change in extension field: "
              << delta << endl;
       }
     }
-  
+
     count++;
 
   } // end loop over evolution of extension field equation
@@ -660,7 +671,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   if ( d_use_iteration_stop_tol && (delta > d_iteration_stop_tol) ) {
     TBOX_WARNING(  d_object_name
                 << "::computeExtensionField(): "
-                << "target stop tolerance (" 
+                << "target stop tolerance ("
                 << d_iteration_stop_tol << ") NOT reached after "
                 << count << " time steps. "
                 << "delta = " << delta
@@ -671,18 +682,18 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   if (d_verbose_mode) {
     pout << endl;
     pout << "Total number of iterations: " << count << endl;
-    if (d_use_stop_distance) { 
-      pout << "  Fields on zero level set extended to a distance " 
+    if (d_use_stop_distance) {
+      pout << "  Fields on zero level set extended to a distance "
            << "of approximately " << dt*count << endl;
-    } 
+    }
     if (d_use_iteration_stop_tol)
-      pout << "  Last max norm of change in extension field: " 
+      pout << "  Last max norm of change in extension field: "
            << delta << endl;
   }
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level 
+    boost::shared_ptr< PatchLevel > level
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
@@ -699,7 +710,8 @@ void FieldExtensionAlgorithm::resetHierarchyConfiguration(
   d_patch_hierarchy = hierarchy;
 
   // reset d_grid_geometry
-  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
+  d_grid_geometry = BOOST_CAST<geom::CartesianGridGeometry,
+    hier::BaseGridGeometry>(d_patch_hierarchy->getGridGeometry());
 
   // compute RefineSchedules for filling extension field boundary data
   int num_levels = hierarchy->getNumberOfLevels();
@@ -708,17 +720,17 @@ void FieldExtensionAlgorithm::resetHierarchyConfiguration(
 
     for (int ln = coarsest_level; ln <= finest_level; ln++) {
       boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
- 
+
       // reset data transfer configuration for boundary filling
       // before time advance
       d_extension_field_fill_bdry_sched[k][ln] =
         d_extension_field_fill_bdry_alg[k]->createSchedule(
           level, ln-1, hierarchy, 0);  // NULL RefinePatchStrategy
- 
+
     } // end loop over levels
   } // end loop over TVD Runge-Kutta stages
 
-  // compute RefineSchedules for filling phi boundary data 
+  // compute RefineSchedules for filling phi boundary data
   // (required for calculating the signed normal vector)
   d_phi_fill_bdry_sched.resizeArray(num_levels);
 
@@ -769,12 +781,12 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK1(
   // copy component of field data to scratch space
   LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
-    d_extension_field_scr_handles[0], d_extension_field_handle, 
+    d_extension_field_scr_handles[0], d_extension_field_handle,
     0, field_component);
 
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -792,7 +804,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK1(
   LevelSetMethodToolbox::TVDRK1Step(
     d_patch_hierarchy,
     d_extension_field_handle,
-    d_extension_field_scr_handles[rk_stage], 
+    d_extension_field_scr_handles[rk_stage],
     d_rhs_handle, dt,
     field_component, 0, 0); // components of PatchData to use in TVD-RK1 step
 }
@@ -819,12 +831,12 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK2(
   // copy component of field data to scratch space
   LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
-    d_extension_field_scr_handles[0], d_extension_field_handle, 
+    d_extension_field_scr_handles[0], d_extension_field_handle,
     0, field_component);
 
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -856,7 +868,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK2(
 
   // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -877,7 +889,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK2(
     d_extension_field_scr_handles[rk_stage],
     d_extension_field_scr_handles[0],
     d_rhs_handle, dt,
-    field_component, 0, 0, 0);  // components of PatchData to use in 
+    field_component, 0, 0, 0);  // components of PatchData to use in
                                 // TVD-RK2 step
 
   // } end Stage 2
@@ -905,12 +917,12 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
   // copy component of field data to scratch space
   LevelSetMethodToolbox::copySAMRAIData(
     d_patch_hierarchy,
-    d_extension_field_scr_handles[0], d_extension_field_handle, 
+    d_extension_field_scr_handles[0], d_extension_field_handle,
     0, field_component);
 
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -942,7 +954,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
 
   // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -975,7 +987,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
 
   // fill scratch space for second stage of time advance
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    // NOTE: 0.0 is "current time" and true indicates that physical 
+    // NOTE: 0.0 is "current time" and true indicates that physical
     //       boundary conditions should be set.
     d_extension_field_fill_bdry_sched[rk_stage][ln]->fillData(0.0,true);
   }
@@ -996,7 +1008,7 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
     d_extension_field_scr_handles[rk_stage],
     d_extension_field_scr_handles[0],
     d_rhs_handle, dt,
-    field_component, 0, 0, 0);  // components of PatchData to use in 
+    field_component, 0, 0, 0);  // components of PatchData to use in
                                 // TVD-RK3 step
 
   // } end Stage 3
@@ -1008,7 +1020,7 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
   const int extension_field_handle,
   const int phi_component)
 {
-  // compute spatial derivatives of the extension field for 
+  // compute spatial derivatives of the extension field for
   // the current stage
   LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
     d_patch_hierarchy,
@@ -1024,7 +1036,7 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
     boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    
+
      for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
       boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
       if ( patch==NULL ) {
@@ -1035,33 +1047,33 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
       }
 
       // get grid spacing
-      boost::shared_ptr< CartesianPatchGeometry > patch_geom =
-        BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+      boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
+        BOOST_CAST <geom::CartesianPatchGeometry, PatchGeometry>(
         patch->getPatchGeometry());
       int DIM = d_patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
-#else 
+#else
       const double* dx_double = patch_geom->getDx();
-      float dx[DIM]; 
+      float dx[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
 
       // get pointers to data and index space ranges
-      boost::shared_ptr< CellData<LSMLIB_REAL> > rhs_data =
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( d_rhs_handle ));
-      boost::shared_ptr< CellData<LSMLIB_REAL> > field_data =
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( extension_field_handle ));
-      boost::shared_ptr< CellData<LSMLIB_REAL> > phi_data =
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( d_phi_scr_handle ));
-      boost::shared_ptr< CellData<LSMLIB_REAL> > normal_vector_data =
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( d_normal_vector_handle ));
-      boost::shared_ptr< CellData<LSMLIB_REAL> > grad_field_data =
-        BOOST_CAST<CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_field_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
         patch->getPatchData( d_grad_field_handle ));
 
       Box rhs_ghostbox = rhs_data->getGhostBox();
@@ -1077,15 +1089,15 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
       const IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
       Box normal_vector_ghostbox = normal_vector_data->getGhostBox();
-      const IntVector normal_vector_ghostbox_lower = 
+      const IntVector normal_vector_ghostbox_lower =
         normal_vector_ghostbox.lower();
-      const IntVector normal_vector_ghostbox_upper = 
+      const IntVector normal_vector_ghostbox_upper =
         normal_vector_ghostbox.upper();
 
       Box grad_field_ghostbox = grad_field_data->getGhostBox();
-      const IntVector grad_field_ghostbox_lower = 
+      const IntVector grad_field_ghostbox_lower =
         grad_field_ghostbox.lower();
-      const IntVector grad_field_ghostbox_upper = 
+      const IntVector grad_field_ghostbox_upper =
         grad_field_ghostbox.upper();
 
       // fill box
@@ -1167,12 +1179,12 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
           &phi_ghostbox_upper[0],
           &phi_ghostbox_lower[1],
           &phi_ghostbox_upper[1],
-          upwind_grad_field[0], upwind_grad_field[1], 
+          upwind_grad_field[0], upwind_grad_field[1],
           &grad_field_ghostbox_lower[0],
           &grad_field_ghostbox_upper[0],
           &grad_field_ghostbox_lower[1],
           &grad_field_ghostbox_upper[1],
-          normal_vector[0], normal_vector[1], 
+          normal_vector[0], normal_vector[1],
           &normal_vector_ghostbox_lower[0],
           &normal_vector_ghostbox_upper[0],
           &normal_vector_ghostbox_lower[1],
@@ -1195,7 +1207,7 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
           phi,
           &phi_ghostbox_lower[0],
           &phi_ghostbox_upper[0],
-          upwind_grad_field[0], 
+          upwind_grad_field[0],
           &grad_field_ghostbox_lower[0],
           &grad_field_ghostbox_upper[0],
           normal_vector[0],
@@ -1227,13 +1239,13 @@ void FieldExtensionAlgorithm::initializeVariables(
   d_num_field_components = 0;
 
   // compute ghost cell widths
-  int scratch_ghostcell_width_for_grad = -1; // bogus value which is reset in 
+  int scratch_ghostcell_width_for_grad = -1; // bogus value which is reset in
                                              // switch statement
-  switch (d_spatial_derivative_type) { 
+  switch (d_spatial_derivative_type) {
     case ENO: {
       scratch_ghostcell_width_for_grad = d_spatial_derivative_order;
       break;
-    } 
+    }
     case WENO: {
       scratch_ghostcell_width_for_grad = d_spatial_derivative_order/2 + 1;
       break;
@@ -1253,21 +1265,22 @@ void FieldExtensionAlgorithm::initializeVariables(
    * create variables and PatchData for scratch data
    */
   VariableDatabase *var_db = VariableDatabase::getDatabase();
-  int DIM = d_patch_hierarchy->getDim().getValue(); 
-  // compute minimum ghostcell width for phi data 
+  int DIM = d_patch_hierarchy->getDim().getValue();
+  // compute minimum ghostcell width for phi data
   int min_ghostcell_width = phi_ghostcell_width(0);
   for (int k = 1; k < DIM; k++ ) {
-    if (min_ghostcell_width > phi_ghostcell_width(k)) 
+    if (min_ghostcell_width > phi_ghostcell_width(k))
       min_ghostcell_width = phi_ghostcell_width(k);
   }
-  
+
   // get variable associated with phi_handle
   boost::shared_ptr< Variable > tmp_variable;
   boost::shared_ptr<VariableContext> tmp_context;
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_variable;
-  if (var_db->mapIndexToVariableAndContext(d_phi_handle, 
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
+  if (var_db->mapIndexToVariableAndContext(d_phi_handle,
                                            tmp_variable, tmp_context)) {
-    phi_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(tmp_variable);
+    phi_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,
+                               Variable >(tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeVariables(): "
@@ -1277,7 +1290,7 @@ void FieldExtensionAlgorithm::initializeVariables(
   }
 
   // create scratch context for extension field calculation
-  boost::shared_ptr<VariableContext> scratch_context = 
+  boost::shared_ptr<VariableContext> scratch_context =
     var_db->getContext("EXTENSION_FIELD_SCRATCH");
 
   // reserve space for extension field scratch PatchData handles
@@ -1287,10 +1300,11 @@ void FieldExtensionAlgorithm::initializeVariables(
   d_scratch_data.clrAllFlags();
 
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > field_variable;
-  if (var_db->mapIndexToVariableAndContext(d_extension_field_handle, 
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
+  if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
                                            tmp_variable, tmp_context)) {
-    field_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(tmp_variable);
+    field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+      Variable>(tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeVariables(): "
@@ -1299,25 +1313,25 @@ void FieldExtensionAlgorithm::initializeVariables(
               << endl);
   }
 
-  // create "SCRATCH" context for extension field 
+  // create "SCRATCH" context for extension field
   d_ext_field_scratch_ghostcell_width = scratch_ghostcell_width;
   stringstream ext_field_scratch_name("");
-  ext_field_scratch_name << d_object_name << "::" << field_variable->getName() 
-                   << "::EXTENSION_FIELD_SCRATCH"; 
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > ext_field_scratch_variable;
+  ext_field_scratch_name << d_object_name << "::" << field_variable->getName()
+                   << "::EXTENSION_FIELD_SCRATCH";
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > ext_field_scratch_variable;
   if (var_db->checkVariableExists(ext_field_scratch_name.str())) {
-    ext_field_scratch_variable = 
-      BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(ext_field_scratch_name.str()));
+    ext_field_scratch_variable =
+      BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(ext_field_scratch_name.str()));
   } else {
-    ext_field_scratch_variable = 
-      boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),ext_field_scratch_name.str(), 1));
+    ext_field_scratch_variable =
+      boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),ext_field_scratch_name.str(), 1));
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
     stringstream context_name("");
-    context_name << "EXTENSION_FIELD_TVDRK::" 
+    context_name << "EXTENSION_FIELD_TVDRK::"
                  << d_extension_field_handle
                  << "::" << k;
-    d_extension_field_scr_handles[k] = 
+    d_extension_field_scr_handles[k] =
       var_db->registerVariableAndContext(
         ext_field_scratch_variable,
         var_db->getContext(context_name.str()),
@@ -1325,21 +1339,21 @@ void FieldExtensionAlgorithm::initializeVariables(
     d_scratch_data.setFlag(d_extension_field_scr_handles[k]);
   }
 
-  // create "SCRATCH" context for phi if there are insufficient ghostcells 
+  // create "SCRATCH" context for phi if there are insufficient ghostcells
   // for grad(phi) calculation
   if ( (min_ghostcell_width < scratch_ghostcell_width_for_grad) ||
        (min_ghostcell_width < 1) ) {  // at least 1 ghostcell is required
                                       // to compute upwind normal vector
 
     stringstream phi_scratch_name("");
-    phi_scratch_name << d_object_name << "::" << phi_variable->getName() 
-                     << "::EXTENSION_FIELD_PHI_SCRATCH"; 
-    boost::shared_ptr< CellVariable<LSMLIB_REAL> > phi_scratch_variable;
+    phi_scratch_name << d_object_name << "::" << phi_variable->getName()
+                     << "::EXTENSION_FIELD_PHI_SCRATCH";
+    boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_scratch_variable;
     if (var_db->checkVariableExists(phi_scratch_name.str())) {
-      phi_scratch_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(phi_scratch_name.str()));
+      phi_scratch_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(phi_scratch_name.str()));
     } else {
-      phi_scratch_variable = 
-        boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), phi_scratch_name.str(), 1));
+      phi_scratch_variable =
+        boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), phi_scratch_name.str(), 1));
     }
     d_phi_scr_handle = var_db->registerVariableAndContext(
       phi_scratch_variable, scratch_context, scratch_ghostcell_width);
@@ -1353,11 +1367,11 @@ void FieldExtensionAlgorithm::initializeVariables(
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << field_variable->getName() << "::EXTENSION_FIELD_RHS";
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > rhs_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
-   rhs_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(rhs_name.str()));
+   rhs_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(rhs_name.str()));
   } else {
-   rhs_variable =  boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>( d_patch_hierarchy->getDim(), rhs_name.str(), 1));
+   rhs_variable =  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>( d_patch_hierarchy->getDim(), rhs_name.str(), 1));
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1365,14 +1379,14 @@ void FieldExtensionAlgorithm::initializeVariables(
 
   // create variables for unit normal vector ( grad(phi)/|grad(phi)| )
   stringstream normal_vector_name("");
-  normal_vector_name << phi_variable->getName() 
+  normal_vector_name << phi_variable->getName()
                      << "::EXTENSION_FIELD_NORMAL_VECTOR";
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > normal_vector_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > normal_vector_variable;
   if (var_db->checkVariableExists(normal_vector_name.str())) {
-   normal_vector_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(normal_vector_name.str()));
+   normal_vector_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(normal_vector_name.str()));
   } else {
-   normal_vector_variable = 
-     boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), normal_vector_name.str(),DIM)); 
+   normal_vector_variable =
+     boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), normal_vector_name.str(),DIM));
  }
   d_normal_vector_handle = var_db->registerVariableAndContext(
     normal_vector_variable, scratch_context, zero_ghostcell_width);
@@ -1380,17 +1394,17 @@ void FieldExtensionAlgorithm::initializeVariables(
 
   // create variables for grad(phi)
   stringstream grad_phi_name("");
-  grad_phi_name << phi_variable->getName() 
+  grad_phi_name << phi_variable->getName()
                 << "::EXTENSION_FIELD_GRAD_PHI";
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
-   grad_phi_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_phi_name.str()));
+   grad_phi_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_phi_name.str()));
   } else {
-   grad_phi_variable = boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_phi_name.str()));
+   grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_phi_name.str()));
   }
-  boost::shared_ptr<VariableContext> grad_phi_plus_context =  
+  boost::shared_ptr<VariableContext> grad_phi_plus_context =
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_PLUS");
-  boost::shared_ptr<VariableContext> grad_phi_minus_context =  
+  boost::shared_ptr<VariableContext> grad_phi_minus_context =
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_MINUS");
   d_grad_phi_plus_handle = var_db->registerVariableAndContext(
     grad_phi_variable, grad_phi_plus_context, zero_ghostcell_width);
@@ -1401,20 +1415,20 @@ void FieldExtensionAlgorithm::initializeVariables(
 
   // set up grad(field) handle
   stringstream grad_field_name("");
-  grad_field_name << field_variable->getName() << "::" 
+  grad_field_name << field_variable->getName() << "::"
                   << phi_variable->getName()
                   << "::EXTENSION_FIELD_GRAD_FIELD";
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > grad_field_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_field_variable;
   if (var_db->checkVariableExists(grad_field_name.str())) {
-   grad_field_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_field_name.str()));
+   grad_field_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_field_name.str()));
   } else {
-   grad_field_variable = 
-     boost::shared_ptr< CellVariable<LSMLIB_REAL> > (new 
-     CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_field_name.str()));
+   grad_field_variable =
+     boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new
+     pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_field_name.str()));
   }
   d_grad_field_handle = var_db->registerVariableAndContext(
-    grad_field_variable, 
-    var_db->getContext("EXTENSION_FIELD_UPWIND_GRAD_FIELD"), 
+    grad_field_variable,
+    var_db->getContext("EXTENSION_FIELD_UPWIND_GRAD_FIELD"),
     zero_ghostcell_width);
   d_scratch_data.setFlag(d_grad_field_handle);
 
@@ -1435,12 +1449,12 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
    * Look up refine operation
    */
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr< CellVariable<LSMLIB_REAL> > field_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
   boost::shared_ptr< Variable > tmp_variable;
   boost::shared_ptr<VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
                                            tmp_variable, tmp_context)) {
-    field_variable = BOOST_CAST< CellVariable<LSMLIB_REAL>,Variable >(tmp_variable);
+    field_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeCommunicationObjects(): "
@@ -1460,7 +1474,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   d_extension_field_fill_bdry_alg.resizeArray(d_tvd_runge_kutta_order);
   d_extension_field_fill_bdry_sched.resizeArray(d_tvd_runge_kutta_order);
   for (int k = 0; k < d_tvd_runge_kutta_order; k++) {
-    d_extension_field_fill_bdry_alg[k] = 
+    d_extension_field_fill_bdry_alg[k] =
      boost::shared_ptr< RefineAlgorithm >(new RefineAlgorithm);
 
     // empty out the boundary bdry fill schedules
@@ -1475,9 +1489,9 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
 
   } // end loop over TVD-Runge-Kutta stages
 
-  // create RefineAlgorithms for filling boundary data for phi 
+  // create RefineAlgorithms for filling boundary data for phi
   // (required to calculate the signed normal vector)
-  d_phi_fill_bdry_alg = 
+  d_phi_fill_bdry_alg =
   boost::shared_ptr< RefineAlgorithm > (new RefineAlgorithm);
 
   // empty out the boundary bdry fill schedules
@@ -1490,9 +1504,9 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
     d_phi_scr_handle,
     refine_op);
 
-  // configure communications schedules for ALL levels using the 
+  // configure communications schedules for ALL levels using the
   // specified PatchHierarchy
-  resetHierarchyConfiguration(d_patch_hierarchy, 
+  resetHierarchyConfiguration(d_patch_hierarchy,
     0, d_patch_hierarchy->getFinestLevelNumber());
 
 }
@@ -1528,18 +1542,18 @@ void FieldExtensionAlgorithm::getFromInput(
   d_iteration_stop_tol = db->getDoubleWithDefault(
       "iteration_stop_tolerance", 0.0);
 
-  // set termination criteria flags 
+  // set termination criteria flags
   d_use_stop_distance = (d_stop_distance > 0.0);
   d_use_max_iterations = (d_max_iterations > 0);
   d_use_iteration_stop_tol = (d_iteration_stop_tol > 0.0);
 
-  // if no stopping criteria are specified, use the length of the 
+  // if no stopping criteria are specified, use the length of the
   // largest dimension of the computational domain as stop distance
   if ( !( d_use_iteration_stop_tol || d_use_stop_distance ||
           d_use_max_iterations) ) {
     d_use_stop_distance = true;
 
-    int DIM = d_patch_hierarchy->getDim().getValue();    
+    int DIM = d_patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
@@ -1557,7 +1571,7 @@ void FieldExtensionAlgorithm::getFromInput(
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
-        d_stop_distance = X_upper[dim]-X_lower[dim]; 
+        d_stop_distance = X_upper[dim]-X_lower[dim];
       }
     }
   }

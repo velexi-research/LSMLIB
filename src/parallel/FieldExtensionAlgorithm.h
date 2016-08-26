@@ -5,16 +5,16 @@
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
  * Modified:    $09/22/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
- * Description: Header file for level set method field extension algorithm 
+ * Description: Header file for level set method field extension algorithm
  */
- 
+
 #ifndef included_FieldExtensionAlgorithm_h
 #define included_FieldExtensionAlgorithm_h
 
 /*! \class LSMLIB::FieldExtensionAlgorithm
  *
- * \brief 
- * The FieldExtensionAlgorithm class is a utility class that provides 
+ * \brief
+ * The FieldExtensionAlgorithm class is a utility class that provides
  * support for extending field values off of the interface defined by the
  * zero level set.
  *
@@ -26,25 +26,25 @@
  *  -# Set up and initialize the extension field variables.
  *  -# Create a FieldExtensionAlgorithm object or request one by using
  *     LevelSetMethodAlgorithm::getFieldExtensionAlgorithm().
- *  -# Invoke @ref resetHierarchyConfiguration() if PatchHierarchy 
- *     configuration of has been changed since last field extension 
+ *  -# Invoke @ref resetHierarchyConfiguration() if PatchHierarchy
+ *     configuration of has been changed since last field extension
  *     computation.
- *  -# Set values of the field variable in grid cells adjacent to 
+ *  -# Set values of the field variable in grid cells adjacent to
  *     the zero level set.
- *  -# Extend fields off of the zero level set using the 
- *     @ref computeExtensionField() or 
+ *  -# Extend fields off of the zero level set using the
+ *     @ref computeExtensionField() or
  *     @ref computeExtensionFieldForSingleComponent() methods.
  *
  * NOTE: steps (1) and (2) may be reversed.
  *
- * 
+ *
  * <h3> User-specified parameters </h3>
- * 
+ *
  * - spatial_derivative_type    = type of spatial derivative calculation
  * - spatial_derivative_order   = order of spatial derivative
  * - tvd_runge_kutta_order      = order of TVD Runge-Kutta integration
  * - cfl_number                 = CFL number (default = 0.5)
- * - stop_distance              = approximate stopping criterion for  
+ * - stop_distance              = approximate stopping criterion for
  *                                evolution of field extension equation.
  *                                Field extension terminates after the
  *                                information from the zero level set has
@@ -52,33 +52,33 @@
  *                                distance.  (default = 0.0)
  * - max_iterations             = maximum number of time steps to take during
  *                                the field extension process (default = 0)
- * - iteration_stop_tolerance   = stopping criterion for termination of 
+ * - iteration_stop_tolerance   = stopping criterion for termination of
  *                                evolution of field extension equation.
  *                                Field extension stops when the max norm
  *                                of the change in the extension field
  *                                drops below the specified tolerance.
  *                                (default = 0.0)
- * - verbose_mode               = flag to activate/deactivate verbose-mode 
+ * - verbose_mode               = flag to activate/deactivate verbose-mode
  *                                (default = false)
  *
  * <h3> NOTES: </h3>
- * 
- * - The values of the extension field in grid cells adjacent to 
- *   the zero level set in the directions of the coordinate axes 
- *   are guaranteed to remain unchanged by the field extension 
+ *
+ * - The values of the extension field in grid cells adjacent to
+ *   the zero level set in the directions of the coordinate axes
+ *   are guaranteed to remain unchanged by the field extension
  *   procedure.
  *
  * - If no stopping criteria are specified, the field extension
  *   calculation is terminated using the stop_distance criterion
- *   with the stop_distance set to the length of the largest 
+ *   with the stop_distance set to the length of the largest
  *   dimension of the computational domain.  This choice ensures
  *   that the extension field is extended throughout the entire
  *   computational domain.
- * 
+ *
  * - Unless it is important that the extension fields be computed
  *   to very high accuracy, it is recommended that field extension
- *   is done using a low-order spatial discretization and time 
- *   integration scheme (e.g. ENO1 and TVD Runge-Kutta 1).  This will 
+ *   is done using a low-order spatial discretization and time
+ *   integration scheme (e.g. ENO1 and TVD Runge-Kutta 1).  This will
  *   significantly improve preformance.
  *
  * - A field extension calculation that extends throughout the
@@ -90,29 +90,33 @@
  *
  */
 
+// Standard library headers
+#include <string>
 
-#include <vector>
+// SAMRAI headers
+#include "boost/smart_ptr/shared_ptr.hpp"
+
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/hier/ComponentSelector.h"
 #include "SAMRAI/hier/IntVector.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/xfer/RefineAlgorithm.h"
-#include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
-#include "SAMRAI/tbox/Database.h"
-#include "boost/shared_ptr.hpp"
 
+// LSMLIB headers
 #include "LSMLIB_config.h"
-#include "BoundaryConditionModule.h"
 #include "LevelSetMethodToolbox.h"
 
-// SAMRAI namespaces 
+// Namespaces
+using namespace std;
 using namespace SAMRAI;
-using namespace hier;
-using namespace tbox;
-using namespace xfer;
 
+// Class/type declarations
+namespace LSMLIB { class BoundaryConditionModule; }
+namespace SAMRAI { namespace geom { class CartesianGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace tbox { class Database; } }
+namespace SAMRAI { namespace xfer { class RefineAlgorithm; } }
+namespace SAMRAI { namespace xfer { class RefineSchedule; } }
 
 /******************************************************************
  *
@@ -136,39 +140,39 @@ public:
    ****************************************************************/
 
   /*!
-   * This constructor sets up the required variables, PatchData, etc. for 
+   * This constructor sets up the required variables, PatchData, etc. for
    * computing extension fields via the advection equation using parameters
    * provided through the specified input database.
    *
    * Arguments:
    *  - input_db (in):                input database containing user-defined
    *                                  parameters
-   *  - hierarchy (in):               Boost pointer to PatchHierarchy 
+   *  - hierarchy (in):               Boost pointer to PatchHierarchy
    *                                  containing data
-   *  - field_handle (in):            PatchData handle for field to 
+   *  - field_handle (in):            PatchData handle for field to
    *                                  extend off of the interface
    *  - phi_handle (in):              PatchData handle for the level set
    *                                  function (phi)
    *  - control_volume_handle (in):   PatchData handle for control volume
    *                                  data
-   *  - object_name (in):             string name for object (default = 
+   *  - object_name (in):             string name for object (default =
    *                                  "FieldExtensionAlgorithm")
    *  - phi_ghostcell_width (in):     ghostcell width for the data associated
-   *                                  with phi_handle.  It is used to 
-   *                                  determine if it is necessary to 
+   *                                  with phi_handle.  It is used to
+   *                                  determine if it is necessary to
    *                                  allocate scratch space when computing
-   *                                  grad(phi).  If a phi_handle that 
+   *                                  grad(phi).  If a phi_handle that
    *                                  possesses a sufficient number of
    *                                  ghostcells for the grad(phi) calculation
    *                                  AND the phi_ghostcell_width argument
-   *                                  is used, the memory required to compute 
+   *                                  is used, the memory required to compute
    *                                  extension fields is reduced.
    *                                  (default = [0,0,0])
    *
    * NOTES:
-   *  - Only one FieldExtensionAlgorithm object may be 
-   *    created for each field handle. 
-   *  - Linear interpolation is used to refine data from coarser to 
+   *  - Only one FieldExtensionAlgorithm object may be
+   *    created for each field handle.
+   *  - Linear interpolation is used to refine data from coarser to
    *    finer levels.
    *
    */
@@ -179,17 +183,17 @@ public:
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
-    const IntVector& phi_ghostcell_width,
+    const hier::IntVector& phi_ghostcell_width,
     const string& object_name = "FieldExtensionAlgorithm");
    /*!
-   * This constructor sets up the required variables, PatchData, etc. for 
+   * This constructor sets up the required variables, PatchData, etc. for
    * computing extension fields via the advection equation using parameters
    * provided as arguments to the constructor.
    *
-   * Arguments:      
-   *  - hierarchy (in):                 Boost pointer to PatchHierarchy 
+   * Arguments:
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy
    *                                    containing data
-   *  - field_handle (in):              PatchData handle for field to 
+   *  - field_handle (in):              PatchData handle for field to
    *                                    extend off of the interface
    *  - phi_handle (in):                PatchData handle for the level set
    *                                    function (phi)
@@ -203,41 +207,41 @@ public:
    *                                    (default = 1)
    *  - cfl_number (in):                CFL number used to compute dt
    *                                    (default = 0.5)
-   *  - stop_distance (in):             approximate stopping criterion for 
+   *  - stop_distance (in):             approximate stopping criterion for
    *                                    evolution of field extension equation.
-   *                                    Field extension stops after the 
-   *                                    information from the zero level set 
-   *                                    has propagated by approximately the 
-   *                                    specified distance. (default = 0.0) 
+   *                                    Field extension stops after the
+   *                                    information from the zero level set
+   *                                    has propagated by approximately the
+   *                                    specified distance. (default = 0.0)
    *  - max_iterations (in):            maximum number of time steps to take
    *                                    during the field extension process
    *                                    (default = 0)
-   *  - iteration_stop_tolerance (in):  stopping criterion for termination of 
+   *  - iteration_stop_tolerance (in):  stopping criterion for termination of
    *                                    evolution of field extension equation.
    *                                    Field extension stops when the max norm
    *                                    of the change in the extension field
    *                                    drops below the specified tolerance.
-   *                                    (default = 0.0) 
-   *  - verbose_mode (in):              flag to activate/deactivate 
+   *                                    (default = 0.0)
+   *  - verbose_mode (in):              flag to activate/deactivate
    *                                    verbose-mode (default = false)
-   *  - object_name (in):               string name for object (default = 
+   *  - object_name (in):               string name for object (default =
    *                                    "FieldExtensionAlgorithm")
    *  - phi_ghostcell_width (in):       ghostcell width for the data associated
-   *                                    with phi_handle.  It is used to 
-   *                                    determine if it is necessary to 
+   *                                    with phi_handle.  It is used to
+   *                                    determine if it is necessary to
    *                                    allocate scratch space when computing
-   *                                    grad(phi).  If a phi_handle that 
+   *                                    grad(phi).  If a phi_handle that
    *                                    possesses a sufficient number of
    *                                    ghostcells for the grad(phi) calculation
    *                                    AND the phi_ghostcell_width argument
-   *                                    is used, the memory required to compute 
+   *                                    is used, the memory required to compute
    *                                    extension fields is reduced.
    *                                    (default = [0,0,0])
    *
    * NOTES:
-   *  - Only one FieldExtensionAlgorithm object may be 
-   *    created for each field handle. 
-   *  - Linear interpolation is used to refine data from coarser to 
+   *  - Only one FieldExtensionAlgorithm object may be
+   *    created for each field handle.
+   *  - Linear interpolation is used to refine data from coarser to
    *    finer levels.
    *
    */
@@ -247,7 +251,7 @@ public:
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
-    const IntVector& phi_ghostcell_width,
+    const hier::IntVector& phi_ghostcell_width,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = ENO,
     const int spatial_derivative_order = 1,
     const int tvd_runge_kutta_order = 1,
@@ -278,12 +282,12 @@ public:
 
   /*!
    * computeExtensionField() extends all of the components of the specified
-   * field off of the interface defined by the zero level set of the 
+   * field off of the interface defined by the zero level set of the
    * function phi by advecting it in the direction normal to the interface.
    *
-   * Arguments:     
-   *  - phi_component (in):   component of level set function to 
-   *                          use in field extension calculation 
+   * Arguments:
+   *  - phi_component (in):   component of level set function to
+   *                          use in field extension calculation
    *                          (default = 0)
    *  - max_iterations (in):  maximum number of iterations to use
    *                          for field extension.  Set max_iterations
@@ -308,7 +312,7 @@ public:
    *                          domain in each coordinate direction for
    *                          the level set function.
    *                          The i-th entry should contain the type of
-   *                          boundary condition to impose at the upper 
+   *                          boundary condition to impose at the upper
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -319,8 +323,8 @@ public:
    *                          on the lower face of the computational
    *                          domain in each coordinate direction for
    *                          the extension field.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the lower 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the lower
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -331,8 +335,8 @@ public:
    *                          on the upper face of the computational
    *                          domain in each coordinate direction for
    *                          the extension field.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the upper 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the upper
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -354,22 +358,22 @@ public:
 virtual void computeExtensionField(
     const int phi_component,
     const int max_iterations,
-    const IntVector& lower_bc_phi,
-    const IntVector& upper_bc_phi,
-    const IntVector& lower_bc_ext,
-    const IntVector& upper_bc_ext);
-  
+    const hier::IntVector& lower_bc_phi,
+    const hier::IntVector& upper_bc_phi,
+    const hier::IntVector& lower_bc_ext,
+    const hier::IntVector& upper_bc_ext);
+
 /*!
    * computeExtensionFieldForSingleComponent() extends the specified
-   * component of the field off of the interface defined by the zero 
-   * level set of the function phi by advecting it in the direction normal 
+   * component of the field off of the interface defined by the zero
+   * level set of the function phi by advecting it in the direction normal
    * to the interface.
    *
-   * Arguments:      
+   * Arguments:
    *  - component (in):       component to extend off of the zero
    *                          level set (default = 0)
-   *  - phi_component (in):   component of level set function to 
-   *                          use in field extension calculation 
+   *  - phi_component (in):   component of level set function to
+   *                          use in field extension calculation
    *                          (default = 0)
    *  - max_iterations (in):  maximum number of iterations to use
    *                          for field extension.  Set max_iterations
@@ -381,8 +385,8 @@ virtual void computeExtensionField(
    *                          on the lower face of the computational
    *                          domain in each coordinate direction for
    *                          the level set function.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the lower 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the lower
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -393,8 +397,8 @@ virtual void computeExtensionField(
    *                          on the upper face of the computational
    *                          domain in each coordinate direction for
    *                          the level set function.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the upper 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the upper
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -405,8 +409,8 @@ virtual void computeExtensionField(
    *                          on the lower face of the computational
    *                          domain in each coordinate direction for
    *                          the extension field.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the lower 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the lower
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -417,8 +421,8 @@ virtual void computeExtensionField(
    *                          on the upper face of the computational
    *                          domain in each coordinate direction for
    *                          the extension field.
-   *                          The i-th entry should contain the type of 
-   *                          boundary condition to impose at the upper 
+   *                          The i-th entry should contain the type of
+   *                          boundary condition to impose at the upper
    *                          boundary in the i-th coordinate direction.
    *                          For information about the boundary
    *                          condition types, see documentation of
@@ -441,14 +445,14 @@ virtual void computeExtensionField(
     const int component,
     const int phi_component,
     const int max_iterations,
-    const IntVector& lower_bc_phi,
-    const IntVector& upper_bc_phi,
-    const IntVector& lower_bc_ext,
-    const IntVector& upper_bc_ext);
+    const hier::IntVector& lower_bc_phi,
+    const hier::IntVector& upper_bc_phi,
+    const hier::IntVector& lower_bc_ext,
+    const hier::IntVector& upper_bc_ext);
 
   //! @}
 
-  
+
   //! @{
   /*!
    ****************************************************************
@@ -458,13 +462,13 @@ virtual void computeExtensionField(
    ****************************************************************/
 
   /*!
-   * resetHierarchyConfiguration() updates resets the communication 
-   * schedules to be consistent with the new configuration of the 
-   * PatchHierarchy.  This method should be invoked any time the 
+   * resetHierarchyConfiguration() updates resets the communication
+   * schedules to be consistent with the new configuration of the
+   * PatchHierarchy.  This method should be invoked any time the
    * PatchHierarchy has been changed.
    *
-   * Arguments:      
-   *  - hierarchy (in):       Boost pointer to new PatchHierarchy 
+   * Arguments:
+   *  - hierarchy (in):       Boost pointer to new PatchHierarchy
    *  - coarsest_level (in):  coarsest level in the hierarchy to be updated
    *  - finest_level (in):    finest level in the hierarchy to be updated
    *
@@ -490,12 +494,12 @@ protected:
    ****************************************************************/
 
   /*!
-   * advanceFieldExtensionEqnUsingTVDRK*() advances the advection 
-   * equation for extending fields off of the zero level set using 
+   * advanceFieldExtensionEqnUsingTVDRK*() advances the advection
+   * equation for extending fields off of the zero level set using
    * a first-, second-, or third-order TVD Runge-Kutta step.
    *
    * Arguments:
-   *  - dt (in):                      time increment to advance the level set 
+   *  - dt (in):                      time increment to advance the level set
    *                                  functions
    *  - field_component (in):         component of field to advance in time
    *  - phi_component (in):           phi component to use time advance
@@ -504,7 +508,7 @@ protected:
    *                                  on the lower face of the computational
    *                                  domain in each coordinate direction for
    *                                  the extension field.
-   *                                  The i-th entry should contain the 
+   *                                  The i-th entry should contain the
    *                                  type of boundary condition to
    *                                  impose at the lower boundary in
    *                                  the i-th coordinate direction.
@@ -516,9 +520,9 @@ protected:
    *                                  on the upper face of the computational
    *                                  domain in each coordinate direction for
    *                                  the extension field.
-   *                                  The i-th entry should contain the 
+   *                                  The i-th entry should contain the
    *                                  type of boundary condition to
-   *                                  impose at the upper boundary in 
+   *                                  impose at the upper boundary in
    *                                  the i-th coordinate direction.
    *                                  For information about the boundary
    *                                  condition types, see documentation of
@@ -527,10 +531,10 @@ protected:
    * Return value:                    none
    *
    * NOTES:
-   *  - These methods are NOT intended to be used directly by the 
-   *    user.  They are only helper methods for the 
+   *  - These methods are NOT intended to be used directly by the
+   *    user.  They are only helper methods for the
    *    computeExtensionFieldForSingleComponent() and
-   *    computeExtensionField() methods. 
+   *    computeExtensionField() methods.
    *  - phi_component is provided in case the user provided phi data
    *    is used directly for computation (rather than using a scratch
    *    copy).
@@ -540,20 +544,20 @@ protected:
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector& lower_bc_ext,
-    const IntVector& upper_bc_ext);
+    const hier::IntVector& lower_bc_ext,
+    const hier::IntVector& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK2(
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector& lower_bc_ext,
-    const IntVector& upper_bc_ext);
+    const hier::IntVector& lower_bc_ext,
+    const hier::IntVector& upper_bc_ext);
   virtual void advanceFieldExtensionEqnUsingTVDRK3(
     const LSMLIB_REAL dt,
     const int field_component,
     const int phi_component,
-    const IntVector& lower_bc_ext,
-    const IntVector& upper_bc_ext);
+    const hier::IntVector& lower_bc_ext,
+    const hier::IntVector& upper_bc_ext);
 
   /*!
    * computeFieldExtensionEqnRHS() computes the right-hand side of
@@ -562,8 +566,8 @@ protected:
    *   S_t = ...
    *
    * Arguments:
-   *  - extension_field_handle (in):  PatchData handle for field data that 
-   *                                  should be used to compute spatial 
+   *  - extension_field_handle (in):  PatchData handle for field data that
+   *                                  should be used to compute spatial
    *                                  derivatives
    *  - phi_component (in):           phi component to use to compute RHS
    *
@@ -581,7 +585,7 @@ protected:
 
   //! @}
 
-  
+
   //! @{
   /*!
    ****************************************************************
@@ -594,14 +598,14 @@ protected:
    * initializeVariables() sets up the variables and PatchData handles
    * for the field extension calculation.
    *
-   * Arguments:     
+   * Arguments:
    *  - phi_ghostcell_width (in):  ghostcell width for PatchData associated
    *                               with phi_handle
    *
    * Return value:                 none
    *
    */
-  virtual void initializeVariables(const IntVector& phi_ghostcell_width);
+  virtual void initializeVariables(const hier::IntVector& phi_ghostcell_width);
 
   /*!
    * initializeCommunicationObjects() initializes the objects
@@ -616,7 +620,7 @@ protected:
   virtual void initializeCommunicationObjects();
 
   /*!
-   * getFromInput() configures the FieldExtensionAlgorithm 
+   * getFromInput() configures the FieldExtensionAlgorithm
    * object from the values in the specified input database.
    *
    * Arguments:
@@ -652,7 +656,7 @@ protected:
    ****************************************************************/
 
   /*
-   * The object name is used for error/warning reporting. 
+   * The object name is used for error/warning reporting.
    */
   string d_object_name;
 
@@ -673,14 +677,14 @@ protected:
   bool d_verbose_mode;
 
   /*
-   * Grid management objects 
+   * Grid management objects
    */
 
   // Boost pointer to PatchHierarchy object
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<PatchHierarchy> d_patch_hierarchy;
 
   // Boost pointer to GridGeometry
-  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
+  boost::shared_ptr<CartesianGridGeometry> d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve field extension equation
@@ -691,19 +695,19 @@ protected:
   int d_phi_handle;
   int d_control_volume_handle;
 
-  // scratch data 
+  // scratch data
   vector<int> d_extension_field_scr_handles;
-  IntVector d_ext_field_scratch_ghostcell_width;
+  hier::IntVector d_ext_field_scratch_ghostcell_width;
   int d_phi_scr_handle;
-  IntVector d_phi_scratch_ghostcell_width;
+  hier::IntVector d_phi_scratch_ghostcell_width;
   int d_rhs_handle;
   int d_normal_vector_handle;
   int d_grad_field_handle;
   int d_grad_phi_plus_handle;
   int d_grad_phi_minus_handle;
 
-  /* 
-   * internal state  variables 
+  /*
+   * internal state  variables
    */
 
   // iteration termination flags
@@ -712,7 +716,7 @@ protected:
   bool d_use_iteration_stop_tol;
 
   // flag indicating that communication schedules need to be recomputed
-  bool d_hierarchy_configuration_needs_reset; 
+  bool d_hierarchy_configuration_needs_reset;
 
   // field data parameters
   int d_num_field_components;
@@ -723,22 +727,22 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule > 
+  boost::shared_ptr< BoundaryConditionModule >
     d_phi_bc_module;
-  boost::shared_ptr< BoundaryConditionModule > 
+  boost::shared_ptr< BoundaryConditionModule >
     d_ext_field_bc_module;
 
   /*
    * Communication objects.
    */
   Array< boost::shared_ptr< RefineAlgorithm > > d_extension_field_fill_bdry_alg;
-  Array< Array< boost::shared_ptr< RefineSchedule > > > 
+  Array< Array< boost::shared_ptr< RefineSchedule > > >
     d_extension_field_fill_bdry_sched;
   boost::shared_ptr< RefineAlgorithm > d_phi_fill_bdry_alg;
   Array< boost::shared_ptr< RefineSchedule > > d_phi_fill_bdry_sched;
 
 
-private: 
+private:
 
   /*
    * Private assignment operator to prevent use.
