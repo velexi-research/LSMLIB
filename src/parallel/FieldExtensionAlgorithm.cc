@@ -11,7 +11,7 @@
 #ifndef included_FieldExtensionAlgorithm_cc
 #define included_FieldExtensionAlgorithm_cc
 
-// System headers
+// Standard library headers
 #include <cstddef>
 #include <sstream>
 
