@@ -1280,13 +1280,14 @@ protected:
 
   // boost pointers to LevelSetFunctionIntegratorStrategy and
   // LevelSetMethodGriddingStrategy objects
-  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > d_lsm_integrator_strategy;
-  boost::shared_ptr< LevelSetMethodGriddingStrategy > d_lsm_gridding_strategy;
+  boost::shared_ptr<LevelSetFunctionIntegratorStrategy> d_lsm_integrator_strategy;
+  boost::shared_ptr<LevelSetMethodGriddingStrategy> d_lsm_gridding_strategy;
 
 
   // lists of FieldExtensionAlgorithm objects
   // ( used in resetHierarchyConfiguration() )
-  Array< boost::shared_ptr< FieldExtensionAlgorithm > > d_field_extension_alg_list;
+  tbox::Array<boost::shared_ptr<FieldExtensionAlgorithm>>
+      d_field_extension_alg_list;
 
 
   // simulation parameters when using standard LevelSetFunctionIntegrator
