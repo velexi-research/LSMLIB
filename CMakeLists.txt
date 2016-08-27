@@ -2,7 +2,7 @@
 # CMake initialization
 # --------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project(lsmlib
         LANGUAGES C CXX Fortran
         VERSION 2.0.0)
@@ -26,10 +26,10 @@ endif (SINGLE_PRECISION)
 option(ENABLE_PARALLEL "Enable parallel library" OFF)
 
 # SAMRAI
-set(SAMRAI "/usr" CACHE FILEPATH "Location of SAMRAI library")
+set(SAMRAI_DIR "/usr" CACHE FILEPATH "Location of SAMRAI library")
 
-# OpenMPI
-set(OPENMPI "/usr" CACHE FILEPATH "Location of OpenMPI library")
+# HDF5
+set(HDF5_DIR "" CACHE FILEPATH "Location of HDF5 library")
 
 # --------------------------------------------------------------
 # Build parameters
@@ -43,7 +43,7 @@ set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 
 # Compiler flags
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
-set(CMAKE_C_FLAGS "${CXXFLAGS} ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
 set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
 
 # Search path for header files
@@ -78,13 +78,13 @@ if (ENABLE_PARALLEL)
 
     # --- SAMRAI
 
-    find_file(SAMRAI_CONFIG_H SAMRAI/SAMRAI_config.h ${SAMRAI}/include)
-    find_library(LIBSAMRAI_TBOX SAMRAI_tbox ${SAMRAI}/lib)
+    find_file(SAMRAI_CONFIG_H SAMRAI/SAMRAI_config.h ${SAMRAI_DIR}/include)
+    find_library(LIBSAMRAI_TBOX SAMRAI_tbox ${SAMRAI_DIR}/lib)
 
     # Verify that SAMRAI header files were found
     if (SAMRAI_CONFIG_H)
         message("-- Found SAMRAI header files: TRUE (${SAMRAI_CONFIG_H})")
-        set(SAMRAI_INCLUDE_DIR ${SAMRAI}/include)
+        set(SAMRAI_INCLUDE_DIR ${SAMRAI_DIR}/include)
     else (SAMRAI_CONFIG_H)
         message(FATAL_ERROR "Could NOT find SAMRAI header files.")
     endif (SAMRAI_CONFIG_H)
@@ -105,7 +105,27 @@ if (ENABLE_PARALLEL)
     find_package(MPI REQUIRED)
 
     # HDF5
-    find_package(HDF5)
+    if (HDF5_DIR)
+        find_file(HDF5_H  hdf5.h ${HDF5_DIR}/include)
+        find_library(LIBHDF5 hdf5 ${HDF5_DIR}/lib)
+
+        # Verify that HDF5 header files were found
+        if (HDF5_H)
+            message("-- Found HDF5 header files: TRUE (${HDF5_H})")
+            set(HDF5_INCLUDE_DIRS ${HDF5_DIR}/include)
+        else (HDF5_H)
+            message(FATAL_ERROR "Could NOT find HDF5 header files.")
+        endif (HDF5_H)
+
+        # Verify that HDF5 library files were found
+        if (LIBHDF5)
+            message("-- Found HDF5 libraries: TRUE (${LIBHDF5})")
+        else (LIBHDF5)
+            message(FATAL_ERROR "Could NOT find HDF5 libraries.")
+        endif (LIBHDF5)
+    else (HDF5_DIR)
+        find_package(HDF5)
+    endif (HDF5_DIR)
 
 endif (ENABLE_PARALLEL)
 
