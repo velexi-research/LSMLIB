@@ -113,10 +113,6 @@
 #include "LSMLIB_config.h"
 #include "LevelSetMethodGriddingStrategy.h"
 
-// SAMRAI namespaces
-using namespace std;
-using namespace SAMRAI;
-
 // Class/type declarations
 namespace LSMLIB { class LevelSetFunctionIntegratorStrategy; }
 namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
@@ -124,6 +120,10 @@ namespace SAMRAI { namespace hier { class PatchHierarchy; } }
 namespace SAMRAI { namespace hier { class PatchLevel; } }
 namespace SAMRAI { namespace mesh { class GriddingAlgorithm; } }
 namespace SAMRAI { namespace tbox { class Database; } }
+
+// Namespaces
+using namespace std;
+using namespace SAMRAI;
 
 /******************************************************************
  *
@@ -166,9 +166,9 @@ public:
    *
    */
   LevelSetMethodGriddingAlgorithm(
-    boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
-    boost::shared_ptr< LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
+    boost::shared_ptr<tbox::Database> input_db,
+    boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
+    boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
     const string& object_name = "LevelSetMethodGriddingAlgorithm");
 
   /*!
@@ -292,13 +292,13 @@ public:
    *
    */
   void initializeLevelData(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number,
     const double init_data_time,
     const bool can_be_refined,
     const bool initial_time,
-    const boost::shared_ptr< PatchLevel > old_level =
-      boost::shared_ptr< PatchLevel >(),
+    const boost::shared_ptr<hier::PatchLevel> old_level =
+      boost::shared_ptr<hier::PatchLevel>(),
     const bool allocate_data = true);
 
   /*!
@@ -321,7 +321,7 @@ public:
    *
    */
   void resetHierarchyConfiguration(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -358,7 +358,7 @@ public:
    *
    */
   void tagCellsForRefinement(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number,
     const double regrid_time,
     const int tag_index,
@@ -396,7 +396,7 @@ protected:
    *    because getFromInput() is not declared virtual in the class
    *    StandardTagAndInitialize.
    */
-  void getFromInput(boost::shared_ptr<Database> input_db);
+  void getFromInput(boost::shared_ptr<tbox::Database> input_db);
 
   //! @}
 
@@ -416,12 +416,12 @@ protected:
   /*
    * Boost pointer to the PatchHierarchy object
    */
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
 
   /*
    * Boost pointer to the SAMRAI::mesh::GriddingAlgorithm object
    */
-  boost::shared_ptr< SAMRAI::mesh::GriddingAlgorithm > d_gridding_alg;
+  boost::shared_ptr<mesh::GriddingAlgorithm> d_gridding_alg;
 
   /*
    * Duplicates of the booleans specifying the tagging method that
@@ -437,7 +437,7 @@ protected:
    */
   boost::shared_ptr<LevelSetFunctionIntegratorStrategy> d_lsm_integrator_strategy;
 
-  Array< boost::shared_ptr<LevelSetMethodVelocityFieldStrategy> >
+  tbox::Array<boost::shared_ptr<LevelSetMethodVelocityFieldStrategy>>
     d_velocity_field_strategies;
 
 private:

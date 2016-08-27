@@ -20,16 +20,21 @@
  *
  */
 
+// Boost headers
+#include "boost/smart_ptr/shared_ptr.hpp"
+
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/mesh/StandardTagAndInitStrategy.h"
 
+// LSMLIB headers
 #include "LSMLIB_config.h"
-#include "LevelSetMethodVelocityFieldStrategy.h"
-#include "boost/shared_ptr.hpp"
 
-// namespaces
+// Class/type declarations
+namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
+namespace SAMRAI { namespace hier { class PatchHierarchy ; } }
+
+// Namespaces
 using namespace SAMRAI;
-using namespace mesh;
 
 
 /******************************************************************
@@ -112,7 +117,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int coarsest_level,
     const int finest_level) = 0;
 

@@ -28,6 +28,7 @@
 // LSMLIB headers
 #include "LevelSetMethodGriddingAlgorithm.h"
 #include "LevelSetFunctionIntegratorStrategy.h"
+#include "LevelSetMethodVelocityFieldStrategy.h"
 
 #ifdef DEBUG_CHECK_ASSERTIONS
 #ifndef included_assert
@@ -87,19 +88,19 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
    * Set up LevelSetMethodGriddingAlgorithm
    */
   // construct box generator and load balancer objects
-  boost::shared_ptr<BergerRigoutsos> box_generator =
-    boost::shared_ptr<BergerRigoutsos> (
-      new BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
+  boost::shared_ptr<mesh::BergerRigoutsos> box_generator =
+    boost::shared_ptr<mesh::BergerRigoutsos>(
+      new mesh::BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
 
   boost::shared_ptr<Database> load_balancer_input_db;
 
-  boost::shared_ptr<ChopAndPackLoadBalancer> load_balancer;
+  boost::shared_ptr<mesh::ChopAndPackLoadBalancer> load_balancer;
   if (input_db->isDatabase("LoadBalancer")) {
     load_balancer_input_db = input_db->getDatabase("LoadBalancer");
-    load_balancer = boost::shared_ptr<ChopAndPackLoadBalancer> (
-       new ChopAndPackLoadBalancer(d_patch_hierarchy->getDim(),
-                                   "LoadBalancer",
-                                   load_balancer_input_db));
+    load_balancer = boost::shared_ptr<mesh::ChopAndPackLoadBalancer> (
+       new mesh::ChopAndPackLoadBalancer(d_patch_hierarchy->getDim(),
+                                         "LoadBalancer",
+                                         load_balancer_input_db));
 
   } else {
     throw std::runtime_error(
@@ -108,8 +109,8 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
 
   // construct gridding algorithm using "this" as the TagAndInitializeStrategy
   cout << this << endl;
-  d_gridding_alg = boost::shared_ptr<GriddingAlgorithm> (
-    new SAMRAI::mesh::GriddingAlgorithm(
+  d_gridding_alg = boost::shared_ptr<mesh::GriddingAlgorithm> (
+    new mesh::GriddingAlgorithm(
       patch_hierarchy,
       "LevelSetMethodGriddingAlgorithm",
       input_db,
@@ -384,7 +385,7 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
     for (hier::PatchLevel::Iterator ip(level->begin()); ip!=level->end(); ip++) {
       boost::shared_ptr< hier::Patch > patch = *ip;
 
-   boost::shared_ptr<pdat::CellData<int> > tag_data(
+   boost::shared_ptr<pdat::CellData<int>> tag_data(
       BOOST_CAST<pdat::CellData<int>, hier::PatchData>(
          patch->getPatchData(tag_index)));
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -415,7 +416,7 @@ hier::Box pbox = patch->getBox();
 
 const int nsize = 3; // size of arrays
 void LevelSetMethodGriddingAlgorithm::getFromInput(
-  boost::shared_ptr<Database> input_db)
+  boost::shared_ptr<tbox::Database> input_db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db!=NULL);
