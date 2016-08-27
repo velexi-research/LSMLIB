@@ -45,7 +45,7 @@ namespace LSMLIB {
 
 /* Standard constructor */
 BoundaryConditionModule::BoundaryConditionModule(
-  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   const IntVector& ghostcell_width)
 :
 d_ghostcell_width(ghostcell_width),
@@ -63,7 +63,7 @@ BoundaryConditionModule::BoundaryConditionModule()
 d_ghostcell_width(d_patch_hierarchy->getDim(),0),
 d_geom_periodic_dirs(d_patch_hierarchy->getDim(),0)
 {
-  d_patch_hierarchy = boost::shared_ptr< PatchHierarchy > ();
+  d_patch_hierarchy = boost::shared_ptr<hier::PatchHierarchy> ();
   d_boundary_boxes.setNull();
   d_touches_boundary.setNull();
 }
@@ -1466,7 +1466,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
 
 /* resetHierarchyConfiguration() */
 void BoundaryConditionModule::resetHierarchyConfiguration(
-  const boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   const int coarsest_level,
   const int finest_level,
   const IntVector& ghostcell_width)

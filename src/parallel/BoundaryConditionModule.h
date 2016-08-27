@@ -153,8 +153,8 @@ public:
    *    set to be in an invalid state.
    */
   BoundaryConditionModule(
-    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
-    const IntVector& ghostcell_width );
+    boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
+    const hier::IntVector& ghostcell_width );
 
   /*!
    * Default constructor initializes the BoundaryConditionModule
@@ -243,8 +243,8 @@ public:
    */
   virtual void imposeBoundaryConditions(
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -303,10 +303,10 @@ public:
    *
    */
   virtual void imposeBoundaryConditionsOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -363,7 +363,7 @@ public:
    */
   virtual void imposeAntiPeriodicBCs(
     const int phi_handle,
-    const IntVector& lower_bc,
+    const hier::IntVector& lower_bc,
     const int component = -1);
 
 
@@ -418,9 +418,9 @@ public:
    *
    */
   virtual void imposeAntiPeriodicBCsOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     const int phi_handle,
-    const IntVector& lower_bc,
+    const hier::IntVector& lower_bc,
     const int component = -1);
 
 
@@ -475,8 +475,8 @@ public:
    */
   virtual void imposeHomogeneousNeumannBCs(
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -534,10 +534,10 @@ public:
    *
    */
   virtual void imposeHomogeneousNeumannBCsOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
     const int spatial_derivative_order,
     const int component = -1);
@@ -586,8 +586,8 @@ public:
    */
   virtual void imposeLinearExtrapolationBCs(
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -634,10 +634,10 @@ public:
    *
    */
   virtual void imposeLinearExtrapolationBCsOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -684,8 +684,8 @@ public:
    */
   virtual void imposeSignedLinearExtrapolationBCs(
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int component = -1);
 
   /*!
@@ -732,10 +732,10 @@ public:
    *
    */
   virtual void imposeSignedLinearExtrapolationBCsOnPatch(
-    Patch& patch,
+    hier::Patch& patch,
     const int phi_handle,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int component = -1);
 
   //! @}
@@ -775,10 +775,10 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    const boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
     const int coarsest_level,
     const int finest_level,
-    const IntVector& ghostcell_width);
+    const hier::IntVector& ghostcell_width);
 
   //! @}
 
@@ -846,11 +846,11 @@ public:
    *
    */
   static void computeIndexSpaceOfNearestGhostLayer(
-    IntVector& nearest_ghost_layer_lo,
-    IntVector& nearest_ghost_layer_hi,
+    hier::IntVector& nearest_ghost_layer_lo,
+    hier::IntVector& nearest_ghost_layer_hi,
     const int bdry_type,
     const int bdry_location_idx,
-    const Box& fillbox);
+    const hier::Box& fillbox);
 
   /*!
    * computeIndexOffset() computes the offset in the data array between
@@ -870,7 +870,7 @@ public:
   static int computeIndexOffset(
     const int bdry_type,
     const int bdry_location_idx,
-    const Box& ghostbox);
+    const hier::Box& ghostbox);
 
   //! @}
 
@@ -884,13 +884,13 @@ protected:
    ****************************************************************/
 
   //boost pointer to PatchHierarchy
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
 
   // parameters for imposing anti-periodic BCs
-  IntVector d_ghostcell_width;
-  IntVector d_geom_periodic_dirs;
-  Array<std::map<BoxId, PatchBoundaries> > d_boundary_boxes;
-  Array< Array<bool> > d_touches_boundary;
+  hier::IntVector d_ghostcell_width;
+  hier::IntVector d_geom_periodic_dirs;
+  tbox::Array<std::map<hier::BoxId, hier::PatchBoundaries> > d_boundary_boxes;
+  tbox::Array<tbox::Array<bool>> d_touches_boundary;
 
 };
 
