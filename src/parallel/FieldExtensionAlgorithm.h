@@ -178,8 +178,8 @@ public:
    */
 
  FieldExtensionAlgorithm(
-    boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<tbox::Database> input_db,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
@@ -247,7 +247,7 @@ public:
    */
 
   FieldExtensionAlgorithm(
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int field_handle,
     const int phi_handle,
     const int control_volume_handle,
@@ -476,7 +476,7 @@ virtual void computeExtensionField(
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -633,7 +633,7 @@ protected:
    *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(boost::shared_ptr<Database> db);
+  virtual void getFromInput(boost::shared_ptr<tbox::Database> db);
 
   /*!
    * checkParameters() checks to make sure that user-specified parameters
@@ -681,10 +681,10 @@ protected:
    */
 
   // Boost pointer to PatchHierarchy object
-  boost::shared_ptr<PatchHierarchy> d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
 
   // Boost pointer to GridGeometry
-  boost::shared_ptr<CartesianGridGeometry> d_grid_geometry;
+  boost::shared_ptr<geom::CartesianGridGeometry> d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve field extension equation
@@ -722,7 +722,7 @@ protected:
   int d_num_field_components;
 
   // ComponentSelector to organize variables
-  ComponentSelector d_scratch_data;
+  hier::ComponentSelector d_scratch_data;
 
   /*
    * Boundary condition objects
@@ -735,11 +735,12 @@ protected:
   /*
    * Communication objects.
    */
-  Array< boost::shared_ptr< RefineAlgorithm > > d_extension_field_fill_bdry_alg;
-  Array< Array< boost::shared_ptr< RefineSchedule > > >
-    d_extension_field_fill_bdry_sched;
-  boost::shared_ptr< RefineAlgorithm > d_phi_fill_bdry_alg;
-  Array< boost::shared_ptr< RefineSchedule > > d_phi_fill_bdry_sched;
+  tbox::Array<boost::shared_ptr<xfer::RefineAlgorithm>>
+      d_extension_field_fill_bdry_alg;
+  tbox::Array<tbox::Array<boost::shared_ptr<xfer::RefineSchedule>>>
+      d_extension_field_fill_bdry_sched;
+  boost::shared_ptr<xfer::RefineAlgorithm> d_phi_fill_bdry_alg;
+  tbox::Array<boost::shared_ptr<xfer::RefineSchedule>> d_phi_fill_bdry_sched;
 
 
 private:

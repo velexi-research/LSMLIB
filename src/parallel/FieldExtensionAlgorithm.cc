@@ -58,12 +58,12 @@ namespace LSMLIB {
 /* Constructor - parameters from input database */
 
 FieldExtensionAlgorithm::FieldExtensionAlgorithm(
-  boost::shared_ptr<Database> input_db,
-  boost::shared_ptr< PatchHierarchy > hierarchy,
+  boost::shared_ptr<tbox::Database> input_db,
+  boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,
-  const IntVector& phi_ghostcell_width,
+  const hier::IntVector& phi_ghostcell_width,
   const string& object_name)
 :
 d_ext_field_scratch_ghostcell_width(phi_ghostcell_width),
@@ -90,9 +90,9 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 
   //create empty BoundaryConditionModule
   boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module =
-  boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
-  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module =
-  boost::shared_ptr< BoundaryConditionModule > (new BoundaryConditionModule);
+    boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
+  boost::shared_ptr<BoundaryConditionModule> d_ext_field_bc_module =
+    boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -103,11 +103,11 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 
 /* Constructor - parameters from arguments */
 FieldExtensionAlgorithm::FieldExtensionAlgorithm(
-  boost::shared_ptr< PatchHierarchy > hierarchy,
+  boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int field_handle,
   const int phi_handle,
   const int control_volume_handle,
-  const IntVector& phi_ghostcell_width,
+  const hier::IntVector& phi_ghostcell_width,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int tvd_runge_kutta_order,
@@ -185,10 +185,10 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   // create empty BoundaryConditionModule
-  boost::shared_ptr< BoundaryConditionModule >d_phi_bc_module =
-  boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
-  boost::shared_ptr< BoundaryConditionModule >d_ext_field_bc_module =
-  boost::shared_ptr< BoundaryConditionModule >( new BoundaryConditionModule);
+  boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module =
+    boost::shared_ptr<BoundaryConditionModule>(new BoundaryConditionModule);
+  boost::shared_ptr<BoundaryConditionModule> d_ext_field_bc_module =
+    boost::shared_ptr<BoundaryConditionModule>(new BoundaryConditionModule);
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -200,10 +200,10 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 void FieldExtensionAlgorithm::computeExtensionField(
   const int phi_component,
   const int max_iterations,
-  const IntVector& lower_bc_phi,
-  const IntVector& upper_bc_phi,
-  const IntVector& lower_bc_ext,
-  const IntVector& upper_bc_ext)
+  const hier::IntVector& lower_bc_phi,
+  const hier::IntVector& upper_bc_phi,
+  const hier::IntVector& lower_bc_ext,
+  const hier::IntVector& upper_bc_ext)
 {
 
   // reset hierarchy configuration if necessary
@@ -215,7 +215,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
   // allocate patch data for requird to compute extension field
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level =
+    boost::shared_ptr<hier::PatchLevel> level =
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -226,9 +226,9 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  boost::shared_ptr< PatchLevel > patch_level =
+  boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
@@ -325,9 +325,11 @@ void FieldExtensionAlgorithm::computeExtensionField(
    *  (if it has not already been computed)
    */
   if (d_num_field_components == 0) {
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(0);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    boost::shared_ptr<hier::PatchLevel> level =
+      d_patch_hierarchy->getPatchLevel(0);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      // loop over patches
+      boost::shared_ptr<hier::Patch> patch = *pi;//returns second patch in line.
       if ( patch==NULL ) {
         TBOX_ERROR(  d_object_name
                   << "::computeExtensionField(): "
@@ -335,8 +337,8 @@ void FieldExtensionAlgorithm::computeExtensionField(
                   << endl);
       }
 
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data=
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field_data=
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_extension_field_handle ));
       d_num_field_components = field_data->getDepth();
 
@@ -414,14 +416,14 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
     // VERBOSE MODE
     if (d_verbose_mode) {
-      pout << endl;
-      pout << d_object_name << " iteration count: " << count << endl;
+      tbox::pout << endl;
+      tbox::pout << d_object_name << " iteration count: " << count << endl;
       if (d_use_stop_distance) {
-        pout << "  Fields on zero level set extended to a distance "
+        tbox::pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;
       }
       if (d_use_iteration_stop_tol) {
-        pout << "  Max norm of change in extension fields: "
+        tbox::pout << "  Max norm of change in extension fields: "
              << delta << endl;
       }
     }
@@ -443,20 +445,20 @@ void FieldExtensionAlgorithm::computeExtensionField(
 
   // VERBOSE MODE
   if (d_verbose_mode) {
-    pout << endl;
-    pout << "Total number of iterations: " << count << endl;
+    tbox::pout << endl;
+    tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
-      pout << "  Fields on zero level set extended to a distance "
+      tbox::pout << "  Fields on zero level set extended to a distance "
            << "of approximately " << dt*count << endl;
     }
     if (d_use_iteration_stop_tol)
-      pout << "  Last change in max norm of extension field: "
+      tbox::pout << "  Last change in max norm of extension field: "
            << delta << endl;
   }
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level
+    boost::shared_ptr<hier::PatchLevel> level
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
@@ -468,10 +470,10 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   const int component,
   const int phi_component,
   const int max_iterations,
-  const IntVector& lower_bc_phi,
-  const IntVector& upper_bc_phi,
-  const IntVector& lower_bc_ext,
-  const IntVector& upper_bc_ext)
+  const hier::IntVector& lower_bc_phi,
+  const hier::IntVector& upper_bc_phi,
+  const hier::IntVector& lower_bc_ext,
+  const hier::IntVector& upper_bc_ext)
 {
 
   // reset hierarchy configuration if necessary
@@ -483,7 +485,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   // allocate patch data for required to compute extension field
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level =
+    boost::shared_ptr<hier::PatchLevel> level =
       d_patch_hierarchy->getPatchLevel(ln);
     level->allocatePatchData(d_scratch_data);
   }
@@ -494,9 +496,9 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // get dx
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
-  boost::shared_ptr< PatchLevel > patch_level =
+  boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
@@ -651,14 +653,14 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
     // VERBOSE MODE
     if (d_verbose_mode) {
-      pout << endl;
-      pout << d_object_name << " iteration count: " << count << endl;
+      tbox::pout << endl;
+      tbox::pout << d_object_name << " iteration count: " << count << endl;
       if (d_use_stop_distance) {
-        pout << "  Fields on zero level set extended to a distance "
+        tbox::pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;
       }
       if (d_use_iteration_stop_tol) {
-        pout << "  Max norm of change in extension field: "
+        tbox::pout << "  Max norm of change in extension field: "
              << delta << endl;
       }
     }
@@ -680,20 +682,20 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
   // VERBOSE MODE
   if (d_verbose_mode) {
-    pout << endl;
-    pout << "Total number of iterations: " << count << endl;
+    tbox::pout << endl;
+    tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
-      pout << "  Fields on zero level set extended to a distance "
+      tbox::pout << "  Fields on zero level set extended to a distance "
            << "of approximately " << dt*count << endl;
     }
     if (d_use_iteration_stop_tol)
-      pout << "  Last max norm of change in extension field: "
+      tbox::pout << "  Last max norm of change in extension field: "
            << delta << endl;
   }
 
   // deallocate patch data that was allocated to compute extension fields
   for ( int ln=0 ; ln < num_levels; ln++ ) {
-    boost::shared_ptr< PatchLevel > level
+    boost::shared_ptr<hier::PatchLevel> level
       = d_patch_hierarchy->getPatchLevel(ln);
     level->deallocatePatchData(d_scratch_data);
   }
@@ -702,7 +704,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
 
 /* resetHierarchyConfiguration() */
 void FieldExtensionAlgorithm::resetHierarchyConfiguration(
-  boost::shared_ptr< PatchHierarchy > hierarchy,
+  boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -719,7 +721,7 @@ void FieldExtensionAlgorithm::resetHierarchyConfiguration(
     d_extension_field_fill_bdry_sched[k].resizeArray(num_levels);
 
     for (int ln = coarsest_level; ln <= finest_level; ln++) {
-      boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
+      boost::shared_ptr<hier::PatchLevel> level = hierarchy->getPatchLevel(ln);
 
       // reset data transfer configuration for boundary filling
       // before time advance
@@ -735,7 +737,7 @@ void FieldExtensionAlgorithm::resetHierarchyConfiguration(
   d_phi_fill_bdry_sched.resizeArray(num_levels);
 
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
-    boost::shared_ptr< PatchLevel > level = hierarchy->getPatchLevel(ln);
+    boost::shared_ptr<hier::PatchLevel> level = hierarchy->getPatchLevel(ln);
 
     // reset data transfer configuration for filling phi boundary data
     // before computing signed normal vector
@@ -767,8 +769,8 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK1(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector& lower_bc_ext,
-  const IntVector& upper_bc_ext)
+  const hier::IntVector& lower_bc_ext,
+  const hier::IntVector& upper_bc_ext)
 {
   // initialize counter for current stage of TVD RK step
   // NOTE: the rk_stage begins at 0 for convenience
@@ -815,8 +817,8 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK2(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector& lower_bc_ext,
-  const IntVector& upper_bc_ext)
+  const hier::IntVector& lower_bc_ext,
+  const hier::IntVector& upper_bc_ext)
 {
   // { begin Stage 1
 
@@ -901,8 +903,8 @@ void FieldExtensionAlgorithm::advanceFieldExtensionEqnUsingTVDRK3(
   const LSMLIB_REAL dt,
   const int field_component,
   const int phi_component,
-  const IntVector& lower_bc_ext,
-  const IntVector& upper_bc_ext)
+  const hier::IntVector& lower_bc_ext,
+  const hier::IntVector& upper_bc_ext)
 {
   // { begin Stage 1
 
@@ -1035,21 +1037,23 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
 
-     for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      // loop over patches
+      boost::shared_ptr<hier::Patch> patch = *pi;//returns second patch in line.
       if ( patch==NULL ) {
-        TBOX_ERROR(  d_object_name
-                  << "::computeFieldExtensionRHS(): "
-                  << "Cannot find patch. Null patch pointer."
-                  << endl);
+        TBOX_ERROR(d_object_name
+                   << "::computeFieldExtensionRHS(): "
+                   << "Cannot find patch. Null patch pointer."
+                   << endl);
       }
 
       // get grid spacing
       boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
-        BOOST_CAST <geom::CartesianPatchGeometry, PatchGeometry>(
-        patch->getPatchGeometry());
+        BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
+          patch->getPatchGeometry());
       int DIM = d_patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
@@ -1060,50 +1064,50 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
 #endif
 
       // get pointers to data and index space ranges
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
-        patch->getPatchData( d_rhs_handle ));
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data =
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
-        patch->getPatchData( extension_field_handle ));
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
-        patch->getPatchData( d_phi_scr_handle ));
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data =
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
-        patch->getPatchData( d_normal_vector_handle ));
-      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_field_data =
-        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
-        patch->getPatchData( d_grad_field_handle ));
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+      patch->getPatchData( d_rhs_handle ));
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( extension_field_handle ));
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( d_phi_scr_handle ));
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( d_normal_vector_handle ));
+      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_field_data =
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( d_grad_field_handle ));
 
-      Box rhs_ghostbox = rhs_data->getGhostBox();
-      const IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
-      const IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
+      hier::Box rhs_ghostbox = rhs_data->getGhostBox();
+      const hier::IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
+      const hier::IntVector rhs_ghostbox_upper = rhs_ghostbox.upper();
 
-      Box field_ghostbox = field_data->getGhostBox();
-      const IntVector field_ghostbox_lower = field_ghostbox.lower();
-      const IntVector field_ghostbox_upper = field_ghostbox.upper();
+      hier::Box field_ghostbox = field_data->getGhostBox();
+      const hier::IntVector field_ghostbox_lower = field_ghostbox.lower();
+      const hier::IntVector field_ghostbox_upper = field_ghostbox.upper();
 
-      Box phi_ghostbox = phi_data->getGhostBox();
-      const IntVector phi_ghostbox_lower = phi_ghostbox.lower();
-      const IntVector phi_ghostbox_upper = phi_ghostbox.upper();
+      hier::Box phi_ghostbox = phi_data->getGhostBox();
+      const hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+      const hier::IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
-      Box normal_vector_ghostbox = normal_vector_data->getGhostBox();
-      const IntVector normal_vector_ghostbox_lower =
+      hier::Box normal_vector_ghostbox = normal_vector_data->getGhostBox();
+      const hier::IntVector normal_vector_ghostbox_lower =
         normal_vector_ghostbox.lower();
-      const IntVector normal_vector_ghostbox_upper =
+      const hier::IntVector normal_vector_ghostbox_upper =
         normal_vector_ghostbox.upper();
 
-      Box grad_field_ghostbox = grad_field_data->getGhostBox();
-      const IntVector grad_field_ghostbox_lower =
+      hier::Box grad_field_ghostbox = grad_field_data->getGhostBox();
+      const hier::IntVector grad_field_ghostbox_lower =
         grad_field_ghostbox.lower();
-      const IntVector grad_field_ghostbox_upper =
+      const hier::IntVector grad_field_ghostbox_upper =
         grad_field_ghostbox.upper();
 
       // fill box
-      Box fillbox = rhs_data->getBox();
-      const IntVector fillbox_lower = fillbox.lower();
-      const IntVector fillbox_upper = fillbox.upper();
+      hier::Box fillbox = rhs_data->getBox();
+      const hier::IntVector fillbox_lower = fillbox.lower();
+      const hier::IntVector fillbox_upper = fillbox.upper();
 
       LSMLIB_REAL* rhs = rhs_data->getPointer();
       LSMLIB_REAL* field = field_data->getPointer();
@@ -1233,7 +1237,7 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
 
 /* initializeVariables() */
 void FieldExtensionAlgorithm::initializeVariables(
-  const IntVector& phi_ghostcell_width)
+  const hier::IntVector& phi_ghostcell_width)
 {
   // initialize d_num_field_components to zero
   d_num_field_components = 0;
@@ -1258,13 +1262,14 @@ void FieldExtensionAlgorithm::initializeVariables(
                 << endl );
   }
 
-  IntVector scratch_ghostcell_width(d_patch_hierarchy->getDim(),scratch_ghostcell_width_for_grad);
-  IntVector zero_ghostcell_width(d_patch_hierarchy->getDim(),0);
+  hier::IntVector scratch_ghostcell_width(
+    d_patch_hierarchy->getDim(),scratch_ghostcell_width_for_grad);
+  hier::IntVector zero_ghostcell_width(d_patch_hierarchy->getDim(),0);
 
   /*
    * create variables and PatchData for scratch data
    */
-  VariableDatabase *var_db = VariableDatabase::getDatabase();
+  hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
   int DIM = d_patch_hierarchy->getDim().getValue();
   // compute minimum ghostcell width for phi data
   int min_ghostcell_width = phi_ghostcell_width(0);
@@ -1274,13 +1279,13 @@ void FieldExtensionAlgorithm::initializeVariables(
   }
 
   // get variable associated with phi_handle
-  boost::shared_ptr< Variable > tmp_variable;
-  boost::shared_ptr<VariableContext> tmp_context;
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
+  boost::shared_ptr<hier::Variable> tmp_variable;
+  boost::shared_ptr<hier::VariableContext> tmp_context;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
                                            tmp_variable, tmp_context)) {
-    phi_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,
-                               Variable >(tmp_variable);
+    phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
+        tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeVariables(): "
@@ -1290,7 +1295,7 @@ void FieldExtensionAlgorithm::initializeVariables(
   }
 
   // create scratch context for extension field calculation
-  boost::shared_ptr<VariableContext> scratch_context =
+  boost::shared_ptr<hier::VariableContext> scratch_context =
     var_db->getContext("EXTENSION_FIELD_SCRATCH");
 
   // reserve space for extension field scratch PatchData handles
@@ -1300,11 +1305,11 @@ void FieldExtensionAlgorithm::initializeVariables(
   d_scratch_data.clrAllFlags();
 
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> field_variable;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
                                            tmp_variable, tmp_context)) {
-    field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
-      Variable>(tmp_variable);
+    field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
+      tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeVariables(): "
@@ -1318,13 +1323,16 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream ext_field_scratch_name("");
   ext_field_scratch_name << d_object_name << "::" << field_variable->getName()
                    << "::EXTENSION_FIELD_SCRATCH";
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > ext_field_scratch_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> ext_field_scratch_variable;
   if (var_db->checkVariableExists(ext_field_scratch_name.str())) {
     ext_field_scratch_variable =
-      BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(ext_field_scratch_name.str()));
+      BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
+         var_db->getVariable(ext_field_scratch_name.str()));
   } else {
     ext_field_scratch_variable =
-      boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),ext_field_scratch_name.str(), 1));
+      boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+        new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                            ext_field_scratch_name.str(), 1));
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
     stringstream context_name("");
@@ -1348,12 +1356,16 @@ void FieldExtensionAlgorithm::initializeVariables(
     stringstream phi_scratch_name("");
     phi_scratch_name << d_object_name << "::" << phi_variable->getName()
                      << "::EXTENSION_FIELD_PHI_SCRATCH";
-    boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_scratch_variable;
+    boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_scratch_variable;
     if (var_db->checkVariableExists(phi_scratch_name.str())) {
-      phi_scratch_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(phi_scratch_name.str()));
+      phi_scratch_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+                                        hier::Variable>(
+        var_db->getVariable(phi_scratch_name.str()));
     } else {
       phi_scratch_variable =
-        boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), phi_scratch_name.str(), 1));
+        boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+          new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                              phi_scratch_name.str(), 1));
     }
     d_phi_scr_handle = var_db->registerVariableAndContext(
       phi_scratch_variable, scratch_context, scratch_ghostcell_width);
@@ -1367,11 +1379,14 @@ void FieldExtensionAlgorithm::initializeVariables(
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << field_variable->getName() << "::EXTENSION_FIELD_RHS";
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > rhs_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
-   rhs_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(rhs_name.str()));
+    rhs_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
+      var_db->getVariable(rhs_name.str()));
   } else {
-   rhs_variable =  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>( d_patch_hierarchy->getDim(), rhs_name.str(), 1));
+   rhs_variable =  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                        rhs_name.str(), 1));
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1381,12 +1396,16 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream normal_vector_name("");
   normal_vector_name << phi_variable->getName()
                      << "::EXTENSION_FIELD_NORMAL_VECTOR";
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > normal_vector_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> normal_vector_variable;
   if (var_db->checkVariableExists(normal_vector_name.str())) {
-   normal_vector_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(normal_vector_name.str()));
+    normal_vector_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+                                        hier::Variable>(
+      var_db->getVariable(normal_vector_name.str()));
   } else {
    normal_vector_variable =
-     boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), normal_vector_name.str(),DIM));
+     boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+       new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                           normal_vector_name.str(),DIM));
  }
   d_normal_vector_handle = var_db->registerVariableAndContext(
     normal_vector_variable, scratch_context, zero_ghostcell_width);
@@ -1396,15 +1415,19 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName()
                 << "::EXTENSION_FIELD_GRAD_PHI";
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
-   grad_phi_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_phi_name.str()));
+    grad_phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+                                   hier::Variable>(
+      var_db->getVariable(grad_phi_name.str()));
   } else {
-   grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_phi_name.str()));
+    grad_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+      new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                          grad_phi_name.str()));
   }
-  boost::shared_ptr<VariableContext> grad_phi_plus_context =
+  boost::shared_ptr<hier::VariableContext> grad_phi_plus_context =
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_PLUS");
-  boost::shared_ptr<VariableContext> grad_phi_minus_context =
+  boost::shared_ptr<hier::VariableContext> grad_phi_minus_context =
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_MINUS");
   d_grad_phi_plus_handle = var_db->registerVariableAndContext(
     grad_phi_variable, grad_phi_plus_context, zero_ghostcell_width);
@@ -1418,13 +1441,16 @@ void FieldExtensionAlgorithm::initializeVariables(
   grad_field_name << field_variable->getName() << "::"
                   << phi_variable->getName()
                   << "::EXTENSION_FIELD_GRAD_FIELD";
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_field_variable;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_field_variable;
   if (var_db->checkVariableExists(grad_field_name.str())) {
-   grad_field_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(var_db->getVariable(grad_field_name.str()));
+    grad_field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+                                     hier::Variable>(
+      var_db->getVariable(grad_field_name.str()));
   } else {
    grad_field_variable =
-     boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (new
-     pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(), grad_field_name.str()));
+     boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+       new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+                                           grad_field_name.str()));
   }
   d_grad_field_handle = var_db->registerVariableAndContext(
     grad_field_variable,
@@ -1443,18 +1469,19 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   d_hierarchy_configuration_needs_reset = true;
 
   // get pointer to VariableDatabase
-  VariableDatabase *var_db = VariableDatabase::getDatabase();
+  hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
 
   /*
    * Look up refine operation
    */
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
-  boost::shared_ptr< Variable > tmp_variable;
-  boost::shared_ptr<VariableContext> tmp_context;
+  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> field_variable;
+  boost::shared_ptr<hier::Variable> tmp_variable;
+  boost::shared_ptr<hier::VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
                                            tmp_variable, tmp_context)) {
-    field_variable = BOOST_CAST< pdat::CellVariable<LSMLIB_REAL>,Variable >(tmp_variable);
+    field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
+        tmp_variable);
   } else {
     TBOX_ERROR(  d_object_name
               << "::initializeCommunicationObjects(): "
@@ -1464,7 +1491,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   }
 
   // lookup refine operations
-  boost::shared_ptr< RefineOperator > refine_op =
+  boost::shared_ptr<hier::RefineOperator> refine_op =
     d_grid_geometry->lookupRefineOperator(field_variable, "LINEAR_REFINE");
 
 
@@ -1475,7 +1502,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   d_extension_field_fill_bdry_sched.resizeArray(d_tvd_runge_kutta_order);
   for (int k = 0; k < d_tvd_runge_kutta_order; k++) {
     d_extension_field_fill_bdry_alg[k] =
-     boost::shared_ptr< RefineAlgorithm >(new RefineAlgorithm);
+      boost::shared_ptr<xfer::RefineAlgorithm>(new xfer::RefineAlgorithm);
 
     // empty out the boundary bdry fill schedules
     d_extension_field_fill_bdry_sched[k].setNull();
@@ -1492,7 +1519,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   // create RefineAlgorithms for filling boundary data for phi
   // (required to calculate the signed normal vector)
   d_phi_fill_bdry_alg =
-  boost::shared_ptr< RefineAlgorithm > (new RefineAlgorithm);
+    boost::shared_ptr<xfer::RefineAlgorithm>(new xfer::RefineAlgorithm);
 
   // empty out the boundary bdry fill schedules
   d_phi_fill_bdry_sched.setNull();
@@ -1514,7 +1541,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
 
 /* getFromInput() */
 void FieldExtensionAlgorithm::getFromInput(
-  boost::shared_ptr<Database> db)
+  boost::shared_ptr<tbox::Database> db)
 {
 
   // get numerical parameters
