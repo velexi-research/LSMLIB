@@ -727,10 +727,8 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule >
-    d_phi_bc_module;
-  boost::shared_ptr< BoundaryConditionModule >
-    d_ext_field_bc_module;
+  boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module;
+  boost::shared_ptr<BoundaryConditionModule> d_ext_field_bc_module;
 
   /*
    * Communication objects.

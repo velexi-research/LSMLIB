@@ -11,6 +11,6 @@
 #ifndef included_LevelSetMethodVelocityFieldStrategy_cc
 #define included_LevelSetMethodVelocityFieldStrategy_cc
 
-#include "LevelSetMethodVelocityFieldStrategy.h" 
+#include "LevelSetMethodVelocityFieldStrategy.h"
 
 #endif

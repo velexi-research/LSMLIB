@@ -51,8 +51,8 @@ namespace LSMLIB {
 
 /* Constructor */
 LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
-  boost::shared_ptr<Database> input_db,
-  boost::shared_ptr<PatchHierarchy> patch_hierarchy,
+  boost::shared_ptr<tbox::Database> input_db,
+  boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
   const string& object_name) :
   StandardTagAndInitialize(object_name,
@@ -92,7 +92,7 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
     boost::shared_ptr<mesh::BergerRigoutsos>(
       new mesh::BergerRigoutsos(d_patch_hierarchy->getDim(),input_db));
 
-  boost::shared_ptr<Database> load_balancer_input_db;
+  boost::shared_ptr<tbox::Database> load_balancer_input_db;
 
   boost::shared_ptr<mesh::ChopAndPackLoadBalancer> load_balancer;
   if (input_db->isDatabase("LoadBalancer")) {
@@ -130,7 +130,7 @@ void LevelSetMethodGriddingAlgorithm::registerVelocityFieldStrategy(
 
   // velocity field strategy
  d_velocity_field_strategies[size] =
-   boost::shared_ptr< LevelSetMethodVelocityFieldStrategy >(
+   boost::shared_ptr<LevelSetMethodVelocityFieldStrategy>(
       velocity_field_strategy);
 }
 
@@ -142,7 +142,7 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
   /*
    * Construct and initialize the levels of hierarchy.
    */
-  if (RestartManager::getManager()->isFromRestart()) {
+  if (tbox::RestartManager::getManager()->isFromRestart()) {
     cout << "initializePatchHierarchy from restart" << endl;
 
     // from restart
@@ -162,11 +162,13 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
     for (int level_num = 1;
          d_patch_hierarchy->levelCanBeRefined(level_num) && !done;
          level_num++) {
-      plog << "Adding finer level with level_num = " << level_num << endl;
+      tbox::plog << "Adding finer level with level_num = "
+                 << level_num << endl;
       d_gridding_alg->makeFinerLevel(time, true, 0,
                                      d_patch_hierarchy->getFinestLevelNumber());
 
-      plog << "Just added finer level with level_num = " << level_num << endl;
+      tbox::plog << "Just added finer level with level_num = "
+                 << level_num << endl;
       done = !(d_patch_hierarchy->finerLevelExists(level_num));
     }
 
@@ -220,12 +222,12 @@ void LevelSetMethodGriddingAlgorithm::regridPatchHierarchy(
 
 /* initializeLevelData() */
 void LevelSetMethodGriddingAlgorithm::initializeLevelData(
-  const boost::shared_ptr< PatchHierarchy > hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int level_number,
   const double init_data_time,
   const bool can_be_refined,
   const bool initial_time,
-  const boost::shared_ptr< PatchLevel > old_level,
+  const boost::shared_ptr<hier::PatchLevel> old_level,
   const bool allocate_data)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -278,7 +280,7 @@ void LevelSetMethodGriddingAlgorithm::initializeLevelData(
 
 /* resetHierarchyConfiguration() */
 void LevelSetMethodGriddingAlgorithm::resetHierarchyConfiguration(
-  const boost::shared_ptr< PatchHierarchy > hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -318,7 +320,7 @@ void LevelSetMethodGriddingAlgorithm::resetHierarchyConfiguration(
  * way to set the refinement cells.
  */
 void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
-  const boost::shared_ptr< PatchHierarchy > hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int level_number,
   const double regrid_time,
   const int tag_index,
@@ -379,11 +381,11 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
     hier::BoxContainer  refine_boxes;
     getUserSuppliedRefineBoxes(refine_boxes, level_number,0, regrid_time);
 // 0 is an unused regrid_cycle
-    boost::shared_ptr< hier::PatchLevel > level =
+    boost::shared_ptr<hier::PatchLevel> level =
        hierarchy->getPatchLevel(level_number);
 
     for (hier::PatchLevel::Iterator ip(level->begin()); ip!=level->end(); ip++) {
-      boost::shared_ptr< hier::Patch > patch = *ip;
+      boost::shared_ptr<hier::Patch> patch = *ip;
 
    boost::shared_ptr<pdat::CellData<int>> tag_data(
       BOOST_CAST<pdat::CellData<int>, hier::PatchData>(

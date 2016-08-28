@@ -297,9 +297,9 @@ class LevelSetMethodVelocityFieldStrategy;
 
 class LevelSetFunctionIntegrator:
   public LevelSetFunctionIntegratorStrategy,
-  public RefinePatchStrategy,
-  public CoarsenPatchStrategy,
-  public Serializable
+  public xfer::RefinePatchStrategy,
+  public xfer::CoarsenPatchStrategy,
+  public tbox::Serializable
 {
 public:
 
@@ -335,8 +335,8 @@ public:
    */
   LevelSetFunctionIntegrator(
     const tbox::Dimension& dim,
-    boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+    boost::shared_ptr<tbox::Database> input_db,
+    boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
     LevelSetMethodPatchStrategy* lsm_patch_strategy,
     LevelSetMethodVelocityFieldStrategy* lsm_velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
@@ -808,7 +808,7 @@ public:
   virtual void preprocessInitializeVelocityField(
     int& phi_handle,
     int& psi_handle,
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number);
 
   /*!
@@ -825,7 +825,7 @@ public:
    *
    */
   virtual void postprocessInitializeVelocityField(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number);
 
   //! @}
@@ -850,7 +850,8 @@ public:
    * Return value:   none
    *
    */
-  virtual void putToRestart(const boost::shared_ptr<Database>& restart_db) const;
+  virtual void putToRestart(
+    const boost::shared_ptr<tbox::Database>& restart_db) const;
 
   //! @}
 
@@ -916,9 +917,9 @@ public:
    *
    */
   virtual void setPhysicalBoundaryConditions(
-    Patch& patch,
+    hier::Patch& patch,
     const double fill_time,
-    const IntVector & ghost_width_to_fill);
+    const hier::IntVector & ghost_width_to_fill);
 
   /*!
    * setBoundaryConditions() sets the boundary conditions to impose
@@ -988,8 +989,8 @@ public:
    *
    */
   virtual void setBoundaryConditions(
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component = -1);
 
@@ -1031,7 +1032,7 @@ public:
    *
    */
   virtual void applyGradientDetector(
-      const boost::shared_ptr< PatchHierarchy > hierarchy,
+      const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
       const int level_number,
       const double error_data_time,
       const int tag_index,
@@ -1083,7 +1084,8 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector getRefineOpStencilWidth(const tbox::Dimension& dim) const;
+  virtual hier::IntVector getRefineOpStencilWidth(
+    const tbox::Dimension& dim) const;
 
   /*!
    * preprocessRefine() does no special user-defined spatial
@@ -1099,10 +1101,10 @@ public:
    *
    */
   virtual void preprocessRefine(
-    Patch& fine,
-    const Patch& coarse,
-    const Box& fine_box,
-    const IntVector& ratio);
+    hier::Patch& fine,
+    const hier::Patch& coarse,
+    const hier::Box& fine_box,
+    const hier::IntVector& ratio);
 
   /*!
    * postprocessRefine() does no special user-defined spatial
@@ -1118,10 +1120,10 @@ public:
    *
    */
   virtual void postprocessRefine(
-    Patch& fine,
-    const Patch& coarse,
-    const Box& fine_box,
-    const IntVector& ratio);
+    hier::Patch& fine,
+    const hier::Patch& coarse,
+    const hier::Box& fine_box,
+    const hier::IntVector& ratio);
 
   /*!
    * getCoarsenOpStencilWidth() returns the maximum stencil width
@@ -1133,7 +1135,8 @@ public:
    * Return value:  (0,0,0)
    *
    */
-  virtual IntVector getCoarsenOpStencilWidth(const tbox::Dimension& dim) const;
+  virtual hier::IntVector getCoarsenOpStencilWidth(
+    const tbox::Dimension& dim) const;
 
   /*!
    * preprocessCoarsen() does no special user-defined spatial
@@ -1149,10 +1152,10 @@ public:
    *
    */
   virtual void preprocessCoarsen(
-    Patch& coarse,
-    const Patch& fine,
-    const Box& coarse_box,
-    const IntVector& ratio);
+    hier::Patch& coarse,
+    const hier::Patch& fine,
+    const hier::Box& coarse_box,
+    const hier::IntVector& ratio);
 
   /*!
    * preprocessCoarsen() does no special user-defined spatial
@@ -1168,10 +1171,10 @@ public:
    *
    */
   virtual void postprocessCoarsen(
-    Patch& coarse,
-    const Patch& fine,
-    const Box& coarse_box,
-    const IntVector& ratio);
+    hier::Patch& coarse,
+    const hier::Patch& fine,
+    const hier::Box& coarse_box,
+    const hier::IntVector& ratio);
 
   //! @}
 
@@ -1339,7 +1342,7 @@ protected:
    *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(boost::shared_ptr<Database> db,
+  virtual void getFromInput(boost::shared_ptr<tbox::Database> db,
                             bool is_from_restart);
 
   /*!
@@ -1441,14 +1444,14 @@ protected:
   // Boost pointer to the LevelSetMethodPatchStrategy.  This object
   // is used to initialize and set boundary conditions for the
   // level set functions.
-  LevelSetMethodPatchStrategy*  d_lsm_patch_strategy;
+  LevelSetMethodPatchStrategy* d_lsm_patch_strategy;
 
   // Boost pointer to LevelSetMethodVelocityFieldStrategy.  This object
   // is used to set the velocity field for the time advance of the
   // level set functions.  It is also used to provide some physics-based
   // restrictions on the maximum allowable dt to use for advancing
   // the level set functions in time.
-  LevelSetMethodVelocityFieldStrategy*  d_lsm_velocity_field_strategy;
+  LevelSetMethodVelocityFieldStrategy* d_lsm_velocity_field_strategy;
 
 
   /*
@@ -1456,22 +1459,22 @@ protected:
    */
 
   // Boost pointer to the patch hierarchy object
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
 
   // Boost pointer to the grid geometry.  The CartesianGridGeometry object
   // is used to set up initial data, set physical boundary conditions,
   // and register plot variables.
-  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
+  boost::shared_ptr<geom::CartesianGridGeometry> d_grid_geometry;
 
   // Boost pointer to reinitialization algorithms which manage the
   // reinitialization of level set functions to distance functions
-  boost::shared_ptr< ReinitializationAlgorithm > d_phi_reinitialization_alg;
-  boost::shared_ptr< ReinitializationAlgorithm > d_psi_reinitialization_alg;
+  boost::shared_ptr<ReinitializationAlgorithm> d_phi_reinitialization_alg;
+  boost::shared_ptr<ReinitializationAlgorithm> d_psi_reinitialization_alg;
 
   // Boost pointer to orthogonalization algorithm which manages the
   // orthogonalization of gradients of phi and psi for
   // codimension-two problems
-  boost::shared_ptr< OrthogonalizationAlgorithm > d_orthogonalization_alg;
+  boost::shared_ptr<OrthogonalizationAlgorithm> d_orthogonalization_alg;
 
   /*
    * PatchData handles for data required by level set method
@@ -1507,7 +1510,7 @@ protected:
   int d_control_volume_handle;
 
   // level set ghostcell width
-  IntVector d_level_set_ghostcell_width;
+  hier::IntVector d_level_set_ghostcell_width;
 
   /*
    * Problem dimension.
@@ -1517,12 +1520,12 @@ protected:
   /*
    * Component selectors to organize variables into logical groups
    */
-  ComponentSelector d_solution_variables;
-  ComponentSelector d_time_advance_scratch_variables;
-  ComponentSelector d_compute_stable_dt_scratch_variables;
-  ComponentSelector d_reinitialization_scratch_variables;
-  ComponentSelector d_orthogonalization_scratch_variables;
-  ComponentSelector d_persistent_variables;
+  hier::ComponentSelector d_solution_variables;
+  hier::ComponentSelector d_time_advance_scratch_variables;
+  hier::ComponentSelector d_compute_stable_dt_scratch_variables;
+  hier::ComponentSelector d_reinitialization_scratch_variables;
+  hier::ComponentSelector d_orthogonalization_scratch_variables;
+  hier::ComponentSelector d_persistent_variables;
 
 
   /* internal state  variables */
@@ -1548,33 +1551,33 @@ protected:
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule > d_bc_module;
-  Array< IntVector > d_lower_bc_phi;
-  Array< IntVector > d_upper_bc_phi;
-  Array< IntVector > d_lower_bc_psi;
-  Array< IntVector > d_upper_bc_psi;
+  boost::shared_ptr<BoundaryConditionModule> d_bc_module;
+  tbox::Array<hier::IntVector> d_lower_bc_phi;
+  tbox::Array<hier::IntVector> d_upper_bc_phi;
+  tbox::Array<hier::IntVector> d_lower_bc_psi;
+  tbox::Array<hier::IntVector> d_upper_bc_psi;
 
   /*
    * Communication objects.
    */
 
   // for filling a new level
-  boost::shared_ptr< RefineAlgorithm > d_fill_new_level;
+  boost::shared_ptr<xfer::RefineAlgorithm> d_fill_new_level;
 
   // for filling boundary data used during the calculation of
   // a stable dt for motion under normal velocity
-  boost::shared_ptr< RefineAlgorithm > d_fill_bdry_compute_stable_dt;
-  Array< boost::shared_ptr< RefineSchedule > >
+  boost::shared_ptr<xfer::RefineAlgorithm> d_fill_bdry_compute_stable_dt;
+  tbox::Array<boost::shared_ptr<xfer::RefineSchedule>>
     d_fill_bdry_sched_compute_stable_dt;
 
   // for filling bdry data before doing time advance
-  Array< boost::shared_ptr< RefineAlgorithm > > d_fill_bdry_time_advance;
-  Array< Array< boost::shared_ptr< RefineSchedule > > >
+  tbox::Array<boost::shared_ptr<xfer::RefineAlgorithm>> d_fill_bdry_time_advance;
+  tbox::Array<tbox::Array<boost::shared_ptr<xfer::RefineSchedule>>>
     d_fill_bdry_sched_time_advance;
 
-//Variable Database
- // hier::VariableDatabase* var_db;
+  //Variable Database
   hier::PatchDataRestartManager* pdrm;
+
 private:
 
 

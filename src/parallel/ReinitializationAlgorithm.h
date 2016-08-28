@@ -5,33 +5,33 @@
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
  * Modified:    $09/22/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
- * Description: Header file for level set method reinitialization algorithm 
+ * Description: Header file for level set method reinitialization algorithm
  */
- 
+
 #ifndef included_ReinitializationAlgorithm_h
 #define included_ReinitializationAlgorithm_h
 
 /*! \class LSMLIB::ReinitializationAlgorithm
  *
- * \brief 
- * ReinitializationAlgorithm is a utility class that provides support for 
- * reinitializing the a level set function to be a distance function.  
+ * \brief
+ * ReinitializationAlgorithm is a utility class that provides support for
+ * reinitializing the a level set function to be a distance function.
  *
- * It reinitializes the level set functions to be distance functions using 
+ * It reinitializes the level set functions to be distance functions using
  * the reinitialization equation:
  *
  * \f[
  *
  *   \phi_t + sgn(\phi) ( |\nabla \phi| - 1 ) = 0
  *
- * \f] 
+ * \f]
  *
  * This Hamilton-Jacobi equation is advanced in time towards steady-state
- * using a user-specified TVD Runge-Kutta method.  The number of steps 
- * taken is a function of the user-specified input parameters: 
+ * using a user-specified TVD Runge-Kutta method.  The number of steps
+ * taken is a function of the user-specified input parameters:
  * stop_distance, max_iterations, and iteration_stop_tolerance.
  * The numerical discretization used to compute grad(phi) is also
- * user-specified.  A Godunov scheme is used to select the appropriate 
+ * user-specified.  A Godunov scheme is used to select the appropriate
  * spatial derivative approximation for each component of grad(phi).
  *
  *
@@ -40,21 +40,21 @@
  *  -# Set up level set functions and initialize the level set calculation
  *     (e.g. using the LevelSetMethodAlgorithm class).
  *  -# Create a ReinitializationAlgorithm object.
- *  -# Invoke @ref resetHierarchyConfiguration() if PatchHierarchy 
- *     configuration of has been changed since last reinitialization 
- *     procedure. 
- *  -# Reinitialize level set functions using the 
+ *  -# Invoke @ref resetHierarchyConfiguration() if PatchHierarchy
+ *     configuration of has been changed since last reinitialization
+ *     procedure.
+ *  -# Reinitialize level set functions using the
  *     @ref reinitializeLevelSetFunctions() or the
  *     @ref reinitializeLevelSetFunctionForSingleComponent() methods.
  *
- * 
+ *
  * <h3> User-specified parameters </h3>
- * 
+ *
  * - spatial_derivative_type    = type of spatial derivative calculation
  * - spatial_derivative_order   = order of spatial derivative
  * - tvd_runge_kutta_order      = order of TVD Runge-Kutta integration
  * - cfl_number                 = CFL number (default = 0.5)
- * - stop_distance              = approximate stopping criterion for  
+ * - stop_distance              = approximate stopping criterion for
  *                                evolution of reinitialization equation.
  *                                Reinitialization terminates after the
  *                                information from the zero level set has
@@ -62,13 +62,13 @@
  *                                distance.  (default = 0.0)
  * - max_iterations             = maximum number of time steps to take during
  *                                the reinitialization process (default = 0)
- * - iteration_stop_tolerance   = stopping criterion for termination of 
+ * - iteration_stop_tolerance   = stopping criterion for termination of
  *                                evolution of reinitialization equation.
  *                                Reinitialization stops when the max norm
  *                                of the change in the level set function
  *                                drops below the specified tolerance.
  *                                (default = 0.0)
- * - verbose_mode               = flag to activate/deactivate verbose-mode 
+ * - verbose_mode               = flag to activate/deactivate verbose-mode
  *                                (default = false)
  *
  *
@@ -76,29 +76,34 @@
  *
  * - If no stopping criteria are specified, the reinitialization
  *   calculation is terminated using the stop_distance criterion
- *   with the stop_distance set to the length of the largest 
+ *   with the stop_distance set to the length of the largest
  *   dimension of the computational domain.  This choice ensures
- *   that the level set function is reinitialized throughout the 
+ *   that the level set function is reinitialized throughout the
  *   entire computational domain.
- * 
+ *
  * - Unless it is important that the reinitialized level set function
- *   is a distance function (i.e. |grad(phi)|) to very high accuracy, 
+ *   is a distance function (i.e. |grad(phi)|) to very high accuracy,
  *   it is recommended that reinitialzation is done using a low-order
- *   spatial discretization and time integration scheme (e.g. ENO1 and 
+ *   spatial discretization and time integration scheme (e.g. ENO1 and
  *   TVD Runge-Kutta 1).  This will significantly improve preformance.
  *
  * - A reinitialization calculation that extends throughout the
  *   entire domain can take a rather large amount of computational
  *   time.  The calculation may be sped up by specifying a smaller
- *   stop_distance (which effectively limits the distance off of the 
- *   zero level set where the level set function is reinitialized to 
- *   be a distance function) or using a lower order spatial-and 
+ *   stop_distance (which effectively limits the distance off of the
+ *   zero level set where the level set function is reinitialized to
+ *   be a distance function) or using a lower order spatial-and
  *   time-discretization.
- * 
+ *
  */
 
-
+// Standard library headrers
 #include <vector>
+
+// Boost headers
+#include "boost/smart_ptr/shared_ptr.hpp"
+
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/hier/ComponentSelector.h"
@@ -107,18 +112,15 @@
 #include "SAMRAI/xfer/RefineSchedule.h"
 #include "SAMRAI/tbox/Array.h"
 #include "SAMRAI/tbox/Database.h"
-#include "boost/shared_ptr.hpp"
-#include <boost/config.hpp>
 
+// LSMLIB headers
 #include "LSMLIB_config.h"
 #include "BoundaryConditionModule.h"
 #include "LevelSetMethodToolbox.h"
 
-// SAMRAI namespaces 
+// Namespaces
+using namespace std;
 using namespace SAMRAI;
-using namespace hier;
-using namespace tbox;
-using namespace xfer;
 
 
 /******************************************************************
@@ -134,7 +136,7 @@ class ReinitializationAlgorithm
 
 public:
 
-  //! @{ 
+  //! @{
   /*!
    ****************************************************************
    *
@@ -143,47 +145,47 @@ public:
    ****************************************************************/
 
   /*!
-   * This constructor sets up the required variables, PatchData, etc. for 
+   * This constructor sets up the required variables, PatchData, etc. for
    * reinitializing the level set function to be a distance function via
-   * the reinitialization equation using parameters provided through 
+   * the reinitialization equation using parameters provided through
    * the specified input database.
    *
-   * Arguments:      
+   * Arguments:
    *  - input_db (in):               input database containing user-defined
    *                                 parameters
-   *  - hierarchy (in):              Boost pointer to PatchHierarchy 
+   *  - hierarchy (in):              Boost pointer to PatchHierarchy
    *                                 containing data
    *  - phi_handle (in):             PatchData handle for the level set
    *                                 function (phi)
    *  - control_volume_handle (in):  PatchData handle for control volume
    *                                 data
-   *  - object_name (in):            string name for object (default = 
+   *  - object_name (in):            string name for object (default =
    *                                 "ReinitializationAlgorithm")
    *
    * Return value:                   none
    *
    * NOTES:
-   *  - Only one ReinitializationAlgorithm object may be 
+   *  - Only one ReinitializationAlgorithm object may be
    *    created for each level set function.
-   *  - Linear interpolation is used to refine data from coarser to 
+   *  - Linear interpolation is used to refine data from coarser to
    *    finer levels.
    *
    */
   ReinitializationAlgorithm(
-    boost::shared_ptr<Database> input_db,
-    boost::shared_ptr< PatchHierarchy> hierarchy,
+    boost::shared_ptr<tbox::Database> input_db,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const string& object_name = "ReinitializationAlgorithm");
 
   /*!
-   * This constructor sets up the required variables, PatchData, etc. for 
+   * This constructor sets up the required variables, PatchData, etc. for
    * reinitializing the level set function to be a distance function via
-   * the reinitialization equation using parameters provided as arguments 
+   * the reinitialization equation using parameters provided as arguments
    * to the constructor.
    *
-   * Arguments:      
-   *  - hierarchy (in):                 Boost pointer to PatchHierarchy 
+   * Arguments:
+   *  - hierarchy (in):                 Boost pointer to PatchHierarchy
    *                                    containing data
    *  - phi_handle (in):                PatchData handle for the level set
    *                                    function (phi)
@@ -193,37 +195,37 @@ public:
    *  - spatial_derivative_order (in):  order of spatial derivative
    *  - tvd_runge_kutta_order (in):     order of TVD Runge-Kutta integration
    *  - cfl_number (in):                CFL number used to compute dt
-   *  - stop_distance (in):             approximate stopping criterion for 
+   *  - stop_distance (in):             approximate stopping criterion for
    *                                    evolution of reinitialization equation.
-   *                                    Reinitialization stops after the 
-   *                                    information from the zero level set 
-   *                                    has propagated by approximately the 
-   *                                    specified distance. (default = 0.0) 
+   *                                    Reinitialization stops after the
+   *                                    information from the zero level set
+   *                                    has propagated by approximately the
+   *                                    specified distance. (default = 0.0)
    *  - max_iterations (in):            maximum number of time steps to take
    *                                    during the reinitialization process
    *                                    (default = 0)
-   *  - iteration_stop_tolerance (in):  stopping criterion for termination of 
+   *  - iteration_stop_tolerance (in):  stopping criterion for termination of
    *                                    evolution of reinitialization equation.
-   *                                    Reinitialization stops when the max 
+   *                                    Reinitialization stops when the max
    *                                    norm of the change in level set function
    *                                    drops below the specified tolerance.
-   *                                    (default = 0.0) 
-   *  - verbose_mode (in):              flag to activate/deactivate 
+   *                                    (default = 0.0)
+   *  - verbose_mode (in):              flag to activate/deactivate
    *                                    verbose-mode (default = false)
-   *  - object_name (in):               string name for object (default = 
+   *  - object_name (in):               string name for object (default =
    *                                    "ReinitializationAlgorithm")
    *
    * Return value:                      none
    *
    * NOTES:
-   *  - Only one ReinitializationAlgorithm object may be 
+   *  - Only one ReinitializationAlgorithm object may be
    *    created for each level set function.
-   *  - Linear interpolation is used to refine data from coarser to 
+   *  - Linear interpolation is used to refine data from coarser to
    *    finer levels.
    *
    */
   ReinitializationAlgorithm(
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int phi_handle,
     const int control_volume_handle,
     const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
@@ -256,14 +258,14 @@ public:
    ****************************************************************/
 
   /*!
-   * reinitializeLevelSetFunctions() reinitializes all of the components 
+   * reinitializeLevelSetFunctions() reinitializes all of the components
    * of the level set functions corresponding to the PatchData handle
    * passed into the constructor (i.e. phi_handle).
    *
-   * Arguments:     
+   * Arguments:
    *  - max_iterations (in):  maximum number of iterations to use
    *                          for reinitialization.  Set max_iterations
-   *                          to -1 to use the value specified in the 
+   *                          to -1 to use the value specified in the
    *                          input file.
    *                          (default = -1)
    *  - lower_bc (in):        vector of integers specifying the
@@ -273,8 +275,8 @@ public:
    *                          contain the type of boundary condition
    *                          impose at the lower boundary in the
    *                          i-th coordinate direction.
-   *                          For information about the boundary 
-   *                          condition types, see documentation of 
+   *                          For information about the boundary
+   *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
    *                          (default = vector of -1's)
    *  - upper_bc (in):        vector of integers specifying the
@@ -284,8 +286,8 @@ public:
    *                          contain the type of boundary condition
    *                          impose at the upper boundary in the
    *                          i-th coordinate direction.
-   *                          For information about the boundary 
-   *                          condition types, see documentation of 
+   *                          For information about the boundary
+   *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
    *                          (default = vector of -1's)
    *
@@ -294,7 +296,7 @@ public:
    * NOTES:
    *  - If max_iterations is set to a non-negative value, it overrides
    *    ALL of the stopping criteria specified in the input file.
-   * 
+   *
    *  - The default behavior when no boundary conditions are supplied
    *    (i.e. either lower_bc or upper_bc is a vector of -1's) is that
    *    homogeneous Neumann boundary conditions will be imposed on
@@ -306,44 +308,44 @@ public:
    *
    */
   virtual void reinitializeLevelSetFunctions(
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int max_iterations = -1);
 
   /*!
    * reinitializeLevelSetFunctionForSingleComponent() reinitializes the
-   * specified component of the level set function corresponding to the 
+   * specified component of the level set function corresponding to the
    * PatchData handle, phi_handle, passed into the constructor.
    *
-   * Arguments:      
-   *  - component (in):       component of level set function to 
+   * Arguments:
+   *  - component (in):       component of level set function to
    *                          reinitialize
    *                          (default = 0)
    *  - max_iterations (in):  maximum number of iterations to use
    *                          for reinitialization.  Set max_iterations
-   *                          to -1 to use the value specified in the 
+   *                          to -1 to use the value specified in the
    *                          input file.
    *                          (default = -1)
    *  - lower_bc (in):        vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the lower face of the computational
-   *                          domain in each coordinate direction.  
-   *                          The i-th entry should contain the type 
-   *                          of boundary condition to impose at the lower 
+   *                          domain in each coordinate direction.
+   *                          The i-th entry should contain the type
+   *                          of boundary condition to impose at the lower
    *                          boundary in the i-th coordinate direction.
-   *                          For information about the boundary 
-   *                          condition types, see documentation of 
+   *                          For information about the boundary
+   *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
    *                          (default = vector of -1's)
    *  - upper_bc (in):        vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the upper face of the computational
-   *                          domain in each coordinate direction.  
-   *                          The i-th entry should contain the type 
+   *                          domain in each coordinate direction.
+   *                          The i-th entry should contain the type
    *                          of boundary condition to impose at the upper
    *                          boundary in the i-th coordinate direction.
-   *                          For information about the boundary 
-   *                          condition types, see documentation of 
+   *                          For information about the boundary
+   *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
    *                          (default = vector of -1's)
    *
@@ -360,8 +362,8 @@ public:
    *
    */
   virtual void reinitializeLevelSetFunctionForSingleComponent(
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const int component = 0,
     const int max_iterations = -1);
 
@@ -371,19 +373,19 @@ public:
   //! @{
   /*!
    ****************************************************************
-   * 
+   *
    * @name Methods for managing grid configuration
    *
    ****************************************************************/
 
   /*!
-   * resetHierarchyConfiguration() updates resets the communication 
-   * schedules to be consistent with the new configuration of the 
-   * PatchHierarchy.  This method should be invoked any time the 
+   * resetHierarchyConfiguration() updates resets the communication
+   * schedules to be consistent with the new configuration of the
+   * PatchHierarchy.  This method should be invoked any time the
    * PatchHierarchy has been changed.
    *
-   * Arguments:      
-   *  - hierarchy (in):       Boost pointer to new PatchHierarchy 
+   * Arguments:
+   *  - hierarchy (in):       Boost pointer to new PatchHierarchy
    *  - coarsest_level (in):  coarsest level in the hierarchy to be updated
    *  - finest_level (in):    finest level in the hierarchy to be updated
    *
@@ -391,7 +393,7 @@ public:
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int coarsest_level,
     const int finest_level);
 
@@ -412,17 +414,17 @@ protected:
    * equation a first-, second-, or third-order TVD Runge-Kutta step.
    *
    * Arguments:
-   *  - dt (in):                  time increment to advance the level set 
+   *  - dt (in):                  time increment to advance the level set
    *                              functions
-   *  - component (in):           component of level set function to advance 
+   *  - component (in):           component of level set function to advance
    *                              in time
    *  - lower_bc (in):            vector of integers specifying the
    *                              type of boundary conditions to impose
    *                              on the lower face of the computational
    *                              domain in each coordinate direction for
-   *                              the level set function.  The i-th entry 
-   *                              should contain the type of boundary 
-   *                              condition to impose at the lower boundary 
+   *                              the level set function.  The i-th entry
+   *                              should contain the type of boundary
+   *                              condition to impose at the lower boundary
    *                              in the i-th coordinate direction.
    *                              For information about the boundary
    *                              condition types, see documentation of
@@ -431,9 +433,9 @@ protected:
    *                              type of boundary conditions to impose
    *                              on the upper face of the computational
    *                              domain in each coordinate direction for
-   *                              the level set function.  The i-th entry 
-   *                              should contain the type of boundary 
-   *                              condition to impose at the upper boundary 
+   *                              the level set function.  The i-th entry
+   *                              should contain the type of boundary
+   *                              condition to impose at the upper boundary
    *                              in the i-th coordinate direction.
    *                              For information about the boundary
    *                              condition types, see documentation of
@@ -442,8 +444,8 @@ protected:
    * Return value:                none
    *
    * NOTES:
-   *  - These methods are NOT intended to be used directly by the 
-   *    user.  They are only helper methods for the 
+   *  - These methods are NOT intended to be used directly by the
+   *    user.  They are only helper methods for the
    *    reinitializeLevelSetFunctionForSingleComponent() and
    *    reinitializeLevelSetFunctions() methods
    *
@@ -451,18 +453,18 @@ protected:
   virtual void advanceReinitializationEqnUsingTVDRK1(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc);
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc);
   virtual void advanceReinitializationEqnUsingTVDRK2(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc);
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc);
   virtual void advanceReinitializationEqnUsingTVDRK3(
     const LSMLIB_REAL dt,
     const int component,
-    const IntVector& lower_bc,
-    const IntVector& upper_bc);
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc);
 
   /*!
    * computeReinitializationEqnRHS() computes the right-hand side of
@@ -471,7 +473,7 @@ protected:
    *   phi_t = ...
    *
    * Arguments:
-   *  - phi_handle (in):  PatchData handle to use in computing RHS of 
+   *  - phi_handle (in):  PatchData handle to use in computing RHS of
    *                      reinitialization equation
    *
    * Return value:        none
@@ -515,7 +517,7 @@ protected:
   virtual void initializeCommunicationObjects();
 
   /*!
-   * getFromInput() configures the ReinitializationAlgorithm 
+   * getFromInput() configures the ReinitializationAlgorithm
    * object from the values in the specified input database.
    *
    * Arguments:
@@ -528,7 +530,7 @@ protected:
    *  - An assertion results if the database boost pointer is null.
    *
    */
-  virtual void getFromInput(boost::shared_ptr<Database> db);
+  virtual void getFromInput(boost::shared_ptr<tbox::Database> db);
 
   /*!
    * checkParameters() checks to make sure that user-specified parameters
@@ -552,7 +554,7 @@ protected:
    ****************************************************************/
 
   /*
-   * The object name is used for error/warning reporting. 
+   * The object name is used for error/warning reporting.
    */
   string d_object_name;
 
@@ -573,14 +575,14 @@ protected:
   bool d_verbose_mode;
 
   /*
-   * Grid management objects 
+   * Grid management objects
    */
 
   // Boost pointer to PatchHierarchy object
-  boost::shared_ptr< PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
 
   // Boost pointer to GridGeometry
-  boost::shared_ptr< CartesianGridGeometry > d_grid_geometry;
+  boost::shared_ptr<geom::CartesianGridGeometry> d_grid_geometry;
 
   /*
    * PatchData handles for data required to solve reinitialization equation
@@ -590,15 +592,15 @@ protected:
   int d_phi_handle;
   int d_control_volume_handle;
 
-  // scratch data 
+  // scratch data
   vector<int> d_phi_scr_handles;
-  IntVector d_phi_scratch_ghostcell_width;
+  hier::IntVector d_phi_scratch_ghostcell_width;
   int d_rhs_handle;
   int d_grad_phi_plus_handle;
   int d_grad_phi_minus_handle;
 
-  /* 
-   * internal state  variables 
+  /*
+   * internal state  variables
    */
 
   // iteration termination flags
@@ -607,28 +609,29 @@ protected:
   bool d_use_iteration_stop_tol;
 
   // flag indicating that communication schedules need to be recomputed
-  bool d_hierarchy_configuration_needs_reset; 
+  bool d_hierarchy_configuration_needs_reset;
 
   // level set data parameters
   int d_num_phi_components;
 
   // ComponentSelector to organize variables
-  ComponentSelector d_scratch_data;
+  hier::ComponentSelector d_scratch_data;
 
   /*
    * Boundary condition objects
    */
-  boost::shared_ptr< BoundaryConditionModule > d_bc_module;
+  boost::shared_ptr<BoundaryConditionModule> d_bc_module;
 
   /*
    * Communication objects.
    */
 
   // data communication parameters
-  Array< boost::shared_ptr< RefineAlgorithm > > d_phi_fill_bdry_alg;
-  Array< Array< boost::shared_ptr< RefineSchedule > > > d_phi_fill_bdry_sched;
+  tbox::Array<boost::shared_ptr<xfer::RefineAlgorithm>> d_phi_fill_bdry_alg;
+  tbox::Array<tbox::Array< boost::shared_ptr<xfer::RefineSchedule>>>
+      d_phi_fill_bdry_sched;
 
-private: 
+private:
 
   /*
    * Private assignment operator to prevent use.
@@ -646,6 +649,6 @@ private:
 
 };
 
-} // end LSMLIB namespace 
+} // end LSMLIB namespace
 
 #endif

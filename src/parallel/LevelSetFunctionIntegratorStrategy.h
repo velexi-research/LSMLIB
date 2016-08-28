@@ -237,8 +237,8 @@ public:
    *
    */
   virtual void setBoundaryConditions(
-    const IntVector& lower_bc,
-    const IntVector& upper_bc,
+    const hier::IntVector& lower_bc,
+    const hier::IntVector& upper_bc,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component = -1) = 0;
 

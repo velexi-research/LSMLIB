@@ -567,8 +567,8 @@ public:
    *
    */
   LevelSetMethodAlgorithm(
-    boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
-    boost::shared_ptr< LevelSetMethodGriddingStrategy > lsm_gridding_strategy,
+    boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
+    boost::shared_ptr<LevelSetMethodGriddingStrategy> lsm_gridding_strategy,
     const string& object_name = "LevelSetMethodAlgorithm");
 
   /*!
@@ -1251,7 +1251,7 @@ public:
    *    LevelSetMethodAlgorithm::resetHierarchyConfiguration() is invoked.
    *
    */
-  virtual boost::shared_ptr< FieldExtensionAlgorithm > getFieldExtensionAlgorithm(
+  virtual boost::shared_ptr<FieldExtensionAlgorithm> getFieldExtensionAlgorithm(
     const tbox::Dimension& dim,
     const int field_handle,
     const LEVEL_SET_FCN_TYPE level_set_fcn,

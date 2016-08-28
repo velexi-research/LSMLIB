@@ -45,8 +45,8 @@ namespace LSMLIB {
 /* Constructor for standard integrator and gridding strategy */
 LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   const tbox::Dimension& dim,
-  boost::shared_ptr<Database> lsm_algorithm_input_db,
-  boost::shared_ptr< PatchHierarchy > patch_hierarchy,
+  boost::shared_ptr<tbox::Database> lsm_algorithm_input_db,
+  boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   LevelSetMethodPatchStrategy* patch_strategy,
   LevelSetMethodVelocityFieldStrategy* velocity_field_strategy,
   const int num_level_set_fcn_components,
@@ -65,7 +65,7 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   d_object_name = object_name;
 
   // create new LevelSetFunctionIntegrator object
-  boost::shared_ptr<Database> level_set_fcn_integrator_db =
+  boost::shared_ptr<tbox::Database> level_set_fcn_integrator_db =
     lsm_algorithm_input_db->getDatabase("LevelSetFunctionIntegrator");
   d_lsm_integrator_strategy =
     boost::shared_ptr<LevelSetFunctionIntegrator> (
@@ -118,8 +118,8 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
 }
 /* Constructor for custom integrator and gridding strategy */
 LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
-  boost::shared_ptr< LevelSetFunctionIntegratorStrategy > lsm_integrator_strategy,
-  boost::shared_ptr< LevelSetMethodGriddingStrategy > lsm_gridding_strategy,
+  boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
+  boost::shared_ptr<LevelSetMethodGriddingStrategy> lsm_gridding_strategy,
   const string& object_name)
 {
 
@@ -136,7 +136,7 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   // set simulation parameters used by standard LevelSetFunctionIntegrator
   // class to invalid values
   d_using_standard_level_set_fcn_integrator = false;
-  d_patch_hierarchy = boost::shared_ptr<PatchHierarchy>();
+  d_patch_hierarchy = boost::shared_ptr<hier::PatchHierarchy>();
   d_spatial_derivative_type = UNKNOWN;
   d_spatial_derivative_order = 0;
   d_tvd_runge_kutta_order = 0;
@@ -165,7 +165,7 @@ void LevelSetMethodAlgorithm::printClassData(ostream& os) const
 
 /* resetHierarchyConfiguration() */
 void LevelSetMethodAlgorithm::resetHierarchyConfiguration(
-  const boost::shared_ptr< PatchHierarchy > hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
   const int coarsest_level,
   const int finest_level)
 {
@@ -184,9 +184,9 @@ void LevelSetMethodAlgorithm::resetHierarchyConfiguration(
 
 
 /* getFieldExtensionAlgorithm() */
-boost::shared_ptr< FieldExtensionAlgorithm >
+boost::shared_ptr<FieldExtensionAlgorithm>
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
-  boost::shared_ptr<Database> input_db,
+  boost::shared_ptr<tbox::Database> input_db,
   const int field_handle,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const string& object_name)
@@ -198,7 +198,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
               << "LevelSetFunctionIntegrator."
               << endl );
 
-    boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg=boost::shared_ptr< FieldExtensionAlgorithm > ();
+    boost::shared_ptr<FieldExtensionAlgorithm> field_extension_alg;
     return field_extension_alg;
   }
 
@@ -209,14 +209,14 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
     level_set_fcn_handle = d_lsm_integrator_strategy->getPsiPatchDataHandle();
   }
 
-  boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg =
-   boost::shared_ptr< FieldExtensionAlgorithm > ( new FieldExtensionAlgorithm(
+  boost::shared_ptr<FieldExtensionAlgorithm> field_extension_alg =
+   boost::shared_ptr<FieldExtensionAlgorithm> ( new FieldExtensionAlgorithm(
       input_db,
       d_patch_hierarchy,
       field_handle,
       level_set_fcn_handle,
       getControlVolumePatchDataHandle(),
-      IntVector(d_patch_hierarchy->getDim(), 0),
+      hier::IntVector(d_patch_hierarchy->getDim(), 0),
       object_name));
 
   // add new object to list of FieldExtensionAlgorithms to be
@@ -230,7 +230,7 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
 
 
 /* getFieldExtensionAlgorithm() */
-boost::shared_ptr< FieldExtensionAlgorithm >
+boost::shared_ptr<FieldExtensionAlgorithm>
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
   const tbox::Dimension& dim,
   const int field_handle,
@@ -252,7 +252,8 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
               << "LevelSetFunctionIntegrator."
               << endl );
 
-    boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg = boost::shared_ptr< FieldExtensionAlgorithm> ();
+    boost::shared_ptr<FieldExtensionAlgorithm> field_extension_alg =
+        boost::shared_ptr<FieldExtensionAlgorithm> ();
     return field_extension_alg;
   }
 
@@ -277,13 +278,13 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
     cfl_number = d_cfl_number;
   }
 
-  boost::shared_ptr< FieldExtensionAlgorithm > field_extension_alg =
-    boost::shared_ptr< FieldExtensionAlgorithm > (new FieldExtensionAlgorithm(
+  boost::shared_ptr<FieldExtensionAlgorithm> field_extension_alg =
+    boost::shared_ptr<FieldExtensionAlgorithm>(new FieldExtensionAlgorithm(
       d_patch_hierarchy,
       field_handle,
       level_set_fcn_handle,
       getControlVolumePatchDataHandle(),
-      IntVector(d_patch_hierarchy->getDim(), 0),
+      hier::IntVector(d_patch_hierarchy->getDim(), 0),
       (SPATIAL_DERIVATIVE_TYPE) spatial_derivative_type,
       spatial_derivative_order,
       tvd_runge_kutta_order,
@@ -429,8 +430,8 @@ LSMLIB_REAL LevelSetMethodAlgorithm::getCFLNumber() const
 
 /* setBoundaryConditions() */
 void LevelSetMethodAlgorithm::setBoundaryConditions(
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   const int component)
 {

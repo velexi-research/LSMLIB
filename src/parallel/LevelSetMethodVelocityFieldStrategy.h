@@ -5,65 +5,67 @@
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
  * Modified:    $09/15/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
- * Description: Header for strategy for the velocity field for the level 
+ * Description: Header for strategy for the velocity field for the level
  *              set method
  */
- 
+
 #ifndef included_LevelSetMethodVelocityFieldStrategy_h
 #define included_LevelSetMethodVelocityFieldStrategy_h
 
 /*! \class LSMLIB::LevelSetMethodVelocityFieldStrategy
  *
- * \brief 
- * The LevelSetMethodVelocityFieldStrategy class defines the interface for 
- * supplying the external velocity field and/or normal velocity field for 
- * a level set method calculation.  
+ * \brief
+ * The LevelSetMethodVelocityFieldStrategy class defines the interface for
+ * supplying the external velocity field and/or normal velocity field for
+ * a level set method calculation.
  *
- * In particular, it defines interfaces for computing the velocity field 
- * used in a level set method calculation, computing a stable time step 
- * size based on the velocity field computation, and accessing the PatchData 
- * handles for the velocity field data.  The interface also defines methods 
- * for initializing the data required for the velocity field calculation, 
- * resetting the PatchHierarchy configuation (after a regridding operation), 
- * and tagging cells for refinement.  These methods emulate similarly named 
- * methods in the SAMRAI::mesh::StandardTagAndInitStrategy class (in 
+ * In particular, it defines interfaces for computing the velocity field
+ * used in a level set method calculation, computing a stable time step
+ * size based on the velocity field computation, and accessing the PatchData
+ * handles for the velocity field data.  The interface also defines methods
+ * for initializing the data required for the velocity field calculation,
+ * resetting the PatchHierarchy configuation (after a regridding operation),
+ * and tagging cells for refinement.  These methods emulate similarly named
+ * methods in the SAMRAI::mesh::StandardTagAndInitStrategy class (in
  * the SAMRAI library).
- * 
- * 
- * <h3> NOTES: </h3>
- *  - In order to use the LevelSetFunctionIntegrator class, a user MUST 
- *    implement a concrete subclass of this ``strategy'' class. 
  *
- *  - It is NOT required that the user-defined subclass provides 
- *    support for both external (vector) and normal (scalar) velocity 
- *    fields.  However, at least one of these velocity fields MUST be 
- *    provided by the user-defined subclass.  Depending on the 
- *    application either one (or both) velocity fields may be required 
+ *
+ * <h3> NOTES: </h3>
+ *  - In order to use the LevelSetFunctionIntegrator class, a user MUST
+ *    implement a concrete subclass of this ``strategy'' class.
+ *
+ *  - It is NOT required that the user-defined subclass provides
+ *    support for both external (vector) and normal (scalar) velocity
+ *    fields.  However, at least one of these velocity fields MUST be
+ *    provided by the user-defined subclass.  Depending on the
+ *    application either one (or both) velocity fields may be required
  *    in the user-defined subclass.
  *
  *  - If restart capabilities are desired for the application, the
  *    concrete subclass of LevelSetMethodVelocityFieldStrategy
  *    MUST register all PatchData for required restart using the
  *    SAMRAI::VariableDatabase::registerPatchDataForRestart() method.
- *    
- *  - Default (empty) implementations of resetHierarchyConfiguration() 
- *    and tagCellsForRefinement() are provided for convenience if 
+ *
+ *  - Default (empty) implementations of resetHierarchyConfiguration()
+ *    and tagCellsForRefinement() are provided for convenience if
       AMR is not required by the user's application.
  *
  */
 
+// Boost headers
+#include "boost/smart_ptr/shared_ptr.hpp"
 
+// SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
-#include "boost/shared_ptr.hpp" 
 
+// LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
 
-// SAMRAI namespaces
+// Namespaces
 using namespace SAMRAI;
-using namespace hier;
 
 
 /******************************************************************
@@ -88,17 +90,17 @@ public:
 
   /*!
    * providesExternalVelocityField() indicates whether the concrete
-   * subclass of LevelSetMethodVelocityFieldStrategy provides an 
-   * external (vector) velocity field for the level set method 
+   * subclass of LevelSetMethodVelocityFieldStrategy provides an
+   * external (vector) velocity field for the level set method
    * calculation.
    *
    * Arguments:     none
    *
-   * Return value:  true if the object provides calculation of an 
-   *                external (vector) velocity field for a level set 
+   * Return value:  true if the object provides calculation of an
+   *                external (vector) velocity field for a level set
    *                method calculation; false otherwise
    *
-   * NOTES: 
+   * NOTES:
    *  - This is a pure abstract method that the user MUST override in
    *    order to use the LevelSetFunctionIntegrator class.
    *
@@ -107,17 +109,17 @@ public:
 
   /*!
    * providesNormalVelocityField() indicates whether the concrete
-   * subclass of LevelSetMethodVelocityFieldStrategy provides an 
-   * normal (scalar) velocity field for the level set method 
+   * subclass of LevelSetMethodVelocityFieldStrategy provides an
+   * normal (scalar) velocity field for the level set method
    * calculation.
    *
    * Arguments:     none
    *
-   * Return value:  true if the object provides calculation of an normal 
-   *                (scalar) velocity field for a level set method 
+   * Return value:  true if the object provides calculation of an normal
+   *                (scalar) velocity field for a level set method
    *                calculation; false otherwise
    *
-   * NOTES: 
+   * NOTES:
    *  - This is a pure abstract method that the user MUST override in
    *    order to use the LevelSetFunctionIntegrator class.
    *
@@ -128,14 +130,14 @@ public:
    * Accessor method for the external (vector) velocity field PatchData
    * handle.
    *
-   * Arguments:     
+   * Arguments:
    *  - component (in):  component of vector level set function that the
    *                     velocity field handle is being requested for
    *
-   * Return value:       PatchData handle for the external velocity field 
+   * Return value:       PatchData handle for the external velocity field
    *                     data
    *
-   * NOTES: 
+   * NOTES:
    *  - This is a pure abstract method that the user MUST override in
    *    order to use the LevelSetFunctionIntegrator class.
    *
@@ -144,20 +146,20 @@ public:
     const int component) const = 0;
 
   /*!
-   * Accessor method for the normal (scalar) velocity field PatchData 
+   * Accessor method for the normal (scalar) velocity field PatchData
    * handle.
    *
-   * Arguments:     
-   *  - level_set_fcn (in):  level set function for which to get 
+   * Arguments:
+   *  - level_set_fcn (in):  level set function for which to get
    *                         normal velocity field PatchData handle
    *  - component (in):      component of vector level set function that the
-   *                         normal velocity field handle is being requested 
+   *                         normal velocity field handle is being requested
    *                         for
    *
-   * Return value:           PatchData handle for the normal velocity 
+   * Return value:           PatchData handle for the normal velocity
    *                         field data
    *
-   * NOTES: 
+   * NOTES:
    *  - The level set function is required as an argument because the
    *    the normal velocity depends on the orientation of the zero level
    *    set (which is a function of the level set function).
@@ -167,42 +169,42 @@ public:
    *
    */
   virtual int getNormalVelocityFieldPatchDataHandle(
-    const LEVEL_SET_FCN_TYPE level_set_fcn, 
+    const LEVEL_SET_FCN_TYPE level_set_fcn,
     const int component) const = 0;
 
   /*!
-   * computeVelocityField() computes all necessary level set method 
-   * velocity fields on the entire hierarchy.  
+   * computeVelocityField() computes all necessary level set method
+   * velocity fields on the entire hierarchy.
    *
    * Arguments:
    *  - time (in):           time that velocity field is to be computed
    *  - phi_handle (in):     PatchData handle for phi
    *  - psi_handle (in):     PatchData handle for psi
-   *  - component (in):      component of level set functions for which to 
-   *                         compute velocity field 
+   *  - component (in):      component of level set functions for which to
+   *                         compute velocity field
    *
    * Return value:           none
    *
-   * NOTES: 
+   * NOTES:
    *  - Whether the external (vector) velocity field or just a normal
-   *    (scalar) velocity is computed depends on the specific application. 
+   *    (scalar) velocity is computed depends on the specific application.
    *
-   *  - phi_handle, psi_handle, phi_component, and psi_component are provided 
-   *    for applications that use information about the level set functions 
+   *  - phi_handle, psi_handle, phi_component, and psi_component are provided
+   *    for applications that use information about the level set functions
    *    to compute the velocity field.  They are NOT guaranteed to be the
    *    same between calls to computeVelocityField().
    *
-   *  - The number of ghostcells for the PatchData associated with 
+   *  - The number of ghostcells for the PatchData associated with
    *    phi_handle and psi_handle is equal to the number required to
    *    compute spatial derivatives using the type and order specified
    *    in the input database for the LevelSetFunctionIntegrator.
    *    Specifically, the number of ghostcells are one, two, and three
-   *    for first-, second-, and third-order ENO spatial derivatives, 
+   *    for first-, second-, and third-order ENO spatial derivatives,
    *    respectively.  The number of ghostcells is equal to three for
    *    fifth-order WENO spatial derivatives.
    *
    *  - For codimension-one problems, psi_handle is NOT guaranteed
-   *    to be set to a valid PatchData handle, so it should be 
+   *    to be set to a valid PatchData handle, so it should be
    *    ignored in the user-defined version of this method.
    *
    *  - This is a pure abstract method that the user MUST override in
@@ -227,27 +229,27 @@ public:
    *******************************************************************/
 
   /*!
-   * setCurrentTime() sets the current time for the 
+   * setCurrentTime() sets the current time for the
    * VelocityFieldStrategy class so that the simulation
    * time for the velocity field calculation can be synchronized with
    * the simulation time for the level set method calculation.
    *
-   * Arguments:     
+   * Arguments:
    *  - time (in):   new current time
    *
    * Return value:   none
    *
-   * NOTES: 
+   * NOTES:
    *  - This is a pure abstract method that the user MUST override in
    *    order to use the LevelSetFunctionIntegrator class.
    *
    */
   virtual void setCurrentTime(const LSMLIB_REAL time) = 0;
-  
+
   /*!
-   * computeStableDt() returns the maximum acceptable (stable) time 
-   * step size allowed in order to maintain numerical stability of 
-   * the calculation used to compute the velocity field.  This often 
+   * computeStableDt() returns the maximum acceptable (stable) time
+   * step size allowed in order to maintain numerical stability of
+   * the calculation used to compute the velocity field.  This often
    * comes from the physics of the problem (e.g. inherent time-variation
    * in an external velocity field).
    *
@@ -255,7 +257,7 @@ public:
    *
    * Return value:  maximum acceptable time step
    *
-   * NOTES: 
+   * NOTES:
    *  - This is a pure abstract method that the user MUST override in
    *    order to use the LevelSetFunctionIntegrator class.
    *
@@ -269,17 +271,17 @@ public:
   /*!
    ************************************************************************
    *
-   * @name Methods for initializing data 
+   * @name Methods for initializing data
    *
    * NOTES:
    *  - initializeLevelData() essentially emulate the method of the same
-   *    name declared in the SAMRAI::mesh::StandardTagAndInitStrategy class 
+   *    name declared in the SAMRAI::mesh::StandardTagAndInitStrategy class
    *    but with access to level set function data
    *
    ************************************************************************/
 
   /*!
-   * initializeLevelData() allocates and initializes any PatchData 
+   * initializeLevelData() allocates and initializes any PatchData
    * related to the computation of the velocity field for a PatchLevel
    * that has been newly added to the PatchHierarchy.
    *
@@ -301,9 +303,9 @@ public:
    *
    * Return value:            none
    *
-   * NOTES: 
+   * NOTES:
    *  - The number of ghostcells for phi and psi data depends on the
-   *    type and order of spatial derivative selected for the 
+   *    type and order of spatial derivative selected for the
    *    LevelSetFunctionIntegrator:
    *
    *    - ENO-1:  1
@@ -312,7 +314,7 @@ public:
    *    - WENO-5: 3
    *
    *  - For codimension-one problems, psi_handle is NOT guaranteed
-   *    to be set to a valid PatchData handle, so it should be 
+   *    to be set to a valid PatchData handle, so it should be
    *    ignored in the user-defined version of this method.
    *
    *  - This is a pure abstract method that the user MUST override in
@@ -320,15 +322,15 @@ public:
    *
    */
   virtual void initializeLevelData(
-    const boost::shared_ptr< PatchHierarchy > hierarchy,
+    const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     const int level_number,
     const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
     const bool initial_time,
-    const boost::shared_ptr< PatchLevel > old_level
-    = boost::shared_ptr< PatchLevel >(),
+    const boost::shared_ptr<hier::PatchLevel> old_level
+    = boost::shared_ptr<hier::PatchLevel>(),
     const bool allocate_data = true) = 0;
 
 
@@ -339,14 +341,14 @@ public:
   /*!
    ************************************************************************
    *
-   * @name Methods for managing grid configuration 
+   * @name Methods for managing grid configuration
    *
    * NOTES:
-   *  - resetHierarchyConfiguration() exactly mimics the method of the 
-   *    same name declared in the SAMRAI::mesh::StandardTagAndInitStrategy 
-   *    class 
+   *  - resetHierarchyConfiguration() exactly mimics the method of the
+   *    same name declared in the SAMRAI::mesh::StandardTagAndInitStrategy
+   *    class
    *
-   *  - tagCellsForRefinement() essentially emulates applyGradientDetector() 
+   *  - tagCellsForRefinement() essentially emulates applyGradientDetector()
    *    in the the SAMRAI::mesh::StandardTagAndInitStrategy class
    ************************************************************************/
 
@@ -362,20 +364,20 @@ public:
    * Return value:            none
    *
    * NOTES:
-   *   - This method is virtual with an empty implementation here 
-   *     (rather than pure virtual) so that users do not need to 
+   *   - This method is virtual with an empty implementation here
+   *     (rather than pure virtual) so that users do not need to
    *     provide an implementation when the method is not needed
    *     (e.g. when parallel computation and AMR is not required).
    *
    */
   virtual void resetHierarchyConfiguration(
-    boost::shared_ptr< PatchHierarchy > hierarchy,
+    boost::shared_ptr<hier::PatchHierarchy> hierarchy,
     int coarsest_level,
     int finest_level){}
 
   /*!
-   * tagCellsForRefinement() sets integer tags to "1" in cells where 
-   * refinement of the given level should occur. 
+   * tagCellsForRefinement() sets integer tags to "1" in cells where
+   * refinement of the given level should occur.
    *
    * Arguments:
    *  - hierarchy (in):       PatchHierarchy on which to tag cells for
@@ -388,14 +390,14 @@ public:
    * Return value:            none
    *
    * NOTES:
-   *   - This method is virtual with an empty implementation here 
-   *     (rather than pure virtual) so that users do not need to 
+   *   - This method is virtual with an empty implementation here
+   *     (rather than pure virtual) so that users do not need to
    *     provide an implementation when the method is not needed
    *     (e.g. when AMR is not required).
    *
    */
   virtual void tagCellsForRefinement(
-      const boost::shared_ptr< PatchHierarchy > hierarchy,
+      const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
       const int level_number,
       const int tag_handle){}
 
@@ -405,13 +407,13 @@ public:
   //! @{
   /*!
    ****************************************************************
-   * 
+   *
    * @name Destructors
    *
    ****************************************************************/
 
   /*!
-   * Destructor does nothing but must be declared virtual so that 
+   * Destructor does nothing but must be declared virtual so that
    * concrete subclasses are properly destroyed.
    */
   virtual ~LevelSetMethodVelocityFieldStrategy(){}
@@ -420,6 +422,6 @@ public:
 
 };
 
-} // end LSMLIB namespace 
+} // end LSMLIB namespace
 
 #endif

@@ -38,7 +38,7 @@
 
 // Class/type declarations
 namespace SAMRAI { namespace geom { class GridGeometry; } }
-typedef PatchGeometry::TwoDimBool TwoDimBool;
+typedef hier::PatchGeometry::TwoDimBool TwoDimBool;
 
 namespace LSMLIB {
 
@@ -46,7 +46,7 @@ namespace LSMLIB {
 /* Standard constructor */
 BoundaryConditionModule::BoundaryConditionModule(
   boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
-  const IntVector& ghostcell_width)
+  const hier::IntVector& ghostcell_width)
 :
 d_ghostcell_width(ghostcell_width),
 d_geom_periodic_dirs(patch_hierarchy->getDim(),0)
@@ -84,8 +84,8 @@ d_geom_periodic_dirs(rhs.d_geom_periodic_dirs)
 /* imposeBoundaryConditions() */
 void BoundaryConditionModule::imposeBoundaryConditions(
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component)
@@ -94,11 +94,11 @@ void BoundaryConditionModule::imposeBoundaryConditions(
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      //const int patch_num = *pi;
-      //boost::shared_ptr< Patch > patch = level->getPatch(patch_num);
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      // loop over patches
+      boost::shared_ptr<hier::Patch> patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeBoundaryConditions(): "
@@ -106,7 +106,7 @@ void BoundaryConditionModule::imposeBoundaryConditions(
                   << endl);
       }
       // check that patch touches boundary of computational domain
-      if ( d_touches_boundary[ln][patch->getLocalId().getValue()] ) {
+      if (d_touches_boundary[ln][patch->getLocalId().getValue()]) {
         imposeBoundaryConditionsOnPatch(
           *patch,
           phi_handle,
@@ -125,10 +125,10 @@ void BoundaryConditionModule::imposeBoundaryConditions(
 
 /* imposeBoundaryConditionsOnPatch() */
 void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
-  Patch& patch,
+  hier::Patch& patch,
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component)
@@ -165,7 +165,7 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
 
 
   } else {  // boundary conditions are incomplete, so use default BCs
-    IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
+      hier::IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
 
     int dim = d_patch_hierarchy->getDim().getValue();
     for (int axis = 0; axis < dim; axis++) {
@@ -189,16 +189,17 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
 /* imposeAntiPeriodicBCs() */
 void BoundaryConditionModule::imposeAntiPeriodicBCs(
   const int phi_handle,
-  const IntVector& lower_bc,
+  const hier::IntVector& lower_bc,
   const int component )
 {
   // loop over hierarchy and impose anti-periodic boundary conditions
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
-      boost::shared_ptr< Patch > patch = *pi;
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      boost::shared_ptr<hier::Patch> patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeAntiPeriodicBCs(): "
@@ -223,14 +224,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCs(
 
 /* imposeAntiPeriodicBCsOnPatch() */
 void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
-  Patch& patch,
+  hier::Patch& patch,
   const int phi_handle,
-  const IntVector& lower_bc,
+  const hier::IntVector& lower_bc,
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -244,16 +245,16 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   }
 
   // get PatchGeometry
-  boost::shared_ptr< CartesianPatchGeometry > patch_geom =
-    BOOST_CAST <CartesianPatchGeometry, PatchGeometry>(
+  boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
+    BOOST_CAST<geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch.getPatchGeometry());
 
   // get interior box for patch (used to compute boundary fill box)
-  Box interior_box(patch.getBox());
+  hier::Box interior_box(patch.getBox());
 
   // get ghostcell width to fill
-  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box phi_ghostbox = phi_data->getGhostBox();
+  hier::IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  hier::Box phi_ghostbox = phi_data->getGhostBox();
 
   // get data components
   int comp_lo = component;
@@ -282,14 +283,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+          hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           face_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -368,14 +369,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+        hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -427,14 +428,14 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+        hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
         int phi_ghostbox_num_cells_y = phi_ghostbox.numberCells(1);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -501,13 +502,13 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+        hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           edge_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -555,13 +556,13 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+        hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
         int phi_ghostbox_num_cells_x = phi_ghostbox.numberCells(0);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -623,12 +624,12 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
         /*
          * impose anti-periodic boundary conditions for phi
          */
-        Box phi_fillbox = patch_geom->getBoundaryFillBox(
+        hier::Box phi_fillbox = patch_geom->getBoundaryFillBox(
           node_bdry[i], interior_box, phi_ghost_width_to_fill);
-        IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+        hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
 
-        IntVector fillbox_lower = phi_fillbox.lower();
-        IntVector fillbox_upper = phi_fillbox.upper();
+        hier::IntVector fillbox_lower = phi_fillbox.lower();
+        hier::IntVector fillbox_upper = phi_fillbox.upper();
 
         // loop over components
         for (int comp = comp_lo; comp < comp_hi; comp++) {
@@ -684,8 +685,8 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
 /* imposeHomogeneousNeumannBCs() */
 void BoundaryConditionModule::imposeHomogeneousNeumannBCs(
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component )
@@ -694,9 +695,11 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCs(
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-        boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+        boost::shared_ptr<hier::PatchLevel> level =
+            d_patch_hierarchy->getPatchLevel(ln);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      // loop over patches
+      boost::shared_ptr<hier::Patch> patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeHomogeneousNeumannBCs(): "
@@ -724,17 +727,17 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCs(
 
 /* imposeHomogeneousNeumannBCsOnPatch() */
 void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
-  Patch& patch,
+  hier::Patch& patch,
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
   const int spatial_derivative_order,
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -748,15 +751,15 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   }
 
   // get interior box for patch (used to compute boundary fill box)
-  Box interior_box(patch.getBox());
-  IntVector interior_box_lower = interior_box.lower();
-  IntVector interior_box_upper = interior_box.upper();
+  hier::Box interior_box(patch.getBox());
+  hier::IntVector interior_box_lower = interior_box.lower();
+  hier::IntVector interior_box_upper = interior_box.upper();
 
   // get ghostcell width to fill
-  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box phi_ghostbox = phi_data->getGhostBox();
-  IntVector phi_ghostbox_lower = phi_ghostbox.lower();
-  IntVector phi_ghostbox_upper = phi_ghostbox.upper();
+  hier::IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  hier::Box phi_ghostbox = phi_data->getGhostBox();
+  hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+  hier::IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
   // get data components
   int comp_lo = component;
@@ -1131,17 +1134,18 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
 /* imposeLinearExtrapolationBCs() */
 void BoundaryConditionModule::imposeLinearExtrapolationBCs(
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose homogeneous Neumann BCs
     const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      boost::shared_ptr<hier::Patch> patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeLinearExtrapolationBCs(): "
@@ -1167,15 +1171,15 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCs(
 
 /* imposeLinearExtrapolationBCsOnPatch() */
 void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
-  Patch& patch,
+  hier::Patch& patch,
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -1189,15 +1193,15 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   }
 
   // get interior box for patch (used to compute boundary fill box)
-  Box interior_box(patch.getBox());
-  IntVector interior_box_lower = interior_box.lower();
-  IntVector interior_box_upper = interior_box.upper();
+  hier::Box interior_box(patch.getBox());
+  hier::IntVector interior_box_lower = interior_box.lower();
+  hier::IntVector interior_box_upper = interior_box.upper();
 
   // get ghostcell width to fill
-  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box phi_ghostbox = phi_data->getGhostBox();
-  IntVector phi_ghostbox_lower = phi_ghostbox.lower();
-  IntVector phi_ghostbox_upper = phi_ghostbox.upper();
+  hier::IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  hier::Box phi_ghostbox = phi_data->getGhostBox();
+  hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+  hier::IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
   // get data components
   int comp_lo = component;
@@ -1299,17 +1303,19 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
 /* imposeSignedLinearExtrapolationBCs() */
 void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs(
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const int component )
 {
   // loop over hierarchy and impose homogeneous Neumann BCs
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
-    boost::shared_ptr< PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) { // loop over patches
-      boost::shared_ptr< Patch > patch = *pi;//returns second patch in line.
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      // loop over patches
+      boost::shared_ptr<hier::Patch> patch = *pi;
       if ( patch==NULL ) {
         TBOX_ERROR(  "BoundaryConditionModule::"
                   << "imposeSignedLinearExtrapolationBCs(): "
@@ -1335,15 +1341,15 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCs(
 
 /* imposeSignedLinearExtrapolationBCsOnPatch() */
 void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
-  Patch& patch,
+  hier::Patch& patch,
   const int phi_handle,
-  const IntVector& lower_bc,
-  const IntVector& upper_bc,
+  const hier::IntVector& lower_bc,
+  const hier::IntVector& upper_bc,
   const int component )
 {
   // get PatchData
-  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
-    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, PatchData>(
+  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
   // check that the ghostcell width for phi is compatible
@@ -1357,15 +1363,15 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
   }
 
   // get interior box for patch (used to compute boundary fill box)
-  Box interior_box(patch.getBox());
-  IntVector interior_box_lower = interior_box.lower();
-  IntVector interior_box_upper = interior_box.upper();
+  hier::Box interior_box(patch.getBox());
+  hier::IntVector interior_box_lower = interior_box.lower();
+  hier::IntVector interior_box_upper = interior_box.upper();
 
   // get ghostcell width to fill
-  IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
-  Box phi_ghostbox = phi_data->getGhostBox();
-  IntVector phi_ghostbox_lower = phi_ghostbox.lower();
-  IntVector phi_ghostbox_upper = phi_ghostbox.upper();
+  hier::IntVector phi_ghost_width_to_fill = phi_data->getGhostCellWidth();
+  hier::Box phi_ghostbox = phi_data->getGhostBox();
+  hier::IntVector phi_ghostbox_lower = phi_ghostbox.lower();
+  hier::IntVector phi_ghostbox_upper = phi_ghostbox.upper();
 
   // get data components
   int comp_lo = component;
@@ -1469,7 +1475,7 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   const boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   const int coarsest_level,
   const int finest_level,
-  const IntVector& ghostcell_width)
+  const hier::IntVector& ghostcell_width)
 {
   // reset hierarchy
   d_patch_hierarchy = patch_hierarchy;
@@ -1478,7 +1484,7 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   d_ghostcell_width = ghostcell_width;
 
   // initialize with ratio to level 0 equal to 1
-  IntVector ratio_to_level_zero(d_patch_hierarchy->getDim(), 1);
+  hier::IntVector ratio_to_level_zero(d_patch_hierarchy->getDim(), 1);
   d_geom_periodic_dirs =
     d_patch_hierarchy->getGridGeometry()->getPeriodicShift(ratio_to_level_zero);
 
@@ -1487,7 +1493,7 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
   if (num_levels <= 0) {
 
-    IntVector zero_int_vect(d_patch_hierarchy->getDim(), 0);
+      hier::IntVector zero_int_vect(d_patch_hierarchy->getDim(), 0);
     d_ghostcell_width = zero_int_vect;
     d_geom_periodic_dirs = zero_int_vect;
     d_boundary_boxes.setNull();
@@ -1500,24 +1506,25 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   d_touches_boundary.resizeArray(num_levels);
 
   // get grid geometry
-  boost::shared_ptr< GridGeometry > grid_geometry =
-    BOOST_CAST<CartesianGridGeometry, BaseGridGeometry>(
+  boost::shared_ptr<geom::CartesianGridGeometry> grid_geometry =
+    BOOST_CAST<geom::CartesianGridGeometry, hier::BaseGridGeometry>(
         d_patch_hierarchy->getGridGeometry());
 
   // loop over PatchHierarchy and compute boundary boxes in periodic
   // directions
   for (int ln = coarsest_level; ln <= finest_level; ln++) {
-    boost::shared_ptr<PatchLevel> level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr<hier::PatchLevel> level =
+        d_patch_hierarchy->getPatchLevel(ln);
     const int num_patches = level->getNumberOfPatches();
 
     // set periodic shift to zero so that ALL boundary boxes
     // (including periodic boundaries) are computed
-    IntVector periodic_shift(d_patch_hierarchy->getDim(), 0);
+    hier::IntVector periodic_shift(d_patch_hierarchy->getDim(), 0);
 
     // find the patches in the current level touching the boundaries
     // of the computational domain
-    std::map<BoxId, TwoDimBool> touches_regular_bdry;
-    std::map<BoxId, TwoDimBool> touches_periodic_bdry;
+    std::map<hier::BoxId, TwoDimBool> touches_regular_bdry;
+    std::map<hier::BoxId, TwoDimBool> touches_periodic_bdry;
     grid_geometry->findPatchesTouchingBoundaries(
       touches_regular_bdry,
       touches_periodic_bdry,
@@ -1525,8 +1532,8 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
     d_touches_boundary[ln].resizeArray(num_patches);
 
     int dim = d_patch_hierarchy->getDim().getValue();
-    for (PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
-      BoxId boxid = pi->getBox().getBoxId();
+    for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+      hier::BoxId boxid = pi->getBox().getBoxId();
       int patch_num = pi->getLocalId().getValue();
 
       d_touches_boundary[ln][patch_num] = false;
