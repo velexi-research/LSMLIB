@@ -107,25 +107,29 @@
  *
  */
 
+// Standard library headers
+#include <string>
+
 // Boost headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/geom/CartesianGridGeometry.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/tbox/Database.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
-#include "FieldExtensionAlgorithm.h"
-#include "BoundaryConditionModule.h"
 
 // Namespaces
 using namespace std;
 using namespace SAMRAI;
 
+// Class/type declarations
+namespace LSMLIB { class FieldExtensionAlgorithm; }
+namespace SAMRAI { namespace geom { class CartesianGridGeometry; } }
+namespace SAMRAI { namespace hier { class IntVector; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace tbox { class Database; } }
 
 /******************************************************************
  *

@@ -13,20 +13,21 @@
 #define included_OrthogonalizationAlgorithm_cc
 
 // Standard library headers
-#include <climits>
-#include <sstream>
+#include <cstddef>
+
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI Headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/pdat/CellData.h"
-#include "SAMRAI/hier/IntVector.h"
-#include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
+#include "FieldExtensionAlgorithm.h"
 #include "OrthogonalizationAlgorithm.h"
 
 extern "C" {
@@ -39,6 +40,8 @@ extern "C" {
 using namespace std;
 using namespace SAMRAI;
 
+// Class/type declarations
+namespace SAMRAI { namespace hier { class Patch; } }
 
 namespace LSMLIB {
 
