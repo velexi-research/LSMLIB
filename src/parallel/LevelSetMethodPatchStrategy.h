@@ -4,7 +4,7 @@
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
  * Revision:    $Revision$
- * Modified:    $09/18/2014$ jrigelo- pointers replaced by boost pointer: boost::shared_ptr
+ * Modified:    $$
  * Description: Interface for single patch numerical routines for the
  *              level set algorithm
  */
@@ -36,23 +36,20 @@
  *
  */
 
-// Boost headers
-#include "boost/shared_ptr.hpp"
-
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/IntVector.h"
-#include "SAMRAI/hier/Patch.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 
-// Namespaces
-using namespace SAMRAI;
-
 // Class/type declarations
 namespace LSMLIB { class LevelSetFunctionIntegrator; }
 namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
+namespace SAMRAI { namespace hier { class IntVector; } }
+namespace SAMRAI { namespace hier { class Patch; } }
+
+// Namespaces
+using namespace SAMRAI;
 
 /******************************************************************
  *

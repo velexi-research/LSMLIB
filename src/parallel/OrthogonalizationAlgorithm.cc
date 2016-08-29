@@ -20,8 +20,10 @@
 
 // SAMRAI Headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/pdat/CellData.h"
 #include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
@@ -29,12 +31,6 @@
 #include "LSMLIB_DefaultParameters.h"
 #include "FieldExtensionAlgorithm.h"
 #include "OrthogonalizationAlgorithm.h"
-
-extern "C" {
-  #include "lsm_reinitialization2d.h"
-  #include "lsm_reinitialization3d.h"
-  #include "lsm_samrai_f77_utilities.h"
-}
 
 // Namespaces
 using namespace std;

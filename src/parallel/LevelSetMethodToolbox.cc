@@ -11,28 +11,36 @@
 #ifndef included_LevelSetMethodToolbox_cc
 #define included_LevelSetMethodToolbox_cc
 
+#include "LevelSetMethodToolbox.h"
+
 // Standard library headers
-#include <cfloat>
-#include <vector>
+#include <cstddef>
+//#include <cfloat>
+//#include <vector>
+
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
+
+// MPI headers
+#include "mpi.h"
 
 // SAMRAI Headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/Box.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/BoxContainer.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/pdat/CellData.h"
 #include "SAMRAI/pdat/CellVariable.h"
-#include "SAMRAI/hier/IntVector.h"
-#include "SAMRAI/hier/Patch.h"
-#include "SAMRAI/hier/PatchLevel.h"
-#include "SAMRAI/hier/VariableContext.h"
-#include "SAMRAI/hier/VariableDatabase.h"
+#include "SAMRAI/tbox/SAMRAI_MPI.h"
 #include "SAMRAI/tbox/Utilities.h"
-#include "SAMRAI/tbox/Database.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
-#include "LevelSetMethodToolbox.h"
 #include "LSMLIB_DefaultParameters.h"
 
 extern "C" {
@@ -51,10 +59,13 @@ extern "C" {
   #include "lsm_utilities3d.h"
 }
 
+// Class/type declarations
+namespace SAMRAI { namespace hier { class Patch; } }
+namespace SAMRAI { namespace hier { class VariableContext; } }
+
 // Namespaces
 using namespace std;
 using namespace SAMRAI;
-
 
 /****************************************************************
  *

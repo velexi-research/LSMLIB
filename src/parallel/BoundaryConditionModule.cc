@@ -21,11 +21,13 @@
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/BoxId.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchGeometry.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/pdat/CellData.h"
 #include "SAMRAI/tbox/Utilities.h"
@@ -37,7 +39,6 @@
 #include "lsm_boundary_conditions3d.h"
 
 // Class/type declarations
-namespace SAMRAI { namespace geom { class GridGeometry; } }
 typedef hier::PatchGeometry::TwoDimBool TwoDimBool;
 
 namespace LSMLIB {

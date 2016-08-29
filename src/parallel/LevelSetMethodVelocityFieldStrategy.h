@@ -57,12 +57,14 @@
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/hier/PatchLevel.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LevelSetMethodToolbox.h"
+
+// Class/type declarations
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace hier { class PatchLevel; } }
 
 // Namespaces
 using namespace SAMRAI;

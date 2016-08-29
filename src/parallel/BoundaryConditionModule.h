@@ -81,12 +81,15 @@
  *
  */
 
+// Standard library headers
+
 // Boost headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/PatchBoundaries.h"
 #include "SAMRAI/tbox/Array.h"
 
 // LSMLIB headers

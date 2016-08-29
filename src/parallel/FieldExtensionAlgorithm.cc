@@ -20,13 +20,16 @@
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/pdat/CellData.h"
 #include "SAMRAI/pdat/CellVariable.h"
 #include "SAMRAI/tbox/Utilities.h"
+#include "SAMRAI/xfer/RefineAlgorithm.h"
 
 // LSMLIB headers
 #include "LSMLIB_DefaultParameters.h"

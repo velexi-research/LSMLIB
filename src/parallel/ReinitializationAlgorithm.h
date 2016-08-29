@@ -98,25 +98,28 @@
  */
 
 // Standard library headrers
-#include <vector>
+#include <string>
 
 // Boost headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/hier/ComponentSelector.h"
-#include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/xfer/RefineAlgorithm.h"
-#include "SAMRAI/xfer/RefineSchedule.h"
+#include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/tbox/Array.h"
-#include "SAMRAI/tbox/Database.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
-#include "BoundaryConditionModule.h"
 #include "LevelSetMethodToolbox.h"
+
+// Class/type declarations
+namespace LSMLIB { class BoundaryConditionModule; }
+namespace SAMRAI { namespace geom { class CartesianGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace tbox { class Database; } }
+namespace SAMRAI { namespace xfer { class RefineAlgorithm; } }
+namespace SAMRAI { namespace xfer { class RefineSchedule; } }
 
 // Namespaces
 using namespace std;

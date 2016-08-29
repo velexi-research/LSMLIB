@@ -56,24 +56,15 @@
  *
  */
 
-// Standard library headers
-#include <vector>
-
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
-#include "SAMRAI/hier/ComponentSelector.h"
-#include "SAMRAI/geom/CartesianGridGeometry.h"
-#include "SAMRAI/xfer/RefineAlgorithm.h"
-#include "SAMRAI/xfer/RefineSchedule.h"
-#include "SAMRAI/tbox/Array.h"
-#include "boost/shared_ptr.hpp"
-#include "SAMRAI/tbox/Database.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 
 // Class/type declarations
 namespace SAMRAI { namespace hier { class PatchHierarchy ; } }
+namespace boost { template <class T> class shared_ptr; }
 
 // Namespaces
 using namespace std;

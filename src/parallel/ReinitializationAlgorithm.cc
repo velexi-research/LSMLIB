@@ -11,32 +11,40 @@
 #ifndef included_ReinitializationAlgorithm_cc
 #define included_ReinitializationAlgorithm_cc
 
+#include "ReinitializationAlgorithm.h"
+
 // Standard library headers
+#include <cstddef>
 #include <sstream>
-#include <climits>
+
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
-#include "SAMRAI/pdat/CellData.h"
-#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/VariableContext.h"
 #include "SAMRAI/hier/VariableDatabase.h"
-#include "boost/shared_ptr.hpp"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/tbox/Utilities.h"
+#include "SAMRAI/xfer/RefineAlgorithm.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
-#include "ReinitializationAlgorithm.h"
+#include "BoundaryConditionModule.h"
 
 extern "C" {
   #include "lsm_reinitialization1d.h"
   #include "lsm_reinitialization2d.h"
   #include "lsm_reinitialization3d.h"
-  #include "lsm_samrai_f77_utilities.h"
 }
 
 // Namespaces
