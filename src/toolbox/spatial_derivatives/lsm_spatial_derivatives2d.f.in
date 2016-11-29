@@ -2007,7 +2007,7 @@ c***********************************************************************
 
 c***********************************************************************
 c
-c  lsm2dCentralGradOrder4() computes the second-order, central,
+c  lsm2dCentralGradOrder4() computes the fourth-order, central,
 c  finite difference approximation to the gradient of phi.
 c
 c  Arguments:
