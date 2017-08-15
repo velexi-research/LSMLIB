@@ -26,6 +26,7 @@ list(REMOVE_ITEM SOURCE_FILES
 
 # Library
 add_library(lsm_serial ${SOURCE_FILES})
+target_link_libraries(lsm_serial lsm_toolbox)
 
 # --------------------------------------------------------------
 # Installation
