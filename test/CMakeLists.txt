@@ -13,12 +13,14 @@
 include_directories(${GTEST_INCLUDE_DIR})
 
 # --------------------------------------------------------------
-# Build targets
+# lsm_parallel tests
 # --------------------------------------------------------------
 
-# --- lsm_parallel tests
-
 if (ENABLE_PARALLEL)
+
+    # --------------------------------------------------------------
+    # Build targets
+    # --------------------------------------------------------------
 
     set(LSM_PARALLEL_TESTS ${CMAKE_PROJECT_NAME}-tests)
 
@@ -34,12 +36,12 @@ if (ENABLE_PARALLEL)
         ${GTEST_LIBS_DIR}/libgtest_main.a
         ${CMAKE_THREAD_LIBS_INIT})
 
+    # --------------------------------------------------------------
+    # Test setup
+    # --------------------------------------------------------------
+    add_test(${LSM_PARALLEL_TESTS}
+             ${CMAKE_CURRENT_BINARY_DIR}/${LSM_PARALLEL_TESTS})
+    add_dependencies(check ${LSM_PARALLEL_TESTS})
+
 endif (ENABLE_PARALLEL)
 
-# --------------------------------------------------------------
-# Test setup
-# --------------------------------------------------------------
-
-add_test(${LSM_PARALLEL_TESTS}
-         ${CMAKE_CURRENT_BINARY_DIR}/${LSM_PARALLEL_TESTS})
-add_dependencies(check ${LSM_PARALLEL_TESTS})
