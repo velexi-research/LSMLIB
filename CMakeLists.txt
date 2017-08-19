@@ -12,7 +12,8 @@ project(lsmlib
 # --------------------------------------------------------------
 
 # Build shared libraries
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+# TODO: fix shared library build
+#option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # Floating-point precision
 option(SINGLE_PRECISION "Build single-precision libraries" OFF)
@@ -76,27 +77,9 @@ endif (IWYU)
 # Enable parallel library
 if (ENABLE_PARALLEL)
 
-    # --- SAMRAI
-
-    find_file(SAMRAI_CONFIG_H SAMRAI/SAMRAI_config.h ${SAMRAI_DIR}/include)
-    find_library(LIBSAMRAI_TBOX SAMRAI_tbox ${SAMRAI_DIR}/lib)
-
-    # Verify that SAMRAI header files were found
-    if (SAMRAI_CONFIG_H)
-        message("-- Found SAMRAI header files: TRUE (${SAMRAI_CONFIG_H})")
-        set(SAMRAI_INCLUDE_DIR ${SAMRAI_DIR}/include)
-    else (SAMRAI_CONFIG_H)
-        message(FATAL_ERROR "Could NOT find SAMRAI header files.")
-    endif (SAMRAI_CONFIG_H)
-
-    # Verify that SAMRAI library files were found
-    if (LIBSAMRAI_TBOX)
-        message("-- Found SAMRAI libraries: TRUE (${LIBSAMRAI_TBOX})")
-    else (LIBSAMRAI_TBOX)
-        message(FATAL_ERROR "Could NOT find SAMRAI libraries.")
-    endif (LIBSAMRAI_TBOX)
-
-    # --- Supporting libraries
+    # SAMRAI
+    find_file(SAMRAI_CONFIG_H SAMRAI_config.h ${SAMRAI_DIR}/include/SAMRAI)
+    add_subdirectory(${EXT_PROJECTS_DIR}/samrai)
 
     # Boost
     find_package(Boost REQUIRED)
@@ -106,13 +89,13 @@ if (ENABLE_PARALLEL)
 
     # HDF5
     if (HDF5_DIR)
-        find_file(HDF5_H  hdf5.h ${HDF5_DIR}/include)
+        find_file(HDF5_H hdf5.h ${HDF5_DIR}/include)
         find_library(LIBHDF5 hdf5 ${HDF5_DIR}/lib)
 
         # Verify that HDF5 header files were found
         if (HDF5_H)
             message("-- Found HDF5 header files: TRUE (${HDF5_H})")
-            set(HDF5_INCLUDE_DIRS ${HDF5_DIR}/include)
+            set(HDF5_INCLUDE_DIR ${HDF5_DIR}/include)
         else (HDF5_H)
             message(FATAL_ERROR "Could NOT find HDF5 header files.")
         endif (HDF5_H)
@@ -206,9 +189,9 @@ if (ENABLE_PARALLEL)
 endif (ENABLE_PARALLEL)
 
 # examples
-add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
-add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
-add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
+#add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
+#add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
+#add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
 
 # --------------------------------------------------------------
 # Testing
@@ -221,11 +204,11 @@ enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 # Add googletest directory to build
-add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
+add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
 add_dependencies(check googletest)
 
 # Add test directory to build
-add_subdirectory(${PROJECT_SOURCE_DIR}/test EXCLUDE_FROM_ALL)
+add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 
 # --------------------------------------------------------------
 # Installation
