@@ -23,4 +23,4 @@ target_include_directories(curvature_driven_motion
     PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
     PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
 
-target_link_libraries(curvature_driven_motion lsm_serial lsm_toolbox m)
+target_link_libraries(curvature_driven_motion lsm_serial lsm_toolbox)
