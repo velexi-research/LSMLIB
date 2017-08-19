@@ -10,6 +10,8 @@
 # Build targets
 # --------------------------------------------------------------
 
+# --- Individual examples
+
 # curvature-driven motion
 add_subdirectory(curvature_driven_motion)
 
@@ -21,3 +23,9 @@ add_subdirectory(grid_management)
 
 # reinitialization example
 add_subdirectory(reinitialization)
+
+# --- All lsm_serial examples
+
+add_custom_target(examples-serial
+                  DEPENDS curvature_driven_motion fast_marching_method
+                          grid_management reinitialization)
