@@ -189,8 +189,8 @@ if (ENABLE_PARALLEL)
 endif (ENABLE_PARALLEL)
 
 # examples
-#add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
-#add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
+add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
+add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
 #add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
 
 # --------------------------------------------------------------
