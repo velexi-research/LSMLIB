@@ -11,7 +11,7 @@ include(ExternalProject)
 # --------------------------------------------------------------
 
 ExternalProject_Add(googletest
-    URL ${PROJECT_SOURCE_DIR}/googletest-release-1.7.0.tar.gz
+    URL ${CMAKE_CURRENT_SOURCE_DIR}/googletest-release-1.7.0.tar.gz
     CMAKE_ARGS -Dgtest_force_shared_crt=ON
                -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
                -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
