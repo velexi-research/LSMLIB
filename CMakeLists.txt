@@ -205,7 +205,6 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 # Add googletest directory to build
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
-add_dependencies(check googletest)
 
 # Add test directory to build
 add_subdirectory(${PROJECT_SOURCE_DIR}/test)
