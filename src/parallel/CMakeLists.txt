@@ -12,7 +12,7 @@
 # Search path for header files
 include_directories(${CMAKE_SOURCE_DIR}/src/toolbox)
 include_directories(${CMAKE_SOURCE_DIR}/src/serial)
-include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIR})
 include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${SAMRAI_INCLUDE_DIR})
 
@@ -28,6 +28,15 @@ file(GLOB SOURCE_FILES
 
 # Library
 add_library(lsm_parallel ${SOURCE_FILES})
+
+# TODO: fix link libraries to support building of shared library
+#add_dependencies(lsm_parallel samrai)
+#target_link_libraries(lsm_parallel
+#    lsm_serial lsm_toolbox
+#    ${SAMRAI_LIBS}
+#    ${HDF5_C_LIBRARY_hdf5}
+#    ${MPI_LIBRARY}
+#    ${Boost_LIBRARIES})
 
 # --------------------------------------------------------------
 # Installation
