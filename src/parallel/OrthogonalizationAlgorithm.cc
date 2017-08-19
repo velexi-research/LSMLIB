@@ -33,7 +33,6 @@
 #include "OrthogonalizationAlgorithm.h"
 
 // Namespaces
-using namespace std;
 using namespace SAMRAI;
 
 // Class/type declarations

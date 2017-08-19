@@ -44,7 +44,6 @@ extern "C" {
 }
 
 // SAMRAI namespaces
-using namespace std;
 using namespace SAMRAI;
 
 // Class/type declarations
@@ -420,7 +419,8 @@ void FieldExtensionAlgorithm::computeExtensionField(
     // VERBOSE MODE
     if (d_verbose_mode) {
       tbox::pout << endl;
-      tbox::pout << d_object_name << " iteration count: " << count << endl;
+      tbox::pout << d_object_name << " iteration count: " << count
+                 << endl;
       if (d_use_stop_distance) {
         tbox::pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;
@@ -657,7 +657,8 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
     // VERBOSE MODE
     if (d_verbose_mode) {
       tbox::pout << endl;
-      tbox::pout << d_object_name << " iteration count: " << count << endl;
+      tbox::pout << d_object_name << " iteration count: " << count
+                 << endl;
       if (d_use_stop_distance) {
         tbox::pout << "  Fields on zero level set extended to a distance "
              << "of approximately " << dt*count << endl;

@@ -97,6 +97,7 @@
 #include "LevelSetMethodToolbox.h"
 
 // Namespaces
+using namespace std;
 using namespace SAMRAI;
 
 // Class/type declarations
@@ -892,7 +893,7 @@ protected:
   // parameters for imposing anti-periodic BCs
   hier::IntVector d_ghostcell_width;
   hier::IntVector d_geom_periodic_dirs;
-  tbox::Array<std::map<hier::BoxId, hier::PatchBoundaries> > d_boundary_boxes;
+  tbox::Array<map<hier::BoxId, hier::PatchBoundaries> > d_boundary_boxes;
   tbox::Array<tbox::Array<bool>> d_touches_boundary;
 
 };

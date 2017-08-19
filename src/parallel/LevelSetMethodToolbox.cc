@@ -15,7 +15,7 @@
 
 // Standard library headers
 #include <cstddef>
-//#include <cfloat>
+#include <cfloat>
 //#include <vector>
 
 // Boost headers
@@ -5384,7 +5384,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&volume,1, MPI_SUM);
 
   if (err!=0) {
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return volume;
 }
@@ -5739,7 +5739,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeIntegral(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&integral_F,1, MPI_SUM);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return integral_F;
 }
@@ -5955,7 +5955,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeSurfaceIntegral(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&integral_F,1, MPI_SUM);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return integral_F;
 }
@@ -6116,7 +6116,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableAdvectionDt(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_advection_dt,1, MPI_MAX);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return max_advection_dt;
 }
@@ -6329,7 +6329,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableNormalVelocityDt(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_normal_vel_dt,1, MPI_MAX);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return max_normal_vel_dt;
 }
@@ -6490,7 +6490,7 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
   int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_norm_diff,1, MPI_MAX);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
   return max_norm_diff;
 }

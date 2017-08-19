@@ -36,6 +36,9 @@
  *
  */
 
+// Standard library headers
+#include <cfloat>
+
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
 

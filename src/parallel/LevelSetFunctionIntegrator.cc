@@ -305,8 +305,10 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "d_start_time = " << d_start_time << endl;
   os << "d_end_time = " << d_end_time << endl;
   os << "d_cfl_number = " << d_cfl_number << endl;
-  os << "d_spatial_derivative_type = " << d_spatial_derivative_type << endl;
-  os << "d_spatial_derivative_order = " << d_spatial_derivative_order << endl;
+  os << "d_spatial_derivative_type = " << d_spatial_derivative_type
+    << endl;
+  os << "d_spatial_derivative_order = " << d_spatial_derivative_order
+     << endl;
   os << "d_tvd_runge_kutta_order = " << d_tvd_runge_kutta_order << endl;
   os << "d_reinitialization_interval = "
      << d_reinitialization_interval << endl;
@@ -330,7 +332,8 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "d_use_AMR = " << (d_use_AMR ? "true" : "false") << endl;
   os << "d_regrid_interval = " << d_regrid_interval << endl;
   os << "d_tag_buffer_width = " << d_tag_buffer_width << endl;
-  os << "d_refinement_cutoff_value = " << d_refinement_cutoff_value << endl;
+  os << "d_refinement_cutoff_value = " << d_refinement_cutoff_value
+     << endl;
 
   os << "PatchData Handles" << endl;
   os << "-----------------" << endl;
@@ -346,7 +349,8 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "-------------" << endl;
   os << "d_current_time = " << d_current_time << endl;
   os << "d_reinitialization_count = " << d_reinitialization_count << endl;
-  os << "d_orthogonalization_count = " << d_orthogonalization_count << endl;
+  os << "d_orthogonalization_count = " << d_orthogonalization_count
+     << endl;
   os << "d_regrid_count = " << d_regrid_count << endl;
 
   os << "Object Pointers" << endl;
@@ -354,7 +358,8 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "d_patch_hierarchy = " << d_patch_hierarchy.get() << endl;
   os << "d_grid_geometry = " << d_grid_geometry.get() << endl;
   os << "d_lsm_patch_strategy = " << d_lsm_patch_strategy << endl;
-  os << "d_lsm_velocity_field_strategy = " << d_lsm_velocity_field_strategy << endl;
+  os << "d_lsm_velocity_field_strategy = " << d_lsm_velocity_field_strategy
+     << endl;
   os << "d_fill_new_level = " << d_fill_new_level.get() << endl;
   os << "d_fill_bdry_time_advance = "
      << d_fill_bdry_time_advance.getPointer() << endl;
@@ -462,7 +467,7 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
       &max_user_specified_dt, 1, MPI_MIN);
 
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
 
   LSMLIB_REAL max_stable_dt = -1; // temporary value to be set below
@@ -473,7 +478,8 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
     if (d_verbose_mode) {
         tbox::pout << endl;
         tbox::pout << d_object_name << "::computeStableDt():" << endl;
-        tbox::pout << "  user_specified_dt = " << max_user_specified_dt << endl;
+        tbox::pout << "  user_specified_dt = " << max_user_specified_dt
+                   << endl;
     }
 
   } else {
@@ -597,7 +603,7 @@ cout << "GOT HERE 3" << endl;
 
 cout << "GOT HERE 4" << endl;
   if(err!=0){
-      tbox::perr << "Error AllReduce=" <<err<< endl;
+      tbox::perr << "Error AllReduce=" << err << endl;
   }
 
 

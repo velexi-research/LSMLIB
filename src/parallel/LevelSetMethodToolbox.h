@@ -67,7 +67,6 @@ namespace SAMRAI { namespace hier { class PatchHierarchy ; } }
 namespace boost { template <class T> class shared_ptr; }
 
 // Namespaces
-using namespace std;
 using namespace SAMRAI;
 
 

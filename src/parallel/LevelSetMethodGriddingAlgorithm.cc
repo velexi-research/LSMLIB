@@ -103,7 +103,7 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
                                          load_balancer_input_db));
 
   } else {
-    throw std::runtime_error(
+    throw runtime_error(
       "LoadBalancer' section not found in input database");
   }
 
@@ -208,7 +208,7 @@ void LevelSetMethodGriddingAlgorithm::regridPatchHierarchy(
   const double time)
 {
   int num_levels = d_patch_hierarchy->getNumberOfLevels();
-  std::vector<int> tag_buffer(num_levels, true);
+  vector<int> tag_buffer(num_levels, true);
   for (int ln=0; ln < num_levels ; ln++)
     tag_buffer[ln] = d_patch_hierarchy->getProperNestingBuffer(ln);
 
@@ -423,7 +423,7 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db!=NULL);
 #endif
-  std::vector<std::string> tagging_method;
+  vector<string> tagging_method;
   tagging_method.resize(nsize);
   if (input_db->keyExists("tagging_method")) {
     tagging_method = input_db->getStringVector("tagging_method");

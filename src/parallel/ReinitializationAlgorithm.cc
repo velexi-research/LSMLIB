@@ -48,7 +48,6 @@ extern "C" {
 }
 
 // Namespaces
-using namespace std;
 using namespace SAMRAI;
 
 
@@ -334,7 +333,8 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
     // VERBOSE MODE
     if (d_verbose_mode) {
         tbox::pout << endl;
-        tbox::pout << d_object_name << " iteration count: " << count << endl;
+        tbox::pout << d_object_name << " iteration count: " << count
+                   << endl;
       if (d_use_stop_distance) {
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;
@@ -494,7 +494,8 @@ void ReinitializationAlgorithm::
     // VERBOSE MODE
     if (d_verbose_mode) {
         tbox::pout << endl;
-        tbox::pout << d_object_name << " iteration count: " << count << endl;
+        tbox::pout << d_object_name << " iteration count: " << count
+                   << endl;
       if (d_use_stop_distance) {
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;

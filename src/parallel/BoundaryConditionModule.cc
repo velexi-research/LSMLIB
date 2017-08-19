@@ -271,7 +271,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill face boundaries
      */
-    const std::vector<hier::BoundaryBox>& face_bdry =
+    const vector<hier::BoundaryBox>& face_bdry =
         patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < face_bdry.size(); i++) {
 
@@ -326,7 +326,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill edge boundaries
      */
-    const std::vector<hier::BoundaryBox>& edge_bdry =
+    const vector<hier::BoundaryBox>& edge_bdry =
         patch_geom->getCodimensionBoundaries(2);
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
@@ -411,7 +411,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill node boundaries
      */
-    const std::vector<hier::BoundaryBox>& node_bdry =
+    const vector<hier::BoundaryBox>& node_bdry =
         patch_geom->getCodimensionBoundaries(3);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
@@ -490,7 +490,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill edge boundaries
      */
-    const std::vector<hier::BoundaryBox>& edge_bdry =
+    const vector<hier::BoundaryBox>& edge_bdry =
         patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < edge_bdry.size(); i++) {
 
@@ -539,7 +539,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill node boundaries
      */
-    const std::vector<hier::BoundaryBox>& node_bdry =
+    const vector<hier::BoundaryBox>& node_bdry =
         patch_geom->getCodimensionBoundaries(2);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
@@ -612,7 +612,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
     /*
      * fill node boundaries
      */
-    const std::vector<hier::BoundaryBox>& node_bdry =
+    const vector<hier::BoundaryBox>& node_bdry =
         patch_geom->getCodimensionBoundaries(1);
     for (unsigned int i = 0; i < node_bdry.size(); i++) {
 
@@ -773,7 +773,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   // get get boundary boxes
   const boost::shared_ptr<hier::PatchGeometry> patch_geom(
       patch.getPatchGeometry());
-  const std::vector<hier::BoundaryBox>& bdry_boxes =
+  const vector<hier::BoundaryBox>& bdry_boxes =
     patch_geom->getCodimensionBoundaries(1);
   int dim = d_patch_hierarchy->getDim().getValue();
 
@@ -1215,7 +1215,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   // get get boundary boxes
   const boost::shared_ptr<hier::PatchGeometry> patch_geom(
       patch.getPatchGeometry());
-  const std::vector<hier::BoundaryBox>& bdry_boxes =
+  const vector<hier::BoundaryBox>& bdry_boxes =
     patch_geom->getCodimensionBoundaries(1);
   int dim = d_patch_hierarchy->getDim().getValue();
 
@@ -1384,7 +1384,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
 
   const boost::shared_ptr<hier::PatchGeometry> patch_geom(
       patch.getPatchGeometry());
-  const std::vector<hier::BoundaryBox>& bdry_boxes =
+  const vector<hier::BoundaryBox>& bdry_boxes =
       patch_geom->getCodimensionBoundaries(1);
   int dim = d_patch_hierarchy->getDim().getValue();
 
@@ -1524,8 +1524,8 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
 
     // find the patches in the current level touching the boundaries
     // of the computational domain
-    std::map<hier::BoxId, TwoDimBool> touches_regular_bdry;
-    std::map<hier::BoxId, TwoDimBool> touches_periodic_bdry;
+    map<hier::BoxId, TwoDimBool> touches_regular_bdry;
+    map<hier::BoxId, TwoDimBool> touches_periodic_bdry;
     grid_geometry->findPatchesTouchingBoundaries(
       touches_regular_bdry,
       touches_periodic_bdry,
