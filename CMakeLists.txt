@@ -23,11 +23,8 @@ else (SINGLE_PRECISION)
     message("-- Setting floating-point precision to 'double'")
 endif (SINGLE_PRECISION)
 
-# Enable parallel library
-option(ENABLE_PARALLEL "Enable parallel library" OFF)
-
 # SAMRAI
-set(SAMRAI_DIR "/usr" CACHE FILEPATH "Location of SAMRAI library")
+set(SAMRAI_DIR "" CACHE FILEPATH "Location of SAMRAI library")
 
 # HDF5
 set(HDF5_DIR "" CACHE FILEPATH "Location of HDF5 library")
@@ -73,6 +70,13 @@ else (IWYU)
     message("-- Could not find include-what-you-use.  "
             "Analysis of #includes will be skipped.")
 endif (IWYU)
+
+# Determine whether or not to enable parallel library
+if (SAMRAI_DIR)
+    set(ENABLE_PARALLEL ON)
+else (SAMRAI_DIR)
+    set(ENABLE_PARALLEL OFF)
+endif (SAMRAI_DIR)
 
 # Enable parallel library
 if (ENABLE_PARALLEL)
@@ -191,7 +195,9 @@ endif (ENABLE_PARALLEL)
 # examples
 add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
 add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
-#add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
+if (ENABLE_PARALLEL)
+    add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
+endif (ENABLE_PARALLEL)
 
 # --------------------------------------------------------------
 # Testing
