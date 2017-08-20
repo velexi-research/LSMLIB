@@ -16,12 +16,13 @@
 // Standard library headers
 #include <cstddef>
 #include <sstream>
+#include <string>
 
 // Boost headers
 #include <boost/smart_ptr/shared_ptr.hpp>
+#include <boost/smart_ptr/make_shared_object.hpp>
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
@@ -29,17 +30,29 @@
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
-#include "SAMRAI/hier/VariableContext.h"
 #include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellIterator.h"
 #include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Dimension.h"
+#include "SAMRAI/tbox/PIO.h"
 #include "SAMRAI/tbox/Utilities.h"
 #include "SAMRAI/xfer/RefineAlgorithm.h"
+#include "SAMRAI/xfer/RefineSchedule.h"
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
 #include "BoundaryConditionModule.h"
+
+// Class/type declarations
+namespace SAMRAI { namespace hier { class BaseGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchData; } }
+namespace SAMRAI { namespace hier { class PatchGeometry; } }
+namespace SAMRAI { namespace hier { class RefineOperator; } }
+namespace SAMRAI { namespace hier { class Variable; } }
+namespace SAMRAI { namespace hier { class VariableContext; } }
 
 extern "C" {
   #include "lsm_reinitialization1d.h"

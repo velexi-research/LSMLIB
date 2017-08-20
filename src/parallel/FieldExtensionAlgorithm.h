@@ -91,13 +91,14 @@
  */
 
 // Standard library headers
-#include <string>
+#include <iosfwd>
+#include <vector>
 
 // SAMRAI headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 #include "SAMRAI/hier/ComponentSelector.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/tbox/Array.h"

@@ -82,18 +82,20 @@
  */
 
 // Standard library headers
+#include <map>
 
 // Boost headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
+#include "SAMRAI/hier/BoxId.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/PatchBoundaries.h"
 #include "SAMRAI/tbox/Array.h"
 
 // LSMLIB headers
-#include "LSMLIB_config.h"
+#include "LSMLIB_config.h"  // IWYU pragma: keep
 #include "LevelSetMethodToolbox.h"
 
 // Namespaces

@@ -20,22 +20,19 @@
  *
  */
 
-// Boost headers
-#include "boost/smart_ptr/shared_ptr.hpp"
-
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 
 // LSMLIB headers
 #include "LSMLIB_config.h"
 
 // Class/type declarations
+namespace boost { template <class Y> class shared_ptr; }
 namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
 namespace SAMRAI { namespace hier { class PatchHierarchy ; } }
 
 // Namespaces
 using namespace SAMRAI;
-
 
 /******************************************************************
  *

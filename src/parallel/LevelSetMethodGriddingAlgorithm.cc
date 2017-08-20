@@ -13,15 +13,24 @@
 
 // Standard library headers
 #include <cstddef>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/BoxContainer.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/mesh/BergerRigoutsos.h"
 #include "SAMRAI/mesh/ChopAndPackLoadBalancer.h"
 #include "SAMRAI/mesh/GriddingAlgorithm.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/PIO.h"
 #include "SAMRAI/tbox/RestartManager.h"
 #include "SAMRAI/tbox/Utilities.h"
 
@@ -38,8 +47,7 @@
 #endif
 
 // Class/type declarations
-namespace SAMRAI { namespace hier { class Patch; } }
-namespace SAMRAI { namespace pdat { template <class TYPE> class CellData; } }
+namespace SAMRAI { namespace hier { class PatchData; } }
 
 /****************************************************************
  *

@@ -19,7 +19,6 @@
 #include <string>
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/tbox/Database.h"

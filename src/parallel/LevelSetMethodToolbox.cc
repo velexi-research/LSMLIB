@@ -15,27 +15,32 @@
 
 // Standard library headers
 #include <cstddef>
-#include <cfloat>
-//#include <vector>
+#include <cfloat>  // IWYU pragma: keep
+#include <sstream>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
+#include <boost/smart_ptr/make_shared_object.hpp>
 
 // MPI headers
 #include "mpi.h"
 
 // SAMRAI Headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/BoxContainer.h"
 #include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellIterator.h"
 #include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/tbox/Dimension.h"
+#include "SAMRAI/tbox/PIO.h"
 #include "SAMRAI/tbox/SAMRAI_MPI.h"
 #include "SAMRAI/tbox/Utilities.h"
 
@@ -60,7 +65,10 @@ extern "C" {
 }
 
 // Class/type declarations
-namespace SAMRAI { namespace hier { class Patch; } }
+namespace SAMRAI { namespace hier { class BaseGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchData; } }
+namespace SAMRAI { namespace hier { class PatchGeometry; } }
+namespace SAMRAI { namespace hier { class Variable; } }
 namespace SAMRAI { namespace hier { class VariableContext; } }
 
 // Namespaces

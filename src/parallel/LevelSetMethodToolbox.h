@@ -57,7 +57,7 @@
  */
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 
 // LSMLIB headers
 #include "LSMLIB_config.h"

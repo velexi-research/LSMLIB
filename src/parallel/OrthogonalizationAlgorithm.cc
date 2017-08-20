@@ -14,16 +14,20 @@
 
 // Standard library headers
 #include <cstddef>
+#include <ostream>
+#include <string>
 
 // Boost headers
 #include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI Headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
+#include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
@@ -32,11 +36,12 @@
 #include "FieldExtensionAlgorithm.h"
 #include "OrthogonalizationAlgorithm.h"
 
+// Class/type declarations
+namespace SAMRAI { namespace hier { class BaseGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchData; } }
+
 // Namespaces
 using namespace SAMRAI;
-
-// Class/type declarations
-namespace SAMRAI { namespace hier { class Patch; } }
 
 namespace LSMLIB {
 

@@ -15,21 +15,27 @@
 
 // Standard library headers
 #include <cstddef>
+#include <sstream>
+#include <utility>
+#include <vector>
 
 // Boost headers
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/hier/BaseGridGeometry.h"
+#include "SAMRAI/hier/BoundaryBox.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/hier/BoxId.h"
+#include "SAMRAI/hier/LocalId.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchGeometry.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
@@ -40,6 +46,7 @@
 
 // Class/type declarations
 typedef hier::PatchGeometry::TwoDimBool TwoDimBool;
+namespace SAMRAI { namespace hier { class PatchData; } }
 
 namespace LSMLIB {
 

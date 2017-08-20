@@ -241,13 +241,13 @@
 
 // Standard library headers
 #include <ostream>
-#include <string>
+#include <vector>
 
 // Boost headers
 #include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 #include "SAMRAI/xfer/CoarsenPatchStrategy.h"
 #include "SAMRAI/hier/ComponentSelector.h"
 #include "SAMRAI/hier/IntVector.h"
