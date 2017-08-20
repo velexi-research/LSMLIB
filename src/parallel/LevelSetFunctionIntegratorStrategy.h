@@ -30,7 +30,7 @@
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 #include "SAMRAI/mesh/StandardTagAndInitStrategy.h"
 
 // LSMLIB headers

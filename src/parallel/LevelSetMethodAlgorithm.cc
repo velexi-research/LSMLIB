@@ -15,9 +15,14 @@
 
 // Standard library headers
 #include <cstddef>
+#include <sstream>
+#include <string>
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/tbox/Database.h"
 #include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
@@ -25,7 +30,9 @@
 #include "LSMLIB_DefaultParameters.h"
 #include "FieldExtensionAlgorithm.h"
 #include "LevelSetMethodGriddingAlgorithm.h"
+#include "LevelSetMethodGriddingStrategy.h"
 #include "LevelSetFunctionIntegrator.h"
+#include "LevelSetFunctionIntegratorStrategy.h"
 
 #ifdef DEBUG_CHECK_ASSERTIONS
 #ifndef included_assert

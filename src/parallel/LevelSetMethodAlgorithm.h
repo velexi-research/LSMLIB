@@ -471,13 +471,12 @@
 
 // Standard library headers
 #include <ostream>
-#include <string>
 
 // Boost headers
 #include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI headers
-#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 #include "SAMRAI/tbox/Array.h"
 
 // LSMLIB header
@@ -551,7 +550,7 @@ public:
     LevelSetMethodVelocityFieldStrategy* velocity_field_strategy,
     const int num_level_set_fcn_components = 1,
     const int codimension = 1,
-    const string& object_name = "LevelSetMethodAlgorithm");
+    const std::string& object_name = "LevelSetMethodAlgorithm");
 
   /*!
    * This constructor for LevelSetMethodAlgorithm uses a user-specified
@@ -569,7 +568,7 @@ public:
   LevelSetMethodAlgorithm(
     boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
     boost::shared_ptr<LevelSetMethodGriddingStrategy> lsm_gridding_strategy,
-    const string& object_name = "LevelSetMethodAlgorithm");
+    const std::string& object_name = "LevelSetMethodAlgorithm");
 
   /*!
    * The destructor for LevelSetMethodAlgorithm does nothing.
@@ -1189,7 +1188,7 @@ public:
       boost::shared_ptr<tbox::Database> input_db,
       const int field_handle,
       const LEVEL_SET_FCN_TYPE level_set_fcn,
-      const string& object_name = "FieldExtensionAlgorithm");
+      const std::string& object_name = "FieldExtensionAlgorithm");
 
   /*!
    * getFieldExtensionAlgorithm() creates a FieldExtensionAlgorithm
@@ -1263,7 +1262,7 @@ public:
     const int max_iterations = 0,
     const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
-    const string& object_name = "FieldExtensionAlgorithm");
+    const std::string& object_name = "FieldExtensionAlgorithm");
 
   //! @}
 
@@ -1276,7 +1275,7 @@ protected:
    ****************************************************************/
 
   // object name
-  string d_object_name;
+  std::string d_object_name;
 
   // boost pointers to LevelSetFunctionIntegratorStrategy and
   // LevelSetMethodGriddingStrategy objects
