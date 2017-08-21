@@ -11,7 +11,7 @@
 #ifndef included_FieldExtensionAlgorithm_cc
 #define included_FieldExtensionAlgorithm_cc
 
-// Class header file
+// Class header
 #include "FieldExtensionAlgorithm.h"
 
 // Standard library headers

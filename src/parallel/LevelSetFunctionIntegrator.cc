@@ -11,7 +11,7 @@
 #ifndef included_LevelSetFunctionIntegrator_cc
 #define included_LevelSetFunctionIntegrator_cc
 
-// Class header file
+// Class header
 #include "LevelSetFunctionIntegrator.h"
 
 // Standard library headers

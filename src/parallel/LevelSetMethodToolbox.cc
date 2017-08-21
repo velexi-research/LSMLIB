@@ -11,7 +11,7 @@
 #ifndef included_LevelSetMethodToolbox_cc
 #define included_LevelSetMethodToolbox_cc
 
-// Class header file
+// Class header
 #include "LevelSetMethodToolbox.h"
 
 // Standard library headers

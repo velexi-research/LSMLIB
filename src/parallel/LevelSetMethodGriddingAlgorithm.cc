@@ -11,7 +11,7 @@
 #ifndef included_LevelSetMethodGriddingAlgorithm_cc
 #define included_LevelSetMethodGriddingAlgorithm_cc
 
-// Class header file
+// Class header
 #include "LevelSetMethodGriddingAlgorithm.h"
 
 // Standard library headers

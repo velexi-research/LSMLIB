@@ -12,7 +12,7 @@
 #ifndef included_OrthogonalizationAlgorithm_cc
 #define included_OrthogonalizationAlgorithm_cc
 
-// Class header file
+// Class header
 #include "OrthogonalizationAlgorithm.h"
 
 // Standard library headers
