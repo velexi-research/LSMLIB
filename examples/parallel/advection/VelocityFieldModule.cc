@@ -9,22 +9,42 @@
  *              for the level set method
  */
 
+// Class header
 #include "VelocityFieldModule.h" 
 
-#include "Box.h"
-#include "CartesianPatchGeometry.h"
-#include "CellData.h"
-#include "CellVariable.h"
-#include "IntVector.h"
-#include "Patch.h"
-#include "VariableContext.h"
-#include "VariableDatabase.h"
+// Standard headers
+#include <assert.h>
+#include <cfloat>
+#include <sstream>
 
-#include <float.h>
+// Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
+#include <boost/smart_ptr/make_shared_object.hpp>  // for make_shared
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/hier/PatchDataRestartManager.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
+#include "SAMRAI/hier/PatchLevel.h"
+#include "SAMRAI/hier/VariableDatabase.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/pdat/CellIterator.h"
+#include "SAMRAI/pdat/CellVariable.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Utilities.h"
 
 extern "C" {
   #include "velocityfield_fort.h"
 }
+
+// Class/type declarations
+namespace SAMRAI { namespace hier { class PatchData; } }
+namespace SAMRAI { namespace hier { class PatchGeometry; } }
+namespace SAMRAI { namespace hier { class VariableContext; } }
 
 // SAMRAI namespaces
 using namespace pdat;
@@ -32,15 +52,15 @@ using namespace pdat;
 
 /* Constructor */
 VelocityFieldModule::VelocityFieldModule(
-  Pointer<Database> input_db,
-  Pointer< PatchHierarchy<2> > patch_hierarchy,
-  Pointer< CartesianGridGeometry<2> > grid_geom,
-  const string& object_name)
+  boost::shared_ptr<tbox::Database> input_db,
+  boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
+  boost::shared_ptr<geom::CartesianGridGeometry> grid_geom,
+  const std::string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!input_db.isNull());
-  assert(!patch_hierarchy.isNull());
-  assert(!grid_geom.isNull());
+  assert(input_db);
+  assert(patch_hierarchy);
+  assert(grid_geom);
   assert(!object_name.empty());
 #endif
 
@@ -53,15 +73,19 @@ VelocityFieldModule::VelocityFieldModule(
   getFromInput(input_db);
 
   // Allocate velocity variable
-  Pointer< CellVariable<2,LSMLIB_REAL> > velocity = 
-    new CellVariable<2,LSMLIB_REAL>("velocity field",2); 
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity = 
+      boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+          new pdat::CellVariable<LSMLIB_REAL>(patch_hierarchy->getDim(),
+                                              "velocity field"));
  
   // Register velocity variable with VariableDatabase.
-  VariableDatabase<2> *vdb = VariableDatabase<2>::getDatabase();
-  Pointer<VariableContext> cur_ctxt = vdb->getContext("CURRENT");
+  hier::VariableDatabase *vdb = hier::VariableDatabase::getDatabase();
+  boost::shared_ptr<hier::VariableContext> cur_ctxt = vdb->getContext("CURRENT");
   d_velocity_handle = vdb->registerVariableAndContext(
-    velocity, cur_ctxt, IntVector<2>(0));
-  vdb->registerPatchDataForRestart(d_velocity_handle);
+    velocity, cur_ctxt, hier::IntVector(d_patch_hierarchy->getDim(), 0));
+
+  hier::PatchDataRestartManager::getManager()->
+    registerPatchDataForRestart(d_velocity_handle);
 
   // set d_velocity_never_computed to true to ensure that velocity is 
   // computed on first call to computeVelocityField()
@@ -93,7 +117,8 @@ void VelocityFieldModule::computeVelocityField(
   const int finest_level = d_patch_hierarchy->getFinestLevelNumber();
   for ( int ln=0 ; ln<=finest_level ; ln++ ) {
 
-    Pointer< PatchLevel<2> > level = d_patch_hierarchy->getPatchLevel(ln);
+    boost::shared_ptr< hier::PatchLevel > level =
+        d_patch_hierarchy->getPatchLevel(ln);
     computeVelocityFieldOnLevel(level,time,phi_handle);
 
   } // end loop over hierarchy
@@ -102,20 +127,21 @@ void VelocityFieldModule::computeVelocityField(
 
 /* initializeLevelData() */
 void VelocityFieldModule::initializeLevelData (
-  const Pointer< PatchHierarchy<2> > hierarchy ,
+  const boost::shared_ptr<hier::PatchHierarchy> hierarchy ,
   const int level_number ,
   const LSMLIB_REAL init_data_time ,
   const int phi_handle,
   const int psi_handle,
   const bool can_be_refined ,
   const bool initial_time ,
-  const Pointer< PatchLevel<2> > old_level,
+  const boost::shared_ptr< hier::PatchLevel > old_level,
   const bool allocate_data)
 {
 
   (void) psi_handle;  // psi is meaningless for 2D problems
 
-  Pointer< PatchLevel<2> > level = hierarchy->getPatchLevel(level_number);
+  boost::shared_ptr< hier::PatchLevel > level =
+      hierarchy->getPatchLevel(level_number);
   if (allocate_data) {
     level->allocatePatchData(d_velocity_handle);
   }
@@ -129,22 +155,25 @@ void VelocityFieldModule::initializeLevelData (
 
 /* computeVelocityFieldOnLevel() */
 void VelocityFieldModule::computeVelocityFieldOnLevel(
-  const Pointer< PatchLevel<2> > level,
+  const boost::shared_ptr< hier::PatchLevel > level,
   const LSMLIB_REAL time,
   const int phi_handle) 
 {
-  for (PatchLevelIterator<2> pi(level); pi; pi++) { // loop over patches
-    const int pn = *pi;
-    Pointer< Patch<2> > patch = level->getPatch(pn);
-    if ( patch.isNull() ) {
+  for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
+    // loop over patches
+    boost::shared_ptr<hier::Patch> patch = *pi;
+    if (!patch) {
       TBOX_ERROR(d_object_name << ": Cannot find patch. Null patch pointer.");
     }
 
-    Pointer< CellData<2,LSMLIB_REAL> > velocity_data = 
-      patch->getPatchData( d_velocity_handle );
+    boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data = 
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+            patch->getPatchData(d_velocity_handle));
 
-    Pointer< CartesianPatchGeometry<2> > patch_geom 
-      = patch->getPatchGeometry();
+    boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
+        BOOST_CAST<geom::CartesianPatchGeometry, hier::PatchGeometry>(
+            patch->getPatchGeometry());
+
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
   const double* x_lower = patch_geom->getXLower();
@@ -156,13 +185,13 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
   x_lower[0] = x_lower_double[0]; x_lower[1] = x_lower_double[1];
 #endif
 
-    Box<2> vel_ghostbox = velocity_data->getGhostBox();
-    const IntVector<2> vel_ghostbox_lower = vel_ghostbox.lower();
-    const IntVector<2> vel_ghostbox_upper = vel_ghostbox.upper();
+    hier::Box vel_ghostbox = velocity_data->getGhostBox();
+    const hier::IntVector vel_ghostbox_lower = vel_ghostbox.lower();
+    const hier::IntVector vel_ghostbox_upper = vel_ghostbox.upper();
 
-    Box<2> vel_box = velocity_data->getBox();
-    const IntVector<2> vel_lower = vel_box.lower();
-    const IntVector<2> vel_upper = vel_box.upper();
+    hier::Box vel_box = velocity_data->getBox();
+    const hier::IntVector vel_lower = vel_box.lower();
+    const hier::IntVector vel_upper = vel_box.upper();
 
     // get velocity data pointers
     LSMLIB_REAL* vel_x_data_ptr = velocity_data->getPointer(0);
@@ -256,23 +285,23 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 
 }
 
-void VelocityFieldModule::printClassData(ostream& os) const
+void VelocityFieldModule::printClassData(std::ostream& os) const
 {
-  os << "\nVelocityFieldModule::printClassData..." << endl;
+  os << "\nVelocityFieldModule::printClassData..." << std::endl;
   os << "VelocityFieldModule: this = " << 
-     (VelocityFieldModule*)this << endl;
-  os << "d_object_name = " << d_object_name << endl;
-  os << "d_velocity_field = " << d_velocity_field_selector << endl;
+     (VelocityFieldModule*)this << std::endl;
+  os << "d_object_name = " << d_object_name << std::endl;
+  os << "d_velocity_field = " << d_velocity_field_selector << std::endl;
 
   // KTC - put more here...
-  os << endl;
+  os << std::endl;
 }
 
 void VelocityFieldModule::getFromInput(
-  Pointer<Database> db)
+  boost::shared_ptr<tbox::Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!db.isNull());
+  assert(db);
 #endif
 
   // set d_min_dt (declared in parent class) 

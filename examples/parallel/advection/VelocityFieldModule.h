@@ -9,7 +9,6 @@
  *              the level set method
  */
 
- 
 #ifndef included_VelocityFieldModule
 #define included_VelocityFieldModule
 
@@ -19,35 +18,32 @@
  * 2D external velocity fields to be used by the LevelSetMethodAlgorithm.
  *
  *************************************************************************/
-
    
-// SAMRAI configuration header must be included
-// before any other SAMRAI header files
-#include "SAMRAI_config.h"
+// Standard headers
+#include <iosfwd>
+   
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
 
-#include <string>
-#include "CartesianGridGeometry.h"
-#include "PatchHierarchy.h"
-#include "PatchLevel.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
-
-// Level set method felocity field interface definition 
+// Level set method velocity field interface definition 
 // LevelSetMethod configuration header must be included
 // before any other LevelSetMethod header files
 #include "LSMLIB_config.h"
+#include "LevelSetMethodToolbox.h"
 #include "LevelSetMethodVelocityFieldStrategy.h"
 
+// Class/type declarations
+namespace SAMRAI { namespace geom { class CartesianGridGeometry; } }
+namespace SAMRAI { namespace hier { class PatchHierarchy; } }
+namespace SAMRAI { namespace hier { class PatchLevel; } }
+namespace SAMRAI { namespace tbox { class Database; } }
 
 // SAMRAI namespaces
 using namespace SAMRAI;
-using namespace geom;
-using namespace hier;
-using namespace tbox;
 using namespace LSMLIB;
 
 class VelocityFieldModule:
-  public LevelSetMethodVelocityFieldStrategy<2>
+    public LevelSetMethodVelocityFieldStrategy
 {
 public:
 
@@ -66,10 +62,10 @@ public:
    * 
    */
   VelocityFieldModule(
-    Pointer<Database> input_db,
-    Pointer< PatchHierarchy<2> > patch_hierarchy,
-    Pointer< CartesianGridGeometry<2> > grid_geometry,
-    const string& object_name = "VelocityFieldModule");
+    boost::shared_ptr<tbox::Database> input_db,
+    boost::shared_ptr< hier::PatchHierarchy > patch_hierarchy,
+    boost::shared_ptr< geom::CartesianGridGeometry > grid_geometry,
+    const std::string& object_name = "VelocityFieldModule");
 
   /*!
    * The destructor for VelocityFieldModule does nothing.
@@ -211,21 +207,21 @@ public:
    * Allocate and initialize data for a new level in the patch hierarchy.
    */
   virtual void initializeLevelData (
-    const Pointer< PatchHierarchy<2> > hierarchy,
+    const boost::shared_ptr< hier::PatchHierarchy > hierarchy,
     const int level_number,
     const LSMLIB_REAL init_data_time,
     const int phi_handle,
     const int psi_handle,
     const bool can_be_refined,
     const bool initial_time,
-    const Pointer< PatchLevel<2> > old_level
-      =Pointer< PatchLevel<2> >((0)),
+    const boost::shared_ptr< hier::PatchLevel > old_level
+      =boost::shared_ptr< hier::PatchLevel >((0)),
     const bool allocate_data = true);
 
   /*!
    * Print all data members for VelocityFieldModule class.
    */
-  void printClassData(ostream& os) const;
+  void printClassData(std::ostream& os) const;
 
 protected:
 
@@ -235,7 +231,7 @@ protected:
    * in the input database.
    */
   void computeVelocityFieldOnLevel(
-    const Pointer< PatchLevel<2> > level, 
+    const boost::shared_ptr< hier::PatchLevel > level, 
     const LSMLIB_REAL time,
     const int phi_handle);
 
@@ -244,24 +240,24 @@ protected:
    *
    * An assertion results if the database pointer is null.
    */
-  void getFromInput(Pointer<Database> db);
+  void getFromInput(boost::shared_ptr<tbox::Database> db);
 
   /*
    * The object name is used for error/warning reporting and also as a 
    * string label for restart database entries. 
    */
-  string d_object_name;
+  std::string d_object_name;
 
   /*
    * Pointer to the patch hierarchy.
    */
-  Pointer< PatchHierarchy<2> > d_patch_hierarchy;
+  boost::shared_ptr< hier::PatchHierarchy > d_patch_hierarchy;
 
   /*
    * Cache pointer to the grid geometry object to set up initial data, 
    * set physical boundary conditions, and register plot variables.
    */
-  Pointer< CartesianGridGeometry<2> > d_grid_geometry;
+  boost::shared_ptr< geom::CartesianGridGeometry > d_grid_geometry;
 
   /*
    * current time

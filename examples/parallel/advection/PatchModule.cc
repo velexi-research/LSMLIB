@@ -10,31 +10,45 @@
  *              numerical routines for the level set method example problem
  */
 
-
+// Class header
 #include "PatchModule.h"
 
-#include "Box.h"
-#include "CartesianPatchGeometry.h"
-#include "CellData.h"
+// Standard headers
+#include <assert.h>
+#include <ostream>
+
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
+
+// SAMRAI headers
+#include "SAMRAI/SAMRAI_config.h"
+#include "SAMRAI/hier/Box.h"
+#include "SAMRAI/hier/IntVector.h"
+#include "SAMRAI/hier/Patch.h"
+#include "SAMRAI/geom/CartesianPatchGeometry.h"
+#include "SAMRAI/pdat/CellData.h"
+#include "SAMRAI/tbox/Database.h"
+#include "SAMRAI/tbox/Utilities.h"
+
+// Class/type declarations
+namespace SAMRAI { namespace hier { class PatchData; } }
+namespace SAMRAI { namespace hier { class PatchGeometry; } }
+
 
 // headers for level set method numerical kernels
 extern "C" {
   #include "patchmodule_fort.h"
 }
 
-// SAMRAI namespaces
-using namespace geom; 
-using namespace pdat; 
-
 // CONSTANTS
 const LSMLIB_REAL PatchModule::s_default_radius = 0.25;
 
 PatchModule::PatchModule(
-  Pointer<Database> input_db,
-  const string& object_name)
+  boost::shared_ptr<tbox::Database> input_db,
+  const std::string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!input_db.isNull());
+  assert(input_db);
   assert(!object_name.empty());
 #endif
 
@@ -47,18 +61,21 @@ PatchModule::PatchModule(
 }
 
 void PatchModule::initializeLevelSetFunctionsOnPatch(
-  Patch<2>& patch,
+  hier::Patch& patch,
   const LSMLIB_REAL data_time,
   const int phi_handle,
   const int psi_handle)
 {
-  Pointer< CellData<2,LSMLIB_REAL> > level_set_data =
-    patch.getPatchData( phi_handle );
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > level_set_data =
+    BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+      patch.getPatchData( phi_handle ));
 
   LSMLIB_REAL* level_set_data_ptr = level_set_data->getPointer();
 
-  Pointer< CartesianPatchGeometry<2> > patch_geom 
-    = patch.getPatchGeometry();
+  boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom 
+    = BOOST_CAST<geom::CartesianPatchGeometry, hier::PatchGeometry>(
+        patch.getPatchGeometry());
+
 #ifdef LSMLIB_DOUBLE_PRECISION
   const double* dx = patch_geom->getDx();
   const double* x_lower = patch_geom->getXLower();
@@ -70,12 +87,12 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
   x_lower[0] = x_lower_double[0]; x_lower[1] = x_lower_double[1];
 #endif
 
-  Box<2> box = level_set_data->getBox();
-  Box<2> ghostbox = level_set_data->getGhostBox();
-  const IntVector<2> box_lower = box.lower();
-  const IntVector<2> box_upper = box.upper();
-  const IntVector<2> ghostbox_lower = ghostbox.lower();
-  const IntVector<2> ghostbox_upper = ghostbox.upper();
+  hier::Box box = level_set_data->getBox();
+  hier::Box ghostbox = level_set_data->getGhostBox();
+  const hier::IntVector box_lower = box.lower();
+  const hier::IntVector box_upper = box.upper();
+  const hier::IntVector ghostbox_lower = ghostbox.lower();
+  const hier::IntVector ghostbox_upper = ghostbox.upper();
 
   switch (d_initial_level_set) 
   {
@@ -103,32 +120,32 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 }
 
 void PatchModule::setLevelSetFunctionBoundaryConditions(
-    Patch<2>& patch,
+    hier::Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector<2>& ghost_width_to_fill)
+    const hier::IntVector& ghost_width_to_fill)
 {
 }
 
-void PatchModule::printClassData(ostream &os) const
+void PatchModule::printClassData(std::ostream &os) const
 {
-  os << "\nPatchModule::printClassData..." << endl;
+  os << "\nPatchModule::printClassData..." << std::endl;
   os << "PatchModule: this = " << (PatchModule*)this 
-     << endl;
-  os << "d_object_name = " << d_object_name << endl;
-  os << "d_initial_level_set = " << d_initial_level_set << endl;
+     << std::endl;
+  os << "d_object_name = " << d_object_name << std::endl;
+  os << "d_initial_level_set = " << d_initial_level_set << std::endl;
 
- // KTC - PUT MORE HERE
-  os << endl;
+ // TODO - PUT MORE HERE
+  os << std::endl;
 }
 
 
 void PatchModule::getFromInput(
-  Pointer<Database> db)
+  boost::shared_ptr<tbox::Database> db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
-  assert(!db.isNull());
+  assert(db);
 #endif
 
   // set initial level_set_selector
@@ -162,7 +179,7 @@ void PatchModule::getFromInput(
       TBOX_ERROR(  "PatchModule"
                 << "::getFromInput()"
                 << ":Invalid type of initial level set"
-                << endl );
+                << std::endl );
     } 
   };
 

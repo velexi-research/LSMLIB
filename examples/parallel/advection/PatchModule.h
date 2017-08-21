@@ -22,31 +22,27 @@
  *
  *************************************************************************/
 
-   
-// SAMRAI configuration header must be included
-// before any other SAMRAI header files
-#include "SAMRAI_config.h"
+// Standard headers
+#include <iosfwd>
 
-#include <string>
-#include "IntVector.h"
-#include "Patch.h"
-#include "tbox/Database.h"
-#include "tbox/Pointer.h"
+// Boost headers
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 // LevelSetMethod configuration header must be included
 // before any other LevelSetMethod header files
 #include "LSMLIB_config.h"
 #include "LevelSetMethodPatchStrategy.h"
-#include "LevelSetMethodVelocityFieldStrategy.h"
 
 // SAMRAI namespaces
 using namespace SAMRAI;
-using namespace hier;
-using namespace tbox;
 using namespace LSMLIB;
 
-class PatchModule:
-  public LevelSetMethodPatchStrategy<2>
+// Class/type declarations
+namespace SAMRAI { namespace tbox { class Database; } }
+namespace SAMRAI { namespace hier { class IntVector; } }
+namespace SAMRAI { namespace hier { class Patch; } }
+
+class PatchModule: public LevelSetMethodPatchStrategy
 {
 public:
 
@@ -67,8 +63,8 @@ public:
    *
    */
   PatchModule(
-    Pointer<Database> input_db,
-    const string& object_name = "PatchModule");
+    boost::shared_ptr<tbox::Database> input_db,
+    const std::string& object_name = "PatchModule");
 
   /*!
    * Empty destructor.
@@ -96,7 +92,7 @@ public:
    * Return value:             none
    *
    */
-  virtual void initializeLevelSetFunctionsOnPatch(Patch<2>& patch,
+  virtual void initializeLevelSetFunctionsOnPatch(hier::Patch& patch,
                                                   const LSMLIB_REAL data_time,
                                                   const int phi_handle,
                                                   const int psi_handle);
@@ -106,16 +102,16 @@ public:
    * corresponding to physical boundary conditions.  
    */
   virtual void setLevelSetFunctionBoundaryConditions(
-    Patch<2>& patch,
+    hier::Patch& patch,
     const LSMLIB_REAL fill_time,
     const int phi_handle,
     const int psi_handle,
-    const IntVector<2>& ghost_width_to_fill);
+    const hier::IntVector& ghost_width_to_fill);
 
   /*!
    * Print all data members for FluidSolver class.
    */
-  void printClassData(ostream& os) const;
+  void printClassData(std::ostream& os) const;
 
 protected:
 
@@ -125,14 +121,14 @@ protected:
    *
    ****************************************************************/
 
-  void getFromInput(Pointer<Database> db);
+  void getFromInput(boost::shared_ptr<tbox::Database> db);
 
 
   /*
    * The object name is used for error/warning reporting and also as a
    * string label for restart database entries.
    */
-  string d_object_name;
+  std::string d_object_name;
 
   /*
    * d_initial_level_set is set by the initial_level_set field in the
