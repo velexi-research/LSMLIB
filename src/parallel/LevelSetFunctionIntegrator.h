@@ -334,7 +334,6 @@ public:
    *
    */
   LevelSetFunctionIntegrator(
-    const tbox::Dimension& dim,
     boost::shared_ptr<tbox::Database> input_db,
     boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
     LevelSetMethodPatchStrategy* lsm_patch_strategy,

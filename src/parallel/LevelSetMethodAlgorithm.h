@@ -496,7 +496,6 @@ namespace LSMLIB { class LevelSetMethodVelocityFieldStrategy; }
 namespace SAMRAI { namespace hier { class IntVector; } }
 namespace SAMRAI { namespace hier { class PatchHierarchy; } }
 namespace SAMRAI { namespace tbox { class Database; } }
-namespace SAMRAI { namespace tbox { class Dimension; } }
 
 
 /******************************************************************
@@ -543,7 +542,6 @@ public:
    *
    */
   LevelSetMethodAlgorithm(
-    const tbox::Dimension& dim,
     boost::shared_ptr<tbox::Database> lsm_algorithm_input_db,
     boost::shared_ptr<hier::PatchHierarchy > patch_hierarchy,
     LevelSetMethodPatchStrategy* patch_strategy,
@@ -1251,7 +1249,6 @@ public:
    *
    */
   virtual boost::shared_ptr<FieldExtensionAlgorithm> getFieldExtensionAlgorithm(
-    const tbox::Dimension& dim,
     const int field_handle,
     const LEVEL_SET_FCN_TYPE level_set_fcn,
     SPATIAL_DERIVATIVE_TYPE spatial_derivative_type = UNKNOWN,

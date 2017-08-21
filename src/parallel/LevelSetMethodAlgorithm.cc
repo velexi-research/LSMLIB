@@ -51,7 +51,6 @@ namespace LSMLIB {
 
 /* Constructor for standard integrator and gridding strategy */
 LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
-  const tbox::Dimension& dim,
   boost::shared_ptr<tbox::Database> lsm_algorithm_input_db,
   boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   LevelSetMethodPatchStrategy* patch_strategy,
@@ -77,7 +76,6 @@ LevelSetMethodAlgorithm::LevelSetMethodAlgorithm(
   d_lsm_integrator_strategy =
     boost::shared_ptr<LevelSetFunctionIntegrator> (
       new LevelSetFunctionIntegrator(
-        dim,
         level_set_fcn_integrator_db,
         patch_hierarchy,
         patch_strategy,
@@ -239,7 +237,6 @@ LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
 /* getFieldExtensionAlgorithm() */
 boost::shared_ptr<FieldExtensionAlgorithm>
 LevelSetMethodAlgorithm::getFieldExtensionAlgorithm(
-  const tbox::Dimension& dim,
   const int field_handle,
   const LEVEL_SET_FCN_TYPE level_set_fcn,
   SPATIAL_DERIVATIVE_TYPE spatial_derivative_type,
