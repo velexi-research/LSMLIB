@@ -11,6 +11,9 @@
 #ifndef included_LevelSetFunctionIntegrator_cc
 #define included_LevelSetFunctionIntegrator_cc
 
+// Class header file
+#include "LevelSetFunctionIntegrator.h"
+
 // Standard library headers
 #include <cstddef>
 #include <iostream>
@@ -47,7 +50,6 @@
 #include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
 #include "BoundaryConditionModule.h"
-#include "LevelSetFunctionIntegrator.h"
 #include "LevelSetMethodPatchStrategy.h"
 #include "LevelSetMethodVelocityFieldStrategy.h"
 #include "OrthogonalizationAlgorithm.h"

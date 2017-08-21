@@ -12,6 +12,9 @@
 #ifndef included_OrthogonalizationAlgorithm_cc
 #define included_OrthogonalizationAlgorithm_cc
 
+// Class header file
+#include "OrthogonalizationAlgorithm.h"
+
 // Standard library headers
 #include <cstddef>
 #include <ostream>
@@ -34,7 +37,6 @@
 #include "LSMLIB_config.h"
 #include "LSMLIB_DefaultParameters.h"
 #include "FieldExtensionAlgorithm.h"
-#include "OrthogonalizationAlgorithm.h"
 
 // Class/type declarations
 namespace SAMRAI { namespace hier { class BaseGridGeometry; } }

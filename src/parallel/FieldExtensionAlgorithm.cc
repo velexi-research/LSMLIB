@@ -11,6 +11,9 @@
 #ifndef included_FieldExtensionAlgorithm_cc
 #define included_FieldExtensionAlgorithm_cc
 
+// Class header file
+#include "FieldExtensionAlgorithm.h"
+
 // Standard library headers
 #include <cstddef>
 #include <sstream>
@@ -41,7 +44,6 @@
 // LSMLIB headers
 #include "LSMLIB_DefaultParameters.h"
 #include "BoundaryConditionModule.h"
-#include "FieldExtensionAlgorithm.h"
 
 // Headers for Fortran kernels
 extern "C" {

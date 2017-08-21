@@ -11,6 +11,7 @@
 #ifndef included_LevelSetMethodAlgorithm_cc
 #define included_LevelSetMethodAlgorithm_cc
 
+// Class header file
 #include "LevelSetMethodAlgorithm.h"
 
 // Standard library headers

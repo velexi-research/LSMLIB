@@ -11,6 +11,7 @@
 #ifndef included_BoundaryConditionModule_cc
 #define included_BoundaryConditionModule_cc
 
+// Class header file
 #include "BoundaryConditionModule.h"
 
 // Standard library headers

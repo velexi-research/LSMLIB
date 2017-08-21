@@ -11,6 +11,7 @@
 #ifndef included_ReinitializationAlgorithm_cc
 #define included_ReinitializationAlgorithm_cc
 
+// Class header file
 #include "ReinitializationAlgorithm.h"
 
 // Standard library headers

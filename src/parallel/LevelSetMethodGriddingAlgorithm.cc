@@ -11,6 +11,9 @@
 #ifndef included_LevelSetMethodGriddingAlgorithm_cc
 #define included_LevelSetMethodGriddingAlgorithm_cc
 
+// Class header file
+#include "LevelSetMethodGriddingAlgorithm.h"
+
 // Standard library headers
 #include <cstddef>
 #include <iostream>
@@ -35,7 +38,6 @@
 #include "SAMRAI/tbox/Utilities.h"
 
 // LSMLIB headers
-#include "LevelSetMethodGriddingAlgorithm.h"
 #include "LevelSetFunctionIntegratorStrategy.h"
 #include "LevelSetMethodVelocityFieldStrategy.h"
 
