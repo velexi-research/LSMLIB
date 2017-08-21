@@ -1514,7 +1514,7 @@ protected:
 
   /*
    * Problem dimension.
-  */
+   */
   const tbox::Dimension d_dim;
 
   /*
