@@ -20,7 +20,7 @@ file(GLOB SOURCE_FILES
 # Add executable
 add_executable(advection ${SOURCE_FILES})
 
-# Search path for header files
+# Set search path for header files
 target_include_directories(advection
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/fortran
     PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
@@ -29,4 +29,13 @@ target_include_directories(advection
     PUBLIC ${MPI_CXX_INCLUDE_PATH}
     PUBLIC ${SAMRAI_INCLUDE_DIR})
 
-target_link_libraries(advection lsm_parallel lsm_toolbox)
+# Set link libraries
+target_link_libraries(advection
+    lsm_parallel
+    lsm_toolbox
+    ${SAMRAI_LIBS}
+    ${HDF5_C_LIBRARY_hdf5}
+    ${MPI_LIBRARY})
+
+# Add files to copy directly to build directory
+configure_file(advection-2d.input advection-2d.input COPYONLY)
