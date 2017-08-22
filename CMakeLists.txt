@@ -24,10 +24,10 @@ else (SINGLE_PRECISION)
 endif (SINGLE_PRECISION)
 
 # SAMRAI
-set(SAMRAI_DIR "" CACHE FILEPATH "Location of SAMRAI library")
+set(SAMRAI "" CACHE FILEPATH "Location of SAMRAI library")
 
 # HDF5
-set(HDF5_DIR "" CACHE FILEPATH "Location of HDF5 library")
+set(HDF5 "" CACHE FILEPATH "Location of HDF5 library")
 
 # --------------------------------------------------------------
 # Build parameters
@@ -72,17 +72,16 @@ else (IWYU)
 endif (IWYU)
 
 # Determine whether or not to enable parallel library
-if (SAMRAI_DIR)
+if (SAMRAI)
     set(ENABLE_PARALLEL ON)
-else (SAMRAI_DIR)
+else (SAMRAI)
     set(ENABLE_PARALLEL OFF)
-endif (SAMRAI_DIR)
+endif (SAMRAI)
 
 # Enable parallel library
 if (ENABLE_PARALLEL)
 
     # SAMRAI
-    find_file(SAMRAI_CONFIG_H SAMRAI_config.h ${SAMRAI_DIR}/include/SAMRAI)
     add_subdirectory(${EXT_PROJECTS_DIR}/samrai)
 
     # Boost
@@ -92,14 +91,14 @@ if (ENABLE_PARALLEL)
     find_package(MPI REQUIRED)
 
     # HDF5
-    if (HDF5_DIR)
-        find_file(HDF5_H hdf5.h ${HDF5_DIR}/include)
-        find_library(LIBHDF5 hdf5 ${HDF5_DIR}/lib)
+    if (HDF5)
+        find_file(HDF5_H hdf5.h ${HDF5}/include)
+        find_library(LIBHDF5 hdf5 ${HDF5}/lib)
 
         # Verify that HDF5 header files were found
         if (HDF5_H)
             message("-- Found HDF5 header files: TRUE (${HDF5_H})")
-            set(HDF5_INCLUDE_DIR ${HDF5_DIR}/include)
+            set(HDF5_INCLUDE_DIR ${HDF5}/include)
         else (HDF5_H)
             message(FATAL_ERROR "Could NOT find HDF5 header files.")
         endif (HDF5_H)
@@ -110,9 +109,9 @@ if (ENABLE_PARALLEL)
         else (LIBHDF5)
             message(FATAL_ERROR "Could NOT find HDF5 libraries.")
         endif (LIBHDF5)
-    else (HDF5_DIR)
-        find_package(HDF5)
-    endif (HDF5_DIR)
+    else (HDF5)
+        find_package(HDF5 REQUIRED)
+    endif (HDF5)
 
 endif (ENABLE_PARALLEL)
 
