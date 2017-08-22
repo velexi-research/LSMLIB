@@ -17,8 +17,9 @@ file(GLOB SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/fortran/*.h
      ${CMAKE_CURRENT_SOURCE_DIR}/fortran/*.f)
 
-# Add executable
+# Add executable and dependencies
 add_executable(advection ${SOURCE_FILES})
+add_dependencies(advection lsm_parallel samrai)
 
 # Set search path for header files
 target_include_directories(advection
