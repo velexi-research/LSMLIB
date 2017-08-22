@@ -631,8 +631,8 @@ protected:
    */
 
   // data communication parameters
-  tbox::Array<boost::shared_ptr<xfer::RefineAlgorithm>> d_phi_fill_bdry_alg;
-  tbox::Array<tbox::Array< boost::shared_ptr<xfer::RefineSchedule>>>
+  tbox::Array< boost::shared_ptr<xfer::RefineAlgorithm> > d_phi_fill_bdry_alg;
+  tbox::Array< tbox::Array< boost::shared_ptr<xfer::RefineSchedule> > >
       d_phi_fill_bdry_sched;
 
 private:

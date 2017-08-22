@@ -9,9 +9,6 @@
  *              class
  */
 
-#ifndef included_OrthogonalizationAlgorithm_cc
-#define included_OrthogonalizationAlgorithm_cc
-
 // Class header
 #include "OrthogonalizationAlgorithm.h"
 
@@ -21,6 +18,7 @@
 #include <string>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 
 // SAMRAI Headers
@@ -253,7 +251,7 @@ void OrthogonalizationAlgorithm::orthogonalizeLevelSetFunctions(
                   << endl);
       }
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
             patch->getPatchData(d_phi_handle));
       d_num_field_components = phi_data->getDepth();
@@ -439,5 +437,3 @@ void OrthogonalizationAlgorithm::checkParameters()
 
 
 } // end LSMLIB namespace
-
-#endif

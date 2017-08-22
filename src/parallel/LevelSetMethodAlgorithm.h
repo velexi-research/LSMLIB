@@ -1282,7 +1282,7 @@ protected:
 
   // lists of FieldExtensionAlgorithm objects
   // ( used in resetHierarchyConfiguration() )
-  tbox::Array<boost::shared_ptr<FieldExtensionAlgorithm>>
+  tbox::Array< boost::shared_ptr<FieldExtensionAlgorithm> >
       d_field_extension_alg_list;
 
 

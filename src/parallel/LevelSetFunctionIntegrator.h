@@ -1566,13 +1566,14 @@ protected:
   // for filling boundary data used during the calculation of
   // a stable dt for motion under normal velocity
   boost::shared_ptr<xfer::RefineAlgorithm> d_fill_bdry_compute_stable_dt;
-  tbox::Array<boost::shared_ptr<xfer::RefineSchedule>>
+  tbox::Array< boost::shared_ptr<xfer::RefineSchedule> >
     d_fill_bdry_sched_compute_stable_dt;
 
   // for filling bdry data before doing time advance
-  tbox::Array<boost::shared_ptr<xfer::RefineAlgorithm>> d_fill_bdry_time_advance;
-  tbox::Array<tbox::Array<boost::shared_ptr<xfer::RefineSchedule>>>
-    d_fill_bdry_sched_time_advance;
+  tbox::Array< boost::shared_ptr<xfer::RefineAlgorithm> >
+      d_fill_bdry_time_advance;
+  tbox::Array< tbox::Array< boost::shared_ptr<xfer::RefineSchedule> > >
+      d_fill_bdry_sched_time_advance;
 
   //Variable Database
   hier::PatchDataRestartManager* pdrm;

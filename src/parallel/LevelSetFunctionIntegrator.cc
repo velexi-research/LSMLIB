@@ -8,9 +8,6 @@
  * Description: Implementation file for level set method integrator class
  */
 
-#ifndef included_LevelSetFunctionIntegrator_cc
-#define included_LevelSetFunctionIntegrator_cc
-
 // Class header
 #include "LevelSetFunctionIntegrator.h"
 
@@ -21,6 +18,7 @@
 #include <string>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
 
 // MPI headers
@@ -1055,15 +1053,15 @@ void LevelSetFunctionIntegrator::applyGradientDetector(
                 << endl );
     }
 
-    boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+    boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
       BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_phi_handles[0] ));
-    boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> psi_data;
+    boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > psi_data;
     if (d_codimension == 2) {
       psi_data = BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_psi_handles[0]));
     }
-   boost::shared_ptr<pdat::CellData<int>> tag_data =
+   boost::shared_ptr< pdat::CellData<int> > tag_data =
        BOOST_CAST<pdat::CellData<int>, hier::PatchData>(
            patch->getPatchData( tag_index ));
 
@@ -1588,7 +1586,7 @@ void LevelSetFunctionIntegrator::computeLevelSetEquationRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
       patch->getPatchData( rhs_handle ));
 
@@ -1699,13 +1697,13 @@ void LevelSetFunctionIntegrator::addAdvectionTermToLevelSetEquationRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
        patch->getPatchData( rhs_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_upwind_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_upwind_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
        patch->getPatchData( grad_phi_upwind_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> velocity_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > velocity_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
        patch->getPatchData( velocity_handle ));
 
@@ -1868,17 +1866,17 @@ void LevelSetFunctionIntegrator::addNormalVelocityTermToLevelSetEquationRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( rhs_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_velocity_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_velocity_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( normal_velocity_handle ));
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_minus_handle ));
 
@@ -2127,23 +2125,23 @@ void LevelSetFunctionIntegrator::initializeVariables()
    */
 
   // create variables
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
   if (var_db->checkVariableExists("phi (LSMLIB)")) {
     phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
       var_db->getVariable("phi (LSMLIB)"));
   } else {
-   phi_variable =boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+   phi_variable =boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
      new pdat::CellVariable<LSMLIB_REAL>(
        d_dim,"phi (LSMLIB)", d_num_level_set_fcn_components));
   }
 
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi (LSMLIB)")) {
     grad_phi_variable =
         BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
           var_db->getVariable("grad phi (LSMLIB)"));
   } else {
-   grad_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+   grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
      new pdat::CellVariable<LSMLIB_REAL>(d_dim,"grad phi (LSMLIB)"));
   }
 
@@ -2191,13 +2189,13 @@ void LevelSetFunctionIntegrator::initializeVariables()
   }
 
   // RHS for phi updates
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> rhs_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > rhs_phi_variable;
   if (var_db->checkVariableExists("rhs phi (LSMLIB)")) {
     rhs_phi_variable =
         BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
           var_db->getVariable("rhs phi (LSMLIB)"));
   } else {
-    rhs_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+    rhs_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
         new pdat::CellVariable<LSMLIB_REAL>(d_dim,"rhs phi (LSMLIB)",1));
   }
   d_rhs_phi_handle = var_db->registerVariableAndContext(
@@ -2214,24 +2212,25 @@ void LevelSetFunctionIntegrator::initializeVariables()
   if (d_codimension == 2) {
 
     // create variables
-    boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> psi_variable;
+    boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > psi_variable;
     if (var_db->checkVariableExists("psi (LSMLIB)")) {
       psi_variable =
           BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
             var_db->getVariable("psi (LSMLIB)"));
     } else {
-      psi_variable =  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+      psi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
         new pdat::CellVariable<LSMLIB_REAL>(d_dim, "psi (LSMLIB)",
                                             d_num_level_set_fcn_components));
     }
-    boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_psi_variable;
+    boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_psi_variable;
     if (var_db->checkVariableExists("grad psi (LSMLIB)")) {
       grad_psi_variable =
           BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
             var_db->getVariable("grad psi (LSMLIB)"));
     } else {
-      grad_psi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
-        new pdat::CellVariable<LSMLIB_REAL>(d_dim, "grad psi (LSMLIB)"));
+      grad_psi_variable =
+          boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
+              new pdat::CellVariable<LSMLIB_REAL>(d_dim, "grad psi (LSMLIB)"));
     }
 
     // psi - "CURRENT" context for time advance
@@ -2281,8 +2280,8 @@ void LevelSetFunctionIntegrator::initializeVariables()
           BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
             var_db->getVariable("rhs psi (LSMLIB)"));
     } else {
-      rhs_psi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
-              new pdat::CellVariable<LSMLIB_REAL>(d_dim,"rhs psi (LSMLIB)",1));
+      rhs_psi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
+          new pdat::CellVariable<LSMLIB_REAL>(d_dim,"rhs psi (LSMLIB)",1));
     }
     d_rhs_psi_handle = var_db->registerVariableAndContext(
       rhs_psi_variable, scratch_context, zero_ghostcell_width);
@@ -2296,13 +2295,13 @@ void LevelSetFunctionIntegrator::initializeVariables()
   /*
    * Initialize control volume variables
    */
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> control_volume;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > control_volume;
   if (var_db->checkVariableExists("control volume (LSMLIB)")) {
     control_volume =
       BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("control volume (LSMLIB)"));
   } else {
-    control_volume = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    control_volume = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
       new pdat::CellVariable<LSMLIB_REAL>(d_dim,"control volume (LSMLIB)",1));
   }
   d_control_volume_handle = var_db->registerVariableAndContext(
@@ -2905,6 +2904,3 @@ void LevelSetFunctionIntegrator::postprocessCoarsen(
 }
 
 } // end LSMLIB namespace
-
-
-#endif

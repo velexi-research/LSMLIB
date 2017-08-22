@@ -8,9 +8,6 @@
  * Description: Implementation of the level set method grid management class
  */
 
-#ifndef included_LevelSetMethodGriddingAlgorithm_cc
-#define included_LevelSetMethodGriddingAlgorithm_cc
-
 // Class header
 #include "LevelSetMethodGriddingAlgorithm.h"
 
@@ -21,6 +18,9 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+// Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 
 // SAMRAI headers
 #include "SAMRAI/hier/Box.h"
@@ -75,8 +75,7 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
   assert(lsm_integrator_strategy);
   assert(!object_name.empty());
 #endif
-  cout << "LevelSetMethodGriddingAlgorithm::constructor "
-       << lsm_integrator_strategy.get() << endl;
+
   // set d_object_name
   d_object_name = object_name;
 
@@ -118,7 +117,6 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
   }
 
   // construct gridding algorithm using "this" as the TagAndInitializeStrategy
-  cout << this << endl;
   d_gridding_alg = boost::shared_ptr<mesh::GriddingAlgorithm> (
     new mesh::GriddingAlgorithm(
       patch_hierarchy,
@@ -394,10 +392,11 @@ void LevelSetMethodGriddingAlgorithm::tagCellsForRefinement(
     boost::shared_ptr<hier::PatchLevel> level =
        hierarchy->getPatchLevel(level_number);
 
-    for (hier::PatchLevel::Iterator ip(level->begin()); ip!=level->end(); ip++) {
+    for (hier::PatchLevel::Iterator ip(level->begin());
+         ip!=level->end(); ip++) {
       boost::shared_ptr<hier::Patch> patch = *ip;
 
-   boost::shared_ptr<pdat::CellData<int>> tag_data(
+      boost::shared_ptr< pdat::CellData<int> > tag_data(
       BOOST_CAST<pdat::CellData<int>, hier::PatchData>(
          patch->getPatchData(tag_index)));
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -493,5 +492,3 @@ void LevelSetMethodGriddingAlgorithm::getFromInput(
 
 
 } // end LSMLIB namespace
-
-#endif

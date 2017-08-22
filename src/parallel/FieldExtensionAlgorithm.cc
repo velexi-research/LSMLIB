@@ -8,9 +8,6 @@
  * Description: Implementation file for level set method field extension class
  */
 
-#ifndef included_FieldExtensionAlgorithm_cc
-#define included_FieldExtensionAlgorithm_cc
-
 // Class header
 #include "FieldExtensionAlgorithm.h"
 
@@ -20,6 +17,7 @@
 #include <string>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
 
@@ -350,7 +348,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
                   << endl);
       }
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field_data=
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data=
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_extension_field_handle ));
       d_num_field_components = field_data->getDepth();
@@ -1079,19 +1077,19 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
 #endif
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
       patch->getPatchData( d_rhs_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( extension_field_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( d_phi_scr_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( d_normal_vector_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_field_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_field_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( d_grad_field_handle ));
 
@@ -1296,7 +1294,7 @@ void FieldExtensionAlgorithm::initializeVariables(
   // get variable associated with phi_handle
   boost::shared_ptr<hier::Variable> tmp_variable;
   boost::shared_ptr<hier::VariableContext> tmp_context;
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
                                            tmp_variable, tmp_context)) {
     phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
@@ -1320,7 +1318,7 @@ void FieldExtensionAlgorithm::initializeVariables(
   d_scratch_data.clrAllFlags();
 
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> field_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
                                            tmp_variable, tmp_context)) {
     field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
@@ -1338,14 +1336,15 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream ext_field_scratch_name("");
   ext_field_scratch_name << d_object_name << "::" << field_variable->getName()
                    << "::EXTENSION_FIELD_SCRATCH";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> ext_field_scratch_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >
+      ext_field_scratch_variable;
   if (var_db->checkVariableExists(ext_field_scratch_name.str())) {
     ext_field_scratch_variable =
       BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
          var_db->getVariable(ext_field_scratch_name.str()));
   } else {
     ext_field_scratch_variable =
-      boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+      boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
         new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                             ext_field_scratch_name.str(), 1));
   }
@@ -1371,14 +1370,14 @@ void FieldExtensionAlgorithm::initializeVariables(
     stringstream phi_scratch_name("");
     phi_scratch_name << d_object_name << "::" << phi_variable->getName()
                      << "::EXTENSION_FIELD_PHI_SCRATCH";
-    boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_scratch_variable;
+    boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_scratch_variable;
     if (var_db->checkVariableExists(phi_scratch_name.str())) {
       phi_scratch_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                         hier::Variable>(
         var_db->getVariable(phi_scratch_name.str()));
     } else {
       phi_scratch_variable =
-        boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+        boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
           new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                               phi_scratch_name.str(), 1));
     }
@@ -1394,12 +1393,12 @@ void FieldExtensionAlgorithm::initializeVariables(
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << field_variable->getName() << "::EXTENSION_FIELD_RHS";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> rhs_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
     rhs_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
       var_db->getVariable(rhs_name.str()));
   } else {
-   rhs_variable =  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+   rhs_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
     new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                         rhs_name.str(), 1));
   }
@@ -1411,15 +1410,15 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream normal_vector_name("");
   normal_vector_name << phi_variable->getName()
                      << "::EXTENSION_FIELD_NORMAL_VECTOR";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> normal_vector_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > normal_vector_variable;
   if (var_db->checkVariableExists(normal_vector_name.str())) {
     normal_vector_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                         hier::Variable>(
       var_db->getVariable(normal_vector_name.str()));
   } else {
    normal_vector_variable =
-     boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
-       new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
+       boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
+           new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                            normal_vector_name.str(),DIM));
  }
   d_normal_vector_handle = var_db->registerVariableAndContext(
@@ -1430,13 +1429,13 @@ void FieldExtensionAlgorithm::initializeVariables(
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName()
                 << "::EXTENSION_FIELD_GRAD_PHI";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
     grad_phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                    hier::Variable>(
       var_db->getVariable(grad_phi_name.str()));
   } else {
-    grad_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
       new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                           grad_phi_name.str()));
   }
@@ -1456,14 +1455,14 @@ void FieldExtensionAlgorithm::initializeVariables(
   grad_field_name << field_variable->getName() << "::"
                   << phi_variable->getName()
                   << "::EXTENSION_FIELD_GRAD_FIELD";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_field_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_field_variable;
   if (var_db->checkVariableExists(grad_field_name.str())) {
     grad_field_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                      hier::Variable>(
       var_db->getVariable(grad_field_name.str()));
   } else {
    grad_field_variable =
-     boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> (
+     boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
        new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                            grad_field_name.str()));
   }
@@ -1490,7 +1489,7 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
    * Look up refine operation
    */
   // get CellVariable associated with d_extension_field_handle
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> field_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > field_variable;
   boost::shared_ptr<hier::Variable> tmp_variable;
   boost::shared_ptr<hier::VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_extension_field_handle,
@@ -1658,5 +1657,3 @@ void FieldExtensionAlgorithm::checkParameters()
 }
 
 } // end LSMLIB namespace
-
-#endif

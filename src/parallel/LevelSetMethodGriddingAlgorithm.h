@@ -437,7 +437,7 @@ protected:
    */
   boost::shared_ptr<LevelSetFunctionIntegratorStrategy> d_lsm_integrator_strategy;
 
-  tbox::Array<boost::shared_ptr<LevelSetMethodVelocityFieldStrategy>>
+  tbox::Array< boost::shared_ptr<LevelSetMethodVelocityFieldStrategy> >
     d_velocity_field_strategies;
 
 private:

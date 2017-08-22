@@ -8,9 +8,6 @@
  * Description: Implementation file for level set method integrator class
  */
 
-#ifndef included_LevelSetMethodAlgorithm_cc
-#define included_LevelSetMethodAlgorithm_cc
-
 // Class header
 #include "LevelSetMethodAlgorithm.h"
 
@@ -18,6 +15,9 @@
 #include <cstddef>
 #include <sstream>
 #include <string>
+
+// Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 
 // SAMRAI headers
 #include "SAMRAI/hier/IntVector.h"
@@ -525,5 +525,3 @@ void LevelSetMethodAlgorithm::regridPatchHierarchy()
 }
 
 } // end LSMLIB namespace
-
-#endif

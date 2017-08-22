@@ -8,9 +8,6 @@
  * Description: Header file for anti-periodic bc module
  */
 
-#ifndef included_BoundaryConditionModule_cc
-#define included_BoundaryConditionModule_cc
-
 // Class header
 #include "BoundaryConditionModule.h"
 
@@ -21,6 +18,7 @@
 #include <vector>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 // SAMRAI headers
@@ -239,7 +237,7 @@ void BoundaryConditionModule::imposeAntiPeriodicBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch.getPatchData( phi_handle ));
 
@@ -745,7 +743,7 @@ void BoundaryConditionModule::imposeHomogeneousNeumannBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
@@ -1187,7 +1185,7 @@ void BoundaryConditionModule::imposeLinearExtrapolationBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
@@ -1357,7 +1355,7 @@ void BoundaryConditionModule::imposeSignedLinearExtrapolationBCsOnPatch(
   const int component )
 {
   // get PatchData
-  boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+  boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
     BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
     patch.getPatchData( phi_handle ));
 
@@ -1574,5 +1572,3 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
 }
 
 } // end LSMLIB namespace
-
-#endif

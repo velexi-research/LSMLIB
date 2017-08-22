@@ -8,9 +8,6 @@
  * Description: Implementation file for level set method toolbox class
  */
 
-#ifndef included_LevelSetMethodToolbox_cc
-#define included_LevelSetMethodToolbox_cc
-
 // Class header
 #include "LevelSetMethodToolbox.h"
 
@@ -148,13 +145,13 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
       }
 
       // compute spatial derivatives for phi
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> upwind_function_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > upwind_function_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( upwind_function_handle ));
 
@@ -205,7 +202,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                patch->getPatchData( s_D1_one_ghostcell_handle ));
 
@@ -326,10 +323,10 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_two_ghostcells_handle));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D2_two_ghostcells_handle));
 
@@ -471,13 +468,13 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D2_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D3_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D3_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D3_three_ghostcells_handle ));
 
@@ -650,7 +647,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_three_ghostcells_handle ));
 
@@ -837,13 +834,13 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
          patch->getPatchData( grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
          patch->getPatchData( grad_phi_minus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
          patch->getPatchData( phi_handle ));
 
@@ -883,7 +880,7 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                patch->getPatchData( s_D1_one_ghostcell_handle ));
 
@@ -1002,10 +999,10 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                patch->getPatchData( s_D1_two_ghostcells_handle));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                patch->getPatchData( s_D2_two_ghostcells_handle));
 
@@ -1145,13 +1142,13 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D1_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D2_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D3_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D3_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D3_three_ghostcells_handle ));
 
@@ -1322,7 +1319,7 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
               // prepare scratch PatchData
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                patch->getPatchData( s_D1_three_ghostcells_handle ));
 
@@ -1492,10 +1489,10 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
       }
 
       // compute spatial derivatives for phi
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
 
@@ -1724,13 +1721,13 @@ void LevelSetMethodToolbox::TVDRK1Step(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_next_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_next_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_next_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( rhs_handle ));
 
@@ -1868,13 +1865,13 @@ void LevelSetMethodToolbox::TVDRK2Stage1(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage1_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage1_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_stage1_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( rhs_handle ));
 
@@ -2018,16 +2015,16 @@ void LevelSetMethodToolbox::TVDRK2Stage2(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_next_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_next_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_next_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage1_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage1_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_stage1_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( rhs_handle ));
 
@@ -2192,13 +2189,13 @@ void LevelSetMethodToolbox::TVDRK3Stage1(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage1_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage1_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_stage1_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( rhs_handle ));
 
@@ -2342,16 +2339,16 @@ void LevelSetMethodToolbox::TVDRK3Stage2(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage2_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage2_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_stage2_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage1_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage1_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_stage1_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( rhs_handle ));
 
@@ -2518,16 +2515,16 @@ void LevelSetMethodToolbox::TVDRK3Stage3(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_next_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_next_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_next_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_stage2_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_stage2_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_stage2_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> u_cur_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > u_cur_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( u_cur_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( rhs_handle ));
 
@@ -2703,19 +2700,19 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
       patch->allocatePatchData(s_compute_normal_grad_phi_minus_handle);
 
       // get PatchData
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data=
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data=
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( normal_vector_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_minus_handle ));
 
@@ -2785,7 +2782,7 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D1_one_ghostcell_handle ));
 
@@ -2903,10 +2900,10 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D1_two_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D2_two_ghostcells_handle ));
 
@@ -3045,13 +3042,13 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D2_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D3_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D3_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D3_three_ghostcells_handle ));
 
@@ -3222,7 +3219,7 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                   patch->getPatchData( s_D1_three_ghostcells_handle ));
 
@@ -3667,19 +3664,19 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       patch->allocatePatchData(s_compute_normal_grad_phi_minus_handle);
 
       // get PatchData
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data=
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data=
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( normal_vector_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( s_compute_normal_grad_phi_minus_handle ));
 
@@ -3749,7 +3746,7 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_one_ghostcell_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                  patch->getPatchData( s_D1_one_ghostcell_handle ));
 
@@ -3867,10 +3864,10 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D1_two_ghostcells_handle );
               patch->allocatePatchData( s_D2_two_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_two_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D2_two_ghostcells_handle ));
 
@@ -4009,13 +4006,13 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
               patch->allocatePatchData( s_D2_three_ghostcells_handle );
               patch->allocatePatchData( s_D3_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D2_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D2_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D2_three_ghostcells_handle ));
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D3_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D3_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D3_three_ghostcells_handle ));
 
@@ -4186,7 +4183,7 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
               // prepare scratch PatchData for computing grad(phi)
               patch->allocatePatchData( s_D1_three_ghostcells_handle );
 
-              boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> D1_data =
+              boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > D1_data =
                 BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
                 patch->getPatchData( s_D1_three_ghostcells_handle ));
 
@@ -4631,10 +4628,10 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromGradPhi(
       }
 
       // get PatchData
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data=
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data=
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( normal_vector_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_handle ));
 
@@ -4759,13 +4756,13 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromGradPhi(
       }
 
       // get PatchData
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> normal_vector_data=
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > normal_vector_data=
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( normal_vector_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( phi_handle ));
 
@@ -4948,10 +4945,10 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
         LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( control_volume_handle ));
 
@@ -5089,10 +5086,10 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
         LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( control_volume_handle ));
 
@@ -5257,13 +5254,13 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
       LSMLIB_REAL epsilon = delta_width*max_dx;
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( control_volume_handle ));
 
@@ -5451,13 +5448,13 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeIntegral(
         LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> F_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > F_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( F_handle));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( phi_handle ));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( control_volume_handle ));
 
@@ -5615,13 +5612,13 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeIntegral(
         LSMLIB_REAL epsilon = heaviside_width*max_dx;
 
         // get pointers to data and index space ranges
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> F_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > F_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( F_handle));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
          BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
          patch->getPatchData( phi_handle ));
-        boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+        boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
           BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
           patch->getPatchData( control_volume_handle ));
 
@@ -5805,16 +5802,16 @@ LSMLIB_REAL LevelSetMethodToolbox::computeSurfaceIntegral(
       LSMLIB_REAL epsilon = delta_width*max_dx;
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> F_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > F_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( F_handle));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( control_volume_handle ));
 
@@ -6016,10 +6013,10 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableAdvectionDt(
       LSMLIB_REAL max_advection_dt_on_patch = -1;  // bogus value overwritten
                                               // by Fortran subroutine
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> vel_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > vel_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( velocity_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( control_volume_handle ));
 
@@ -6179,16 +6176,16 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableNormalVelocityDt(
       LSMLIB_REAL max_normal_vel_dt_on_patch = -1;  // bogus value overwritten
                                                // by Fortran subroutine
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> vel_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > vel_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData(normal_velocity_handle));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( grad_phi_minus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( control_volume_handle ));
 
@@ -6373,13 +6370,13 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field1_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field1_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( field1_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> field2_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > field2_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( field2_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> control_volume_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > control_volume_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( control_volume_handle ));
 
@@ -6540,7 +6537,7 @@ void LevelSetMethodToolbox::computeControlVolumes(
         cell_vol *= dx[i];
       }
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> cv_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > cv_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData(control_volume_handle));
       if ( !cv_data ) {
@@ -6591,7 +6588,7 @@ void LevelSetMethodToolbox::computeControlVolumes(
           hier::Box coarse_box = *ib;
           hier::Box intersection = coarse_box*(patch->getBox());
           if ( !intersection.empty() ) {
-            boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> cv_data =
+            boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > cv_data =
             BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
             patch->getPatchData(control_volume_handle));
             cv_data->fillAll(0.0, intersection);
@@ -6631,10 +6628,10 @@ void LevelSetMethodToolbox::copySAMRAIData(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> dst_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > dst_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( dst_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> src_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > src_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( src_handle ));
 
@@ -6739,28 +6736,28 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
   hier::IntVector three_ghostcells_width(hierarchy->getDim(), 0);
 
   // create Variables and VariableContext
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> D1_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D1_variable;
   if (var_db->checkVariableExists("D1")){
     D1_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D1"));
    // VariableDatabaseD1_variable = var_db->getVariable(hierarchy->getDim(),"D1");
-    D1_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    D1_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D1", 1));
   }
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> D2_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D2_variable;
   if (var_db->checkVariableExists("D2")) {
     D2_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D2"));
   } else {
-    D2_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    D2_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D2", 1));
   }
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> D3_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D3_variable;
   if (var_db->checkVariableExists("D3")) {
     D3_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D3"));
   } else {
-    D3_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    D3_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D3", 1));
   }
   boost::shared_ptr<hier::VariableContext> one_ghostcell_context =
@@ -6809,13 +6806,13 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(
   hier::IntVector zero_ghostcell_width(hierarchy->getDim(),0);
 
   // create Variables and VariableContext
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists("grad phi")) {
     grad_phi_variable =
         BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
             var_db->getVariable("grad phi"));
   } else {
-    grad_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+    grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"grad phi"));
   }
   boost::shared_ptr<hier::VariableContext> scratch_context =
@@ -6842,5 +6839,3 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(
 }
 
 } // end LSMLIB namespace
-
-#endif

@@ -8,9 +8,6 @@
  * Description: Implementation file for level set method reinitialization class
  */
 
-#ifndef included_ReinitializationAlgorithm_cc
-#define included_ReinitializationAlgorithm_cc
-
 // Class header
 #include "ReinitializationAlgorithm.h"
 
@@ -20,6 +17,7 @@
 #include <string>
 
 // Boost headers
+// IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
 
@@ -281,7 +279,7 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
                   << endl);
       }
 
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
             patch->getPatchData( d_phi_handle ));
       d_num_phi_components = phi_data->getDepth();
@@ -874,16 +872,16 @@ void ReinitializationAlgorithm::computeReinitializationEqnRHS(
       }
 
       // get pointers to data and index space ranges
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> rhs_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_rhs_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> phi_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > phi_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( phi_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_plus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_plus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_grad_phi_plus_handle ));
-      boost::shared_ptr<pdat::CellData<LSMLIB_REAL>> grad_phi_minus_data =
+      boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_minus_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
         patch->getPatchData( d_grad_phi_minus_handle ));
 
@@ -1096,7 +1094,7 @@ void ReinitializationAlgorithm::initializeVariables()
   // get variable associated with phi_handle
   boost::shared_ptr<hier::Variable> tmp_variable;
   boost::shared_ptr<hier::VariableContext> tmp_context;
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
                                            tmp_variable, tmp_context)) {
     phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>
@@ -1123,13 +1121,13 @@ void ReinitializationAlgorithm::initializeVariables()
   stringstream phi_scratch_variable_name("");
   phi_scratch_variable_name << phi_variable->getName()
                             << "::REINITIALIZATION_PHI_SCRATCH";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_scratch_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_scratch_variable;
   if (var_db->checkVariableExists(phi_scratch_variable_name.str())) {
    phi_scratch_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                      hier::Variable >
      (var_db->getVariable(phi_scratch_variable_name.str()));
   } else {
-   phi_scratch_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+   phi_scratch_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
      new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                          phi_scratch_variable_name.str(), 1));
   }
@@ -1149,12 +1147,12 @@ void ReinitializationAlgorithm::initializeVariables()
   // create RHS variables
   stringstream rhs_name("");
   rhs_name << phi_variable->getName() << "::REINITIALIZATION_RHS";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> rhs_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > rhs_variable;
   if (var_db->checkVariableExists(rhs_name.str())) {
    rhs_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>
      (var_db->getVariable(rhs_name.str()));
   } else {
-   rhs_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>
+   rhs_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >
     (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                          rhs_name.str(), 1));
   }
@@ -1166,13 +1164,13 @@ void ReinitializationAlgorithm::initializeVariables()
   stringstream grad_phi_name("");
   grad_phi_name << phi_variable->getName()
                 << "::REINITIALIZATION_GRAD_PHI";
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> grad_phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
   if (var_db->checkVariableExists(grad_phi_name.str())) {
    grad_phi_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
                                   hier::Variable>
      (var_db->getVariable(grad_phi_name.str()));
   } else {
-   grad_phi_variable = boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+   grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
     new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
                                         grad_phi_name.str()));
   }
@@ -1204,7 +1202,7 @@ void ReinitializationAlgorithm::initializeCommunicationObjects()
    * Lookup refine operations
    */
   // get CellVariable associated with d_phi_handle
-  boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>> phi_variable;
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_variable;
   boost::shared_ptr<hier::Variable> tmp_variable;
   boost::shared_ptr<hier::VariableContext> tmp_context;
   if (var_db->mapIndexToVariableAndContext(d_phi_handle,
@@ -1352,5 +1350,3 @@ void ReinitializationAlgorithm::checkParameters()
 
 
 } // end LSMLIB namespace
-
-#endif
