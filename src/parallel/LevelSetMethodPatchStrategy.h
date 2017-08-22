@@ -1,10 +1,5 @@
 /*
  * File:        LevelSetMethodPatchStrategy.h
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $$
  * Description: Interface for single patch numerical routines for the
  *              level set algorithm
  */

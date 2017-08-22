@@ -1,10 +1,5 @@
 /*
  * File:        LSMLIB_DefaultParameters.h
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Header file containing default parameter values for the
  *              level set method classes
  */
