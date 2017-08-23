@@ -224,7 +224,6 @@ int main(int argc, char *argv[])
 
     // Get PatchData handles
     int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
-    int psi_patch_data_handle = lsm_algorithm->getPsiPatchDataHandle();
     int velocity_patch_data_handle = 
         velocity_field_module->getExternalVelocityFieldPatchDataHandle(0);
 
@@ -240,19 +239,13 @@ int main(int argc, char *argv[])
       visit_data_writer->registerPlotQuantity(
           "phi", "SCALAR", phi_patch_data_handle, 0, 1.0, "CELL");
     
-      if (psi_patch_data_handle >= 0) {
-          visit_data_writer->registerPlotQuantity(
-              "psi", "SCALAR", 
-              psi_patch_data_handle, 0, 1.0, "CELL");
-      }
-    
       visit_data_writer->registerPlotQuantity(
           "velocity", "VECTOR", 
           velocity_patch_data_handle, 0, 1.0, "CELL");
     }  
 
     // --- Initialize level set method calculation
-    //
+
     lsm_algorithm->initializeLevelSetMethodCalculation();
 
     // Close restart file before starting main time-stepping loop
