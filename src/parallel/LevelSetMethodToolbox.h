@@ -142,7 +142,7 @@ public:
    *  - spatial_derivative_order (in):  order of spatial derivative
    *  - grad_phi_handle (out):          PatchData handle for grad(phi)
    *  - phi_handle (in):                PatchData handle for phi
-   *  - upwind_function_handle(in):     PatchData handle for upwinding function
+   *  - upwind_function_handle (in):    PatchData handle for upwinding function
    *  - phi_component (in):             component of phi for which to compute
    *                                    spatial derivatives (default = 0)
    *
