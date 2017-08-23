@@ -8,7 +8,6 @@
 
 // Standard library headers
 #include <cstddef>
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
