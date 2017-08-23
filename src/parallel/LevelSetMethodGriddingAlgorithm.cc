@@ -45,6 +45,7 @@
 
 // Class/type declarations
 namespace SAMRAI { namespace hier { class PatchData; } }
+namespace SAMRAI { namespace mesh { class TagAndInitializeStrategy; } }
 
 /****************************************************************
  *
@@ -60,9 +61,9 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
   boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   boost::shared_ptr<LevelSetFunctionIntegratorStrategy> lsm_integrator_strategy,
   const string& object_name) :
-  StandardTagAndInitialize(object_name,
-                           lsm_integrator_strategy.get(),
-                           input_db)
+  mesh::StandardTagAndInitialize(object_name,
+                                 lsm_integrator_strategy.get(),
+                                 input_db)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db);
@@ -117,8 +118,7 @@ LevelSetMethodGriddingAlgorithm::LevelSetMethodGriddingAlgorithm(
       patch_hierarchy,
       "LevelSetMethodGriddingAlgorithm",
       input_db,
-//      boost::shared_ptr<TagAndInitializeStrategy>(this),
-      boost::shared_ptr<LevelSetMethodGriddingAlgorithm>(this),
+      boost::shared_ptr<TagAndInitializeStrategy>(this),
       box_generator,
       load_balancer));
 }
@@ -146,7 +146,6 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
    * Construct and initialize the levels of hierarchy.
    */
   if (tbox::RestartManager::getManager()->isFromRestart()) {
-    cout << "initializePatchHierarchy from restart" << endl;
 
     // from restart
     d_patch_hierarchy->getMaxNumberOfLevels();
@@ -156,10 +155,8 @@ void LevelSetMethodGriddingAlgorithm::initializePatchHierarchy(
                                 d_patch_hierarchy->getFinestLevelNumber());
 
   } else {
-    cout << "initializePatchHierarchy not from restart 1" << endl;
     // not from restart
     d_gridding_alg->makeCoarsestLevel(time);
-    cout << "initializePatchHierarchy not from restart 2" << endl;
 
     bool done = false;
     for (int level_num = 1;
@@ -225,12 +222,12 @@ void LevelSetMethodGriddingAlgorithm::regridPatchHierarchy(
 
 /* initializeLevelData() */
 void LevelSetMethodGriddingAlgorithm::initializeLevelData(
-  const boost::shared_ptr<hier::PatchHierarchy> hierarchy,
+  const boost::shared_ptr<hier::PatchHierarchy>& hierarchy,
   const int level_number,
   const double init_data_time,
   const bool can_be_refined,
   const bool initial_time,
-  const boost::shared_ptr<hier::PatchLevel> old_level,
+  const boost::shared_ptr<hier::PatchLevel>& old_level,
   const bool allocate_data)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
@@ -242,9 +239,7 @@ void LevelSetMethodGriddingAlgorithm::initializeLevelData(
   }
   assert((hierarchy->getPatchLevel(level_number))!=NULL);
 #endif
-  cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData"
-       << d_lsm_integrator_strategy.get()
-       << endl;
+
   if (d_lsm_integrator_strategy!=NULL) {
     d_lsm_integrator_strategy->initializeLevelData(hierarchy,
       level_number, init_data_time, can_be_refined, initial_time, old_level,
@@ -257,11 +252,8 @@ void LevelSetMethodGriddingAlgorithm::initializeLevelData(
     phi_handle,psi_handle, hierarchy,level_number);
   int num_velocity_field_strategies =
     d_velocity_field_strategies.size();
-  cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData "
-       << num_velocity_field_strategies << endl;
+
   for (int k = 0; k < num_velocity_field_strategies; k++) {
-    cout << "LevelSetMethodGriddingAlgorithm::initializeLevelData "
-         << d_velocity_field_strategies[k] << endl;
     if (d_velocity_field_strategies[k]!=NULL) {
       d_velocity_field_strategies[k]
         ->initializeLevelData(hierarchy,
@@ -318,7 +310,7 @@ void LevelSetMethodGriddingAlgorithm::resetHierarchyConfiguration(
 /* tagCellsForRefinements()
  *
  * The implementation of this method is essentially copied from
- * SAMRAI::StandardTagAndInitialize::tagCellsForRefinement().  The
+ * SAMRAI::mesh::StandardTagAndInitialize::tagCellsForRefinement().  The
  * main difference is that Richardson extrapolation is not a valid
  * way to set the refinement cells.
  */
