@@ -3,8 +3,6 @@
  * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
  *                  Regents of the University of Texas.  All rights reserved.
  *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: input file for 2d advection problem
  */
 
@@ -15,16 +13,19 @@ Main {
   // Whether to log all nodes in a parallel run.
   log_all_nodes = TRUE
 
+  // Dimension
+  dim = 2
+
+  // Restart parameters
   restart_interval = 25
 
-  // visualization parameters
-  viz_write_interval = 5
+  // Visualization parameters
   use_visit = TRUE
+  viz_write_interval = 5
   visit_number_procs_per_file = 1
 
-  // set to 0 to have no limit on maximum number of time steps
+  // Set to 0 to have no limit on maximum number of time steps
   max_num_time_steps = 0
-
 }
 
 CartesianGeometry {
