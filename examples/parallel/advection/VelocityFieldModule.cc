@@ -140,7 +140,6 @@ void VelocityFieldModule::initializeLevelData (
 {
   (void) psi_handle;  // psi is meaningless for co-dimension one problems
 
-  cout << "d_velocity_handle " << d_velocity_handle << endl;
   boost::shared_ptr< hier::PatchLevel > level =
       hierarchy->getPatchLevel(level_number);
   if (allocate_data) {
