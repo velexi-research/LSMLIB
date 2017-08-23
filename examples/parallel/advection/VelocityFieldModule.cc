@@ -10,7 +10,7 @@
  */
 
 // Class header
-#include "VelocityFieldModule.h" 
+#include "VelocityFieldModule.h"
 
 // Standard headers
 #include <assert.h>
@@ -64,7 +64,7 @@ VelocityFieldModule::VelocityFieldModule(
   assert(!object_name.empty());
 #endif
 
-  // set object name, patch hierarchy, and  grid geometry 
+  // set object name, patch hierarchy, and  grid geometry
   d_object_name = object_name;
   d_patch_hierarchy = patch_hierarchy;
   d_grid_geometry = grid_geom;
@@ -73,11 +73,12 @@ VelocityFieldModule::VelocityFieldModule(
   getFromInput(input_db);
 
   // Allocate velocity variable
-  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity = 
+  const tbox::Dimension dim = patch_hierarchy->getDim();
+  const int depth = dim.getValue();
+  boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity =
       boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-          new pdat::CellVariable<LSMLIB_REAL>(patch_hierarchy->getDim(),
-                                              "velocity field"));
- 
+          new pdat::CellVariable<LSMLIB_REAL>(dim, "velocity field", depth));
+
   // Register velocity variable with VariableDatabase.
   hier::VariableDatabase *vdb = hier::VariableDatabase::getDatabase();
   boost::shared_ptr<hier::VariableContext> cur_ctxt = vdb->getContext("CURRENT");
@@ -87,7 +88,7 @@ VelocityFieldModule::VelocityFieldModule(
   hier::PatchDataRestartManager::getManager()->
     registerPatchDataForRestart(d_velocity_handle);
 
-  // set d_velocity_never_computed to true to ensure that velocity is 
+  // set d_velocity_never_computed to true to ensure that velocity is
   // computed on first call to computeVelocityField()
   d_velocity_never_computed = true;
 }
@@ -100,13 +101,13 @@ void VelocityFieldModule::computeVelocityField(
   const int psi_handle,
   const int component)
 {
-  (void) psi_handle; // psi is meaningless for 2D problems
+  (void) psi_handle; // psi is meaningless for co-dimension one problems
   (void) component;  // component is not used because this example problem
                      // only has one component for level set function
 
   // only carry out computation if the time has changed
   if (!d_velocity_never_computed && (d_current_time == time)) return;
-  
+
   // set d_velocity_never_computed to false
   d_velocity_never_computed = false;
 
@@ -119,7 +120,7 @@ void VelocityFieldModule::computeVelocityField(
 
     boost::shared_ptr< hier::PatchLevel > level =
         d_patch_hierarchy->getPatchLevel(ln);
-    computeVelocityFieldOnLevel(level,time,phi_handle);
+    computeVelocityFieldOnLevel(level, time, phi_handle);
 
   } // end loop over hierarchy
 }
@@ -137,9 +138,9 @@ void VelocityFieldModule::initializeLevelData (
   const boost::shared_ptr< hier::PatchLevel > old_level,
   const bool allocate_data)
 {
+  (void) psi_handle;  // psi is meaningless for co-dimension one problems
 
-  (void) psi_handle;  // psi is meaningless for 2D problems
-
+  cout << "d_velocity_handle " << d_velocity_handle << endl;
   boost::shared_ptr< hier::PatchLevel > level =
       hierarchy->getPatchLevel(level_number);
   if (allocate_data) {
@@ -148,7 +149,7 @@ void VelocityFieldModule::initializeLevelData (
 
   /*
    * Initialize data on all patches in the level.
-   */ 
+   */
   computeVelocityFieldOnLevel(level,init_data_time,phi_handle);
 
 }
@@ -157,7 +158,7 @@ void VelocityFieldModule::initializeLevelData (
 void VelocityFieldModule::computeVelocityFieldOnLevel(
   const boost::shared_ptr< hier::PatchLevel > level,
   const LSMLIB_REAL time,
-  const int phi_handle) 
+  const int phi_handle)
 {
   for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
     // loop over patches
@@ -166,7 +167,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
       TBOX_ERROR(d_object_name << ": Cannot find patch. Null patch pointer.");
     }
 
-    boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data = 
+    boost::shared_ptr< CellData<LSMLIB_REAL> > velocity_data =
         BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
             patch->getPatchData(d_velocity_handle));
 
@@ -256,7 +257,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
           x_lower);
         break;
       }
-      case 4: { // oscillating expanding/contracting velocity field 
+      case 4: { // oscillating expanding/contracting velocity field
         // (u,v) = speed*cos(omega*time) * (x/r,y/r)
         LSMLIB_REAL speed = 0.1;
         LSMLIB_REAL omega = 1.0;
@@ -288,7 +289,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 void VelocityFieldModule::printClassData(ostream& os) const
 {
   os << "\nVelocityFieldModule::printClassData..." << endl;
-  os << "VelocityFieldModule: this = " << 
+  os << "VelocityFieldModule: this = " <<
      (VelocityFieldModule*)this << endl;
   os << "d_object_name = " << d_object_name << endl;
   os << "d_velocity_field = " << d_velocity_field_selector << endl;
@@ -304,7 +305,7 @@ void VelocityFieldModule::getFromInput(
   assert(db);
 #endif
 
-  // set d_min_dt (declared in parent class) 
+  // set d_min_dt (declared in parent class)
 #ifdef LSMLIB_DOUBLE_PRECISION
   d_min_dt = db->getDoubleWithDefault("min_dt", DBL_MAX);
 #else
@@ -312,7 +313,7 @@ void VelocityFieldModule::getFromInput(
 #endif
 
   // set velocity field type
-  d_velocity_field_selector = 
+  d_velocity_field_selector =
     db->getIntegerWithDefault("velocity_field", 0);
 
 }
