@@ -494,7 +494,6 @@ LSMLIB_REAL LevelSetFunctionIntegrator::computeStableDt()
         d_phi_handles[0], d_psi_handles[0],
         comp);
 
-cout << "GOT HERE 1" << endl;
       /*
        *  If necessary, compute the maximum CFL-based advection dt
        *  on the current patch
@@ -515,7 +514,6 @@ cout << "GOT HERE 1" << endl;
 
       } // end advection velocity dt calculation
 
-cout << "GOT HERE 2" << endl;
       /*
        *  If necessary, compute the maximum CFL-based normal velocity
        *  dt on the current patch
@@ -586,7 +584,6 @@ cout << "GOT HERE 2" << endl;
     // take max_normal_vel_dt if it is smaller
     if (max_normal_vel_dt < max_stable_dt) max_stable_dt = max_normal_vel_dt;
 
-cout << "GOT HERE 3" << endl;
     // take physics_dt if it is smaller
     LSMLIB_REAL physics_dt = d_lsm_velocity_field_strategy->computeStableDt();
     if ( (physics_dt < max_stable_dt) && (physics_dt > 0) ) {
@@ -602,7 +599,6 @@ cout << "GOT HERE 3" << endl;
      */
    int err = tbox::SAMRAI_MPI::getSAMRAIWorld().AllReduce(&max_user_specified_dt,1, MPI_MIN);
 
-cout << "GOT HERE 4" << endl;
   if(err!=0){
       tbox::perr << "Error AllReduce=" << err << endl;
   }
@@ -910,9 +906,6 @@ void LevelSetFunctionIntegrator::initializeLevelData (
    assert(hierarchy->getPatchLevel(level_number)!=NULL);
 #endif
 
-  cout << "LevelSetFunctionIntegrator::initializeLevelData "
-       << allocate_data << endl;
-
   boost::shared_ptr<hier::PatchLevel> level =
     hierarchy->getPatchLevel(level_number);
 
@@ -940,7 +933,6 @@ void LevelSetFunctionIntegrator::initializeLevelData (
    * Manually initialize data on all patches in the level if this
    * is the initial time.
    */
-  cout << initial_time << endl;
   if (initial_time)
   {
     for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
@@ -1693,14 +1685,14 @@ void LevelSetFunctionIntegrator::addAdvectionTermToLevelSetEquationRHS(
 
       // get pointers to data and index space ranges
       boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > rhs_data =
-       BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
-       patch->getPatchData( rhs_handle ));
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( rhs_handle ));
       boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > grad_phi_upwind_data =
-       BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
-       patch->getPatchData( grad_phi_upwind_handle ));
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( grad_phi_upwind_handle ));
       boost::shared_ptr< pdat::CellData<LSMLIB_REAL> > velocity_data =
-       BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
-       patch->getPatchData( velocity_handle ));
+        BOOST_CAST<pdat::CellData<LSMLIB_REAL>, hier::PatchData>(
+          patch->getPatchData( velocity_handle ));
 
       hier::Box rhs_ghostbox = rhs_data->getGhostBox();
       const hier::IntVector rhs_ghostbox_lower = rhs_ghostbox.lower();
