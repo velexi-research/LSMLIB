@@ -29,6 +29,9 @@ set(SAMRAI "" CACHE FILEPATH "Location of SAMRAI library")
 # HDF5
 set(HDF5 "" CACHE FILEPATH "Location of HDF5 library")
 
+# CMake build type
+set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
+
 # --------------------------------------------------------------
 # Build parameters
 # --------------------------------------------------------------
