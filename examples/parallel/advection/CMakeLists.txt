@@ -40,3 +40,4 @@ target_link_libraries(advection
 
 # Add files to copy directly to build directory
 configure_file(advection-2d.input advection-2d.input COPYONLY)
+configure_file(advection-3d.input advection-3d.input COPYONLY)
