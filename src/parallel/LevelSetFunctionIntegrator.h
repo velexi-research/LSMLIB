@@ -1376,9 +1376,9 @@ protected:
   int d_num_level_set_fcn_components;   // number of components for level
                                         //   set functions
   int d_codimension;                    // codimension of problem
-  LSMLIB_REAL d_start_time;                  // start time for calculation
-  LSMLIB_REAL d_end_time;                    // end time for calculation
-  LSMLIB_REAL d_cfl_number;                  // CFL number
+  LSMLIB_REAL d_start_time;             // start time for calculation
+  LSMLIB_REAL d_end_time;               // end time for calculation
+  LSMLIB_REAL d_cfl_number;             // CFL number
   SPATIAL_DERIVATIVE_TYPE               // type of spatial derivative:
        d_spatial_derivative_type;       //   default = WENO
   int d_spatial_derivative_order;       // order of spatial derivative
@@ -1446,7 +1446,6 @@ protected:
   // restrictions on the maximum allowable dt to use for advancing
   // the level set functions in time.
   LevelSetMethodVelocityFieldStrategy* d_lsm_velocity_field_strategy;
-
 
   /*
    * Grid management objects
@@ -1521,8 +1520,9 @@ protected:
   hier::ComponentSelector d_orthogonalization_scratch_variables;
   hier::ComponentSelector d_persistent_variables;
 
-
-  /* internal state  variables */
+  /*
+   * Internal state  variables
+   */
 
   // flags
   bool d_use_reinitialization;
