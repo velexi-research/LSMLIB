@@ -53,7 +53,7 @@ namespace SAMRAI { namespace hier { class RefineOperator; } }
 namespace SAMRAI { namespace hier { class Variable; } }
 namespace SAMRAI { namespace hier { class VariableContext; } }
 
-// SAMRAI namespaces
+// Namespaces
 using namespace SAMRAI;
 
 // Constant
