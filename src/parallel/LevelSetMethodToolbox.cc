@@ -121,7 +121,6 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
   const int upwind_function_handle,
   const int phi_component)
 {
-
   initializeComputeSpatialDerivativesParameters(hierarchy);
 
   const int finest_level = hierarchy->getFinestLevelNumber();
@@ -1464,7 +1463,6 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
   const int phi_handle,
   const int phi_component)
 {
-
   // make sure that the scratch PatchData handles have been created
   initializeComputeSpatialDerivativesParameters(hierarchy);
 
@@ -2664,7 +2662,6 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
   const UNIT_NORMAL_TYPE unit_normal_type,
   const int phi_component)
 {
-
   // make sure that the scratch PatchData handles have been created
   if ( (s_compute_normal_grad_phi_handle < 0) ||
        (s_compute_normal_grad_phi_plus_handle < 0) ||
@@ -3628,7 +3625,6 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
   const UNIT_NORMAL_TYPE unit_normal_type,
   const int phi_component)
 {
-
   // make sure that the scratch PatchData handles have been created
   if ( (s_compute_normal_grad_phi_handle < 0) ||
        (s_compute_normal_grad_phi_plus_handle < 0) ||
@@ -6725,20 +6721,20 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
   hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
-  // TODO: SET CORRECT VALUES
-  hier::IntVector one_ghostcell_width(hierarchy->getDim(), 0);
-  hier::IntVector two_ghostcells_width(hierarchy->getDim(), 0);
-  hier::IntVector three_ghostcells_width(hierarchy->getDim(), 0);
+  hier::IntVector one_ghostcell_width(hierarchy->getDim(), 1);
+  hier::IntVector two_ghostcells_width(hierarchy->getDim(), 2);
+  hier::IntVector three_ghostcells_width(hierarchy->getDim(), 3);
 
   // create Variables and VariableContext
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D1_variable;
   if (var_db->checkVariableExists("D1")){
     D1_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D1"));
-   // VariableDatabaseD1_variable = var_db->getVariable(hierarchy->getDim(),"D1");
+  } else {
     D1_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D1", 1));
   }
+
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D2_variable;
   if (var_db->checkVariableExists("D2")) {
     D2_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
@@ -6747,6 +6743,7 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D2_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D2", 1));
   }
+
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D3_variable;
   if (var_db->checkVariableExists("D3")) {
     D3_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
@@ -6755,6 +6752,7 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D3_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
         new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D3", 1));
   }
+
   boost::shared_ptr<hier::VariableContext> one_ghostcell_context =
     var_db->getContext("LSM_TOOLBOX_SCRATCH::ONE_GHOSTCELL");
   boost::shared_ptr<hier::VariableContext> two_ghostcells_context =
@@ -6777,7 +6775,6 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D2_variable, three_ghostcells_context, three_ghostcells_width);
   s_D3_three_ghostcells_handle = var_db->registerVariableAndContext(
     D3_variable, three_ghostcells_context, three_ghostcells_width);
-
 }
 
 
