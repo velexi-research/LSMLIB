@@ -54,6 +54,7 @@
 // Class/type declarations
 
 // namespaces
+using namespace std;
 using namespace SAMRAI;
 using namespace LSMLIB;
 
@@ -67,8 +68,8 @@ int main(int argc, char *argv[])
     tbox::SAMRAIManager::startup();
     const tbox::SAMRAI_MPI& mpi(tbox::SAMRAI_MPI::getSAMRAIWorld());
 
-    std::string input_filename;
-    std::string restart_read_dirname;
+    string input_filename;
+    string restart_read_dirname;
     int restore_num = 0;
 
     bool is_from_restart = false;
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
              << "<restart dir> <restore number> [options]\n"
              << "  options:\n"
              << "  none at this time"
-             << std::endl;
+             << endl;
         tbox::SAMRAI_MPI::abort();
         return (-1);
     } else {
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
         static_cast<unsigned short>(main_db->getInteger("dim")));
 
     // Get the base name for all name strings in this program
-    std::string base_name = "unnamed";
+    string base_name = "unnamed";
     base_name = main_db->getStringWithDefault("base_name", base_name);
 
     // --- Set up restart manager
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
     if (main_db->keyExists("restart_interval")) {
         restart_interval = main_db->getInteger("restart_interval");
     } 
-    std::string restart_write_dirname = base_name + ".restart";
+    string restart_write_dirname = base_name + ".restart";
     const bool write_restart = (restart_interval > 0); 
 
     tbox::RestartManager* restart_manager = tbox::RestartManager::getManager();
@@ -128,7 +129,7 @@ int main(int argc, char *argv[])
 
     // --- Start logging
 
-    const std::string log_file_name = base_name + ".log";
+    const string log_file_name = base_name + ".log";
     bool log_all_nodes = false;
     log_all_nodes = main_db->getBoolWithDefault("log_all_nodes",
                                                 log_all_nodes);
@@ -139,9 +140,9 @@ int main(int argc, char *argv[])
     }
 
     // Log the command-line args
-    tbox::plog << "input_filename = " << input_filename << std::endl;
-    tbox::plog << "restart_read_dirname = " << restart_read_dirname << std::endl;
-    tbox::plog << "restore_num = " << restore_num << std::endl;
+    tbox::plog << "input_filename = " << input_filename << endl;
+    tbox::plog << "restart_read_dirname = " << restart_read_dirname << endl;
+    tbox::plog << "restore_num = " << restore_num << endl;
 
     // --- Create major algorithm and data objects
 
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
                 dim,
                 base_name+"::CartesianGeometry",
                 input_db->getDatabase("CartesianGeometry")));
-    tbox::plog << "CartesianGridGeometry:" << std::endl;
+    tbox::plog << "CartesianGridGeometry:" << endl;
     grid_geometry->printClassData(tbox::plog);
 
     boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy =
@@ -164,13 +165,13 @@ int main(int argc, char *argv[])
         patch_hierarchy,
         grid_geometry,
         base_name+"::VelocityFieldModule");
-    tbox::plog << "VelocityFieldModule:" << std::endl;
+    tbox::plog << "VelocityFieldModule:" << endl;
     velocity_field_module->printClassData(tbox::plog);
 
     PatchModule* patch_module = new PatchModule(
         input_db->getDatabase("PatchModule"),
         base_name+"::PatchModule");
-    tbox::plog << "PatchModule:" << std::endl;
+    tbox::plog << "PatchModule:" << endl;
     patch_module->printClassData(tbox::plog);
 
     int num_level_set_fcn_components = 1;
@@ -185,15 +186,15 @@ int main(int argc, char *argv[])
                 num_level_set_fcn_components,
                 codimension,
                 base_name+"::LevelSetMethodAlgorithm"));
-    tbox::plog << "LevelSetMethodAlgorithm:" << std::endl;
+    tbox::plog << "LevelSetMethodAlgorithm:" << endl;
     lsm_algorithm->printClassData(tbox::plog);
 
     // Emit contents of input database and variable database to log file.
     tbox::plog << "\nCheck input data and variables before simulation:"
-        << std::endl;
-    tbox::plog << "Input database..." << std::endl;
+        << endl;
+    tbox::plog << "Input database..." << endl;
     input_db->printClassData(tbox::plog);
-    tbox::plog << "\nVariable database..." << std::endl;
+    tbox::plog << "\nVariable database..." << endl;
     hier::VariableDatabase::getDatabase()->printClassData(tbox::plog);
 
     // --- Set up visualization data writers
@@ -229,7 +230,7 @@ int main(int argc, char *argv[])
 
     boost::shared_ptr<appu::VisItDataWriter> visit_data_writer = 0;
     if (use_visit) {
-        std::string visit_data_dirname = base_name + ".visit";
+        string visit_data_dirname = base_name + ".visit";
         visit_data_writer = boost::shared_ptr<appu::VisItDataWriter>
            (new appu::VisItDataWriter(
                 dim, "VisIt Writer", visit_data_dirname,
@@ -282,23 +283,23 @@ int main(int argc, char *argv[])
             ((max_num_time_steps <= 0) || (count < max_num_time_steps)) ) {
 
         tbox::pout << "++++++++++++++++++++++++++++++++++++++++++"
-            << std::endl;
-        tbox::pout << "  Time step (in current run): " << count << std::endl;
+            << endl;
+        tbox::pout << "  Time step (in current run): " << count << endl;
         tbox::pout << "  Integrator time step: " << cur_integrator_step
-            << std::endl;
-        tbox::pout << "  Current time:  " << current_time << std::endl;
+            << endl;
+        tbox::pout << "  Current time:  " << current_time << endl;
 
         // Compute next time step
         dt = lsm_algorithm->computeStableDt();
         LSMLIB_REAL end_time = lsm_algorithm->getEndTime(); 
         if (end_time - current_time < dt) dt = end_time - current_time;
-        tbox::pout << "  dt:  " << dt << std::endl;
+        tbox::pout << "  dt:  " << dt << endl;
 
         // Advance level set functions
         lsm_algorithm->advanceLevelSetFunctions(dt);
  
         // Add an extra line to output for aesthetic reasons
-        tbox::pout << std::endl;
+        tbox::pout << endl;
 
         // Output data for current time step if this is the
         // initial time step or if the next write interval has
@@ -327,13 +328,13 @@ int main(int argc, char *argv[])
     // Output information for final time step 
     // (if it hasn't already been output)
     current_time = lsm_algorithm->getCurrentTime();
-    tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-    tbox::pout << "  Final time step (in current run): " << count << std::endl;
+    tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+    tbox::pout << "  Final time step (in current run): " << count << endl;
     tbox::pout << "  Final integrator time step: " << cur_integrator_step
-        << std::endl;
-    tbox::pout << "  Current time:  " << current_time << std::endl;
-    tbox::pout << std::endl;
-    tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+        << endl;
+    tbox::pout << "  Current time:  " << current_time << endl;
+    tbox::pout << endl;
+    tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
 
     // Write restart file for final time step
     if ( write_restart && (0!=cur_integrator_step%restart_interval) ) {

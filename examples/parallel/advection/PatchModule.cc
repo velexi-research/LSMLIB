@@ -45,7 +45,7 @@ const LSMLIB_REAL PatchModule::s_default_radius = 0.25;
 
 PatchModule::PatchModule(
   boost::shared_ptr<tbox::Database> input_db,
-  const std::string& object_name)
+  const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db);
@@ -128,16 +128,16 @@ void PatchModule::setLevelSetFunctionBoundaryConditions(
 {
 }
 
-void PatchModule::printClassData(std::ostream &os) const
+void PatchModule::printClassData(ostream &os) const
 {
-  os << "\nPatchModule::printClassData..." << std::endl;
+  os << "\nPatchModule::printClassData..." << endl;
   os << "PatchModule: this = " << (PatchModule*)this 
-     << std::endl;
-  os << "d_object_name = " << d_object_name << std::endl;
-  os << "d_initial_level_set = " << d_initial_level_set << std::endl;
+     << endl;
+  os << "d_object_name = " << d_object_name << endl;
+  os << "d_initial_level_set = " << d_initial_level_set << endl;
 
  // TODO - PUT MORE HERE
-  os << std::endl;
+  os << endl;
 }
 
 
@@ -179,7 +179,7 @@ void PatchModule::getFromInput(
       TBOX_ERROR(  "PatchModule"
                 << "::getFromInput()"
                 << ":Invalid type of initial level set"
-                << std::endl );
+                << endl );
     } 
   };
 

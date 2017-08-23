@@ -38,7 +38,8 @@ namespace SAMRAI { namespace hier { class PatchHierarchy; } }
 namespace SAMRAI { namespace hier { class PatchLevel; } }
 namespace SAMRAI { namespace tbox { class Database; } }
 
-// SAMRAI namespaces
+// Namespaces
+using namespace std;
 using namespace SAMRAI;
 using namespace LSMLIB;
 
@@ -65,7 +66,7 @@ public:
     boost::shared_ptr<tbox::Database> input_db,
     boost::shared_ptr< hier::PatchHierarchy > patch_hierarchy,
     boost::shared_ptr< geom::CartesianGridGeometry > grid_geometry,
-    const std::string& object_name = "VelocityFieldModule");
+    const string& object_name = "VelocityFieldModule");
 
   /*!
    * The destructor for VelocityFieldModule does nothing.
@@ -215,13 +216,13 @@ public:
     const bool can_be_refined,
     const bool initial_time,
     const boost::shared_ptr< hier::PatchLevel > old_level
-      =boost::shared_ptr< hier::PatchLevel >((0)),
+      = boost::shared_ptr< hier::PatchLevel >(),
     const bool allocate_data = true);
 
   /*!
    * Print all data members for VelocityFieldModule class.
    */
-  void printClassData(std::ostream& os) const;
+  void printClassData(ostream& os) const;
 
 protected:
 
@@ -246,7 +247,7 @@ protected:
    * The object name is used for error/warning reporting and also as a 
    * string label for restart database entries. 
    */
-  std::string d_object_name;
+  string d_object_name;
 
   /*
    * Pointer to the patch hierarchy.

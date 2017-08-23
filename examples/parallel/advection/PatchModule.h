@@ -33,14 +33,15 @@
 #include "LSMLIB_config.h"
 #include "LevelSetMethodPatchStrategy.h"
 
-// SAMRAI namespaces
-using namespace SAMRAI;
-using namespace LSMLIB;
-
 // Class/type declarations
 namespace SAMRAI { namespace tbox { class Database; } }
 namespace SAMRAI { namespace hier { class IntVector; } }
 namespace SAMRAI { namespace hier { class Patch; } }
+
+// Namespaces
+using namespace std;
+using namespace SAMRAI;
+using namespace LSMLIB;
 
 class PatchModule: public LevelSetMethodPatchStrategy
 {
@@ -64,7 +65,7 @@ public:
    */
   PatchModule(
     boost::shared_ptr<tbox::Database> input_db,
-    const std::string& object_name = "PatchModule");
+    const string& object_name = "PatchModule");
 
   /*!
    * Empty destructor.
@@ -111,7 +112,7 @@ public:
   /*!
    * Print all data members for FluidSolver class.
    */
-  void printClassData(std::ostream& os) const;
+  void printClassData(ostream& os) const;
 
 protected:
 
@@ -123,12 +124,11 @@ protected:
 
   void getFromInput(boost::shared_ptr<tbox::Database> db);
 
-
   /*
    * The object name is used for error/warning reporting and also as a
    * string label for restart database entries.
    */
-  std::string d_object_name;
+  string d_object_name;
 
   /*
    * d_initial_level_set is set by the initial_level_set field in the

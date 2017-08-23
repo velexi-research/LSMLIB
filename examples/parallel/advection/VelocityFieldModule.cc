@@ -19,7 +19,7 @@
 
 // Boost headers
 // IWYU pragma: no_include <boost/smart_ptr/detail/operator_bool.hpp>
-#include <boost/smart_ptr/make_shared_object.hpp>  // for make_shared
+#include <boost/smart_ptr/make_shared_object.hpp>
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"
@@ -55,7 +55,7 @@ VelocityFieldModule::VelocityFieldModule(
   boost::shared_ptr<tbox::Database> input_db,
   boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
   boost::shared_ptr<geom::CartesianGridGeometry> grid_geom,
-  const std::string& object_name)
+  const string& object_name)
 {
 #ifdef DEBUG_CHECK_ASSERTIONS
   assert(input_db);
@@ -74,7 +74,7 @@ VelocityFieldModule::VelocityFieldModule(
 
   // Allocate velocity variable
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity = 
-      boost::shared_ptr<pdat::CellVariable<LSMLIB_REAL>>(
+      boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
           new pdat::CellVariable<LSMLIB_REAL>(patch_hierarchy->getDim(),
                                               "velocity field"));
  
@@ -285,16 +285,16 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 
 }
 
-void VelocityFieldModule::printClassData(std::ostream& os) const
+void VelocityFieldModule::printClassData(ostream& os) const
 {
-  os << "\nVelocityFieldModule::printClassData..." << std::endl;
+  os << "\nVelocityFieldModule::printClassData..." << endl;
   os << "VelocityFieldModule: this = " << 
-     (VelocityFieldModule*)this << std::endl;
-  os << "d_object_name = " << d_object_name << std::endl;
-  os << "d_velocity_field = " << d_velocity_field_selector << std::endl;
+     (VelocityFieldModule*)this << endl;
+  os << "d_object_name = " << d_object_name << endl;
+  os << "d_velocity_field = " << d_velocity_field_selector << endl;
 
   // KTC - put more here...
-  os << std::endl;
+  os << endl;
 }
 
 void VelocityFieldModule::getFromInput(
