@@ -88,9 +88,9 @@ namespace SAMRAI { namespace hier { class VariableContext; } }
 #define LSM_DEFAULT_ORTHOGONALIZATION_INTERVAL           (10)
 #define LSM_DEFAULT_ORTHOGONALIZATION_MAX_ITERS          (25)
 #define LSM_DEFAULT_USE_AMR                              (false)
-#define LSM_DEFAULT_REGRID_INTERVAL                      (5)  // KTC - ADJUST
-#define LSM_DEFAULT_TAG_BUFFER_WIDTH                     (2)  // KTC - ADJUST
-#define LSM_DEFAULT_REFINEMENT_CUTOFF_VALUE              (1.0)  // KTC - ADJUST
+#define LSM_DEFAULT_REGRID_INTERVAL                      (5)  // TODO - ADJUST
+#define LSM_DEFAULT_TAG_BUFFER_WIDTH                     (2)  // TODO - ADJUST
+#define LSM_DEFAULT_REFINEMENT_CUTOFF_VALUE              (1.0)  // TODO - ADJUST
 #define LSM_DEFAULT_VERBOSE_MODE                         (false)
 #define LSM_STOP_TOLERANCE_MAX_ITERATIONS                (1000)
 
@@ -339,9 +339,9 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "PatchData Handles" << endl;
   os << "-----------------" << endl;
 //  os << "d_phi_handle = " << d_phi_handles << endl;
-// KTC os << "d_phi_time_advance_scr_handles = " << d_phi_time_advance_scr_handles << endl;
+// TODO os << "d_phi_time_advance_scr_handles = " << d_phi_time_advance_scr_handles << endl;
 //  os << "d_psi_handle = " << d_psi_handles << endl;
-// KTC os << "d_psi_time_advance_scr_handles = " << d_psi_time_advance_scr_handles << endl;
+// TODO os << "d_psi_time_advance_scr_handles = " << d_psi_time_advance_scr_handles << endl;
   os << "d_grad_phi_upwind_handle = " << d_grad_phi_upwind_handle << endl;
   os << "d_grad_psi_upwind_handle = " << d_grad_psi_upwind_handle << endl;
   os << "d_control_volume_handle = " << d_control_volume_handle << endl;
@@ -365,7 +365,7 @@ void  LevelSetFunctionIntegrator::printClassData(
   os << "d_fill_bdry_time_advance = "
      << d_fill_bdry_time_advance.getPointer() << endl;
 
-  // KTC - add code to print out d_fill_bdry_sched_time_advance
+  // TODO - add code to print out d_fill_bdry_sched_time_advance
 
   os << "===================================" << endl << endl;
 }
@@ -734,7 +734,7 @@ bool LevelSetFunctionIntegrator::advanceLevelSetFunctions(
   }
 
   // determine if patch hierarchy needs to be regridded
-  // KTC - DO SOMETHING SMARTER
+  // TODO - DO SOMETHING SMARTER
   // regrid patch hierachy
   bool regrid_needed = false;
   if (0 == d_regrid_count%d_regrid_interval)
@@ -1068,7 +1068,7 @@ void LevelSetFunctionIntegrator::applyGradientDetector(
     const hier::IntVector tag_gb_lower = tag_ghostbox.lower();
     const hier::IntVector tag_gb_upper = tag_ghostbox.upper();
 
-/* KTC - FIX ME
+/* TODO - FIX ME
 #if dim==2
     setrefinementtags_(
       tag_data->getPointer(),
@@ -1244,6 +1244,7 @@ void LevelSetFunctionIntegrator::advanceLevelSetEqnUsingTVDRK2(
     // advance phi through the first stage of TVD-RK2
     computeLevelSetEquationRHS(PHI,d_phi_handles[rk_stage],
                                comp);
+
     LevelSetMethodToolbox::TVDRK2Stage1(
       d_patch_hierarchy,
       d_phi_handles[rk_stage+1],
@@ -1669,7 +1670,7 @@ void LevelSetFunctionIntegrator::addAdvectionTermToLevelSetEquationRHS(
   // loop over PatchHierarchy and add contribution of advection term
   // to level set equation RHS by calling Fortran subroutines
   const int num_levels = d_patch_hierarchy->getNumberOfLevels();
-  for ( int ln=0 ; ln < num_levels; ln++ ) {
+  for (int ln = 0 ; ln < num_levels; ln++) {
 
     boost::shared_ptr<hier::PatchLevel> level =
         d_patch_hierarchy->getPatchLevel(ln);
@@ -2081,8 +2082,8 @@ void LevelSetFunctionIntegrator::initializeVariables()
               << "Only ENO and WENO derivatives are supported."
               << endl );
   }
-  d_level_set_ghostcell_width = hier::IntVector(d_dim,scratch_ghostcell_width);
-  hier::IntVector zero_ghostcell_width(d_dim,0);
+  d_level_set_ghostcell_width = hier::IntVector(d_dim, scratch_ghostcell_width);
+  hier::IntVector zero_ghostcell_width(d_dim, 0);
 
   // get pointer to VariableDatabase
   hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
@@ -2119,7 +2120,7 @@ void LevelSetFunctionIntegrator::initializeVariables()
   } else {
    phi_variable =boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
      new pdat::CellVariable<LSMLIB_REAL>(
-       d_dim,"phi (LSMLIB)", d_num_level_set_fcn_components));
+       d_dim, "phi (LSMLIB)", d_num_level_set_fcn_components));
   }
 
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
@@ -2128,8 +2129,9 @@ void LevelSetFunctionIntegrator::initializeVariables()
         BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
           var_db->getVariable("grad phi (LSMLIB)"));
   } else {
+   const int depth = d_dim.getValue();
    grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
-     new pdat::CellVariable<LSMLIB_REAL>(d_dim,"grad phi (LSMLIB)"));
+     new pdat::CellVariable<LSMLIB_REAL>(d_dim, "grad phi (LSMLIB)", depth));
   }
 
   // reserve memory for scratch variable PatchData Handles
