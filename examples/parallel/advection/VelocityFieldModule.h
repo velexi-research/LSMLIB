@@ -276,7 +276,7 @@ protected:
   int d_velocity_handle;
 
   /*
-   * velocity field id
+   * id of velocity field to set
    */
   int d_velocity_field_selector;
 
