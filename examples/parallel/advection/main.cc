@@ -342,12 +342,13 @@ int main(int argc, char *argv[])
                                          
     }
 
-    // --- At conclusion of simulation, deallocate objects
+    // --- At conclusion of simulation, clean up
 
     delete patch_module;
     delete velocity_field_module;
 
     tbox::SAMRAIManager::shutdown();
+    tbox::SAMRAIManager::finalize();
     tbox::SAMRAI_MPI::finalize();
 
     return(0);
