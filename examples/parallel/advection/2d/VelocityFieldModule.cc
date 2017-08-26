@@ -73,14 +73,12 @@ VelocityFieldModule::VelocityFieldModule(
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity =
       boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
           new pdat::CellVariable<LSMLIB_REAL>(dim, "velocity field", depth));
-    cout << "VelocityFieldModule: depth = " << depth << endl;
 
   // Register velocity variable with VariableDatabase.
   hier::VariableDatabase *vdb = hier::VariableDatabase::getDatabase();
   boost::shared_ptr<hier::VariableContext> cur_ctxt = vdb->getContext("CURRENT");
   d_velocity_handle = vdb->registerVariableAndContext(
     velocity, cur_ctxt, hier::IntVector(d_patch_hierarchy->getDim(), 0));
-    cout << "VelocityFieldModule: data_handle = " << d_velocity_handle << endl;
 
   hier::PatchDataRestartManager::getManager()->
     registerPatchDataForRestart(d_velocity_handle);
