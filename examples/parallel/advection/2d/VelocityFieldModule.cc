@@ -313,4 +313,3 @@ void VelocityFieldModule::getFromInput(
     db->getIntegerWithDefault("velocity_field", 0);
 
 }
-
