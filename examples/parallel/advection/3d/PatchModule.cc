@@ -1,10 +1,5 @@
 /*
  * File:        PatchModule.cc
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Implementation for concrete subclass of 
  *              LevelSetMethodPatchStrategy that computes the single patch 
  *              numerical routines for the level set method example problem
@@ -82,9 +77,11 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 #else
   const double* dx_double = patch_geom->getDx();
   const double* x_lower_double = patch_geom->getXLower();
-  float dx[2], x_lower[2]; 
-  dx[0] = dx_double[0]; dx[1] = dx_double[1];
-  x_lower[0] = x_lower_double[0]; x_lower[1] = x_lower_double[1];
+  float dx[3], x_lower[3]; 
+  dx[0] = dx_double[0]; dx[1] = dx_double[1]; dx[2] = dx_double[2];
+  x_lower[0] = x_lower_double[0];
+  x_lower[1] = x_lower_double[1];
+  x_lower[2] = x_lower_double[2];
 #endif
 
   hier::Box box = level_set_data->getBox();
@@ -96,18 +93,22 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 
   switch (d_initial_level_set) 
   {
-    case CIRCLE: // circle
+    case SPHERE: // sphere
     {
-      INIT_CIRCLE(
+      INIT_SPHERE(
         level_set_data_ptr,
         &ghostbox_lower[0],
         &ghostbox_upper[0],
         &ghostbox_lower[1],
         &ghostbox_upper[1],
+        &ghostbox_lower[2],
+        &ghostbox_upper[2],
         &box_lower[0],
         &box_upper[0],
         &box_lower[1],
         &box_upper[1],
+        &box_lower[2],
+        &box_upper[2],
         x_lower,
         dx,
         d_center,
@@ -153,7 +154,7 @@ void PatchModule::getFromInput(
 
   // get auxilliary parameters for initial level set
   switch (d_initial_level_set) {
-    case CIRCLE: {
+    case SPHERE: {
 
 #ifdef LSMLIB_DOUBLE_PRECISION
       d_radius = db->getDoubleWithDefault("radius", s_default_radius);
@@ -163,14 +164,15 @@ void PatchModule::getFromInput(
 
       if (db->keyExists("center")) {
 #ifdef LSMLIB_DOUBLE_PRECISION
-        db->getDoubleArray("center", d_center, 2);
+        db->getDoubleArray("center", d_center, 3);
 #else
-        db->getFloatArray("center", d_center, 2);
+        db->getFloatArray("center", d_center, 3);
 #endif
 
       } else {
         d_center[0] = 0.0;
         d_center[1] = 0.0;
+        d_center[2] = 0.0;
       }
       break;
     }
@@ -184,4 +186,3 @@ void PatchModule::getFromInput(
   };
 
 }
-

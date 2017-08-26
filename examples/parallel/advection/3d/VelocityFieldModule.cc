@@ -1,10 +1,5 @@
 /*
  * File:        VelocityFieldModule.cc
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Implementation of class that computes the velocity field
  *              for the level set method
  */
@@ -25,6 +20,7 @@
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
+#include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchDataRestartManager.h"
@@ -78,14 +74,12 @@ VelocityFieldModule::VelocityFieldModule(
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > velocity =
       boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
           new pdat::CellVariable<LSMLIB_REAL>(dim, "velocity field", depth));
-    cout << "VelocityFieldModule: depth = " << depth << endl;
 
   // Register velocity variable with VariableDatabase.
   hier::VariableDatabase *vdb = hier::VariableDatabase::getDatabase();
   boost::shared_ptr<hier::VariableContext> cur_ctxt = vdb->getContext("CURRENT");
   d_velocity_handle = vdb->registerVariableAndContext(
     velocity, cur_ctxt, hier::IntVector(d_patch_hierarchy->getDim(), 0));
-    cout << "VelocityFieldModule: data_handle = " << d_velocity_handle << endl;
 
   hier::PatchDataRestartManager::getManager()->
     registerPatchDataForRestart(d_velocity_handle);
@@ -182,9 +176,11 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 #else
   const double* dx_double = patch_geom->getDx();
   const double* x_lower_double = patch_geom->getXLower();
-  float dx[2], x_lower[2];
-  dx[0] = dx_double[0]; dx[1] = dx_double[1];
-  x_lower[0] = x_lower_double[0]; x_lower[1] = x_lower_double[1];
+  float dx[3], x_lower[3];
+  dx[0] = dx_double[0]; dx[1] = dx_double[1]; dx[2] = dx_double[2];
+  x_lower[0] = x_lower_double[0];
+  x_lower[1] = x_lower_double[1];
+  x_lower[2] = x_lower_double[2];
 #endif
 
     hier::Box vel_ghostbox = velocity_data->getGhostBox();
@@ -198,81 +194,107 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
     // get velocity data pointers
     LSMLIB_REAL* vel_x_data_ptr = velocity_data->getPointer(0);
     LSMLIB_REAL* vel_y_data_ptr = velocity_data->getPointer(1);
+    LSMLIB_REAL* vel_z_data_ptr = velocity_data->getPointer(2);
 
     switch (d_velocity_field_selector) {
       case 0: { // uniform velocity field (1,0)
         UNIFORM_VELOCITY_X(
           vel_x_data_ptr,
           vel_y_data_ptr,
+          vel_z_data_ptr,
           &vel_ghostbox_lower[0],
           &vel_ghostbox_upper[0],
           &vel_ghostbox_lower[1],
           &vel_ghostbox_upper[1],
+          &vel_ghostbox_lower[2],
+          &vel_ghostbox_upper[2],
           &vel_lower[0],
           &vel_upper[0],
           &vel_lower[1],
-          &vel_upper[1]);
+          &vel_upper[1],
+          &vel_lower[2],
+          &vel_upper[2]);
         break;
       }
       case 1: { // uniform velocity field (0,1)
         UNIFORM_VELOCITY_Y(
           vel_x_data_ptr,
           vel_y_data_ptr,
+          vel_z_data_ptr,
           &vel_ghostbox_lower[0],
           &vel_ghostbox_upper[0],
           &vel_ghostbox_lower[1],
           &vel_ghostbox_upper[1],
+          &vel_ghostbox_lower[2],
+          &vel_ghostbox_upper[2],
           &vel_lower[0],
           &vel_upper[0],
           &vel_lower[1],
-          &vel_upper[1]);
+          &vel_upper[1],
+          &vel_lower[2],
+          &vel_upper[2]);
         break;
       }
       case 2: { // uniform velocity field (1,1)
         UNIFORM_VELOCITY_XY(
           vel_x_data_ptr,
           vel_y_data_ptr,
+          vel_z_data_ptr,
           &vel_ghostbox_lower[0],
           &vel_ghostbox_upper[0],
           &vel_ghostbox_lower[1],
           &vel_ghostbox_upper[1],
+          &vel_ghostbox_lower[2],
+          &vel_ghostbox_upper[2],
           &vel_lower[0],
           &vel_upper[0],
           &vel_lower[1],
-          &vel_upper[1]);
+          &vel_upper[1],
+          &vel_lower[2],
+          &vel_upper[2]);
         break;
       }
       case 3: { // rotating velocity field
         ROTATING_VELOCITY(
           vel_x_data_ptr,
           vel_y_data_ptr,
+          vel_z_data_ptr,
           &vel_ghostbox_lower[0],
           &vel_ghostbox_upper[0],
           &vel_ghostbox_lower[1],
           &vel_ghostbox_upper[1],
+          &vel_ghostbox_lower[2],
+          &vel_ghostbox_upper[2],
           &vel_lower[0],
           &vel_upper[0],
           &vel_lower[1],
           &vel_upper[1],
+          &vel_lower[2],
+          &vel_upper[2],
           dx,
           x_lower);
         break;
       }
       case 4: { // oscillating expanding/contracting velocity field
-        // (u,v) = speed*cos(omega*time) * (x/r,y/r)
+        // (u,v,w) = speed*cos(omega*time) * (x/r,y/r,z/r)
         LSMLIB_REAL speed = 0.1;
         LSMLIB_REAL omega = 1.0;
         EXPANDING_VELOCITY(
           vel_x_data_ptr,
           vel_y_data_ptr,
+          vel_z_data_ptr,
           &vel_ghostbox_lower[0],
           &vel_ghostbox_upper[0],
           &vel_ghostbox_lower[1],
           &vel_ghostbox_upper[1],
+          &vel_ghostbox_lower[2],
+          &vel_ghostbox_upper[2],
           &vel_lower[0],
           &vel_upper[0],
           &vel_lower[1],
           &vel_upper[1],
+          &vel_lower[2],
+          &vel_upper[2],
           dx,
           x_lower,
           &speed,

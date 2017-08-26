@@ -1,17 +1,12 @@
 /*
  * File:        main.cc
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Example program for LSMLIB Parallel Package
  */
 
 /*************************************************************************
  *
  * This example  program demonstrates how to use the LSMLIB C++ classes
- * to for a 2D problem where the motion of the level sets is determined
+ * to for a 3D problem where the motion of the level sets is determined
  * by an external velocity field (defined throughout the entire 
  * computational domain) is specified.
  *
@@ -102,9 +97,8 @@ int main(int argc, char *argv[])
     // Process "Main" section of the input database. 
     boost::shared_ptr<tbox::Database> main_db = input_db->getDatabase("Main");
 
-    // Get dimension
-    const tbox::Dimension dim(
-        static_cast<unsigned short>(main_db->getInteger("dim")));
+    // Set dimension
+    const tbox::Dimension dim(3);
 
     // Get the base name for all name strings in this program
     string base_name = "unnamed";

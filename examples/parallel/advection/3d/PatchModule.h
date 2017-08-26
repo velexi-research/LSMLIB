@@ -1,10 +1,5 @@
 /*
  * File:        PatchModule.h
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Header for concrete subclass of LevelSetMethodPatchStrategy 
  *              that computes the single patch numerical routines for the 
  *              level set method example problem
@@ -50,7 +45,7 @@ public:
   /*!
    * Enumeration of Initial Level Set Configurations
    */
-  typedef enum { CIRCLE = 0 } INITIAL_SET_TYPE;
+  typedef enum { SPHERE = 0 } INITIAL_SET_TYPE;
 
   /*!
    * This constructor sets the object name and reads in the 
@@ -140,7 +135,7 @@ protected:
    * other initial level set parameters
    */
   LSMLIB_REAL d_radius;
-  LSMLIB_REAL d_center[2];
+  LSMLIB_REAL d_center[3];
 
   /*
    * class constants

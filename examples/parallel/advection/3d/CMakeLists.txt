@@ -1,5 +1,5 @@
 # --------------------------------------------------------------
-# Customizations for parallel advection-driven motion example
+# Customizations for parallel 3D advection-driven motion example
 # --------------------------------------------------------------
 
 # CMake initialization: No customizations
@@ -18,11 +18,11 @@ file(GLOB SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/fortran/*.f)
 
 # Add executable and dependencies
-add_executable(advection ${SOURCE_FILES})
-add_dependencies(advection lsm_parallel samrai)
+add_executable(advection-3d ${SOURCE_FILES})
+add_dependencies(advection-3d lsm_parallel samrai)
 
 # Set search path for header files
-target_include_directories(advection
+target_include_directories(advection-3d
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/fortran
     PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
     PUBLIC ${CMAKE_SOURCE_DIR}/src/parallel
@@ -31,7 +31,7 @@ target_include_directories(advection
     PUBLIC ${SAMRAI_INCLUDE_DIR})
 
 # Set link libraries
-target_link_libraries(advection
+target_link_libraries(advection-3d
     lsm_parallel
     lsm_toolbox
     ${SAMRAI_LIBS}
@@ -39,5 +39,4 @@ target_link_libraries(advection
     ${MPI_LIBRARY})
 
 # Add files to copy directly to build directory
-configure_file(advection-2d.input advection-2d.input COPYONLY)
 configure_file(advection-3d.input advection-3d.input COPYONLY)
