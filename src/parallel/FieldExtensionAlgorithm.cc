@@ -234,7 +234,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
   boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
@@ -505,7 +505,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
   boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
