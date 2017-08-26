@@ -2758,11 +2758,11 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
-      for (int dim = 0; dim < DIM; dim++) {
-        normal_vector[dim] = normal_vector_data->getPointer(dim);
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
-        grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
-        grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        normal_vector[i] = normal_vector_data->getPointer(i);
+        grad_phi[i] = grad_phi_data->getPointer(i);
+        grad_phi_plus[i] = grad_phi_plus_data->getPointer(i);
+        grad_phi_minus[i] = grad_phi_minus_data->getPointer(i);
       }
 
       // compute plus and minus spatial derivatives
@@ -3721,11 +3721,11 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromPhi(
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
-      for (int dim = 0; dim < DIM; dim++) {
-        normal_vector[dim] = normal_vector_data->getPointer(dim);
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
-        grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
-        grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        normal_vector[i] = normal_vector_data->getPointer(i);
+        grad_phi[i] = grad_phi_data->getPointer(i);
+        grad_phi_plus[i] = grad_phi_plus_data->getPointer(i);
+        grad_phi_minus[i] = grad_phi_minus_data->getPointer(i);
       }
 
       // compute plus and minus spatial derivatives
@@ -4794,9 +4794,9 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromGradPhi(
       LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
-      for (int dim = 0; dim < DIM; dim++) {
-        normal_vector[dim] = normal_vector_data->getPointer(dim);
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        normal_vector[i] = normal_vector_data->getPointer(i);
+        grad_phi[i] = grad_phi_data->getPointer(i);
       }
 
       // compute unit normal from grad(phi)
