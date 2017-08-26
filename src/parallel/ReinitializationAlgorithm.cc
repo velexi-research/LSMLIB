@@ -343,8 +343,6 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
         tbox::pout << d_object_name << " iteration count: " << count
                    << endl;
       if (d_use_stop_distance) {
-        tbox::pout << "1 dt: " << dt << endl;
-        tbox::pout << "count: " << count << endl;
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;
       }
@@ -374,8 +372,6 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
       tbox::pout << endl;
       tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
-        tbox::pout << "2 dt: " << dt << endl;
-        tbox::pout << "count: " << count << endl;
         tbox::pout << "  Level set functions reinitialized to a distance "
                    << "of approximately " << dt*count << endl;
     }
@@ -507,8 +503,6 @@ void ReinitializationAlgorithm::
         tbox::pout << d_object_name << " iteration count: " << count
                    << endl;
       if (d_use_stop_distance) {
-        tbox::pout << "3 dt: " << dt << endl;
-        tbox::pout << "count: " << count << endl;
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;
       }
@@ -538,8 +532,6 @@ void ReinitializationAlgorithm::
     tbox::pout << endl;
     tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
-        tbox::pout << "4 dt: " << dt << endl;
-        tbox::pout << "count: " << count << endl;
         tbox::pout << "  Level set functions reinitialized to a distance "
                    << "of approximately " << dt*count << endl;
     }
