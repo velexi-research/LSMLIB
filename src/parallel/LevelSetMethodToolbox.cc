@@ -153,7 +153,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
         BOOST_CAST<geom::CartesianPatchGeometry, hier::PatchGeometry>(
             patch->getPatchGeometry());
 
-  int DIM = hierarchy->getDim().getValue();
+      int DIM = hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -183,9 +183,9 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
       LSMLIB_REAL* upwind_function[LSM_DIM_MAX];
-      for (int dim = 0; dim < hierarchy->getDim().getValue(); dim++) {
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
-        upwind_function[dim] = upwind_function_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        grad_phi[i] = grad_phi_data->getPointer(i);
+        upwind_function[i] = upwind_function_data->getPointer(i);
       }
 
       switch (spatial_derivative_type) {
@@ -206,7 +206,7 @@ void LevelSetMethodToolbox::computeUpwindSpatialDerivatives(
 
               LSMLIB_REAL* D1 = D1_data->getPointer();
 
-              if ( hierarchy->getDim().getValue() == 3 ) {
+              if ( DIM == 3 ) {
 
                 LSM3D_UPWIND_HJ_ENO1(
                   grad_phi[0], grad_phi[1], grad_phi[2],
@@ -1744,8 +1744,8 @@ void LevelSetMethodToolbox::TVDRK1Step(
       LSMLIB_REAL* u_next = u_next_data->getPointer(u_next_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if (DIM == 3 ) {
         LSM3D_RK1_STEP(
           u_next,
@@ -1892,8 +1892,8 @@ void LevelSetMethodToolbox::TVDRK2Stage1(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE1(
           u_stage1,
@@ -2052,8 +2052,8 @@ void LevelSetMethodToolbox::TVDRK2Stage2(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if ( DIM == 3 ) {
         LSM3D_TVD_RK2_STAGE2(
           u_next,
@@ -2216,8 +2216,8 @@ void LevelSetMethodToolbox::TVDRK3Stage1(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE1(
           u_stage1,
@@ -2376,8 +2376,8 @@ void LevelSetMethodToolbox::TVDRK3Stage2(
       LSMLIB_REAL* u_stage1 = u_stage1_data->getPointer(u_stage1_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE2(
           u_stage2,
@@ -2552,8 +2552,8 @@ void LevelSetMethodToolbox::TVDRK3Stage3(
       LSMLIB_REAL* u_stage2 = u_stage2_data->getPointer(u_stage2_component);
       LSMLIB_REAL* u_cur = u_cur_data->getPointer(u_cur_component);
       LSMLIB_REAL* rhs = rhs_data->getPointer(rhs_component);
-      int DIM = patch_hierarchy->getDim().getValue();
 
+      int DIM = patch_hierarchy->getDim().getValue();
       if ( DIM == 3 ) {
         LSM3D_TVD_RK3_STAGE3(
           u_next,
@@ -2712,7 +2712,7 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromPhi(
         BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch->getPatchGeometry());
 
-  int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -4648,13 +4648,15 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromGradPhi(
 
       LSMLIB_REAL* normal_vector[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
-      for (int dim = 0; dim < patch_hierarchy->getDim().getValue(); dim++) {
-        normal_vector[dim] = normal_vector_data->getPointer(dim);
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
+
+      int DIM = patch_hierarchy->getDim().getValue();
+      for (int i = 0; i < DIM; i++) {
+        normal_vector[i] = normal_vector_data->getPointer(i);
+        grad_phi[i] = grad_phi_data->getPointer(i);
       }
 
       // compute unit normal from grad(phi)
-      if ( patch_hierarchy->getDim().getValue() == 3 ) {
+      if ( DIM == 3 ) {
         LSM3D_COMPUTE_UNIT_NORMAL(
           normal_vector[0], normal_vector[1], normal_vector[2],
           &normal_vector_ghostbox_lower[0],
@@ -4677,7 +4679,7 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromGradPhi(
           &fillbox_lower[2],
           &fillbox_upper[2]);
 
-      } else if ( patch_hierarchy->getDim().getValue()  == 2 ) {
+      } else if ( DIM == 2 ) {
 
         LSM2D_COMPUTE_UNIT_NORMAL(
           normal_vector[0], normal_vector[1],
@@ -4695,7 +4697,7 @@ void LevelSetMethodToolbox::computeUnitNormalVectorFromGradPhi(
           &fillbox_lower[1],
           &fillbox_upper[1]);
 
-      } else if ( patch_hierarchy->getDim().getValue()  == 1 ) {
+      } else if ( DIM == 1 ) {
 
         LSM1D_COMPUTE_UNIT_NORMAL(
           normal_vector[0],
@@ -4760,7 +4762,7 @@ void LevelSetMethodToolbox::computeSignedUnitNormalVectorFromGradPhi(
       boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
         BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -4921,7 +4923,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
         boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
           BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
           patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+        int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
 #else
@@ -5062,7 +5064,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
         boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
           BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
           patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+        int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
 #else
@@ -5230,7 +5232,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
       boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
         BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -5424,7 +5426,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeIntegral(
         boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
           BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
           patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geom->getDx();
 #else
@@ -5588,7 +5590,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeVolumeIntegral(
         boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
           BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
           patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+        int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
 #else
@@ -5778,7 +5780,7 @@ LSMLIB_REAL LevelSetMethodToolbox::computeSurfaceIntegral(
       boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom =
         BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch->getPatchGeometry());
-  int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
         const double* dx = patch_geom->getDx();
 #else
@@ -5985,11 +5987,11 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableAdvectionDt(
 
     boost::shared_ptr<hier::PatchLevel> level =
         patch_hierarchy->getPatchLevel(ln);
-    const hier::IntVector ratio_to_coarsest = level->getRatioToCoarserLevel();
+    const hier::IntVector ratio_to_coarsest = level->getRatioToLevelZero();
 
     LSMLIB_REAL dx[LSM_DIM_MAX];
-    for (int dir = 0; dir < patch_hierarchy->getDim().getValue(); dir++) {
-      dx[dir] = dx_level0[dir]/ratio_to_coarsest[dir];
+    for (int i = 0; i < DIM; i++) {
+      dx[i] = dx_level0[i]/ratio_to_coarsest[i];
     }
     for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
       // loop over patches
@@ -6148,11 +6150,11 @@ LSMLIB_REAL LevelSetMethodToolbox::computeStableNormalVelocityDt(
 
     boost::shared_ptr<hier::PatchLevel> level =
         patch_hierarchy->getPatchLevel(ln);
-    const hier::IntVector ratio_to_coarsest = level->getRatioToCoarserLevel();
+    const hier::IntVector ratio_to_coarsest = level->getRatioToLevelZero();
 
     LSMLIB_REAL dx[LSM_DIM_MAX];
-    for (int dir = 0; dir < patch_hierarchy->getDim().getValue(); dir++) {
-      dx[dir] = dx_level0[dir]/ratio_to_coarsest[dir];
+    for (int i = 0; i < DIM; i++) {
+      dx[i] = dx_level0[i]/ratio_to_coarsest[i];
     }
     for (hier::PatchLevel::Iterator pi(level->begin()); pi!=level->end(); pi++) {
       // loop over patches
@@ -6342,6 +6344,7 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
   const int field2_component)
 {
   LSMLIB_REAL max_norm_diff = 0;
+  int DIM = patch_hierarchy->getDim().getValue();
 
   // loop over PatchHierarchy and compute the max norm of (field1-field2)
   // by calling Fortran routines
@@ -6398,7 +6401,7 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
 
       LSMLIB_REAL max_norm_diff_on_patch = 0.0;
 
-      if ( patch_hierarchy->getDim().getValue() == 3 ) {
+      if ( DIM == 3 ) {
         LSM3D_MAX_NORM_DIFF_CONTROL_VOLUME(
           &max_norm_diff_on_patch,
           field1,
@@ -6430,7 +6433,7 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
           &interior_box_lower[2],
           &interior_box_upper[2]);
 
-      } else if ( patch_hierarchy->getDim().getValue() == 2 ) {
+      } else if ( DIM == 2 ) {
         LSM2D_MAX_NORM_DIFF_CONTROL_VOLUME(
           &max_norm_diff_on_patch,
           field1,
@@ -6454,7 +6457,7 @@ LSMLIB_REAL LevelSetMethodToolbox::maxNormOfDifference(
           &interior_box_lower[1],
           &interior_box_upper[1]);
 
-      } else if ( patch_hierarchy->getDim().getValue() == 1 ) {
+      } else if ( DIM == 1 ) {
         LSM1D_MAX_NORM_DIFF_CONTROL_VOLUME(
           &max_norm_diff_on_patch,
           field1,
@@ -6515,7 +6518,7 @@ void LevelSetMethodToolbox::computeControlVolumes(
       boost::shared_ptr<geom::CartesianPatchGeometry> patch_geometry =
         BOOST_CAST <geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch->getPatchGeometry());
- int DIM = patch_hierarchy->getDim().getValue();
+      int DIM = patch_hierarchy->getDim().getValue();
 #ifdef LSMLIB_DOUBLE_PRECISION
       const double* dx = patch_geometry->getDx();
 #else
@@ -6560,7 +6563,8 @@ void LevelSetMethodToolbox::computeControlVolumes(
       boost::shared_ptr<hier::PatchLevel> next_finer_level
             = patch_hierarchy->getPatchLevel(ln+1);
       hier::BoxContainer coarsened_boxes = next_finer_level->getBoxes();
-      hier::IntVector coarsen_ratio = next_finer_level->getRatioToCoarserLevel();
+      hier::IntVector coarsen_ratio =
+          next_finer_level->getRatioToCoarserLevel();
       coarsen_ratio /= level->getRatioToCoarserLevel();
       coarsened_boxes.coarsen(coarsen_ratio);
 
@@ -6602,6 +6606,7 @@ void LevelSetMethodToolbox::copySAMRAIData(
 {
   // loop over PatchHierarchy and copy data in Patch interiors
   const int num_levels = patch_hierarchy->getNumberOfLevels();
+  const int DIM = patch_hierarchy->getDim().getValue();
 
   for ( int ln=0 ; ln < num_levels; ln++ ) {
 
@@ -6641,7 +6646,7 @@ void LevelSetMethodToolbox::copySAMRAIData(
       LSMLIB_REAL* dst = dst_data->getPointer(dst_component);
       LSMLIB_REAL* src = src_data->getPointer(src_component);
 
-      if (patch_hierarchy->getDim().getValue() == 3) {
+      if (DIM == 3) {
 
         LSM3D_SAMRAI_UTILITIES_COPY_DATA(
           dst,
@@ -6665,7 +6670,7 @@ void LevelSetMethodToolbox::copySAMRAIData(
           &fillbox_lower[2],
           &fillbox_upper[2]);
 
-      } else if (patch_hierarchy->getDim().getValue()  == 2) {
+      } else if (DIM  == 2) {
 
         LSM2D_SAMRAI_UTILITIES_COPY_DATA(
           dst,
@@ -6683,7 +6688,7 @@ void LevelSetMethodToolbox::copySAMRAIData(
           &fillbox_lower[1],
           &fillbox_upper[1]);
 
-      } else if (patch_hierarchy->getDim().getValue() == 1) {
+      } else if (DIM == 1) {
 
         LSM1D_SAMRAI_UTILITIES_COPY_DATA(
           dst,
@@ -6717,13 +6722,16 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     return;
   }
 
+  // get problem dimension
+  const tbox::Dimension dim = hierarchy->getDim();
+
   // get pointer to VariableDatabase
   hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
-  hier::IntVector one_ghostcell_width(hierarchy->getDim(), 1);
-  hier::IntVector two_ghostcells_width(hierarchy->getDim(), 2);
-  hier::IntVector three_ghostcells_width(hierarchy->getDim(), 3);
+  hier::IntVector one_ghostcell_width(dim, 1);
+  hier::IntVector two_ghostcells_width(dim, 2);
+  hier::IntVector three_ghostcells_width(dim, 3);
 
   // create Variables and VariableContext
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D1_variable;
@@ -6731,8 +6739,9 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D1_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D1"));
   } else {
+    const int depth = dim.getValue();
     D1_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-        new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D1", 1));
+        new pdat::CellVariable<LSMLIB_REAL>(dim, "D1", depth));
   }
 
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D2_variable;
@@ -6740,8 +6749,9 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D2_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D2"));
   } else {
+    const int depth = dim.getValue();
     D2_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-        new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D2", 1));
+        new pdat::CellVariable<LSMLIB_REAL>(dim, "D2", depth));
   }
 
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > D3_variable;
@@ -6749,8 +6759,9 @@ void LevelSetMethodToolbox::initializeComputeSpatialDerivativesParameters(
     D3_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
         var_db->getVariable("D3"));
   } else {
+    const int depth = dim.getValue();
     D3_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-        new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"D3", 1));
+        new pdat::CellVariable<LSMLIB_REAL>(dim, "D3", depth));
   }
 
   boost::shared_ptr<hier::VariableContext> one_ghostcell_context =
@@ -6791,11 +6802,14 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(
     return;
   }
 
+  // get problem dimension
+  const tbox::Dimension dim = hierarchy->getDim();
+
   // get pointer to VariableDatabase
   hier::VariableDatabase *var_db = hier::VariableDatabase::getDatabase();
 
   // create zero ghostcell width IntVector
-  hier::IntVector zero_ghostcell_width(hierarchy->getDim(),0);
+  hier::IntVector zero_ghostcell_width(dim, 0);
 
   // create Variables and VariableContext
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > grad_phi_variable;
@@ -6804,8 +6818,9 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(
         BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>, hier::Variable>(
             var_db->getVariable("grad phi"));
   } else {
+    const int depth = dim.getValue();
     grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-        new pdat::CellVariable<LSMLIB_REAL>(hierarchy->getDim(),"grad phi"));
+        new pdat::CellVariable<LSMLIB_REAL>(dim, "grad phi", depth));
   }
   boost::shared_ptr<hier::VariableContext> scratch_context =
     var_db->getContext("LSM_TOOLBOX_SCRATCH");
