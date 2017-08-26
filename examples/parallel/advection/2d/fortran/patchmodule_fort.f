@@ -1,11 +1,6 @@
 c***********************************************************************
 c
 c  File:        patchmodule_fort.f
-c  Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
-c                   Regents of the University of Texas.  All rights reserved.
-c               (c) 2009 Kevin T. Chu.  All rights reserved.
-c  Revision:    $Revision$
-c  Modified:    $Date$
 c  Description: F77 patch module routines for 2d LSM example problem
 c
 c***********************************************************************
