@@ -20,6 +20,7 @@
 #include "SAMRAI/SAMRAI_config.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
+#include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
 #include "SAMRAI/hier/PatchDataRestartManager.h"
