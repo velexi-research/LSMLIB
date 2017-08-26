@@ -861,9 +861,9 @@ void LevelSetMethodToolbox::computePlusAndMinusSpatialDerivatives(
       LSMLIB_REAL* grad_phi_plus[LSM_DIM_MAX];
       LSMLIB_REAL* grad_phi_minus[LSM_DIM_MAX];
       LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
-      for (int dim = 0; dim < DIM; dim++) {
-        grad_phi_plus[dim] = grad_phi_plus_data->getPointer(dim);
-        grad_phi_minus[dim] = grad_phi_minus_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        grad_phi_plus[i] = grad_phi_plus_data->getPointer(i);
+        grad_phi_minus[i] = grad_phi_minus_data->getPointer(i);
       }
 
       switch (spatial_derivative_type) {
@@ -1518,8 +1518,8 @@ void LevelSetMethodToolbox::computeCentralSpatialDerivatives(
 
       LSMLIB_REAL* grad_phi[LSM_DIM_MAX];
       LSMLIB_REAL* phi = phi_data->getPointer(phi_component);
-      for (int dim = 0; dim < DIM; dim++) {
-        grad_phi[dim] = grad_phi_data->getPointer(dim);
+      for (int i = 0; i < DIM; i++) {
+        grad_phi[i] = grad_phi_data->getPointer(i);
       }
 
      switch (spatial_derivative_order) {
