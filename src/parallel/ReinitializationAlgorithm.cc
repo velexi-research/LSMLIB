@@ -224,7 +224,7 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
   boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
@@ -343,6 +343,8 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
         tbox::pout << d_object_name << " iteration count: " << count
                    << endl;
       if (d_use_stop_distance) {
+        tbox::pout << "1 dt: " << dt << endl;
+        tbox::pout << "count: " << count << endl;
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;
       }
@@ -372,6 +374,8 @@ void ReinitializationAlgorithm::reinitializeLevelSetFunctions(
       tbox::pout << endl;
       tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
+        tbox::pout << "2 dt: " << dt << endl;
+        tbox::pout << "count: " << count << endl;
         tbox::pout << "  Level set functions reinitialized to a distance "
                    << "of approximately " << dt*count << endl;
     }
@@ -420,9 +424,9 @@ void ReinitializationAlgorithm::
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
   boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  hier::IntVector ratio_to_coarsest = patch_level->getRatioToCoarserLevel();
-  int DIM = d_patch_hierarchy->getDim().getValue();
+  hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
+  int DIM = d_patch_hierarchy->getDim().getValue();
   LSMLIB_REAL finest_dx[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
@@ -450,7 +454,6 @@ void ReinitializationAlgorithm::
       }
     }
   }
-
 
   /*
    *  main reinitialization loop
@@ -504,6 +507,8 @@ void ReinitializationAlgorithm::
         tbox::pout << d_object_name << " iteration count: " << count
                    << endl;
       if (d_use_stop_distance) {
+        tbox::pout << "3 dt: " << dt << endl;
+        tbox::pout << "count: " << count << endl;
           tbox::pout << "  Level set functions reinitialized to a distance "
                      << "of approximately " << dt*count << endl;
       }
@@ -530,9 +535,11 @@ void ReinitializationAlgorithm::
 
   // VERBOSE MODE
   if (d_verbose_mode) {
-      tbox::pout << endl;
-      tbox::pout << "Total number of iterations: " << count << endl;
+    tbox::pout << endl;
+    tbox::pout << "Total number of iterations: " << count << endl;
     if (d_use_stop_distance) {
+        tbox::pout << "4 dt: " << dt << endl;
+        tbox::pout << "count: " << count << endl;
         tbox::pout << "  Level set functions reinitialized to a distance "
                    << "of approximately " << dt*count << endl;
     }
@@ -1053,6 +1060,9 @@ void ReinitializationAlgorithm::computeReinitializationEqnRHS(
 /* initializeVariables() */
 void ReinitializationAlgorithm::initializeVariables()
 {
+  // get problem dimension
+  const tbox::Dimension dim = d_patch_hierarchy->getDim();
+
   // initialize d_num_phi_components to zero
   d_num_phi_components = 0;
 
@@ -1077,9 +1087,8 @@ void ReinitializationAlgorithm::initializeVariables()
   }
 
   d_phi_scratch_ghostcell_width =
-    hier::IntVector(d_patch_hierarchy->getDim(),
-                    scratch_ghostcell_width_for_grad);
-  hier::IntVector zero_ghostcell_width(d_patch_hierarchy->getDim(),0);
+    hier::IntVector(dim, scratch_ghostcell_width_for_grad);
+  hier::IntVector zero_ghostcell_width(dim, 0);
 
   /*
    * create variables and PatchData for scratch data
@@ -1118,13 +1127,13 @@ void ReinitializationAlgorithm::initializeVariables()
                             << "::REINITIALIZATION_PHI_SCRATCH";
   boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > phi_scratch_variable;
   if (var_db->checkVariableExists(phi_scratch_variable_name.str())) {
-   phi_scratch_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
-                                     hier::Variable >
-     (var_db->getVariable(phi_scratch_variable_name.str()));
+    phi_scratch_variable = BOOST_CAST<pdat::CellVariable<LSMLIB_REAL>,
+                                      hier::Variable>
+        (var_db->getVariable(phi_scratch_variable_name.str()));
   } else {
-   phi_scratch_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-     new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
-                                         phi_scratch_variable_name.str(), 1));
+    phi_scratch_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
+      new pdat::CellVariable<LSMLIB_REAL>(dim,
+                                          phi_scratch_variable_name.str(), 1));
   }
   for (int k=0; k < d_tvd_runge_kutta_order; k++) {
     stringstream context_name("");
@@ -1148,8 +1157,7 @@ void ReinitializationAlgorithm::initializeVariables()
      (var_db->getVariable(rhs_name.str()));
   } else {
    rhs_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >
-    (new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
-                                         rhs_name.str(), 1));
+    (new pdat::CellVariable<LSMLIB_REAL>(dim, rhs_name.str(), 1));
   }
   d_rhs_handle = var_db->registerVariableAndContext(
     rhs_variable, scratch_context, zero_ghostcell_width);
@@ -1165,9 +1173,9 @@ void ReinitializationAlgorithm::initializeVariables()
                                   hier::Variable>
      (var_db->getVariable(grad_phi_name.str()));
   } else {
+   const int depth = dim.getValue();
    grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
-    new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
-                                        grad_phi_name.str()));
+     new pdat::CellVariable<LSMLIB_REAL>(dim, grad_phi_name.str(), depth));
   }
   boost::shared_ptr<hier::VariableContext> grad_phi_plus_context =
     var_db->getContext("REINITIALIZATION_GRAD_PHI_PLUS");
