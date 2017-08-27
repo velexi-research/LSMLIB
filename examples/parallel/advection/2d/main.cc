@@ -97,9 +97,6 @@ int main(int argc, char *argv[])
     // Process "Main" section of the input database. 
     boost::shared_ptr<tbox::Database> main_db = input_db->getDatabase("Main");
 
-    // Set dimension
-    const tbox::Dimension dim(2);
-
     // Get the base name for all name strings in this program
     string base_name = "unnamed";
     base_name = main_db->getStringWithDefault("base_name", base_name);
@@ -139,6 +136,9 @@ int main(int argc, char *argv[])
     tbox::plog << "restore_num = " << restore_num << endl;
 
     // --- Create major algorithm and data objects
+
+    // Set dimension
+    const tbox::Dimension dim(2);
 
     boost::shared_ptr<geom::CartesianGridGeometry> grid_geometry =
         boost::shared_ptr<geom::CartesianGridGeometry>(
