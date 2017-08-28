@@ -6794,8 +6794,6 @@ void LevelSetMethodToolbox::initializeComputeUnitNormalParameters(
     boost::shared_ptr<hier::PatchHierarchy> hierarchy)
 {
   // do nothing if PatchData for grad(phi) has already been created
-  // do nothing if PatchData for grad(phi) has already been created
-  // do nothing if PatchData for grad(phi) has already been created
   if ( (s_compute_normal_grad_phi_handle >= 0) &&
        (s_compute_normal_grad_phi_plus_handle >= 0) &&
        (s_compute_normal_grad_phi_minus_handle >= 0) ) {
