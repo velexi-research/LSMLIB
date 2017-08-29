@@ -10,18 +10,28 @@
 # Build targets
 # --------------------------------------------------------------
 
-add_subdirectory(advection)
+# advection
+add_subdirectory(advection/2d)
+add_subdirectory(advection/3d)
 
-#field_extension        toolbox
-# normal_velocity_motion vector_level_sets
-#
-#2d             3d
-#
-#toolbox
-# normal_velocity_motion
-#field_extension        orthogonalization
+# curvature-driven motion
+add_subdirectory(curvature)
+
+# field_extension/2d
+# field_extension/3d
+
+# toolbox/2d
+# toolbox/3d
+
+# normal_velocity_motion/2d
+# normal_velocity_motion/3d
+
+# vector_level_sets/2d
+
+# orthogonalization
 
 # --- All lsm_parallel examples
 
 add_custom_target(examples-parallel
-                  DEPENDS advection)
+                  DEPENDS
+                  advection-2d advection-3d)
