@@ -820,12 +820,11 @@ void  LSM2D_DIVERGENCE_CENTRAL(
  * approximations to the elements of the Hessian matrix of \f$ \phi \f$.
  *
  * Arguments:
- *   divF* (out):  divergence of F
- *   FX, FY(in):   x and y components of vector field F
- *   dx, dy (in):  grid spacing
+ *   phi_* (out):  derivatives of phi
+ *   phi (in):     function to compute derivatives for
+ *   dx, dy, dz (in):  grid spacing
  *   *_gb (in):    index range for ghostbox
  *   *_fb (in):    index range for fillbox
- *
  */
 void  LSM2D_CENTRAL_HESSIAN(
   LSMLIB_REAL *phi_xx,
