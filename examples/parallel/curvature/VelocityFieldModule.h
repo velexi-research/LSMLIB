@@ -9,14 +9,16 @@
 
 /*************************************************************************
  *
- * The VelocityFieldModule class provides several simple
- * 2D external velocity fields to be used by the LevelSetMethodAlgorithm.
+ * The VelocityFieldModule class provides support for normal velocity
+ * field driven by the mean curvature of the interface:
+ *
+ *   V_n = -b * kappa
  *
  *************************************************************************/
-   
+
 // Standard headers
 #include <iosfwd>
-   
+
 // Boost headers
 #include <boost/smart_ptr/shared_ptr.hpp>
 
@@ -24,7 +26,7 @@
 #include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
 #include "SAMRAI/math/PatchCellDataBasicOps.h"
 
-// Level set method velocity field interface definition 
+// Level set method velocity field interface definition
 // LevelSetMethod configuration header must be included
 // before any other LevelSetMethod header files
 #include "LSMLIB_config.h"
@@ -36,6 +38,7 @@ namespace SAMRAI { namespace geom { class CartesianGridGeometry; } }
 namespace SAMRAI { namespace hier { class PatchHierarchy; } }
 namespace SAMRAI { namespace hier { class PatchLevel; } }
 namespace SAMRAI { namespace tbox { class Database; } }
+namespace LSMLIB { class FieldExtensionAlgorithm; }
 
 // Namespaces
 using namespace std;
@@ -49,22 +52,22 @@ public:
 
   /*!
    * The constructor for VelocityFieldModule caches pointers
-   * to the hierarchy and geometry objects that are to be used in the 
-   * level set method computation and sets up the velocity field 
-   * 
-   * Arguments:     
+   * to the hierarchy and geometry objects that are to be used in the
+   * level set method computation and sets up the velocity field
+   *
+   * Arguments:
    *  - input_db (in):         pointer to database containing user input
    *  - patch_hierarchy (in):  PatchHierarchy on which to compute velocity field
    *  - grid_geometry (in):    geometry of the computational grid
    *  - object_name (in):      string name for object
    *
    * Return value:             none
-   * 
+   *
    */
   VelocityFieldModule(
     boost::shared_ptr<tbox::Database> input_db,
-    boost::shared_ptr< hier::PatchHierarchy > patch_hierarchy,
-    boost::shared_ptr< geom::CartesianGridGeometry > grid_geometry,
+    boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy,
+    boost::shared_ptr<geom::CartesianGridGeometry> grid_geometry,
     const string& object_name = "VelocityFieldModule");
 
   /*!
@@ -72,6 +75,13 @@ public:
    */
   virtual ~VelocityFieldModule(){}
 
+
+  /*!
+   * Set FieldExtensionAlgorithm.
+   */
+  virtual void initializeFieldExtensionAlgorithm(
+    boost::shared_ptr<tbox::Database> input_db,
+    int phi_handle, int control_volume_handle);
 
   /****************************************************************
    *
@@ -109,15 +119,15 @@ public:
 
   /*!
    * getExternalVelocityFieldPatchDataHandle() returns -1 (a bogus
-   * PatchData handle value) because this example module does not 
+   * PatchData handle value) because this example module does not
    * provide an external velocity field.
-   * 
-   * Arguments:     
+   *
+   * Arguments:
    *  - component (in):  component of vector level set function that the
    *                     velocity field handle is being requested for
    *
    * Return value:       PatchData handle for the velocity field data
-   * 
+   *
    */
   virtual inline int getExternalVelocityFieldPatchDataHandle(
     const int component) const
@@ -130,7 +140,7 @@ public:
   /*!
    * getNormalVelocityFieldPatchDataHandle() returns the PatchData handle for
    * the normal velocity field.
-   * 
+   *
    * Arguments:
    *  - level_set_fcn (in):  level set function for which to get
    *                         normal velocity field PatchData handle
@@ -157,8 +167,8 @@ public:
    * setCurrentTime() sets the current time so that the simulation
    * time for the velocity field calculation can be synchronized with
    * the simulation time for the level set method calculation.
-   *   
-   * Arguments:     
+   *
+   * Arguments:
    *  - time (in):   new current time
    *
    * Return value:  none
@@ -170,22 +180,21 @@ public:
   }
 
   /*!
-   * computeStableDt() returns the the time step specified by the 
-   * user in the input file or the default value of 1.0.
+   * computeStableDt() returns the stable time step required for parabolic
+   * equations:
+   *
+   *    dt = 0.5 / b * (1/dx^2 + 1/dy^2 + 1/dz^2)^(-1)
    *
    * Arguments:     none
    *
    * Return value:  maximum acceptable (stable) time step
    *
    */
-  virtual inline LSMLIB_REAL computeStableDt()
-  {
-    return d_min_dt;
-  }
+  virtual LSMLIB_REAL computeStableDt();
 
   /*!
-   * computeVelocityField() sets the velocity field on the entire 
-   * hierarchy based on the time and the velocity_field set in the 
+   * computeVelocityField() sets the velocity field on the entire
+   * hierarchy based on the time and the velocity_field set in the
    * input database.
    *
    * Arguments:
@@ -229,37 +238,38 @@ protected:
 
   /*
    * computeVelocityFieldOnLevel() computes the velocity field on an
-   * entire PatchLevel based on the time and the velocity_field set 
+   * entire PatchLevel based on the time and the velocity_field set
    * in the input database.
    */
   void computeVelocityFieldOnLevel(
-    const boost::shared_ptr< hier::PatchLevel > level, 
+    const boost::shared_ptr< hier::PatchLevel > level,
     const LSMLIB_REAL time,
     const int phi_handle);
 
   /*
-   * These private member functions read data from input. 
+   * These private member functions read data from input.
    *
    * An assertion results if the database pointer is null.
    */
   void getFromInput(boost::shared_ptr<tbox::Database> db);
 
   /*
-   * The object name is used for error/warning reporting and also as a 
-   * string label for restart database entries. 
+   * The object name is used for error/warning reporting and also as a
+   * string label for restart database entries.
    */
   string d_object_name;
 
   /*
-   * Pointer to the patch hierarchy.
+   * Pointer to the patch hierarchy and grid geometry.
    */
-  boost::shared_ptr< hier::PatchHierarchy > d_patch_hierarchy;
+  boost::shared_ptr<hier::PatchHierarchy> d_patch_hierarchy;
+  boost::shared_ptr<geom::CartesianGridGeometry> d_grid_geometry;
 
   /*
-   * Cache pointer to the grid geometry object to set up initial data, 
-   * set physical boundary conditions, and register plot variables.
+   * Pointer to FieldExtensionAlgorithm object.
    */
-  boost::shared_ptr< geom::CartesianGridGeometry > d_grid_geometry;
+  bool d_use_field_extension;
+  boost::shared_ptr<FieldExtensionAlgorithm> d_field_extension_alg;
 
   /*
    * Pointer to the math operations object.
@@ -272,21 +282,11 @@ protected:
   LSMLIB_REAL d_current_time;
 
   /*
-   * flag indicating if velocity has ever been computed
-   */
-  bool d_velocity_never_computed;
-
-  /*
    * Physical parameters
    */
 
   // proportionality constant between mean curvature and normal velocity
   double d_b;
-
-  /*
-   * minimum time step size (read in from input file or set to default value)
-   */
-  LSMLIB_REAL d_min_dt;
 
   /*
    * PatchData handles.

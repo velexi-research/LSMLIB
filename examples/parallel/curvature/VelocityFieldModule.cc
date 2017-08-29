@@ -9,7 +9,6 @@
 
 // Standard headers
 #include <assert.h>
-#include <cfloat>
 #include <sstream>
 
 // Boost headers
@@ -17,12 +16,12 @@
 #include <boost/smart_ptr/make_shared_object.hpp>
 
 // SAMRAI headers
+#include "SAMRAI/geom/CartesianGridGeometry.h"
 #include "SAMRAI/geom/CartesianPatchGeometry.h"
 #include "SAMRAI/hier/Box.h"
 #include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/hier/IntVector.h"
 #include "SAMRAI/hier/Patch.h"
-#include "SAMRAI/hier/PatchDataRestartManager.h"
 #include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/PatchLevel.h"
 #include "SAMRAI/hier/VariableDatabase.h"
@@ -31,6 +30,9 @@
 #include "SAMRAI/pdat/CellVariable.h"
 #include "SAMRAI/tbox/Database.h"
 #include "SAMRAI/tbox/Utilities.h"
+
+// LSMLIB headers
+#include "FieldExtensionAlgorithm.h"
 
 extern "C" {
   #include "lsm_geometry2d.h"
@@ -104,15 +106,43 @@ VelocityFieldModule::VelocityFieldModule(
 
   d_velocity_handle = vdb->registerVariableAndContext(
     velocity, cur_ctxt, hier::IntVector(dim, 0));
-
-  hier::PatchDataRestartManager::getManager()->
-    registerPatchDataForRestart(d_velocity_handle);
-
-  // set d_velocity_never_computed to true to ensure that velocity is
-  // computed on first call to computeVelocityField()
-  d_velocity_never_computed = true;
 }
 
+/* initializeFieldExtensionAlgorithm() */
+void VelocityFieldModule::initializeFieldExtensionAlgorithm(
+    boost::shared_ptr<tbox::Database> input_db,
+    int phi_handle, int control_volume_handle)
+{
+    if (d_use_field_extension) {
+        tbox::Dimension dim = d_patch_hierarchy->getDim();
+        d_field_extension_alg = boost::shared_ptr<FieldExtensionAlgorithm>(
+            new FieldExtensionAlgorithm(
+                input_db,
+                d_patch_hierarchy,
+                d_velocity_handle,
+                phi_handle,
+                control_volume_handle,
+                hier::IntVector(dim, 0)));
+    }
+}
+
+/* computeStableDt() */
+LSMLIB_REAL VelocityFieldModule::computeStableDt()
+{
+    // get problem dimension and grid spacing
+    const tbox::Dimension dim = d_patch_hierarchy->getDim();
+    const int num_dims = dim.getValue();
+    const double* dx = d_grid_geometry->getDx();
+
+    // compute stable dt
+    double grid_factor = 0.0;
+    for (int i = 0; i < num_dims; i++) {
+        grid_factor += 1.0 / (dx[i] * dx[i]);
+    }
+    double stable_dt = 0.5 / (d_b * grid_factor);
+
+    return stable_dt;
+}
 
 /* computeVelocityField() */
 void VelocityFieldModule::computeVelocityField(
@@ -124,12 +154,6 @@ void VelocityFieldModule::computeVelocityField(
   (void) psi_handle; // psi is meaningless for co-dimension one problems
   (void) component;  // component is not used because this example problem
                      // only has one component for level set function
-
-  // only carry out computation if the time has changed
-  if (!d_velocity_never_computed && (d_current_time == time)) return;
-
-  // set d_velocity_never_computed to false
-  d_velocity_never_computed = false;
 
   // update the current time
   d_current_time = time;
@@ -143,6 +167,15 @@ void VelocityFieldModule::computeVelocityField(
     computeVelocityFieldOnLevel(level, time, phi_handle);
 
   } // end loop over hierarchy
+
+  // Extend velocity field off of interface
+  if (d_use_field_extension) {
+      const tbox::Dimension dim = d_patch_hierarchy->getDim();
+      const hier::IntVector bc_type(dim, -1);
+      const int phi_component = 0;
+      d_field_extension_alg->computeExtensionField(phi_component,
+        bc_type, bc_type, bc_type, bc_type);
+  }
 }
 
 
@@ -336,27 +369,6 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
                 &dx[0],
                 &dx[1]);
 
-            // compute Hessian of phi
-            LSM2D_CENTRAL_HESSIAN(
-                phi_xx,
-                phi_xy,
-                phi_yy,
-                &hessian_phi_ghostbox_lower[0],
-                &hessian_phi_ghostbox_upper[0],
-                &hessian_phi_ghostbox_lower[1],
-                &hessian_phi_ghostbox_upper[1],
-                phi,
-                &phi_ghostbox_lower[0],
-                &phi_ghostbox_upper[0],
-                &phi_ghostbox_lower[1],
-                &phi_ghostbox_upper[1],
-                &fillbox_lower[0],
-                &fillbox_upper[0],
-                &fillbox_lower[1],
-                &fillbox_upper[1],
-                &dx[0],
-                &dx[1]);
-
             // compute mean curvature
             LSM2D_COMPUTE_MEAN_CURVATURE(
                 kappa,
@@ -382,7 +394,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
                 &fillbox_lower[1],
                 &fillbox_upper[1]);
 
-            d_math_ops.scale(velocity_data, d_b, kappa_data, fillbox);
+            d_math_ops.scale(velocity_data, -d_b, kappa_data, fillbox);
 
         } else {
             TBOX_ERROR("VelocityFieldModule::computeVelocityFieldOnLevel():"
@@ -394,7 +406,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 #ifndef LSMLIB_DOUBLE_PRECISION
     // Clean up memory
     delete [] dx;
-    delete [] x_lower; 
+    delete [] x_lower;
 #endif
 }
 
@@ -417,11 +429,6 @@ void VelocityFieldModule::getFromInput(
 #endif
 
     d_b = db->getDouble("b");
-
-    // set d_min_dt (declared in parent class)
-#ifdef LSMLIB_DOUBLE_PRECISION
-    d_min_dt = db->getDoubleWithDefault("min_dt", DBL_MAX);
-#else
-    d_min_dt = db->getFloatWithDefault("min_dt", FLT_MAX);
-#endif
+    d_use_field_extension = db->getBoolWithDefault("use_field_extension",
+                                                   false);
 }

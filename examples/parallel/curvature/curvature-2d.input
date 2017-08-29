@@ -38,7 +38,7 @@ CartesianGeometry {
   //                        domain is periodic.  Zero indicates not
   //                        periodic, non-zero value indicates periodicity.
   //                        [0]
-  domain_boxes = [(0,0), (99,99)]
+  domain_boxes = [(0,0), (199,199)]
   x_lo         = -1, -1
   x_up         = 1, 1
 
@@ -50,16 +50,15 @@ LevelSetMethodAlgorithm{
 
   LevelSetFunctionIntegrator {
     start_time  = 0.0
-    end_time    = 1.0
+    end_time    = 0.01
   
-    cfl_number               = 0.5
-    spatial_derivative_type  = "ENO"
-    spatial_derivative_order = 3
-    tvd_runge_kutta_order    = 2
+    spatial_derivative_type  = "WENO"
+    spatial_derivative_order = 5
+    tvd_runge_kutta_order    = 3
   
     reinitialization_interval  = 10
-    reinitialization_max_iters = 40
-    reinitialization_stop_dist = 0.3
+    reinitialization_max_iters = 0
+    reinitialization_stop_dist = 0.5
  
     lower_bc_phi_0 = 1,1
     upper_bc_phi_0 = 1,1
@@ -110,11 +109,23 @@ VelocityFieldModule {
   b = 1
 
   // Numerical parameters
-  min_dt = 0.01
+  use_field_extension = FALSE  // default: FALSE
+
+  // Field extension algorithm parameters
+  FieldExtensionAlgorithm{
+    spatial_derivative_type  = "ENO"
+    spatial_derivative_order = 1
+    tvd_runge_kutta_order    = 1
+
+    max_iterations = 0
+    stop_distance = 0.5
+
+    verbose_mode = TRUE
+  }
 }
 
 PatchModule {
-  initial_level_set = 0
-  center = 0.5, 0.0
-  radius = 0.2
+  initial_level_set = 1
+  center = 0.0, 0.0
+  radius = 0.5
 }
