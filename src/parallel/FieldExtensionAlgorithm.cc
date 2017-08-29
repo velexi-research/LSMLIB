@@ -95,15 +95,17 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   //create empty BoundaryConditionModule
-  boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module =
-    boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
-  boost::shared_ptr<BoundaryConditionModule> d_ext_field_bc_module =
-    boost::shared_ptr<BoundaryConditionModule> (new BoundaryConditionModule);
+  tbox::Dimension dim = d_patch_hierarchy->getDim();
+  d_phi_bc_module = boost::shared_ptr<BoundaryConditionModule>(
+    new BoundaryConditionModule(d_patch_hierarchy,
+                                hier::IntVector(dim, 0)));
+  d_ext_field_bc_module = boost::shared_ptr<BoundaryConditionModule>(
+    new BoundaryConditionModule(d_patch_hierarchy,
+                                hier::IntVector(dim, 0)));
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
   initializeCommunicationObjects();
-
 }
 
 
@@ -163,19 +165,8 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
     d_use_stop_distance = true;
 
     int DIM = hierarchy->getDim().getValue();
-#ifdef LSMLIB_DOUBLE_PRECISION
     const double *X_lower = d_grid_geometry->getXLower();
     const double *X_upper = d_grid_geometry->getXUpper();
-#else
-    const double *X_lower_double = d_grid_geometry->getXLower();
-    const double *X_upper_double = d_grid_geometry->getXUpper();
-    float X_lower[DIM];
-    float X_upper[DIM];
-    for (int i = 0; i < DIM; i++) {
-      X_lower[i] = (float) X_lower_double[i];
-      X_upper[i] = (float) X_upper_double[i];
-    }
-#endif
     d_stop_distance = X_upper[0]-X_lower[0];
     for (int dim = 1; dim < DIM; dim++) {
       if ( d_stop_distance < X_upper[dim]-X_lower[dim] ) {
@@ -191,10 +182,13 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
   checkParameters();
 
   // create empty BoundaryConditionModule
-  boost::shared_ptr<BoundaryConditionModule> d_phi_bc_module =
-    boost::shared_ptr<BoundaryConditionModule>(new BoundaryConditionModule);
-  boost::shared_ptr<BoundaryConditionModule> d_ext_field_bc_module =
-    boost::shared_ptr<BoundaryConditionModule>(new BoundaryConditionModule);
+  tbox::Dimension dim = d_patch_hierarchy->getDim();
+  d_phi_bc_module = boost::shared_ptr<BoundaryConditionModule>(
+    new BoundaryConditionModule(d_patch_hierarchy,
+                                hier::IntVector(dim, 0)));
+  d_ext_field_bc_module = boost::shared_ptr<BoundaryConditionModule>(
+    new BoundaryConditionModule(d_patch_hierarchy,
+                                hier::IntVector(dim, 0)));
 
   // initialize variables and communication objects
   initializeVariables(phi_ghostcell_width);
@@ -237,17 +231,18 @@ void FieldExtensionAlgorithm::computeExtensionField(
   hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
-  LSMLIB_REAL finest_dx[DIM];
+  double *finest_dx = new double[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  LSMLIB_REAL min_dx = finest_dx[0];
+  double min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
+  delete [] finest_dx;  // clean up memory
 
   // compute dt
-  const LSMLIB_REAL dt = d_cfl_number*min_dx;
+  const double dt = d_cfl_number*min_dx;
 
   // compute the maximum number of iterations
   int num_steps = LSM_FEA_STOP_TOLERANCE_MAX_ITERATIONS;
@@ -508,14 +503,15 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
-  LSMLIB_REAL finest_dx[DIM];
+  double* finest_dx = new double[DIM];
   for (int i = 0; i < DIM; i++) {
     finest_dx[i] = coarsest_dx[i]/ratio_to_coarsest[i];
   }
-  LSMLIB_REAL min_dx = finest_dx[0];
+  double min_dx = finest_dx[0];
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
+  delete [] finest_dx;  // clean up memory
 
   // compute dt
   const LSMLIB_REAL dt = d_cfl_number*min_dx;
@@ -1067,7 +1063,7 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
       const double* dx = patch_geom->getDx();
 #else
       const double* dx_double = patch_geom->getDx();
-      float dx[DIM];
+      float *dx = new float[DIM];
       for (int i = 0; i < DIM; i++) dx[i] = (float) dx_double[i];
 #endif
 
@@ -1240,6 +1236,9 @@ void FieldExtensionAlgorithm::computeFieldExtensionEqnRHS(
     } // end loop over patches in level
   } // end loop over levels in hierarchy
 
+#ifndef LSMLIB_DOUBLE_PRECISION
+    delete [] dx;
+#endif
 }
 
 
@@ -1544,7 +1543,6 @@ void FieldExtensionAlgorithm::initializeCommunicationObjects()
   // specified PatchHierarchy
   resetHierarchyConfiguration(d_patch_hierarchy,
     0, d_patch_hierarchy->getFinestLevelNumber());
-
 }
 
 

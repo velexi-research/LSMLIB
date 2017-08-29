@@ -181,6 +181,7 @@ public:
     const int control_volume_handle,
     const hier::IntVector& phi_ghostcell_width,
     const string& object_name = "FieldExtensionAlgorithm");
+
    /*!
    * This constructor sets up the required variables, PatchData, etc. for
    * computing extension fields via the advection equation using parameters
@@ -664,10 +665,10 @@ protected:
   SPATIAL_DERIVATIVE_TYPE d_spatial_derivative_type;
   int d_spatial_derivative_order;
   int d_tvd_runge_kutta_order;
-  LSMLIB_REAL d_cfl_number;
-  LSMLIB_REAL d_stop_distance;
+  double d_cfl_number;
+  double d_stop_distance;
   int d_max_iterations;
-  LSMLIB_REAL d_iteration_stop_tol;
+  double d_iteration_stop_tol;
 
   // verbose mode
   bool d_verbose_mode;
