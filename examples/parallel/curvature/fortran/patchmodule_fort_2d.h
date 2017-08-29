@@ -4,8 +4,8 @@
  *              problem
  */
 
-#ifndef included_patchmodule_fort
-#define included_patchmodule_fort
+#ifndef included_patchmodule_fort_2d
+#define included_patchmodule_fort_2d
 
 #include "LSMLIB_config.h"
 
