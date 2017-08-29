@@ -1,6 +1,6 @@
 c***********************************************************************
 c
-c  File:        patchmodule_fort.f
+c  File:        patchmodule_fort_2d.f
 c  Description: F77 patch module routines for 2d LSM example problem
 c
 c***********************************************************************

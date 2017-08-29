@@ -1,5 +1,5 @@
 /*
- * File:        patchmodule_fort.h
+ * File:        patchmodule_fort_2d.h
  * Description: Header file for patch module routines for 2d LSM example
  *              problem
  */
