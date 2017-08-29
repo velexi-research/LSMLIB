@@ -32,7 +32,8 @@ namespace SAMRAI { namespace hier { class PatchGeometry; } }
 
 // headers for level set method numerical kernels
 extern "C" {
-  #include "patchmodule_fort.h"
+  #include "patchmodule_fort_2d.h"
+//  #include "patchmodule_fort_3d.h"
 }
 
 // CONSTANTS
@@ -97,9 +98,25 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 
   switch (d_initial_level_set) 
   {
-    case CIRCLE: // circle
-    {
+    case CIRCLE: {
       INIT_CIRCLE(
+        level_set_data_ptr,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        x_lower,
+        dx,
+        d_center,
+        &d_radius);
+      break;
+    }
+    case STAR: {
+      INIT_STAR(
         level_set_data_ptr,
         &ghostbox_lower[0],
         &ghostbox_upper[0],
@@ -161,7 +178,8 @@ void PatchModule::getFromInput(
 
   // get auxilliary parameters for initial level set
   switch (d_initial_level_set) {
-    case CIRCLE: {
+    case CIRCLE:
+    case STAR: {
 
 #ifdef LSMLIB_DOUBLE_PRECISION
       d_radius = db->getDoubleWithDefault("radius", s_default_radius);
