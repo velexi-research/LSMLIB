@@ -259,15 +259,15 @@ void OrthogonalizationAlgorithm::orthogonalizeLevelSetFunctions(
     if (level_set_fcn == PHI) {
       d_fixed_psi_field_ext_alg->computeExtensionFieldForSingleComponent(
         component, component,
-        max_iterations,
         lower_bc_fixed, upper_bc_fixed,
-        lower_bc_evolved, upper_bc_evolved);
+        lower_bc_evolved, upper_bc_evolved,
+        max_iterations);
     } else {
       d_fixed_phi_field_ext_alg->computeExtensionFieldForSingleComponent(
         component, component,
-        max_iterations,
         lower_bc_fixed, upper_bc_fixed,
-        lower_bc_evolved, upper_bc_evolved);
+        lower_bc_evolved, upper_bc_evolved,
+        max_iterations);
     }
   }
 
@@ -289,15 +289,15 @@ void OrthogonalizationAlgorithm::
   if (level_set_fcn == PHI) {
     d_fixed_psi_field_ext_alg->computeExtensionFieldForSingleComponent(
       component, component,
-      max_iterations,
       lower_bc_fixed, upper_bc_fixed,
-      lower_bc_evolved, upper_bc_evolved);
+      lower_bc_evolved, upper_bc_evolved,
+      max_iterations);
   } else {
     d_fixed_phi_field_ext_alg->computeExtensionFieldForSingleComponent(
       component, component,
-      max_iterations,
       lower_bc_fixed, upper_bc_fixed,
-      lower_bc_evolved, upper_bc_evolved);
+      lower_bc_evolved, upper_bc_evolved,
+      max_iterations);
   }
 
 }

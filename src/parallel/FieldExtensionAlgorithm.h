@@ -258,6 +258,7 @@ public:
     const LSMLIB_REAL iteration_stop_tolerance = 0.0,
     const bool verbose_mode = false,
     const string& object_name = "FieldExtensionAlgorithm");
+
   /*!
    * The destructor does nothing.
    *
@@ -285,12 +286,6 @@ public:
    * Arguments:
    *  - phi_component (in):   component of level set function to
    *                          use in field extension calculation
-   *                          (default = 0)
-   *  - max_iterations (in):  maximum number of iterations to use
-   *                          for field extension.  Set max_iterations
-   *                          to -1 to use the value specified in the
-   *                          input file.
-   *                          (default = -1)
    *  - lower_bc_phi (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the lower face of the computational
@@ -302,7 +297,6 @@ public:
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - upper_bc_phi (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the upper face of the computational
@@ -314,7 +308,6 @@ public:
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - lower_bc_ext (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the lower face of the computational
@@ -326,7 +319,6 @@ public:
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - upper_bc_ext (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the upper face of the computational
@@ -338,7 +330,10 @@ public:
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
+   *  - max_iterations (in):  maximum number of iterations to use
+   *                          for field extension.  Set max_iterations
+   *                          to -1 to use the value specified in the
+   *                          input file. (default value: -1)
    *
    * Return value:            none
    *
@@ -354,11 +349,11 @@ public:
    */
 virtual void computeExtensionField(
     const int phi_component,
-    const int max_iterations,
     const hier::IntVector& lower_bc_phi,
     const hier::IntVector& upper_bc_phi,
     const hier::IntVector& lower_bc_ext,
-    const hier::IntVector& upper_bc_ext);
+    const hier::IntVector& upper_bc_ext,
+    const int max_iterations=-1);
 
 /*!
    * computeExtensionFieldForSingleComponent() extends the specified
@@ -368,15 +363,9 @@ virtual void computeExtensionField(
    *
    * Arguments:
    *  - component (in):       component to extend off of the zero
-   *                          level set (default = 0)
+   *                          level set
    *  - phi_component (in):   component of level set function to
    *                          use in field extension calculation
-   *                          (default = 0)
-   *  - max_iterations (in):  maximum number of iterations to use
-   *                          for field extension.  Set max_iterations
-   *                          to -1 to use the value specified in the
-   *                          input file.
-   *                          (default = -1)
    *  - lower_bc_phi (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the lower face of the computational
@@ -388,7 +377,6 @@ virtual void computeExtensionField(
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - upper_bc_phi (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the upper face of the computational
@@ -400,7 +388,6 @@ virtual void computeExtensionField(
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - lower_bc_ext (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the lower face of the computational
@@ -412,7 +399,6 @@ virtual void computeExtensionField(
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
    *  - upper_bc_ext (in):    vector of integers specifying the
    *                          type of boundary conditions to impose
    *                          on the upper face of the computational
@@ -424,7 +410,10 @@ virtual void computeExtensionField(
    *                          For information about the boundary
    *                          condition types, see documentation of
    *                          BoundaryConditionModule class.
-   *                          (default = vector of -1's)
+   *  - max_iterations (in):  maximum number of iterations to use
+   *                          for field extension.  Set max_iterations
+   *                          to -1 to use the value specified in the
+   *                          input file. (default value: -1)
    *
    * Return value:            none
    *
@@ -441,11 +430,11 @@ virtual void computeExtensionField(
   virtual void computeExtensionFieldForSingleComponent(
     const int component,
     const int phi_component,
-    const int max_iterations,
     const hier::IntVector& lower_bc_phi,
     const hier::IntVector& upper_bc_phi,
     const hier::IntVector& lower_bc_ext,
-    const hier::IntVector& upper_bc_ext);
+    const hier::IntVector& upper_bc_ext,
+    const int max_iterations=-1);
 
   //! @}
 

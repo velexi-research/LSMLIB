@@ -199,11 +199,11 @@ d_phi_scratch_ghostcell_width(hierarchy->getDim())
 /* computeExtensionField() */
 void FieldExtensionAlgorithm::computeExtensionField(
   const int phi_component,
-  const int max_iterations,
   const hier::IntVector& lower_bc_phi,
   const hier::IntVector& upper_bc_phi,
   const hier::IntVector& lower_bc_ext,
-  const hier::IntVector& upper_bc_ext)
+  const hier::IntVector& upper_bc_ext,
+  const int max_iterations)
 {
 
   // reset hierarchy configuration if necessary
@@ -228,7 +228,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
   int finest_level_number = d_patch_hierarchy->getFinestLevelNumber();
   boost::shared_ptr<hier::PatchLevel> patch_level =
     d_patch_hierarchy->getPatchLevel(finest_level_number);
-  hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
+  const hier::IntVector ratio_to_coarsest = patch_level->getRatioToLevelZero();
   const double* coarsest_dx = d_grid_geometry->getDx();
   int DIM = d_patch_hierarchy->getDim().getValue();
   double *finest_dx = new double[DIM];
@@ -239,7 +239,7 @@ void FieldExtensionAlgorithm::computeExtensionField(
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
-  delete [] finest_dx;  // clean up memory
+  delete [] finest_dx;  // release heap memory
 
   // compute dt
   const double dt = d_cfl_number*min_dx;
@@ -471,11 +471,11 @@ void FieldExtensionAlgorithm::computeExtensionField(
 void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   const int component,
   const int phi_component,
-  const int max_iterations,
   const hier::IntVector& lower_bc_phi,
   const hier::IntVector& upper_bc_phi,
   const hier::IntVector& lower_bc_ext,
-  const hier::IntVector& upper_bc_ext)
+  const hier::IntVector& upper_bc_ext,
+  const int max_iterations)
 {
 
   // reset hierarchy configuration if necessary
@@ -511,7 +511,7 @@ void FieldExtensionAlgorithm::computeExtensionFieldForSingleComponent(
   for (int i = 1; i < DIM; i++) {
     if (finest_dx[i] < min_dx) min_dx = finest_dx[i];
   }
-  delete [] finest_dx;  // clean up memory
+  delete [] finest_dx;  // release heap memory
 
   // compute dt
   const LSMLIB_REAL dt = d_cfl_number*min_dx;
@@ -1431,7 +1431,7 @@ void FieldExtensionAlgorithm::initializeVariables(
   } else {
     grad_phi_variable = boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> >(
       new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
-                                          grad_phi_name.str()));
+                                          grad_phi_name.str(), DIM));
   }
   boost::shared_ptr<hier::VariableContext> grad_phi_plus_context =
     var_db->getContext("EXTENSION_FIELD_GRAD_PHI_PLUS");
@@ -1458,7 +1458,7 @@ void FieldExtensionAlgorithm::initializeVariables(
    grad_field_variable =
      boost::shared_ptr< pdat::CellVariable<LSMLIB_REAL> > (
        new pdat::CellVariable<LSMLIB_REAL>(d_patch_hierarchy->getDim(),
-                                           grad_field_name.str()));
+                                           grad_field_name.str(), DIM));
   }
   d_grad_field_handle = var_db->registerVariableAndContext(
     grad_field_variable,
