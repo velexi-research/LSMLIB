@@ -3659,3 +3659,86 @@ c     } end loop over grid
       end
 c } end subroutine
 c***********************************************************************
+
+c***********************************************************************
+      subroutine lsm3dCentralHessian(
+     &  phi_xx, phi_xy, phi_xz, phi_yy, phi_yz, phi_zz,
+     &  ilo_hessian_gb, ihi_hessian_gb,
+     &  jlo_hessian_gb, jhi_hessian_gb,
+     &  klo_hessian_gb, khi_hessian_gb,
+     &  phi,
+     &  ilo_gb, ihi_gb, jlo_gb, jhi_gb, klo_gb, khi_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb, klo_fb, khi_fb,
+     &  dx, dy, dz)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox for data
+c     _fb refers to fill-box for data
+      integer ilo_hessian_gb, ihi_hessian_gb
+      integer jlo_hessian_gb, jhi_hessian_gb
+      integer klo_hessian_gb, khi_hessian_gb
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer klo_gb, khi_gb
+      integer ilo_fb, ihi_fb
+      integer jlo_fb, jhi_fb
+      integer klo_fb, khi_fb
+      real phi_xx(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi_xy(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi_xz(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi_yy(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi_yz(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi_zz(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb,
+     &            klo_hessian_gb:khi_hessian_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb,klo_gb:khi_gb)
+      real dx, dy, dz
+      integer i, j, k
+
+c     { begin loop over grid
+      do k=klo_fb,khi_fb
+        do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
+
+            phi_xx(i,j,k) = (phi(i+1,j,k) - 2*phi(i,j,k) + phi(i-1,j,k))
+     &                    / (dx * dx)
+
+            phi_xy(i,j,k) = 0.25 * ( phi(i+1,j+1,k) - phi(i-1,j+1,k)
+     &                             - phi(i+1,j-1,k) + phi(i-1,j-1,k) )
+     &                    / (dx * dy)
+
+            phi_xz(i,j,k) = 0.25 * ( phi(i+1,j,k+1) - phi(i-1,j,k+1)
+     &                             - phi(i+1,j,k-1) + phi(i-1,j,k-1) )
+     &                    / (dx * dz)
+
+            phi_yy(i,j,k) = (phi(i,j+1,k) - 2*phi(i,j,k) + phi(i,j-1,k))
+     &                    / (dy * dy)
+
+            phi_yz(i,j,k) = 0.25 * ( phi(i,j+1,k+1) - phi(i,j-1,k+1)
+     &                             - phi(i,j+1,k-1) + phi(i,j-1,k-1) )
+     &                    / (dy * dz)
+
+            phi_zz(i,j,k) = (phi(i,j,k+1) - 2*phi(i,j,k) + phi(i,j,k-1))
+     &                    / (dz * dz)
+
+          enddo
+        enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************

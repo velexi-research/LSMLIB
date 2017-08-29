@@ -21,8 +21,8 @@ extern "C" {
  *
  * \brief
  * @ref lsm_spatial_derivatives3d.h provides support for computing spatial
- * derivatives in three space dimensions using high-order ENO and WENO 
- * discretizations.  
+ * derivatives in three space dimensions using high-order ENO and WENO
+ * discretizations.
  *
  */
 
@@ -47,13 +47,14 @@ extern "C" {
 #define LSM3D_PHI_UPWIND_GRAD_F      lsm3dphiupwindgradf_
 #define LSM3D_AVERAGE_GRAD_PHI       lsm3daveragegradphi_
 #define LSM3D_GRADIENT_MAGNITUDE     lsm3dgradientmagnitude_
+#define LSM3D_CENTRAL_HESSIAN        lsm3dcentralhessian_
 
 
 /*!
  * LSM3D_HJ_ENO1() computes the forward (plus) and backward (minus)
  * first-order Hamilton-Jacobi ENO approximations to the gradient of
  * \f$ \phi \f$.
- *           
+ *
  * Arguments:
  *  - phi_*_plus (out):   components of \f$ \nabla \phi \f$ in plus direction
  *  - phi_*_minus (out):  components of \f$ \nabla \phi \f$ in minus direction
@@ -954,6 +955,48 @@ void LSM3D_GRADIENT_MAGNITUDE(
   const int *klo_grad_phi_fb,
   const int *khi_grad_phi_fb);
   
+
+/*! 
+ * LSM3D_CENTRAL_HESSIAN() computes second-order, central, finite difference
+ * approximations to the elements of the Hessian matrix of \f$ \phi \f$.
+ *
+ * Arguments:
+ *   phi_* (out):  derivatives of phi
+ *   phi (in):     function to compute derivatives for
+ *   dx, dy, dz (in):  grid spacing
+ *   *_gb (in):    index range for ghostbox
+ *   *_fb (in):    index range for fillbox
+ *
+ */
+void  LSM3D_CENTRAL_HESSIAN(
+  LSMLIB_REAL *phi_xx,
+  LSMLIB_REAL *phi_xy,
+  LSMLIB_REAL *phi_xz,
+  LSMLIB_REAL *phi_yy,
+  LSMLIB_REAL *phi_yz,
+  LSMLIB_REAL *phi_zz,
+  const int *ilo_hessian_gb, 
+  const int *ihi_hessian_gb,
+  const int *jlo_hessian_gb,
+  const int *jhi_hessian_gb,
+  const int *klo_hessian_gb,
+  const int *khi_hessian_gb,
+  const LSMLIB_REAL *phi,
+  const int *ilo_gb, 
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *klo_gb,
+  const int *khi_gb,
+  const int *ilo_fb, 
+  const int *ihi_fb,
+  const int *jlo_fb,  
+  const int *jhi_fb,
+  const int *klo_fb,
+  const int *khi_fb,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy,
+  const LSMLIB_REAL *dz);
 
 #ifdef __cplusplus
 }

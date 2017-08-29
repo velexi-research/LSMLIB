@@ -247,6 +247,128 @@ c***********************************************************************
 
 c***********************************************************************
 c
+c  lsm3dComputeMeanCurvature() computes the mean curvature from
+c  \f$ \nabla \phi \f$ and Hessian of \phi using the following
+c  equation:
+c
+c    kappa = ( phi_x^2 * phi_yy -2 * phi_x * phi_y * phi_xy +
+c            + phi_y^2 * phi_xx ) / |\nabla phi|^3
+c
+c  Arguments:
+c    kappa (out):     components of unit normal vector
+c    phi_* (in):         components of grad(phi)
+c    phi (in):           level set function
+c    dx, dy, dz (in):    grid spacing
+c    *_gb (in):          index range for ghostbox
+c    *_fb (in):          index range for fillbox
+c
+c***********************************************************************
+      subroutine lsm3dComputeMeanCurvature(
+     &  kappa,
+     &  ilo_kappa_gb, ihi_kappa_gb,
+     &  jlo_kappa_gb, jhi_kappa_gb,
+     &  klo_kappa_gb, khi_kappa_gb,
+     &  phi_x, phi_y, phi_z,
+     &  ilo_grad_phi_gb, ihi_grad_phi_gb,
+     &  jlo_grad_phi_gb, jhi_grad_phi_gb,
+     &  klo_grad_phi_gb, khi_grad_phi_gb,
+     &  phi_xx, phi_xy, phi_xz, phi_yy, phi_yz, phi_zz,
+     &  ilo_hessian_phi_gb, ihi_hessian_phi_gb,
+     &  jlo_hessian_phi_gb, jhi_hessian_phi_gb,
+     &  klo_hessian_phi_gb, khi_hessian_phi_gb,
+     &  ilo_fb, ihi_fb,
+     &  jlo_fb, jhi_fb,
+     &  klo_fb, khi_fb)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostboxes
+c     _fb refers to fill-box for kappa data
+
+      integer ilo_kappa_gb, ihi_kappa_gb
+      integer jlo_kappa_gb, jhi_kappa_gb
+      integer klo_kappa_gb, khi_kappa_gb
+      integer ilo_grad_phi_gb, ihi_grad_phi_gb
+      integer jlo_grad_phi_gb, jhi_grad_phi_gb
+      integer klo_grad_phi_gb, khi_grad_phi_gb
+      integer ilo_hessian_phi_gb, ihi_hessian_phi_gb
+      integer jlo_hessian_phi_gb, jhi_hessian_phi_gb
+      integer klo_hessian_phi_gb, khi_hessian_phi_gb
+      integer ilo_fb, ihi_fb
+      integer jlo_fb, jhi_fb
+      integer klo_fb, khi_fb
+      real kappa(ilo_kappa_gb:ihi_kappa_gb,
+     &           jlo_kappa_gb:jhi_kappa_gb,
+     &           klo_kappa_gb:khi_kappa_gb)
+      real phi_x(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_y(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_z(ilo_grad_phi_gb:ihi_grad_phi_gb,
+     &           jlo_grad_phi_gb:jhi_grad_phi_gb,
+     &           klo_grad_phi_gb:khi_grad_phi_gb)
+      real phi_xx(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real phi_xy(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real phi_xz(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real phi_yy(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real phi_yz(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real phi_zz(ilo_hessian_phi_gb:ihi_hessian_phi_gb,
+     &            jlo_hessian_phi_gb:jhi_hessian_phi_gb,
+     &            klo_hessian_phi_gb:khi_hessian_phi_gb)
+      real norm_grad_phi_sq, inv_norm_grad_phi
+      integer i,j,k
+      real zero_tol
+      parameter (zero_tol=@lsmlib_zero_tol@)
+
+c     { begin loop over grid
+      do j=jlo_fb,jhi_fb
+        do i=ilo_fb,ihi_fb
+
+          norm_grad_phi_sq = phi_x(i,j,k)*phi_x(i,j,k)
+     &                     + phi_y(i,j,k)*phi_y(i,j,k)
+     &                     + phi_z(i,j,k)*phi_z(i,j,k)
+
+          if (norm_grad_phi_sq .lt. zero_tol) then
+            kappa(i,j,k) = 0.d0
+
+          else
+            kappa(i,j,k) = ( phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)
+     &                     - 2*phi_xy(i,j,k)*phi_x(i,j,k)*phi_y(i,j,k)
+     &                     + phi_yy(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
+     &                     + phi_xx(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
+     &                     - 2*phi_xz(i,j,k)*phi_x(i,j,k)*phi_z(i,j,k)
+     &                     + phi_zz(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
+     &                     + phi_yy(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
+     &                     - 2*phi_yz(i,j,k)*phi_y(i,j,k)*phi_z(i,j,k)
+     &                     + phi_zz(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k) )
+     &                   / norm_grad_phi_sq ** (1.5)
+
+          endif
+
+        enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
+
+c***********************************************************************
+c
 c  lsm3dVolumeRegionPhiLessThanZero() computes the volume of the 
 c  region where the level set function is less than 0.  
 c

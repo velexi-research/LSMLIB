@@ -36,6 +36,8 @@ extern "C" {
 #define LSM3D_COMPUTE_UNIT_NORMAL      lsm3dcomputeunitnormal_
 #define LSM3D_COMPUTE_SIGNED_UNIT_NORMAL                                     \
                                        lsm3dcomputesignedunitnormal_
+#define LSM3D_COMPUTE_MEAN_CURVATURE                                       \
+                                       lsm3dcomputemeancurvature_
 #define LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO                               \
                                        lsm3dvolumeregionphilessthanzero_
 #define LSM3D_VOLUME_REGION_PHI_GREATER_THAN_ZERO                            \
@@ -160,6 +162,68 @@ void LSM3D_COMPUTE_SIGNED_UNIT_NORMAL(
   const LSMLIB_REAL *dy,
   const LSMLIB_REAL *dz);
 
+/*!
+ * LSM2D_COMPUTE_MEAN_CURVATURE() computes the mean curvature from
+ * \f$ \nabla \phi \f$ and Hessian of \phi using the following equation:
+ *   
+ * \f[
+ *
+ *   kappa = ( phi_x^2 * phi_yy -2 * phi_x * phi_y * phi_xy + phi_y^2 * phi_xx
+ *           + phi_x^2 * phi_zz -2 * phi_x * phi_z * phi_xz + phi_z^2 * phi_xx
+ *           + phi_y^2 * phi_zz -2 * phi_y * phi_z * phi_yz + phi_z^2 * phi_yy )
+ *         / |\nabla phi|^3
+ *   
+ * \f]
+ *
+ * Arguments:
+ *  - kappa (out):        mean curvature
+ *  - phi_* (in):         derivatives of phi
+ *  - dx, dy (in):        grid spacing
+ *  - *_gb (in):          index range for ghostbox
+ *  - *_fb (in):          index range for fillbox
+ *
+ * Return value:          none
+ *
+ * NOTES:
+ * - When \f$ | \nabla \phi | \f$ is close to zero, the unit normal is
+ *   arbitrarily set to be (1.0, 0.0).
+ *
+ */
+void LSM3D_COMPUTE_MEAN_CURVATURE(
+  LSMLIB_REAL *kappa,
+  const int *ilo_kappa_gb, 
+  const int *ihi_kappa_gb,
+  const int *jlo_kappa_gb, 
+  const int *jhi_kappa_gb,
+  const int *klo_kappa_gb, 
+  const int *khi_kappa_gb,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const LSMLIB_REAL *phi_z,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const int *klo_grad_phi_gb, 
+  const int *khi_grad_phi_gb,
+  const LSMLIB_REAL *phi_xx,
+  const LSMLIB_REAL *phi_xy,
+  const LSMLIB_REAL *phi_xz,
+  const LSMLIB_REAL *phi_yy,
+  const LSMLIB_REAL *phi_yz,
+  const LSMLIB_REAL *phi_zz,
+  const int *ilo_hessian_phi_gb, 
+  const int *ihi_hessian_phi_gb,
+  const int *jlo_hessian_phi_gb, 
+  const int *jhi_hessian_phi_gb,
+  const int *klo_hessian_phi_gb, 
+  const int *khi_hessian_phi_gb,
+  const int *ilo_fb, 
+  const int *ihi_fb,
+  const int *jlo_fb, 
+  const int *jhi_fb,
+  const int *klo_fb, 
+  const int *khi_fb);
 
 /*!
  * LSM3D_VOLUME_REGION_PHI_LESS_THAN_ZERO() computes the volume of the
