@@ -48,6 +48,7 @@ extern "C" {
 #define LSM2D_AVERAGE_GRAD_PHI       lsm2daveragegradphi_
 #define LSM2D_GRADIENT_MAGNITUDE     lsm2dgradientmagnitude_
 #define LSM2D_DIVERGENCE_CENTRAL     lsm2ddivergencecentral_
+#define LSM2D_CENTRAL_HESSIAN        lsm2dcentralhessian_
 
 
 /*!
@@ -803,6 +804,38 @@ void  LSM2D_DIVERGENCE_CENTRAL(
   const int *jhi_divf_gb,
   const LSMLIB_REAL *FX,
   const LSMLIB_REAL *FY,
+  const int *ilo_gb, 
+  const int *ihi_gb,
+  const int *jlo_gb,
+  const int *jhi_gb,
+  const int *ilo_fb, 
+  const int *ihi_fb,
+  const int *jlo_fb,  
+  const int *jhi_fb,
+  const LSMLIB_REAL *dx,
+  const LSMLIB_REAL *dy);
+
+/*! 
+ * LSM2D_CENTRAL_HESSIAN() computes second-order, central, finite difference
+ * approximations to the elements of the Hessian matrix of \f$ \phi \f$.
+ *
+ * Arguments:
+ *   divF* (out):  divergence of F
+ *   FX, FY(in):   x and y components of vector field F
+ *   dx, dy (in):  grid spacing
+ *   *_gb (in):    index range for ghostbox
+ *   *_fb (in):    index range for fillbox
+ *
+ */
+void  LSM2D_CENTRAL_HESSIAN(
+  LSMLIB_REAL *phi_xx,
+  LSMLIB_REAL *phi_xy,
+  LSMLIB_REAL *phi_yy,
+  const int *ilo_hessian_gb, 
+  const int *ihi_hessian_gb,
+  const int *jlo_hessian_gb,
+  const int *jhi_hessian_gb,
+  const LSMLIB_REAL *phi,
   const int *ilo_gb, 
   const int *ihi_gb,
   const int *jlo_gb,

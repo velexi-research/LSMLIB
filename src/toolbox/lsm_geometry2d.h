@@ -1,10 +1,5 @@
 /*
  * File:        lsm_geometry2d.h
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
  * Description: Header file for 2D Fortran 77 level set method geometry
  *              subroutines
  */
@@ -34,8 +29,10 @@ extern "C" {
  *      ----------                     ------------
  */
 #define LSM2D_COMPUTE_UNIT_NORMAL     lsm2dcomputeunitnormal_
-#define LSM2D_COMPUTE_SIGNED_UNIT_NORMAL                                     \
+#define LSM2D_COMPUTE_SIGNED_UNIT_NORMAL                                   \
                                        lsm2dcomputesignedunitnormal_
+#define LSM2D_COMPUTE_MEAN_CURVATURE                                       \
+                                       lsm2dcomputemeancurvature_
 
 #define LSM2D_AREA_REGION_PHI_LESS_THAN_ZERO                               \
                                        lsm2darearegionphilessthanzero_
@@ -45,7 +42,7 @@ extern "C" {
                                        lsm2dperimeterzerolevelset_
 #define LSM2D_PERIMETER_ZERO_LEVEL_SET_DELTA    \
                lsm2dperimeterzerolevelsetdelta_
-	       
+
 #define LSM2D_AREA_REGION_PHI_LESS_THAN_ZERO_CONTROL_VOLUME                \
                            lsm2darearegionphilessthanzerocontrolvolume_
 #define LSM2D_AREA_REGION_PHI_GREATER_THAN_ZERO_CONTROL_VOLUME             \
@@ -74,27 +71,27 @@ extern "C" {
 void LSM2D_COMPUTE_UNIT_NORMAL(
   LSMLIB_REAL *normal_x,
   LSMLIB_REAL *normal_y,
-  const int *ilo_normal_gb, 
+  const int *ilo_normal_gb,
   const int *ihi_normal_gb,
-  const int *jlo_normal_gb, 
+  const int *jlo_normal_gb,
   const int *jhi_normal_gb,
   const LSMLIB_REAL *phi_x,
   const LSMLIB_REAL *phi_y,
-  const int *ilo_grad_phi_gb, 
+  const int *ilo_grad_phi_gb,
   const int *ihi_grad_phi_gb,
-  const int *jlo_grad_phi_gb, 
+  const int *jlo_grad_phi_gb,
   const int *jhi_grad_phi_gb,
-  const int *ilo_fb, 
+  const int *ilo_fb,
   const int *ihi_fb,
-  const int *jlo_fb, 
+  const int *jlo_fb,
   const int *jhi_fb);
 
 
 /*!
  * LSM2D_COMPUTE_SIGNED_UNIT_NORMAL() computes the signed unit normal
- * vector (sgn(phi)*normal) to the interface from \f$ \nabla \phi \f$ 
- * using the following smoothed sgn function 
- *   
+ * vector (sgn(phi)*normal) to the interface from \f$ \nabla \phi \f$
+ * using the following smoothed sgn function
+ * 
  * \f[
  *
  *   sgn(\phi) = \phi / \sqrt{ \phi^2 + |\nabla \phi|^2 * dx^2 }
@@ -140,6 +137,55 @@ void LSM2D_COMPUTE_SIGNED_UNIT_NORMAL(
   const int *jhi_fb,
   const LSMLIB_REAL *dx,
   const LSMLIB_REAL *dy);
+
+/*!
+ * LSM2D_COMPUTE_MEAN_CURVATURE() computes the mean curvature from
+ * \f$ \nabla \phi \f$ and Hessian of \phi using the following equation:
+ *   
+ * \f[
+ *
+ *   kappa = ( phi_x^2 * phi_yy -2 * phi_x * phi_y * phi_xy +
+ *           + phi_y^2 * phi_xx ) / |\nabla phi|^3
+ *   
+ * \f]
+ *
+ * Arguments:
+ *  - kappa (out):        mean curvature
+ *  - phi_* (in):         derivatives of phi
+ *  - dx, dy (in):        grid spacing
+ *  - *_gb (in):          index range for ghostbox
+ *  - *_fb (in):          index range for fillbox
+ *
+ * Return value:          none
+ *
+ * NOTES:
+ * - When \f$ | \nabla \phi | \f$ is close to zero, the unit normal is
+ *   arbitrarily set to be (1.0, 0.0).
+ *
+ */
+void LSM2D_COMPUTE_MEAN_CURVATURE(
+  LSMLIB_REAL *kappa,
+  const int *ilo_kappa_gb, 
+  const int *ihi_kappa_gb,
+  const int *jlo_kappa_gb, 
+  const int *jhi_kappa_gb,
+  const LSMLIB_REAL *phi_x,
+  const LSMLIB_REAL *phi_y,
+  const int *ilo_grad_phi_gb, 
+  const int *ihi_grad_phi_gb,
+  const int *jlo_grad_phi_gb, 
+  const int *jhi_grad_phi_gb,
+  const LSMLIB_REAL *phi_xx,
+  const LSMLIB_REAL *phi_xy,
+  const LSMLIB_REAL *phi_yy,
+  const int *ilo_hessian_phi_gb, 
+  const int *ihi_hessian_phi_gb,
+  const int *jlo_hessian_phi_gb, 
+  const int *jhi_hessian_phi_gb,
+  const int *ilo_fb, 
+  const int *ihi_fb,
+  const int *jlo_fb, 
+  const int *jhi_fb);
 
 /*! 
  * LSM2D_AREA_REGION_PHI_LESS_THAN_ZERO() computes the area of the

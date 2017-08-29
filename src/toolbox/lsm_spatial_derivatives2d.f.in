@@ -2495,3 +2495,54 @@ c     } end loop over grid
       end
 c } end subroutine
 c***********************************************************************
+
+c***********************************************************************
+      subroutine lsm2dCentralHessian(
+     &  phi_xx, phi_xy, phi_yy,
+     &  ilo_hessian_gb, ihi_hessian_gb,
+     &  jlo_hessian_gb, jhi_hessian_gb,
+     &  phi,
+     &  ilo_gb, ihi_gb,jlo_gb, jhi_gb,
+     &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
+     &  dx, dy)
+c***********************************************************************
+c { begin subroutine
+      implicit none
+
+c     _gb refers to ghostbox for data
+c     _fb refers to fill-box for data
+      integer ilo_hessian_gb, ihi_hessian_gb
+      integer jlo_hessian_gb, jhi_hessian_gb
+      integer ilo_gb, ihi_gb
+      integer jlo_gb, jhi_gb
+      integer ilo_fb, ihi_fb, jlo_fb, jhi_fb
+      real phi_xx(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb)
+      real phi_xy(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb)
+      real phi_yy(ilo_hessian_gb:ihi_hessian_gb,
+     &            jlo_hessian_gb:jhi_hessian_gb)
+      real phi(ilo_gb:ihi_gb,jlo_gb:jhi_gb)
+      real dx, dy
+      integer i,j
+
+c     { begin loop over grid
+      do j=jlo_fb,jhi_fb
+        do i=ilo_fb,ihi_fb
+
+          phi_xx(i,j) = (phi(i+1,j) - 2*phi(i,j) + phi(i-1,j))
+     &                / (dx * dx)
+          phi_yy(i,j) = (phi(i,j+1) - 2*phi(i,j) + phi(i,j-1))
+     &                / (dy * dy)
+          phi_xy(i,j) = 0.25 * ( phi(i+1,j+1) - phi(i-1,j+1)
+     &                         - phi(i+1,j-1) + phi(i-1,j-1) )
+     &                / (dx * dy)
+
+        enddo
+      enddo
+c     } end loop over grid
+
+      return
+      end
+c } end subroutine
+c***********************************************************************
