@@ -158,15 +158,6 @@ public:
     const hier::IntVector& ghostcell_width );
 
   /*!
-   * Default constructor initializes the BoundaryConditionModule
-   * to an invalid state.
-   *
-   * Arguments: none
-   *
-   */
-  BoundaryConditionModule();
-
-  /*!
    * Copy constructor.
    *
    * Arguments:

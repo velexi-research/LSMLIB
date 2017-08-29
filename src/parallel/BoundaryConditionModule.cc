@@ -59,18 +59,6 @@ d_geom_periodic_dirs(patch_hierarchy->getDim(),0)
     ghostcell_width);
 }
 
-/* Default constructor */
-BoundaryConditionModule::BoundaryConditionModule()
-:
-d_ghostcell_width(d_patch_hierarchy->getDim(),0),
-d_geom_periodic_dirs(d_patch_hierarchy->getDim(),0)
-{
-  d_patch_hierarchy = boost::shared_ptr<hier::PatchHierarchy> ();
-  d_boundary_boxes.setNull();
-  d_touches_boundary.setNull();
-}
-
-
 /* Copy constructor */
 BoundaryConditionModule::BoundaryConditionModule(
   const BoundaryConditionModule& rhs) :
@@ -1496,11 +1484,11 @@ void BoundaryConditionModule::resetHierarchyConfiguration(
   if (num_levels <= 0) {
 
       hier::IntVector zero_int_vect(d_patch_hierarchy->getDim(), 0);
-    d_ghostcell_width = zero_int_vect;
-    d_geom_periodic_dirs = zero_int_vect;
-    d_boundary_boxes.setNull();
-    d_touches_boundary.setNull();
-    return;
+      d_ghostcell_width = zero_int_vect;
+      d_geom_periodic_dirs = zero_int_vect;
+      d_boundary_boxes.setNull();
+      d_touches_boundary.setNull();
+      return;
   }
 
   // resize output arrays
