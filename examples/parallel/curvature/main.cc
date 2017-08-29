@@ -7,7 +7,7 @@
  *
  * This example  program demonstrates how to use the LSMLIB C++ classes
  * to for a 2D problem where the motion of the level sets is determined
- * by an external velocity field (defined throughout the entire 
+ * by an external velocity field (defined throughout the entire
  * computational domain) is specified.
  *
  **************************************************************************/
@@ -23,16 +23,16 @@
 
 // SAMRAI headers
 #include "SAMRAI/SAMRAI_config.h"  // IWYU pragma: keep
-#include "SAMRAI/appu/VisItDataWriter.h" 
-#include "SAMRAI/geom/CartesianGridGeometry.h" 
-#include "SAMRAI/hier/PatchHierarchy.h" 
+#include "SAMRAI/appu/VisItDataWriter.h"
+#include "SAMRAI/geom/CartesianGridGeometry.h"
+#include "SAMRAI/hier/PatchHierarchy.h"
 #include "SAMRAI/hier/VariableDatabase.h"
 #include "SAMRAI/tbox/Database.h"
-#include "SAMRAI/tbox/Dimension.h" 
+#include "SAMRAI/tbox/Dimension.h"
 #include "SAMRAI/tbox/InputDatabase.h"
 #include "SAMRAI/tbox/InputManager.h"
 #include "SAMRAI/tbox/MemoryDatabase.h"
-#include "SAMRAI/tbox/PIO.h" 
+#include "SAMRAI/tbox/PIO.h"
 #include "SAMRAI/tbox/RestartManager.h"
 #include "SAMRAI/tbox/SAMRAI_MPI.h"
 #include "SAMRAI/tbox/SAMRAIManager.h"
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
             new tbox::InputDatabase("input_db"));
     tbox::InputManager::getManager()->parseInputFile(input_filename, input_db);
 
-    // Process "Main" section of the input database. 
+    // Process "Main" section of the input database.
     boost::shared_ptr<tbox::Database> main_db = input_db->getDatabase("Main");
 
     // Get dimension
@@ -111,15 +111,15 @@ int main(int argc, char *argv[])
     int restart_interval = 0;
     if (main_db->keyExists("restart_interval")) {
         restart_interval = main_db->getInteger("restart_interval");
-    } 
+    }
     string restart_write_dirname = base_name + ".restart";
-    const bool write_restart = (restart_interval > 0); 
+    const bool write_restart = (restart_interval > 0);
 
     tbox::RestartManager* restart_manager = tbox::RestartManager::getManager();
 
     // If run is from restart, open the restart file
     if (is_from_restart) {
-        restart_manager->openRestartFile(restart_read_dirname, restore_num, 
+        restart_manager->openRestartFile(restart_read_dirname, restore_num,
                                          mpi.getSize());
     }
 
@@ -152,11 +152,11 @@ int main(int argc, char *argv[])
     grid_geometry->printClassData(tbox::plog);
 
     boost::shared_ptr<hier::PatchHierarchy> patch_hierarchy =
-        boost::shared_ptr<hier::PatchHierarchy>( 
+        boost::shared_ptr<hier::PatchHierarchy>(
             new hier::PatchHierarchy(base_name+"::PatchHierarchy",
                                      grid_geometry));
 
-    VelocityFieldModule* velocity_field_module = new VelocityFieldModule( 
+    VelocityFieldModule* velocity_field_module = new VelocityFieldModule(
         input_db->getDatabase("VelocityFieldModule"),
         patch_hierarchy,
         grid_geometry,
@@ -173,9 +173,9 @@ int main(int argc, char *argv[])
 
     int num_level_set_fcn_components = 1;
     int codimension = 1;
-    boost::shared_ptr<LevelSetMethodAlgorithm> lsm_algorithm = 
+    boost::shared_ptr<LevelSetMethodAlgorithm> lsm_algorithm =
         boost::shared_ptr<LevelSetMethodAlgorithm>(
-            new LevelSetMethodAlgorithm( 
+            new LevelSetMethodAlgorithm(
                 input_db->getDatabase("LevelSetMethodAlgorithm"),
                 patch_hierarchy,
                 patch_module,
@@ -185,6 +185,15 @@ int main(int argc, char *argv[])
                 base_name+"::LevelSetMethodAlgorithm"));
     tbox::plog << "LevelSetMethodAlgorithm:" << endl;
     lsm_algorithm->printClassData(tbox::plog);
+
+    // Initialize field extension algorithm
+    int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
+    int control_volume_handle =
+        lsm_algorithm->getControlVolumePatchDataHandle();
+    velocity_field_module->initializeFieldExtensionAlgorithm(
+        input_db->getDatabase("VelocityFieldModule")
+                ->getDatabase("FieldExtensionAlgorithm"),
+        phi_patch_data_handle, control_volume_handle);
 
     // Emit contents of input database and variable database to log file.
     tbox::plog << "\nCheck input data and variables before simulation:"
@@ -201,7 +210,7 @@ int main(int argc, char *argv[])
         use_visit = main_db->getBool("use_visit");
     }
 
-    // Set up viz write interval  
+    // Set up viz write interval
     int viz_write_interval = -1;
     if (use_visit) {
         if (main_db->keyExists("viz_write_interval")) {
@@ -216,15 +225,10 @@ int main(int argc, char *argv[])
         if (main_db->keyExists("visit_number_procs_per_file")) {
             visit_number_procs_per_file =
                 main_db->getInteger("visit_number_procs_per_file");
-        } 
+        }
     }
 
-    // Get PatchData handles
-    int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
-    int velocity_patch_data_handle = 
-        velocity_field_module->getNormalVelocityFieldPatchDataHandle(
-            LEVEL_SET_FCN_TYPE::PHI, 0);
-
+    // Set up Visit
     boost::shared_ptr<appu::VisItDataWriter> visit_data_writer = 0;
     if (use_visit) {
         string visit_data_dirname = base_name + ".visit";
@@ -236,11 +240,13 @@ int main(int argc, char *argv[])
       // Register level set functions and velocity fields for plotting
       visit_data_writer->registerPlotQuantity(
           "phi", "SCALAR", phi_patch_data_handle, 0, 1.0, "CELL");
-    
+
       visit_data_writer->registerPlotQuantity(
-          "velocity", "SCALAR", 
-          velocity_patch_data_handle, 0, 1.0, "CELL");
-    }  
+          "velocity", "SCALAR",
+          velocity_field_module->getNormalVelocityFieldPatchDataHandle(
+              LEVEL_SET_FCN_TYPE::PHI, 0),
+          0, 1.0, "CELL");
+    }
 
     // --- Initialize level set method calculation
 
@@ -270,7 +276,7 @@ int main(int argc, char *argv[])
 
     // --- Main time loop
 
-    while ( !lsm_algorithm->endTimeReached() && 
+    while ( !lsm_algorithm->endTimeReached() &&
             ((max_num_time_steps <= 0) || (count < max_num_time_steps)) ) {
 
         tbox::pout << "++++++++++++++++++++++++++++++++++++++++++"
@@ -282,13 +288,13 @@ int main(int argc, char *argv[])
 
         // Compute next time step
         dt = lsm_algorithm->computeStableDt();
-        LSMLIB_REAL end_time = lsm_algorithm->getEndTime(); 
+        LSMLIB_REAL end_time = lsm_algorithm->getEndTime();
         if (end_time - current_time < dt) dt = end_time - current_time;
         tbox::pout << "  dt:  " << dt << endl;
 
         // Advance level set functions
         lsm_algorithm->advanceLevelSetFunctions(dt);
- 
+
         // Add an extra line to output for aesthetic reasons
         tbox::pout << endl;
 
@@ -306,17 +312,17 @@ int main(int argc, char *argv[])
         // Write VisIt data
         if ( use_visit && (0==cur_integrator_step%viz_write_interval) ) {
             visit_data_writer->writePlotData(patch_hierarchy,
-                                             cur_integrator_step, 
+                                             cur_integrator_step,
                                              lsm_algorithm->getCurrentTime());
       }
 
       // Update counter and current time
-      count++; 
+      count++;
       current_time = lsm_algorithm->getCurrentTime();
 
     }
 
-    // Output information for final time step 
+    // Output information for final time step
     // (if it hasn't already been output)
     current_time = lsm_algorithm->getCurrentTime();
     tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
@@ -337,7 +343,7 @@ int main(int argc, char *argv[])
     if ( use_visit && (0!=cur_integrator_step%viz_write_interval) ) {
         visit_data_writer->writePlotData(patch_hierarchy, cur_integrator_step,
                                          lsm_algorithm->getCurrentTime());
-                                         
+
     }
 
     // --- At conclusion of simulation, clean up
