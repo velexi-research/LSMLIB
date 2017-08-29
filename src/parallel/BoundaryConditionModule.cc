@@ -158,9 +158,9 @@ void BoundaryConditionModule::imposeBoundaryConditionsOnPatch(
       hier::IntVector default_bc(d_patch_hierarchy->getDim(),HOMOGENEOUS_NEUMANN);
 
     int dim = d_patch_hierarchy->getDim().getValue();
-    for (int axis = 0; axis < dim; axis++) {
-      if (d_geom_periodic_dirs(dim)) {
-        default_bc(dim) = NONE;
+    for (int i = 0; i < dim; i++) {
+      if (d_geom_periodic_dirs(i)) {
+        default_bc(i) = NONE;
       }
     }
     // set homogeneous Neumann boundary conditions
