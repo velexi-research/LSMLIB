@@ -297,24 +297,121 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
 
         if (num_dims == 3) {
 
-            // get velocity data pointers
-            LSMLIB_REAL* vel_x_data_ptr = velocity_data->getPointer(0);
-            LSMLIB_REAL* vel_y_data_ptr = velocity_data->getPointer(1);
-            LSMLIB_REAL* vel_z_data_ptr = velocity_data->getPointer(2);
+            // get data pointers
+            LSMLIB_REAL* phi = phi_data->getPointer(0);
 
-    /*
-          vel_x_data_ptr,
-          vel_y_data_ptr,
-          &vel_ghostbox_lower[0],
-          &vel_ghostbox_upper[0],
-          &vel_ghostbox_lower[1],
-          &vel_ghostbox_upper[1],
-          &vel_lower[0],
-          &vel_upper[0],
-          &vel_lower[1],
-          &vel_upper[1]);
-        break;
-        */
+            LSMLIB_REAL* phi_x = grad_phi_data->getPointer(0);
+            LSMLIB_REAL* phi_y = grad_phi_data->getPointer(1);
+            LSMLIB_REAL* phi_z = grad_phi_data->getPointer(2);
+
+            LSMLIB_REAL* phi_xx = hessian_phi_data->getPointer(0);
+            LSMLIB_REAL* phi_xy = hessian_phi_data->getPointer(1);
+            LSMLIB_REAL* phi_xz = hessian_phi_data->getPointer(2);
+            LSMLIB_REAL* phi_yy = hessian_phi_data->getPointer(3);
+            LSMLIB_REAL* phi_yz = hessian_phi_data->getPointer(4);
+            LSMLIB_REAL* phi_zz = hessian_phi_data->getPointer(5);
+
+            LSMLIB_REAL* kappa = kappa_data->getPointer(0);
+
+            // compute gradient of phi
+            LSM3D_CENTRAL_GRAD_ORDER2(
+                phi_x,
+                phi_y,
+                phi_z,
+                &grad_phi_ghostbox_lower[0],
+                &grad_phi_ghostbox_upper[0],
+                &grad_phi_ghostbox_lower[1],
+                &grad_phi_ghostbox_upper[1],
+                &grad_phi_ghostbox_lower[2],
+                &grad_phi_ghostbox_upper[2],
+                phi,
+                &phi_ghostbox_lower[0],
+                &phi_ghostbox_upper[0],
+                &phi_ghostbox_lower[1],
+                &phi_ghostbox_upper[1],
+                &phi_ghostbox_lower[2],
+                &phi_ghostbox_upper[2],
+                &fillbox_lower[0],
+                &fillbox_upper[0],
+                &fillbox_lower[1],
+                &fillbox_upper[1],
+                &fillbox_lower[2],
+                &fillbox_upper[2],
+                &dx[0],
+                &dx[1],
+                &dx[2]);
+
+            // compute Hessian of phi
+            LSM3D_CENTRAL_HESSIAN(
+                phi_xx,
+                phi_xy,
+                phi_xz,
+                phi_yy,
+                phi_yz,
+                phi_zz,
+                &hessian_phi_ghostbox_lower[0],
+                &hessian_phi_ghostbox_upper[0],
+                &hessian_phi_ghostbox_lower[1],
+                &hessian_phi_ghostbox_upper[1],
+                &hessian_phi_ghostbox_lower[2],
+                &hessian_phi_ghostbox_upper[2],
+                phi,
+                &phi_ghostbox_lower[0],
+                &phi_ghostbox_upper[0],
+                &phi_ghostbox_lower[1],
+                &phi_ghostbox_upper[1],
+                &phi_ghostbox_lower[2],
+                &phi_ghostbox_upper[2],
+                &fillbox_lower[0],
+                &fillbox_upper[0],
+                &fillbox_lower[1],
+                &fillbox_upper[1],
+                &fillbox_lower[2],
+                &fillbox_upper[2],
+                &dx[0],
+                &dx[1],
+                &dx[2]);
+
+            // compute mean curvature
+            LSM3D_COMPUTE_MEAN_CURVATURE(
+                kappa,
+                &kappa_ghostbox_lower[0],
+                &kappa_ghostbox_upper[0],
+                &kappa_ghostbox_lower[1],
+                &kappa_ghostbox_upper[1],
+                &kappa_ghostbox_lower[2],
+                &kappa_ghostbox_upper[2],
+                phi_x,
+                phi_y,
+                phi_z,
+                &grad_phi_ghostbox_lower[0],
+                &grad_phi_ghostbox_upper[0],
+                &grad_phi_ghostbox_lower[1],
+                &grad_phi_ghostbox_upper[1],
+                &grad_phi_ghostbox_lower[2],
+                &grad_phi_ghostbox_upper[2],
+                phi_xx,
+                phi_xy,
+                phi_xz,
+                phi_yy,
+                phi_yz,
+                phi_zz,
+                &hessian_phi_ghostbox_lower[0],
+                &hessian_phi_ghostbox_upper[0],
+                &hessian_phi_ghostbox_lower[1],
+                &hessian_phi_ghostbox_upper[1],
+                &hessian_phi_ghostbox_lower[2],
+                &hessian_phi_ghostbox_upper[2],
+                &fillbox_lower[0],
+                &fillbox_upper[0],
+                &fillbox_lower[1],
+                &fillbox_upper[1],
+                &fillbox_lower[2],
+                &fillbox_upper[2]);
+
+            // Compute normal velocity -b * kappa
+            d_math_ops.scale(velocity_data, -d_b, kappa_data, fillbox);
+
         } else if (num_dims == 2) {
             // get data pointers
             LSMLIB_REAL* phi = phi_data->getPointer(0);
@@ -394,6 +491,7 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
                 &fillbox_lower[1],
                 &fillbox_upper[1]);
 
+            // Compute normal velocity -b * kappa
             d_math_ops.scale(velocity_data, -d_b, kappa_data, fillbox);
 
         } else {
@@ -430,5 +528,5 @@ void VelocityFieldModule::getFromInput(
 
     d_b = db->getDouble("b");
     d_use_field_extension = db->getBoolWithDefault("use_field_extension",
-                                                   false);
+                                                   true);
 }
