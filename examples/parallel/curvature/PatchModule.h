@@ -49,7 +49,15 @@ public:
   /*!
    * Enumeration of Initial Level Set Configurations
    */
-  typedef enum { CIRCLE = 0, STAR = 1 } INITIAL_SET_TYPE;
+  typedef enum {
+      // 2D
+      CIRCLE = 0,
+      STAR = 1,
+
+      // 3D
+      SPHERE = 0,
+      BUMPY_SPHERE = 1
+  } INITIAL_SET_TYPE;
 
   /*!
    * This constructor sets the object name and reads in the 

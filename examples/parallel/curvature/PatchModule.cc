@@ -1,7 +1,7 @@
 /*
  * File:        PatchModule.cc
- * Description: Implementation for concrete subclass of 
- *              LevelSetMethodPatchStrategy that computes the single patch 
+ * Description: Implementation for concrete subclass of
+ *              LevelSetMethodPatchStrategy that computes the single patch
  *              numerical routines for the level set method example problem
  */
 
@@ -33,7 +33,7 @@ namespace SAMRAI { namespace hier { class PatchGeometry; } }
 // headers for level set method numerical kernels
 extern "C" {
   #include "patchmodule_fort_2d.h"
-//  #include "patchmodule_fort_3d.h"
+  #include "patchmodule_fort_3d.h"
 }
 
 // CONSTANTS
@@ -71,7 +71,7 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
 
   LSMLIB_REAL* level_set_data_ptr = level_set_data->getPointer();
 
-  boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom 
+  boost::shared_ptr<geom::CartesianPatchGeometry> patch_geom
     = BOOST_CAST<geom::CartesianPatchGeometry, hier::PatchGeometry>(
         patch.getPatchGeometry());
 
@@ -96,44 +96,107 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
   const hier::IntVector ghostbox_lower = ghostbox.lower();
   const hier::IntVector ghostbox_upper = ghostbox.upper();
 
-  switch (d_initial_level_set) 
-  {
-    case CIRCLE: {
-      INIT_CIRCLE(
-        level_set_data_ptr,
-        &ghostbox_lower[0],
-        &ghostbox_upper[0],
-        &ghostbox_lower[1],
-        &ghostbox_upper[1],
-        &box_lower[0],
-        &box_upper[0],
-        &box_lower[1],
-        &box_upper[1],
-        x_lower,
-        dx,
-        d_center,
-        &d_radius);
-      break;
-    }
-    case STAR: {
-      INIT_STAR(
-        level_set_data_ptr,
-        &ghostbox_lower[0],
-        &ghostbox_upper[0],
-        &ghostbox_lower[1],
-        &ghostbox_upper[1],
-        &box_lower[0],
-        &box_upper[0],
-        &box_lower[1],
-        &box_upper[1],
-        x_lower,
-        dx,
-        d_center,
-        &d_radius);
-      break;
-    }
-    default: {}
-  }; 
+  if (num_dims == 3) {
+    switch (d_initial_level_set)
+    {
+      case SPHERE: {
+        INIT_SPHERE(
+          level_set_data_ptr,
+          &ghostbox_lower[0],
+          &ghostbox_upper[0],
+          &ghostbox_lower[1],
+          &ghostbox_upper[1],
+          &ghostbox_lower[2],
+          &ghostbox_upper[2],
+          &box_lower[0],
+          &box_upper[0],
+          &box_lower[1],
+          &box_upper[1],
+          &box_lower[2],
+          &box_upper[2],
+          x_lower,
+          dx,
+          d_center,
+          &d_radius);
+        break;
+      }
+      case BUMPY_SPHERE: {
+        INIT_BUMPY_SPHERE(
+          level_set_data_ptr,
+          &ghostbox_lower[0],
+          &ghostbox_upper[0],
+          &ghostbox_lower[1],
+          &ghostbox_upper[1],
+          &ghostbox_lower[2],
+          &ghostbox_upper[2],
+          &box_lower[0],
+          &box_upper[0],
+          &box_lower[1],
+          &box_upper[1],
+          &box_lower[2],
+          &box_upper[2],
+          x_lower,
+          dx,
+          d_center,
+          &d_radius);
+        break;
+      }
+      default: {
+        TBOX_ERROR("PatchModule::initializeLevelSetFunctionsOnPatch():"
+                   << "Unknown 3D initial level set type '"
+                   << d_initial_level_set
+                   << "'" << endl);
+      }
+    };
+  } else if (num_dims == 2) {
+    switch (d_initial_level_set)
+    {
+      case CIRCLE: {
+        INIT_CIRCLE(
+          level_set_data_ptr,
+          &ghostbox_lower[0],
+          &ghostbox_upper[0],
+          &ghostbox_lower[1],
+          &ghostbox_upper[1],
+          &box_lower[0],
+          &box_upper[0],
+          &box_lower[1],
+          &box_upper[1],
+          x_lower,
+          dx,
+          d_center,
+          &d_radius);
+        break;
+      }
+      case STAR: {
+        INIT_STAR(
+          level_set_data_ptr,
+          &ghostbox_lower[0],
+          &ghostbox_upper[0],
+          &ghostbox_lower[1],
+          &ghostbox_upper[1],
+          &box_lower[0],
+          &box_upper[0],
+          &box_lower[1],
+          &box_upper[1],
+          x_lower,
+          dx,
+          d_center,
+          &d_radius);
+        break;
+      }
+      default: {
+        TBOX_ERROR("PatchModule::initializeLevelSetFunctionsOnPatch():"
+                   << "Unknown 2D initial level set type '"
+                   << d_initial_level_set
+                   << "'" << endl);
+      }
+    };
+  } else {
+    TBOX_ERROR("PatchModule::initializeLevelSetFunctionsOnPatch():"
+               << "Invalid number of dimensions. Valid values: 2 and 3."
+               << endl);
+  }
 
 #ifndef LSMLIB_DOUBLE_PRECISION
   // Clean up memory
@@ -154,7 +217,7 @@ void PatchModule::setLevelSetFunctionBoundaryConditions(
 void PatchModule::printClassData(ostream &os) const
 {
   os << "\nPatchModule::printClassData..." << endl;
-  os << "PatchModule: this = " << (PatchModule*)this 
+  os << "PatchModule: this = " << (PatchModule*)this
      << endl;
   os << "d_object_name = " << d_object_name << endl;
   os << "d_initial_level_set = " << d_initial_level_set << endl;
@@ -209,12 +272,12 @@ void PatchModule::getFromInput(
       break;
     }
 
-    default: { 
+    default: {
       TBOX_ERROR(  "PatchModule"
                 << "::getFromInput()"
                 << ":Invalid type of initial level set"
                 << endl );
-    } 
+    }
   };
 
 }
