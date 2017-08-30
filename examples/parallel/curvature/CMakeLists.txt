@@ -40,4 +40,4 @@ target_link_libraries(curvature
 
 # Add files to copy directly to build directory
 configure_file(curvature-2d.input curvature-2d.input COPYONLY)
-#configure_file(curvature-3d.input curvature-3d.input COPYONLY)
+configure_file(curvature-3d.input curvature-3d.input COPYONLY)

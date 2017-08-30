@@ -1,17 +1,17 @@
 /*
- * File:        curvature-2d.input
- * Description: input file for 2d curvature-driven motion problem
+ * File:        curvature-3d.input
+ * Description: input file for 3d curvature-driven motion problem
  */
 
 
 Main {
   // Base name for output files.
-  base_name = "CURVATURE_2D"
+  base_name = "CURVATURE_3D"
   // Whether to log all nodes in a parallel run.
   log_all_nodes = TRUE
 
   // Problem dimension
-  dim = 2
+  dim = 3
 
   // Restart parameters
   restart_interval = 25
@@ -38,11 +38,11 @@ CartesianGeometry {
   //                        domain is periodic.  Zero indicates not
   //                        periodic, non-zero value indicates periodicity.
   //                        [0]
-  domain_boxes = [(0,0), (199,199)]
-  x_lo         = -1, -1
-  x_up         = 1, 1
+  domain_boxes = [(0,0,0), (99,99,99)]
+  x_lo         = -1, -1, -1
+  x_up         = 1, 1, 1
 
-  periodic_dimension = 1, 1
+  periodic_dimension = 1, 1, 1
 }
 
 
@@ -60,8 +60,8 @@ LevelSetMethodAlgorithm{
     reinitialization_max_iters = 0
     reinitialization_stop_dist = 0.5
  
-    lower_bc_phi_0 = 1,1
-    upper_bc_phi_0 = 1,1
+    lower_bc_phi_0 = 1,1,1
+    upper_bc_phi_0 = 1,1,1
  
     use_AMR = FALSE
     refinement_cutoff_value = 0.25
@@ -76,7 +76,7 @@ LevelSetMethodAlgorithm{
     max_levels = 1 
 
     ratio_to_coarser {
-      level_1            = 2, 2
+      level_1            = 2, 2, 2
     }
 
     largest_patch_size {
@@ -126,6 +126,6 @@ VelocityFieldModule {
 
 PatchModule {
   initial_level_set = 1
-  center = 0.0, 0.0
+  center = 0.0, 0.0, 0.0
   radius = 0.5
 }
