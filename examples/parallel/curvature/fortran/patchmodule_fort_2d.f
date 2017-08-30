@@ -32,10 +32,10 @@ c     loop over grid {
       do j=jlo_fb,jhi_fb
         do i=ilo_fb,ihi_fb
 
-          x = x_lower(0) + dx(0)*(i-ilo_fb+0.5)
-          y = x_lower(1) + dx(1)*(j-jlo_fb+0.5)
+          x = x_lower(0) + dx(0)*(i-ilo_fb+0.5) - center(0)
+          y = x_lower(1) + dx(1)*(j-jlo_fb+0.5) - center(1)
 
-          phi(i,j) = sqrt((x-center(0))**2 + (y-center(1))**2) - radius
+          phi(i,j) = sqrt(x**2 + y**2) - radius
 
         enddo
       enddo
