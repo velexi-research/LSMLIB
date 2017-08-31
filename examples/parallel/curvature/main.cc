@@ -187,13 +187,13 @@ int main(int argc, char *argv[])
     lsm_algorithm->printClassData(tbox::plog);
 
     // Initialize field extension algorithm
-    int phi_patch_data_handle = lsm_algorithm->getPhiPatchDataHandle();
+    int phi_handle = lsm_algorithm->getPhiPatchDataHandle();
     int control_volume_handle =
         lsm_algorithm->getControlVolumePatchDataHandle();
     velocity_field_module->initializeFieldExtensionAlgorithm(
         input_db->getDatabase("VelocityFieldModule")
                 ->getDatabase("FieldExtensionAlgorithm"),
-        phi_patch_data_handle, control_volume_handle);
+        phi_handle, control_volume_handle);
 
     // Emit contents of input database and variable database to log file.
     tbox::plog << "\nCheck input data and variables before simulation:"
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 
       // Register level set functions and velocity fields for plotting
       visit_data_writer->registerPlotQuantity(
-          "phi", "SCALAR", phi_patch_data_handle, 0, 1.0, "CELL");
+          "phi", "SCALAR", phi_handle, 0, 1.0, "CELL");
 
       visit_data_writer->registerPlotQuantity(
           "velocity", "SCALAR",
@@ -262,6 +262,12 @@ int main(int argc, char *argv[])
     LSMLIB_REAL current_time = lsm_algorithm->getCurrentTime();
     int cur_integrator_step = lsm_algorithm->numIntegrationStepsTaken();
 
+    // Reinitialize level set functions
+    lsm_algorithm->reinitializeLevelSetFunctions();
+
+    // Get grad(phi) PatchData handle
+    int grad_phi_handle = velocity_field_module->getGradPhiHandle();
+
     // Output initial conditions (if this run is not from restart)
     if ( write_restart && (!is_from_restart) ) {
         restart_manager->writeRestartFile(restart_write_dirname,
@@ -279,12 +285,46 @@ int main(int argc, char *argv[])
     while ( !lsm_algorithm->endTimeReached() &&
             ((max_num_time_steps <= 0) || (count < max_num_time_steps)) ) {
 
+        // Get current time
+        current_time = lsm_algorithm->getCurrentTime();
+
         tbox::pout << "++++++++++++++++++++++++++++++++++++++++++"
             << endl;
         tbox::pout << "  Time step (in current run): " << count << endl;
         tbox::pout << "  Integrator time step: " << cur_integrator_step
             << endl;
         tbox::pout << "  Current time:  " << current_time << endl;
+
+        // Compute volume and surface area
+        double volume =
+            LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
+                patch_hierarchy,
+                phi_handle,
+                control_volume_handle,
+                1); // compute volume of region with phi < 0
+        double surface_area =
+            LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
+                patch_hierarchy,
+                phi_handle,
+                grad_phi_handle,
+                control_volume_handle);
+
+        if (dim.getValue() == 3) {
+            tbox::pout << "  Current volume:  " << volume << endl;
+        } else if (dim.getValue() == 2) {
+            tbox::pout << "  Current area:  " << volume << endl;
+        }
+        if (count == 0) {
+            tbox::pout << "  Current surface area: N/A" << endl;
+        } else {
+            if (dim.getValue() == 3) {
+                tbox::pout << "  Current surface area:  "
+                           << surface_area << endl;
+            } else if (dim.getValue() == 2) {
+                tbox::pout << "  Current perimeter:  "
+                           << surface_area << endl;
+            }
+        }
 
         // Compute next time step
         dt = lsm_algorithm->computeStableDt();
@@ -316,20 +356,40 @@ int main(int argc, char *argv[])
                                              lsm_algorithm->getCurrentTime());
       }
 
-      // Update counter and current time
+      // Update count
       count++;
-      current_time = lsm_algorithm->getCurrentTime();
-
     }
 
     // Output information for final time step
-    // (if it hasn't already been output)
     current_time = lsm_algorithm->getCurrentTime();
     tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
     tbox::pout << "  Final time step (in current run): " << count << endl;
     tbox::pout << "  Final integrator time step: " << cur_integrator_step
         << endl;
     tbox::pout << "  Current time:  " << current_time << endl;
+
+    // Compute volume and surface area
+    double volume =
+        LevelSetMethodToolbox::computeVolumeOfRegionDefinedByZeroLevelSet(
+            patch_hierarchy,
+            phi_handle,
+            control_volume_handle,
+            1); // compute volume of region with phi < 0
+    double surface_area =
+        LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
+            patch_hierarchy,
+            phi_handle,
+            grad_phi_handle,
+            control_volume_handle);
+
+    if (dim.getValue() == 3) {
+        tbox::pout << "  Current volume:  " << volume << endl;
+        tbox::pout << "  Current surface area:  " << surface_area << endl;
+    } else if (dim.getValue() == 2) {
+        tbox::pout << "  Current area:  " << volume << endl;
+        tbox::pout << "  Current perimeter:  " << surface_area << endl;
+    }
+
     tbox::pout << endl;
     tbox::pout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
 

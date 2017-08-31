@@ -76,6 +76,12 @@ public:
    */
   virtual ~VelocityFieldModule(){}
 
+  /*!
+   * Get PatchData handle for grad(phi).
+   */
+  virtual inline int getGradPhiHandle() {
+    return d_grad_phi_handle;
+  }
 
   /*!
    * Set FieldExtensionAlgorithm.
