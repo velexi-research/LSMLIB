@@ -67,7 +67,7 @@ LevelSetMethodAlgorithm{
     refinement_cutoff_value = 0.25
     tag_buffer= 2,2,2,2,2,2
 
-    verbose_mode = TRUE
+    verbose_mode = FALSE // default: FALSE
 
   } // end of LevelSetFunctionIntegrator database
   
@@ -120,7 +120,7 @@ VelocityFieldModule {
     max_iterations = 0
     stop_distance = 0.5
 
-    verbose_mode = TRUE
+    verbose_mode = FALSE // default: FALSE
   }
 }
 
