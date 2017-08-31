@@ -10,9 +10,10 @@
 /*************************************************************************
  *
  * The VelocityFieldModule class provides support for normal velocity
- * field driven by the mean curvature of the interface:
+ * field driven by a linear function of the mean curvature of the interface
+ * of the form:
  *
- *   V_n = -b * kappa
+ *   V_n = a - b * kappa
  *
  *************************************************************************/
 
@@ -285,7 +286,8 @@ protected:
    * Physical parameters
    */
 
-  // proportionality constant between mean curvature and normal velocity
+  // constants relating mean curvature to normal velocity
+  double d_a;  // default value: 0
   double d_b;
 
   /*

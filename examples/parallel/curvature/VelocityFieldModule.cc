@@ -134,14 +134,29 @@ LSMLIB_REAL VelocityFieldModule::computeStableDt()
     const int num_dims = dim.getValue();
     const double* dx = d_grid_geometry->getDx();
 
-    // compute stable dt
-    double grid_factor = 0.0;
+    // compute contribution to stability factor from constant normal velocity
+    // Note: the calculation used overestimates the contributions in 2D and 3D
+    //       by bounding H_i by 1.
+    //
+    //     - 2D: a * max{|H_1|/dx + |H_2|/dy}
+    //
+    //     - 3D: a * max{|H_1|/dx + |H_2|/dy + |H_3|/dz}
+    double const_normal_velocity_term = 0.0;
     for (int i = 0; i < num_dims; i++) {
-        grid_factor += 1.0 / (dx[i] * dx[i]);
+        const_normal_velocity_term += 1.0 / dx[i];
     }
-    double stable_dt = 0.5 / (d_b * grid_factor);
+    const_normal_velocity_term *= d_a;
 
-    return stable_dt;
+    // compute contribution to stability factor from curvature term
+    double curvature_term = 0.0;
+    for (int i = 0; i < num_dims; i++) {
+        curvature_term += 1.0 / (dx[i] * dx[i]);
+    }
+    curvature_term *= 2 * d_b;
+
+    double dt = 1.0 / (const_normal_velocity_term + curvature_term);
+
+    return dt;
 }
 
 /* computeVelocityField() */
@@ -409,8 +424,12 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
                 &fillbox_lower[2],
                 &fillbox_upper[2]);
 
-            // Compute normal velocity -b * kappa
+            // compute normal velocity = a - b * kappa
             d_math_ops.scale(velocity_data, -d_b, kappa_data, fillbox);
+            if (d_a != 0) {
+                d_math_ops.addScalar(velocity_data, velocity_data,
+                                     d_a, fillbox);
+            }
 
         } else if (num_dims == 2) {
             // get data pointers
@@ -491,8 +510,12 @@ void VelocityFieldModule::computeVelocityFieldOnLevel(
                 &fillbox_lower[1],
                 &fillbox_upper[1]);
 
-            // Compute normal velocity -b * kappa
+            // compute normal velocity = a - b * kappa
             d_math_ops.scale(velocity_data, -d_b, kappa_data, fillbox);
+            if (d_a != 0) {
+                d_math_ops.addScalar(velocity_data, velocity_data,
+                                     d_a, fillbox);
+            }
 
         } else {
             TBOX_ERROR("VelocityFieldModule::computeVelocityFieldOnLevel():"
@@ -526,6 +549,7 @@ void VelocityFieldModule::getFromInput(
     assert(db);
 #endif
 
+    d_a = db->getDoubleWithDefault("a", 0);
     d_b = db->getDouble("b");
     d_use_field_extension = db->getBoolWithDefault("use_field_extension",
                                                    true);
