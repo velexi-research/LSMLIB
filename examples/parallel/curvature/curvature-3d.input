@@ -106,7 +106,8 @@ LevelSetMethodAlgorithm{
 
 VelocityFieldModule {
   // Physical parameters
-  b = 1
+  a = 1
+  b = 0.5
 
   // Numerical parameters
   use_field_extension = TRUE
