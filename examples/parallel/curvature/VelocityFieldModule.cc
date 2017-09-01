@@ -9,6 +9,7 @@
 
 // Standard headers
 #include <assert.h>
+#include <cmath>
 #include <sstream>
 
 // Boost headers
@@ -142,10 +143,12 @@ LSMLIB_REAL VelocityFieldModule::computeStableDt()
     //
     //     - 3D: a * max{|H_1|/dx + |H_2|/dy + |H_3|/dz}
     double const_normal_velocity_term = 0.0;
-    for (int i = 0; i < num_dims; i++) {
-        const_normal_velocity_term += 1.0 / dx[i];
+    if (d_a != 0) {
+      for (int i = 0; i < num_dims; i++) {
+          const_normal_velocity_term += 1.0 / dx[i];
+      }
     }
-    const_normal_velocity_term *= d_a;
+    const_normal_velocity_term *= abs(d_a);
 
     // compute contribution to stability factor from curvature term
     double curvature_term = 0.0;
