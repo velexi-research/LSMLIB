@@ -3,15 +3,6 @@
  * Description: Example program for LSMLIB Parallel Package
  */
 
-/*************************************************************************
- *
- * This example  program demonstrates how to use the LSMLIB C++ classes
- * to for a 2D problem where the motion of the level sets is determined
- * by an external velocity field (defined throughout the entire
- * computational domain) is specified.
- *
- **************************************************************************/
-
 // Standard headers
 #include <iosfwd>
 #include <iostream>
