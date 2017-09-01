@@ -201,8 +201,10 @@ c  lsm2dComputeMeanCurvature() computes the mean curvature from
 c  \f$ \nabla \phi \f$ and Hessian of \phi using the following
 c  equation:
 c
-c    kappa = ( phi_x^2 * phi_yy -2 * phi_x * phi_y * phi_xy +
-c            + phi_y^2 * phi_xx ) / |\nabla phi|^3
+c    kappa = ( phi_x^2 * phi_yy
+c            - 2 * phi_x * phi_y * phi_xy
+c            + phi_y^2 * phi_xx )
+c          / |\nabla phi|^3
 c
 c  Arguments:
 c    kappa (out):     components of unit normal vector
@@ -269,8 +271,8 @@ c     { begin loop over grid
 
           else
             kappa(i,j) = ( phi_xx(i,j)*phi_y(i,j)*phi_y(i,j)
-     &                   + phi_yy(i,j)*phi_x(i,j)*phi_x(i,j)
-     &                   - 2*phi_xy(i,j)*phi_x(i,j)*phi_y(i,j) )
+     &                   - 2*phi_xy(i,j)*phi_x(i,j)*phi_y(i,j)
+     &                   + phi_yy(i,j)*phi_x(i,j)*phi_x(i,j) )
      &                 / norm_grad_phi_sq ** (1.5)
 
           endif
