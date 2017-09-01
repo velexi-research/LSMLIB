@@ -18,11 +18,11 @@ file(GLOB SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/fortran/*.f)
 
 # Add executable and dependencies
-add_executable(curvature ${SOURCE_FILES})
-add_dependencies(curvature lsm_parallel samrai)
+add_executable(curvature-parallel ${SOURCE_FILES})
+add_dependencies(curvature-parallel lsm_parallel samrai)
 
 # Set search path for header files
-target_include_directories(curvature
+target_include_directories(curvature-parallel
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/fortran
     PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
     PUBLIC ${CMAKE_SOURCE_DIR}/src/parallel
@@ -31,7 +31,7 @@ target_include_directories(curvature
     PUBLIC ${SAMRAI_INCLUDE_DIR})
 
 # Set link libraries
-target_link_libraries(curvature
+target_link_libraries(curvature-parallel
     lsm_parallel
     lsm_toolbox
     ${SAMRAI_LIBS}
