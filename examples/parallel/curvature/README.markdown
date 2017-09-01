@@ -13,7 +13,7 @@ capabilities:
 - numerical computation of mean curvature term
 - level set evolution using a normal velocity term
 - extension of the normal velocity off of the interface
-- periodic reinitialization of level set function, phi
+- periodic reinitialization of level set function
 
 Accuracy of the simulation is controlled by setting the method and order
 of the spatial derivatives and time integration.
