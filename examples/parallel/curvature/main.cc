@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
             patch_hierarchy,
             phi_handle,
             control_volume_handle,
-            1); // compute volume of region with phi < 0
+            -1); // compute volume of region with phi < 0
     double surface_area =
         LevelSetMethodToolbox::computeVolumeOfZeroLevelSet(
             patch_hierarchy,
