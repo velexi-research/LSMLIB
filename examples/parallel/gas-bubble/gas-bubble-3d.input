@@ -14,10 +14,10 @@ Main {
   dim = 3
 
   // Restart parameters
-  restart_interval = 25
+  restart_interval = 100
 
   // Visualization parameters
-  viz_write_interval = 5
+  viz_write_interval = 25
   use_visit = TRUE
   visit_number_procs_per_file = 1
 
@@ -50,13 +50,13 @@ LevelSetMethodAlgorithm{
 
   LevelSetFunctionIntegrator {
     start_time  = 0.0
-    end_time    = 0.01
+    end_time    = 1.0
   
     spatial_derivative_type  = "WENO"
     spatial_derivative_order = 5
     tvd_runge_kutta_order    = 3
   
-    reinitialization_interval  = 10
+    reinitialization_interval  = 5
     reinitialization_max_iters = 0
     reinitialization_stop_dist = 0.5
  
