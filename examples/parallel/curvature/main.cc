@@ -313,10 +313,10 @@ int main(int argc, char *argv[])
             }
         } else {
             if (dim.getValue() == 3) {
-                tbox::pout << "  Current surface area:  "
+                tbox::pout << "  Surface area:  "
                            << surface_area << endl;
             } else if (dim.getValue() == 2) {
-                tbox::pout << "  Current perimeter:  "
+                tbox::pout << "  Perimeter:  "
                            << surface_area << endl;
             }
         }
