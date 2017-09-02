@@ -219,12 +219,6 @@ void VelocityFieldModule::initializeLevelData (
     level->allocatePatchData(d_hessian_phi_handle);
     level->allocatePatchData(d_kappa_handle);
   }
-
-  /*
-   * Initialize data on all patches in the level.
-   */
-  computeVelocityFieldOnLevel(level,init_data_time,phi_handle);
-
 }
 
 /* computeVelocityFieldOnLevel() */
