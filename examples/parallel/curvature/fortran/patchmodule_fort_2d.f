@@ -45,7 +45,7 @@ c     } end loop over grid
       end
 c***********************************************************************
 c***********************************************************************
-      subroutine initstar(
+      subroutine initstarfish(
      &  phi,
      &  ilo_gb, ihi_gb, jlo_gb, jhi_gb,
      &  ilo_fb, ihi_fb, jlo_fb, jhi_fb,
