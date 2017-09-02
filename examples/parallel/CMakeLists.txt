@@ -17,6 +17,9 @@ add_subdirectory(advection/3d)
 # curvature-driven motion
 add_subdirectory(curvature)
 
+# gas-bubble with surface-tension
+add_subdirectory(gas-bubble)
+
 # field_extension/2d
 # field_extension/3d
 
