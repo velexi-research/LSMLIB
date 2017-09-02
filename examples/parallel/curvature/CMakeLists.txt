@@ -39,5 +39,11 @@ target_link_libraries(curvature-parallel
     ${MPI_LIBRARY})
 
 # Add files to copy directly to build directory
-configure_file(curvature-2d.input curvature-2d.input COPYONLY)
-configure_file(curvature-3d.input curvature-3d.input COPYONLY)
+configure_file(curvature-2d-circle.input
+               curvature-2d-circle.input COPYONLY)
+configure_file(curvature-2d-starfish.input
+               curvature-2d-starfish.input COPYONLY)
+configure_file(curvature-3d-sphere.input
+               curvature-3d-sphere.input COPYONLY)
+configure_file(curvature-3d-bumpy-sphere.input
+               curvature-3d-bumpy-sphere.input COPYONLY)
