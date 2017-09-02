@@ -39,5 +39,11 @@ target_link_libraries(gas-bubble-parallel
     ${MPI_LIBRARY})
 
 # Add files to copy directly to build directory
-configure_file(gas-bubble-2d.input gas-bubble-2d.input COPYONLY)
-configure_file(gas-bubble-3d.input gas-bubble-3d.input COPYONLY)
+configure_file(gas-bubble-2d-circle.input
+               gas-bubble-2d-circle.input COPYONLY)
+configure_file(gas-bubble-2d-starfish.input
+               gas-bubble-2d-starfish.input COPYONLY)
+configure_file(gas-bubble-3d-sphere.input
+               gas-bubble-3d-sphere.input COPYONLY)
+configure_file(gas-bubble-3d-bumpy-sphere.input
+               gas-bubble-3d-bumpy-sphere.input COPYONLY)

@@ -50,7 +50,7 @@ LevelSetMethodAlgorithm{
 
   LevelSetFunctionIntegrator {
     start_time  = 0.0
-    end_time    = 2.0
+    end_time    = 1.0
   
     spatial_derivative_type  = "WENO"
     spatial_derivative_order = 5
