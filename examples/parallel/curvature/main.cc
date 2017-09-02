@@ -301,12 +301,16 @@ int main(int argc, char *argv[])
                 control_volume_handle);
 
         if (dim.getValue() == 3) {
-            tbox::pout << "  Current volume:  " << volume << endl;
+            tbox::pout << "  Volume:  " << volume << endl;
         } else if (dim.getValue() == 2) {
-            tbox::pout << "  Current area:  " << volume << endl;
+            tbox::pout << "  Area:  " << volume << endl;
         }
         if (count == 0) {
-            tbox::pout << "  Current surface area: N/A" << endl;
+            if (dim.getValue() == 3) {
+                tbox::pout << "  Surface area: N/A" << endl;
+            } else if (dim.getValue() == 2) {
+                tbox::pout << "  Perimeter: N/A" << endl;
+            }
         } else {
             if (dim.getValue() == 3) {
                 tbox::pout << "  Current surface area:  "
