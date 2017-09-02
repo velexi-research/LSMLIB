@@ -342,30 +342,32 @@ c     _fb refers to fill-box for kappa data
       parameter (zero_tol=@lsmlib_zero_tol@)
 
 c     { begin loop over grid
-      do j=jlo_fb,jhi_fb
-        do i=ilo_fb,ihi_fb
+      do k=klo_fb,khi_fb
+        do j=jlo_fb,jhi_fb
+          do i=ilo_fb,ihi_fb
 
-          norm_grad_phi_sq = phi_x(i,j,k)*phi_x(i,j,k)
-     &                     + phi_y(i,j,k)*phi_y(i,j,k)
-     &                     + phi_z(i,j,k)*phi_z(i,j,k)
+            norm_grad_phi_sq = phi_x(i,j,k)*phi_x(i,j,k)
+     &                       + phi_y(i,j,k)*phi_y(i,j,k)
+     &                       + phi_z(i,j,k)*phi_z(i,j,k)
 
-          if (norm_grad_phi_sq .lt. zero_tol) then
-            kappa(i,j,k) = 0.d0
+            if (norm_grad_phi_sq .lt. zero_tol) then
+              kappa(i,j,k) = 0.d0
 
-          else
-            kappa(i,j,k) = ( phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)
-     &                     - 2*phi_xy(i,j,k)*phi_x(i,j,k)*phi_y(i,j,k)
-     &                     + phi_yy(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
-     &                     + phi_xx(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
-     &                     - 2*phi_xz(i,j,k)*phi_x(i,j,k)*phi_z(i,j,k)
-     &                     + phi_zz(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
-     &                     + phi_yy(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
-     &                     - 2*phi_yz(i,j,k)*phi_y(i,j,k)*phi_z(i,j,k)
-     &                     + phi_zz(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k) )
-     &                   / norm_grad_phi_sq ** (1.5)
+            else
+              kappa(i,j,k) = ( phi_xx(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k)
+     &                       - 2*phi_xy(i,j,k)*phi_x(i,j,k)*phi_y(i,j,k)
+     &                       + phi_yy(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
+     &                       + phi_xx(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
+     &                       - 2*phi_xz(i,j,k)*phi_x(i,j,k)*phi_z(i,j,k)
+     &                       + phi_zz(i,j,k)*phi_x(i,j,k)*phi_x(i,j,k)
+     &                       + phi_yy(i,j,k)*phi_z(i,j,k)*phi_z(i,j,k)
+     &                       - 2*phi_yz(i,j,k)*phi_y(i,j,k)*phi_z(i,j,k)
+     &                       + phi_zz(i,j,k)*phi_y(i,j,k)*phi_y(i,j,k) )
+     &                     / norm_grad_phi_sq ** (1.5)
 
-          endif
+            endif
 
+          enddo
         enddo
       enddo
 c     } end loop over grid
