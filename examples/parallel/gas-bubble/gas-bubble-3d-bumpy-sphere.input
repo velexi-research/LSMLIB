@@ -1,5 +1,5 @@
 /*
- * File:        gas-bubble-3d.input
+ * File:        gas-bubble-3d-bumpy-sphere.input
  * Description: input file for 3d gas bubble problem
  */
 
@@ -38,7 +38,7 @@ CartesianGeometry {
   //                        domain is periodic.  Zero indicates not
   //                        periodic, non-zero value indicates periodicity.
   //                        [0]
-  domain_boxes = [(0,0,0), (99,99,99)]
+  domain_boxes = [(0,0,0), (49,49,49)]
   x_lo         = -1, -1, -1
   x_up         = 1, 1, 1
 
@@ -106,9 +106,10 @@ LevelSetMethodAlgorithm{
 
 VelocityFieldModule {
   // Physical parameters
-  K = 0.3333333333333333
+  // Note: equilibrium shape is a sphere of radius 0.5
+  K = 1.3333333333333333
   P_ext = 0
-  sigma = 0.5
+  sigma = 2.0
 
   // Numerical parameters
   use_field_extension = TRUE

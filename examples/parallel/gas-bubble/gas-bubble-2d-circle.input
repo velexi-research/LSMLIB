@@ -1,5 +1,5 @@
 /*
- * File:        gas-bubble-2d.input
+ * File:        gas-bubble-2d-circle.input
  * Description: input file for 2d gas bubble problem
  */
 
@@ -106,6 +106,7 @@ LevelSetMethodAlgorithm{
 
 VelocityFieldModule {
   // Physical parameters
+  // Note: equilibrium shape is a circle of radius 0.5
   K = 0.5
   P_ext = 0
   sigma = 1.0
@@ -127,7 +128,7 @@ VelocityFieldModule {
 }
 
 PatchModule {
-  initial_level_set = 1
+  initial_level_set = 0
   center = 0.0, 0.0
-  radius = 0.5
+  radius = 0.4
 }
