@@ -16,7 +16,7 @@
  *      ----------            ------------
  */
 #define INIT_CIRCLE           initcircle_
-#define INIT_STAR             initstar_
+#define INIT_STARFISH             initstarfish_
 
 void INIT_CIRCLE(
   const LSMLIB_REAL* phi,
@@ -33,7 +33,7 @@ void INIT_CIRCLE(
   const LSMLIB_REAL* center,
   const LSMLIB_REAL* radius);
 
-void INIT_STAR(
+void INIT_STARFISH(
   const LSMLIB_REAL* phi,
   const int* ilo_gb,
   const int* ihi_gb,

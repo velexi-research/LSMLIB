@@ -52,7 +52,7 @@ public:
   typedef enum {
       // 2D
       CIRCLE = 0,
-      STAR = 1,
+      STARFISH = 1,
 
       // 3D
       SPHERE = 0,

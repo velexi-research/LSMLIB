@@ -168,8 +168,8 @@ void PatchModule::initializeLevelSetFunctionsOnPatch(
           &d_radius);
         break;
       }
-      case STAR: {
-        INIT_STAR(
+      case STARFISH: {
+        INIT_STARFISH(
           level_set_data_ptr,
           &ghostbox_lower[0],
           &ghostbox_upper[0],
@@ -242,7 +242,7 @@ void PatchModule::getFromInput(
   // get auxilliary parameters for initial level set
   switch (d_initial_level_set) {
     case CIRCLE:
-    case STAR: {
+    case STARFISH: {
 
 #ifdef LSMLIB_DOUBLE_PRECISION
       d_radius = db->getDoubleWithDefault("radius", s_default_radius);
