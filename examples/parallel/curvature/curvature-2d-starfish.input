@@ -38,7 +38,7 @@ CartesianGeometry {
   //                        domain is periodic.  Zero indicates not
   //                        periodic, non-zero value indicates periodicity.
   //                        [0]
-  domain_boxes = [(0,0), (199,199)]
+  domain_boxes = [(0,0), (99,99)]
   x_lo         = -1, -1
   x_up         = 1, 1
 
