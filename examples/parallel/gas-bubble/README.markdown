@@ -8,12 +8,13 @@ The normal velocity at the interface is given by
   (K * pi / V - P_ext) - sigma * kappa
   ```
 
-where kappa is the mean curvature of the interface and K, P_ext and sigma are
-constants respectively representing the relationship between the pressure of the
-gas contained within the bubble (modeled as an ideal gas), P_ext is the external
-ambient pressure, and sigma is the surface tension.
+where kappa is the mean curvature of the interface, V is the volume of the
+bubble, and K, P_ext and sigma are constants respectively representing the
+relationship between the pressure of the gas contained within the bubble
+(modeled as an ideal gas), P_ext is the external ambient pressure, and sigma
+is the surface tension.
 
-The level set simulation for this example utilizes the following LSMLIB
+The level see simulation for this example utilizes the following LSMLIB
 capabilities:
 
 - numerical computation of mean curvature term
