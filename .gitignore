@@ -1,4 +1,5 @@
-# Object files
+# Build artifacts
+/build
 *.o
 
 # Log files
