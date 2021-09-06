@@ -18,34 +18,22 @@
 #define LSMLIB_VERSION_PATCH @LSMLIB_VERSION_PATCH@
 
 /* Macro defined if double precision library is being built. */
-#ifndef LSMLIB_DOUBLE_PRECISION
 #cmakedefine LSMLIB_DOUBLE_PRECISION
-#endif
 
 /* Floating-point precision for LSMLIB_REAL */
-#ifndef LSMLIB_REAL
 #define LSMLIB_REAL @LSMLIB_REAL@
-#endif
 
 /* Zero tolerance */
-#ifndef LSMLIB_ZERO_TOL
 #define LSMLIB_ZERO_TOL @LSMLIB_ZERO_TOL@
-#endif
 
 /* Maximum value for LSMLIB_REAL */
-#ifndef LSMLIB_REAL_MAX
 #define LSMLIB_REAL_MAX @LSMLIB_REAL_MAX@
-#endif
 
 /* Minimum value for LSMLIB_REAL */
-#ifndef LSMLIB_REAL_MIN
 #define LSMLIB_REAL_MIN @LSMLIB_REAL_MIN@
-#endif
 
 /* Machine epsilon value for LSMLIB_REAL */
-#ifndef LSMLIB_REAL_EPSILON
 #define LSMLIB_REAL_EPSILON @LSMLIB_REAL_EPSILON@
-#endif
 
 #endif
 
