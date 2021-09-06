@@ -1,16 +1,21 @@
 /*
- * File:        LSMLIB_config.h.in
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
- * Description: LSMLIB configuration header file
+ * ---------------------------------------------------------------------
+ * COPYRIGHT/LICENSE. This file is part of the LSMLIB package. It is
+ * subject to the license terms in the LICENSE file found in the
+ * top-level directory of this distribution. No part of the LSMLIB
+ * package, including this file, may be copied, modified, propagated,
+ * or distributed except according to the terms contained in the
+ * LICENSE file.
+ * ---------------------------------------------------------------------
  */
 
+#ifndef included_lsmlib_config_h
+#define included_lsmlib_config_h
 
-#ifndef included_LSMLIB_config_h
-#define included_LSMLIB_config_h
+/* LSMLIB version */
+#define LSMLIB_VERSION_MAJOR @LSMLIB_VERSION_MAJOR@
+#define LSMLIB_VERSION_MINOR @LSMLIB_VERSION_MINOR@
+#define LSMLIB_VERSION_PATCH @LSMLIB_VERSION_PATCH@
 
 /* Macro defined if double precision library is being built. */
 #ifndef LSMLIB_DOUBLE_PRECISION
