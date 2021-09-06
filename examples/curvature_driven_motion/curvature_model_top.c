@@ -15,7 +15,7 @@
 #include <time.h>
 
 /* LSMLIB Headers */
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_initialization3d.h"
 
 /*LSMLIB Serial headers */

@@ -12,6 +12,9 @@
 
 # --- Individual examples
 
+# toolbox
+add_subdirectory(toolbox)
+
 # curvature-driven motion
 add_subdirectory(curvature_driven_motion)
 
@@ -26,6 +29,6 @@ add_subdirectory(reinitialization)
 
 # --- All lsm_serial examples
 
-add_custom_target(examples-serial
-                  DEPENDS curvature_driven_motion fast_marching_method
+add_custom_target(examples
+                  DEPENDS toolbox curvature_driven_motion fast_marching_method
                           grid_management reinitialization)

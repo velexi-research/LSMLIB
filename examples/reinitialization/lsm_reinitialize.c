@@ -14,7 +14,7 @@
 #include <time.h>
 
 /* Local headers */
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_data_arrays.h"
 #include "lsm_macros.h"
 #include "lsm_options.h"

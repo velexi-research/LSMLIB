@@ -15,7 +15,7 @@
 #include <time.h>
 
 /* LSMLIB headers */
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_level_set_evolution3d_local.h"
 #include "lsm_spatial_derivatives3d_local.h"
 #include "lsm_utilities3d_local.h"

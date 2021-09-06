@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "FMM_Heap.h"
 
 /************************************************************************

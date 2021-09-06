@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_boundary_conditions2d.h"
 #include "lsm_spatial_derivatives2d.h"
 

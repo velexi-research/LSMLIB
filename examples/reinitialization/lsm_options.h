@@ -23,7 +23,7 @@ extern "C" {
  *
  */
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_grid.h"
 
 

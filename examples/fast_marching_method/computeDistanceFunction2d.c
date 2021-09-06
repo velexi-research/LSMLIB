@@ -15,7 +15,7 @@
 #include <math.h>
 
 /* Header for Fast Marching Method Algorithm class */
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_fast_marching_method.h"
 
 /************************************************************************

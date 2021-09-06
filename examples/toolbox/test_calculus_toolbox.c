@@ -9,7 +9,7 @@
  */
 
 #include <stdio.h>
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "lsm_calculus_toolbox.h"
 
 int main(void)
