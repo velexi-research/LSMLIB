@@ -1,61 +1,79 @@
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
 # CMake initialization
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5)
-project(lsmlib
+cmake_minimum_required(VERSION 3.10)
+project(LSMLIB
         LANGUAGES C CXX Fortran
         VERSION 2.0.0)
 
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Configuration options
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 # Build shared libraries
 # TODO: fix shared library build
 #option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # Floating-point precision
-option(SINGLE_PRECISION "Build single-precision libraries" OFF)
-if (SINGLE_PRECISION)
+option(USE_SINGLE_PRECISION "Build single-precision libraries" OFF)
+if (USE_SINGLE_PRECISION)
     message("-- Setting floating-point precision to 'single'")
-else (SINGLE_PRECISION)
+else (USE_SINGLE_PRECISION)
     message("-- Setting floating-point precision to 'double'")
-endif (SINGLE_PRECISION)
-
-# SAMRAI
-set(SAMRAI "" CACHE FILEPATH "Location of SAMRAI library")
-
-# HDF5
-set(HDF5 "" CACHE FILEPATH "Location of HDF5 library")
+endif (USE_SINGLE_PRECISION)
 
 # CMake build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
 
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Build parameters
-# --------------------------------------------------------------
-
-# Path variables
-#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
-set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+# ----------------------------------------------------------------------
 
 # Compiler flags
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
 
-# Search path for header files
-include_directories(${BINARY_INCLUDE_DIR})
+# Set path variables
+set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
 
-# CMake options
+# Set search paths for header files
+include_directories(${BINARY_INCLUDE_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Install parameters
+# ----------------------------------------------------------------------
+
+# Set root directory (relative) for installed header files
+execute_process(
+    COMMAND "echo" ${CMAKE_PROJECT_NAME}
+    COMMAND "tr" '[:upper:]' '[:lower:]'
+    OUTPUT_VARIABLE get_project_name_lower_out
+    RESULT_VARIABLE get_project_name_lower_result_var
+    )
+
+if (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
+    message(FATAL_ERROR "Unable to root directory for installed header files")
+endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
+#string(STRIP include/${get_project_name_lower_out} INSTALL_INCLUDE_DIR)
+set(INSTALL_INCLUDE_DIR include)
+
+# Set root directory (relative) for installed library files
+set(INSTALL_LIB_DIR lib)
+
+# ----------------------------------------------------------------------
 # Build requirements
-# --------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+# --- Compiler requirements
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # --- Software with pre-defined CMake package modules
 
@@ -74,56 +92,109 @@ else (IWYU)
             "Analysis of #includes will be skipped.")
 endif (IWYU)
 
-# Determine whether or not to enable parallel library
-if (SAMRAI)
-    set(ENABLE_PARALLEL ON)
-else (SAMRAI)
-    set(ENABLE_PARALLEL OFF)
-endif (SAMRAI)
+# ----------------------------------------------------------------------
+# Build targets
+# ----------------------------------------------------------------------
 
-# Enable parallel library
-if (ENABLE_PARALLEL)
+# lsm_toolbox
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/toolbox)
 
-    # SAMRAI
-    add_subdirectory(${EXT_PROJECTS_DIR}/samrai)
+# lsm_serial
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/serial)
 
-    # Boost
-    find_package(Boost REQUIRED)
+# examples
+add_subdirectory(examples EXCLUDE_FROM_ALL)
 
-    # MPI
-    find_package(MPI REQUIRED)
+# ----------------------------------------------------------------------
+# Testing
+# ----------------------------------------------------------------------
 
-    # HDF5
-    if (HDF5)
-        find_file(HDF5_H hdf5.h ${HDF5}/include)
-        find_library(LIBHDF5 hdf5 ${HDF5}/lib)
+# Enable CMake testing
+enable_testing()
 
-        # Verify that HDF5 header files were found
-        if (HDF5_H)
-            message("-- Found HDF5 header files: TRUE (${HDF5_H})")
-            set(HDF5_INCLUDE_DIR ${HDF5}/include)
-        else (HDF5_H)
-            message(FATAL_ERROR "Could NOT find HDF5 header files.")
-        endif (HDF5_H)
+# Add googletest directory to build
+add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
 
-        # Verify that HDF5 library files were found
-        if (LIBHDF5)
-            message("-- Found HDF5 libraries: TRUE (${LIBHDF5})")
-        else (LIBHDF5)
-            message(FATAL_ERROR "Could NOT find HDF5 libraries.")
-        endif (LIBHDF5)
-    else (HDF5)
-        find_package(HDF5 REQUIRED)
-    endif (HDF5)
+# Add test directory to build
+add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 
-endif (ENABLE_PARALLEL)
+# ----------------------------------------------------------------------
+# Installation
+# ----------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Process template files
-# --------------------------------------------------------------
+# Note: installation of header files, library files, and executables
+#       should be handled by the CMakeLists.txt files included by the
+#       add_subdirectory() command.
+
+# --- Add `uninstall` target
+
+# Generate cmake_uninstall.cmake file
+configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY
+)
+
+# Define `uninstall` target
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
+)
+
+# ----------------------------------------------------------------------
+# Source code distribution
+# ----------------------------------------------------------------------
+
+if (GIT_FOUND)
+    # Add target to build source code distribution
+    set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
+    set(ARCHIVE_TARBALL ${ARCHIVE_NAME}.tar.gz)
+    add_custom_target(dist
+        COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD |
+                gzip > ${CMAKE_BINARY_DIR}/${ARCHIVE_TARBALL}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+
+    # Add target to verify source code distribution
+    if (UNIX)
+        file(GENERATE OUTPUT check-uninstall.sh
+             CONTENT "
+remaining=\"`find \${PWD}/${ARCHIVE_NAME}/build/_inst -type f | wc -l`\"
+if test \"\${remaining}\" -ne 0; then
+    echo \"** Stage directory not empty: \${remaining} file (s) remaining!\"
+    exit 1
+fi"
+        )
+
+        add_custom_target(distcheck
+            COMMAND rm -rf ${ARCHIVE_NAME}
+            COMMAND gzip -cd ${ARCHIVE_TARBALL} | tar xfz -
+            COMMAND cd ${ARCHIVE_NAME} && cmake -H. -Bbuild
+            COMMAND cd ${ARCHIVE_NAME}/build && make
+            COMMAND cd ${ARCHIVE_NAME}/build && make test
+            COMMAND cd ${ARCHIVE_NAME}/build && make DESTDIR=$${PWD}/_inst install
+            COMMAND cd ${ARCHIVE_NAME}/build && make DESTDIR=$${PWD}/_inst uninstall
+            COMMAND sh check-uninstall.sh
+            COMMAND cd ${ARCHIVE_NAME}/build && make clean
+            COMMAND rm -rf ${ARCHIVE_NAME}
+            COMMAND echo "*** Package ${ARCHIVE_TARBALL} ready for distribution."
+        )
+        add_dependencies(distcheck dist)
+
+    endif (UNIX)
+endif (GIT_FOUND)
+
+# ----------------------------------------------------------------------
+# Build preparations
+# ----------------------------------------------------------------------
+
+# --- Create build directories
+
+file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+
+# --- Process template files
 
 # Floating-point precision
-if (SINGLE_PRECISION)
+if (USE_SINGLE_PRECISION)
 
     set(LSMLIB_REAL "float")
     set(LSMLIB_ZERO_TOL 1.e-5)
@@ -131,7 +202,7 @@ if (SINGLE_PRECISION)
     set(LSMLIB_REAL_MIN "FLT_MIN")
     set(LSMLIB_REAL_EPSILON "FLT_EPSILON")
 
-else (SINGLE_PRECISION)
+else (USE_SINGLE_PRECISION)
 
     set(LSMLIB_DOUBLE_PRECISION ON)
 
@@ -173,126 +244,8 @@ else (SINGLE_PRECISION)
 
     endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
-endif (SINGLE_PRECISION)
+endif (USE_SINGLE_PRECISION)
 
 # Generate configuration header files
-configure_file(config/LSMLIB_config.h.in
-               ${BINARY_INCLUDE_DIR}/LSMLIB_config.h)
-
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
-
-# lsm_toolbox
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/toolbox)
-
-# lsm_serial
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/serial)
-
-# lsm_parallel
-if (ENABLE_PARALLEL)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/src/parallel)
-endif (ENABLE_PARALLEL)
-
-# examples
-add_subdirectory(examples/toolbox EXCLUDE_FROM_ALL)
-add_subdirectory(examples/serial EXCLUDE_FROM_ALL)
-if (ENABLE_PARALLEL)
-    add_subdirectory(examples/parallel EXCLUDE_FROM_ALL)
-endif (ENABLE_PARALLEL)
-
-# --------------------------------------------------------------
-# Testing
-# --------------------------------------------------------------
-
-# Enable CMake testing
-enable_testing()
-
-# Emulate 'make check'
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-
-# Add googletest directory to build
-add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
-
-# Add test directory to build
-add_subdirectory(${PROJECT_SOURCE_DIR}/test)
-
-# --------------------------------------------------------------
-# Installation
-# --------------------------------------------------------------
-
-# Header files
-#file(GLOB HEADER_FILES ${SRCDIR}/*.h)
-#install(FILES ${HEADER_FILES} DESTINATION include)
-
-# Library files
-#install(TARGETS lsm_parallel DESTINATION lib)
-
-# Executable files
-# TODO
-
-# --- Add `uninstall` target
-
-# Generate cmake_uninstall.cmake file
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY
-)
-
-# Define `uninstall` target
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND}
-            -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-)
-
-# --------------------------------------------------------------
-# Source code distribution
-# --------------------------------------------------------------
-
-if (GIT_FOUND)
-    # Add target to build source code distribution
-    set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
-    set(ARCHIVE_TARBALL ${ARCHIVE_NAME}.tar.gz)
-    add_custom_target(dist
-        COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD |
-                gzip > ${CMAKE_BINARY_DIR}/${ARCHIVE_TARBALL}
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
-
-    # Add target to verify source code distribution
-    if (UNIX)
-        file(GENERATE OUTPUT check-uninstall.sh
-             CONTENT "
-remaining=\"`find \${PWD}/${ARCHIVE_NAME}/build/_inst -type f | wc -l`\"
-if test \"\${remaining}\" -ne 0; then
-    echo \"** Stage directory not empty: \${remaining} file (s) remaining!\"
-    exit 1
-fi"
-        )
-
-        add_custom_target(distcheck
-            COMMAND rm -rf ${ARCHIVE_NAME}
-            COMMAND gzip -cd ${ARCHIVE_TARBALL} | tar xfz -
-            COMMAND cd ${ARCHIVE_NAME} && cmake -H. -Bbuild
-            COMMAND cd ${ARCHIVE_NAME}/build && make
-            COMMAND cd ${ARCHIVE_NAME}/build && make test
-            COMMAND cd ${ARCHIVE_NAME}/build && make DESTDIR=$${PWD}/_inst install
-            COMMAND cd ${ARCHIVE_NAME}/build && make DESTDIR=$${PWD}/_inst uninstall
-            COMMAND sh check-uninstall.sh
-            COMMAND cd ${ARCHIVE_NAME}/build && make clean
-            COMMAND rm -rf ${ARCHIVE_NAME}
-            COMMAND echo "*** Package ${ARCHIVE_TARBALL} ready for distribution."
-        )
-        add_dependencies(distcheck dist)
-
-    endif (UNIX)
-endif (GIT_FOUND)
-
-# --------------------------------------------------------------
-# Build preparations
-# --------------------------------------------------------------
-
-# Create build output directories
-# TODO: file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+configure_file(config/lsmlib_config.h.in
+               ${BINARY_INCLUDE_DIR}/lsmlib_config.h)
