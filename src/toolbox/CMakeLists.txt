@@ -107,10 +107,10 @@ add_library(lsm_toolbox ${SOURCE_FILES})
 
 # Header files
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES} DESTINATION include/lsmlib)
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_INCLUDE_DIR})
 
 # Library files
-install(TARGETS lsm_toolbox DESTINATION lib)
+install(TARGETS lsm_toolbox DESTINATION ${INSTALL_LIB_DIR})
 
 # --------------------------------------------------------------
 # Build preparations
