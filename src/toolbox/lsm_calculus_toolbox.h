@@ -11,7 +11,7 @@
 #ifndef INCLUDED_LSM_CALCULUS_TOOLBOX
 #define INCLUDED_LSM_CALCULUS_TOOLBOX
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

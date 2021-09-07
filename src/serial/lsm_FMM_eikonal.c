@@ -50,7 +50,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "FMM_Core.h"
 #include "FMM_Heap.h"
 #include "FMM_Macros.h"

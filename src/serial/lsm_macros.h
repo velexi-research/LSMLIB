@@ -12,7 +12,7 @@
 #define included_lsm_macros_h
 
 #include <float.h>
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

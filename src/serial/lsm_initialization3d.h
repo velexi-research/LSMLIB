@@ -11,7 +11,7 @@
 #ifndef included_lsm_initialization3d_h
 #define included_lsm_initialization3d_h
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

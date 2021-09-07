@@ -11,7 +11,7 @@
 #ifndef included_fast_marching_method_h
 #define included_fast_marching_method_h
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 #include "FMM_Core.h"
 
 #ifdef __cplusplus

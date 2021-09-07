@@ -13,7 +13,7 @@
 #define included_lsm_grid_h
 
 #include <stdio.h>
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

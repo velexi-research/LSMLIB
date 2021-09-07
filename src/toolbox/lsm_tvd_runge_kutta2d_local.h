@@ -26,7 +26,7 @@
 #define LSM2D_TVD_RK3_STAGE2_LOCAL                lsm2dtvdrk3stage2local_
 #define LSM2D_TVD_RK3_STAGE3_LOCAL                lsm2dtvdrk3stage3local_
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

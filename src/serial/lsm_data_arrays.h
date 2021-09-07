@@ -12,7 +12,7 @@
 #ifndef included_lsm_data_arrays_h
 #define included_lsm_data_arrays_h
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

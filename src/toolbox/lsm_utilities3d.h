@@ -12,7 +12,7 @@
 #ifndef INCLUDED_LSM_UTILITIES_3D_H
 #define INCLUDED_LSM_UTILITIES_3D_H
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

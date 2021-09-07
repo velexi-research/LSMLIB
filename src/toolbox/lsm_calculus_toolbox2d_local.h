@@ -11,7 +11,7 @@
 #ifndef INCLUDED_LSM_CALCULUS_TOOLBOX2D_LOCAL
 #define INCLUDED_LSM_CALCULUS_TOOLBOX2D_LOCAL
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

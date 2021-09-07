@@ -12,7 +12,7 @@
 #ifndef INCLUDED_LSM_UTILITIES_2D_LOCAL_H
 #define INCLUDED_LSM_UTILITIES_2D_LOCAL_H
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

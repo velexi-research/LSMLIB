@@ -11,7 +11,7 @@
 #ifndef INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_LOCAL_H
 #define INCLUDED_LSM_SPATIAL_DERIVATIVES_2D_LOCAL_H
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {

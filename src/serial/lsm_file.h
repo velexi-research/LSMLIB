@@ -11,7 +11,7 @@
 #ifndef included_lsm_file_h
 #define included_lsm_file_h
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #define NO_ZIP 0
 #define GZIP   1

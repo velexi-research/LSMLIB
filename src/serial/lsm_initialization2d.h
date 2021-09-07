@@ -11,7 +11,7 @@
 #ifndef included_lsm_initialization2d_h
 #define included_lsm_initialization2d_h
 
-#include "LSMLIB_config.h"
+#include "lsmlib_config.h"
 
 #ifdef __cplusplus
 extern "C" {
