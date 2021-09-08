@@ -2,13 +2,17 @@
 # Customizations for toolbox components
 # -----------------------------------------------------------------------------
 
-# CMake initialization: No customizations
-# Build - requirements: No customizations
-# Build - parameters: No customizations
-# Install - parameters: No customizations
+# Build requirements: No customizations
+# Parameters (Install): No customizations
 
 # -----------------------------------------------------------------------------
-# Build - Targets
+# Parameters (Build)
+# -----------------------------------------------------------------------------
+
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+# -----------------------------------------------------------------------------
+# Targets (Build)
 # -----------------------------------------------------------------------------
 
 # Source files
@@ -16,14 +20,21 @@ file(GLOB LSM_TOOLBOX_SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/*.c
      ${CMAKE_CURRENT_SOURCE_DIR}/*.f
      ${CMAKE_CURRENT_BINARY_DIR}/*.f)
-set(LSM_TOOLBOX_SOURCE_FILES
-    ${LSM_TOOLBOX_SOURCE_FILES} PARENT_SCOPE)
+set(LSM_TOOLBOX_SOURCE_FILES ${LSM_TOOLBOX_SOURCE_FILES} PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build - Preparations
+# Targets (Install)
 # -----------------------------------------------------------------------------
 
-# Generate fortran files
+# Header files
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_HEADER_PATH})
+
+# -----------------------------------------------------------------------------
+# Build preparations
+# -----------------------------------------------------------------------------
+
+# --- Process template files
+
 configure_file(lsm_calculus_toolbox2d.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_calculus_toolbox2d.f)
 configure_file(lsm_calculus_toolbox2d_local.f.in
@@ -64,15 +75,6 @@ configure_file(lsm_spatial_derivatives3d.f.in
 configure_file(lsm_spatial_derivatives3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d_local.f)
 
-# Copy header files to binary folder
-file(COPY ${HEADER_FILES}
-     DESTINATION ${BINARY_INCLUDE_DIR}/toolbox)
+# --- Copy header files to binary folder
 
-# -----------------------------------------------------------------------------
-# Install - Targets
-# -----------------------------------------------------------------------------
-
-# Header files
-file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES}
-        DESTINATION ${INSTALL_INCLUDE_DIR}/toolbox)
+file(COPY ${HEADER_FILES} DESTINATION ${HEADER_OUTPUT_PATH})

@@ -2,13 +2,17 @@
 # Customizations for geometry components
 # -----------------------------------------------------------------------------
 
-# CMake initialization: No customizations
-# Build - Requirements: No customizations
-# Build - Parameters: No customizations
-# Install - Parameters: No customizations
+# Build requirements: No customizations
+# Parameters (Install): No customizations
 
 # -----------------------------------------------------------------------------
-# Build - Targets
+# Parameters (Build)
+# -----------------------------------------------------------------------------
+
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+# -----------------------------------------------------------------------------
+# Targets (Build)
 # -----------------------------------------------------------------------------
 
 # Source files
@@ -16,11 +20,17 @@ file(GLOB LSM_GEOMETRY_SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/*.c
      ${CMAKE_CURRENT_SOURCE_DIR}/*.f
      ${CMAKE_CURRENT_BINARY_DIR}/*.f)
-set(LSM_GEOMETRY_SOURCE_FILES
-    ${LSM_GEOMETRY_SOURCE_FILES} PARENT_SCOPE)
+set(LSM_GEOMETRY_SOURCE_FILES ${LSM_GEOMETRY_SOURCE_FILES} PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build - Preparations
+# Targets (Install)
+# -----------------------------------------------------------------------------
+
+# Header files
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_HEADER_PATH})
+
+# -----------------------------------------------------------------------------
+# Build preparations
 # -----------------------------------------------------------------------------
 
 # --- Process template files
@@ -46,14 +56,4 @@ configure_file(lsm_curvature3d_local.f.in
 
 # --- Copy header files to binary folder
 
-file(COPY ${HEADER_FILES}
-     DESTINATION ${BINARY_INCLUDE_DIR}/geometry)
-
-# -----------------------------------------------------------------------------
-# Install - Targets
-# -----------------------------------------------------------------------------
-
-# Header files
-file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES}
-        DESTINATION ${INSTALL_INCLUDE_DIR}/geometry)
+file(COPY ${HEADER_FILES} DESTINATION ${HEADER_OUTPUT_PATH})

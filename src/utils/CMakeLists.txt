@@ -2,34 +2,34 @@
 # Customizations for utilities
 # -----------------------------------------------------------------------------
 
-# CMake initialization: No customizations
-# Build - Requirements: No customizations
-# Build - Parameters: No customizations
-# Install - Parameters: No customizations
+# Build requirements: No customizations
+# Parameters (Install): No customizations
 
 # -----------------------------------------------------------------------------
-# Build - Targets
+# Parameters (Build)
+# -----------------------------------------------------------------------------
+
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+# -----------------------------------------------------------------------------
+# Targets (Build)
 # -----------------------------------------------------------------------------
 
 # Source files
 file(GLOB LSM_UTILS_SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
-set(LSM_UTILS_SOURCE_FILES
-    ${LSM_UTILS_SOURCE_FILES} PARENT_SCOPE)
+set(LSM_UTILS_SOURCE_FILES ${LSM_UTILS_SOURCE_FILES} PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build - Preparations
-# -----------------------------------------------------------------------------
-
-# Copy header files to binary folder
-file(COPY ${HEADER_FILES}
-     DESTINATION ${BINARY_INCLUDE_DIR}/utils)
-
-# -----------------------------------------------------------------------------
-# Install - Targets
+# Targets (Install)
 # -----------------------------------------------------------------------------
 
 # Header files
-file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES}
-        DESTINATION ${INSTALL_INCLUDE_DIR}/utils)
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_HEADER_PATH})
+
+# -----------------------------------------------------------------------------
+# Build preparations
+# -----------------------------------------------------------------------------
+
+# Copy header files to binary folder
+file(COPY ${HEADER_FILES} DESTINATION ${HEADER_OUTPUT_PATH})

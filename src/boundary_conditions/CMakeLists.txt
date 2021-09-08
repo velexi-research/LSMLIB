@@ -2,13 +2,17 @@
 # Customizations for boundary conditions components
 # -----------------------------------------------------------------------------
 
-# CMake initialization: No customizations
-# Build - Requirements: No customizations
-# Build - Parameters: No customizations
-# Install - Parameters: No customizations
+# Build requirements: No customizations
+# Parameters (Install): No customizations
 
 # -----------------------------------------------------------------------------
-# Build - Targets
+# Parameters (Build)
+# -----------------------------------------------------------------------------
+
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+# -----------------------------------------------------------------------------
+# Targets (Build)
 # -----------------------------------------------------------------------------
 
 # Source files
@@ -20,18 +24,15 @@ set(LSM_BOUNDARY_CONDITIONS_SOURCE_FILES
     ${LSM_BOUNDARY_CONDITIONS_SOURCE_FILES} PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build - Preparations
-# -----------------------------------------------------------------------------
-
-# Copy header files to binary folder
-file(COPY ${HEADER_FILES}
-     DESTINATION ${BINARY_INCLUDE_DIR}/boundary_conditions)
-
-# -----------------------------------------------------------------------------
-# Install - Targets
+# Targets (Install)
 # -----------------------------------------------------------------------------
 
 # Header files
-file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES}
-        DESTINATION ${INSTALL_INCLUDE_DIR}/boundary_conditions)
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_HEADER_PATH})
+
+# -----------------------------------------------------------------------------
+# Build preparations
+# -----------------------------------------------------------------------------
+
+# Copy header files to binary folder
+file(COPY ${HEADER_FILES} DESTINATION ${HEADER_OUTPUT_PATH})
