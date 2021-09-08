@@ -1,14 +1,29 @@
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Customizations for reinitialization components
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# Build - Requirements: No customizations
+# Build - Parameters: No customizations
+# Install - Parameters: No customizations
 
-# --------------------------------------------------------------
-# Process template files
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Build - Targets
+# -----------------------------------------------------------------------------
+
+# Source files
+file(GLOB LSM_REINITIALIZATION_SOURCE_FILES
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
+     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
+set(LSM_REINITIALIZATION_SOURCE_FILES
+    ${LSM_REINITIALIZATION_SOURCE_FILES} PARENT_SCOPE)
+
+# -----------------------------------------------------------------------------
+# Build - Preparations
+# -----------------------------------------------------------------------------
+
+# --- Process template files
 
 # Generate fortran files
 configure_file(lsm_reinitialization1d.f.in
@@ -22,29 +37,16 @@ configure_file(lsm_reinitialization3d.f.in
 configure_file(lsm_reinitialization3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_reinitialization3d_local.f)
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# --- Copy header files to binary folder
 
-# Source files
-file(GLOB LSM_REINITIALIZATION_SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
-     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
-set(LSM_REINITIALIZATION_SOURCE_FILES
-    ${LSM_REINITIALIZATION_SOURCE_FILES} PARENT_SCOPE)
+file(COPY ${HEADER_FILES}
+     DESTINATION ${BINARY_INCLUDE_DIR}/reinitialization)
 
-# --------------------------------------------------------------
-# Installation
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Install - Targets
+# -----------------------------------------------------------------------------
 
 # Header files
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install(FILES ${HEADER_FILES}
         DESTINATION ${INSTALL_INCLUDE_DIR}/reinitialization)
-
-# --------------------------------------------------------------
-# Build preparations
-# --------------------------------------------------------------
-
-# None

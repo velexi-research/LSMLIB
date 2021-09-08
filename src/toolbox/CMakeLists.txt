@@ -1,14 +1,27 @@
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Customizations for toolbox components
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# Build - requirements: No customizations
+# Build - parameters: No customizations
+# Install - parameters: No customizations
 
-# --------------------------------------------------------------
-# Process template files
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Build - Targets
+# -----------------------------------------------------------------------------
+
+# Source files
+file(GLOB LSM_TOOLBOX_SOURCE_FILES
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
+     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
+set(LSM_TOOLBOX_SOURCE_FILES
+    ${LSM_TOOLBOX_SOURCE_FILES} PARENT_SCOPE)
+
+# -----------------------------------------------------------------------------
+# Build - Preparations
+# -----------------------------------------------------------------------------
 
 # Generate fortran files
 configure_file(lsm_calculus_toolbox2d.f.in
@@ -51,29 +64,15 @@ configure_file(lsm_spatial_derivatives3d.f.in
 configure_file(lsm_spatial_derivatives3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d_local.f)
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# Copy header files to binary folder
+file(COPY ${HEADER_FILES}
+     DESTINATION ${BINARY_INCLUDE_DIR}/toolbox)
 
-# Source files
-file(GLOB LSM_TOOLBOX_SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
-     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
-set(LSM_TOOLBOX_SOURCE_FILES
-    ${LSM_TOOLBOX_SOURCE_FILES} PARENT_SCOPE)
-
-# --------------------------------------------------------------
-# Installation
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Install - Targets
+# -----------------------------------------------------------------------------
 
 # Header files
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install(FILES ${HEADER_FILES}
         DESTINATION ${INSTALL_INCLUDE_DIR}/toolbox)
-
-# --------------------------------------------------------------
-# Build preparations
-# --------------------------------------------------------------
-
-# None
