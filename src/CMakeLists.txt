@@ -1,5 +1,5 @@
 # --------------------------------------------------------------
-# Customizations for lsmlib library
+# Customizations for lsm library
 # --------------------------------------------------------------
 
 # CMake initialization: No customizations
@@ -32,7 +32,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/boundary_conditions
                     ${CMAKE_CURRENT_SOURCE_DIR}/fast_marching_method/core
                     ${CMAKE_CURRENT_SOURCE_DIR}/field_extension
                     ${CMAKE_CURRENT_SOURCE_DIR}/geometry
-                    ${CMAKE_CURRENT_SOURCE_DIR}/localization
                     ${CMAKE_CURRENT_SOURCE_DIR}/reinitialization
                     ${CMAKE_CURRENT_SOURCE_DIR}/toolbox
                     ${CMAKE_CURRENT_SOURCE_DIR}/utils)
@@ -54,9 +53,6 @@ add_subdirectory(field_extension)
 # geometry
 add_subdirectory(geometry)
 
-# localization
-add_subdirectory(localization)
-
 # reinitialization
 add_subdirectory(reinitialization)
 
@@ -71,7 +67,6 @@ add_library(lsm
             ${LSM_FAST_MARCHING_METHOD_SOURCE_FILES}
             ${LSM_FIELD_EXTENSION_SOURCE_FILES}
             ${LSM_GEOMETRY_SOURCE_FILES}
-            ${LSM_LOCALIZATION_SOURCE_FILES}
             ${LSM_REINITIALIZATION_SOURCE_FILES}
             ${LSM_TOOLBOX_SOURCE_FILES}
             ${LSM_UTILS_SOURCE_FILES})
