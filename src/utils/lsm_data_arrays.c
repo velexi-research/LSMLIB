@@ -20,7 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lsm_data_arrays.h"
+#include "lsmlib/lsmlib_config.h"
+#include "lsmlib/lsm_data_arrays.h"
 
 #define DSZ  sizeof(LSMLIB_REAL)
 #define ISZ  sizeof(int)

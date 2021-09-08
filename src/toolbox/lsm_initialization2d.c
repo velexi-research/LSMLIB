@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include <float.h>
 
-#include "lsm_initialization2d.h"
-#include "lsm_macros.h"
+#include "lsmlib/lsm_macros.h"
+#include "lsmlib/lsm_initialization2d.h"
 
 
 void createLine(

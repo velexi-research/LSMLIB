@@ -9,9 +9,9 @@
  *              boundary conditions for serial calculations
  */
 
-#include "lsm_boundary_conditions.h"
-#include "lsm_boundary_conditions2d.h"
-#include "lsm_boundary_conditions3d.h"
+#include "lsmlib/lsm_boundary_conditions.h"
+#include "lsmlib/lsm_boundary_conditions2d.h"
+#include "lsmlib/lsm_boundary_conditions3d.h"
 
 
 /*============= Function definitions for boundary conditions ==============*/

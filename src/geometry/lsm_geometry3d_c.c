@@ -10,8 +10,9 @@
 
 #include <math.h>
 #include <float.h>
-#include "lsmlib_config.h"
-#include "lsm_geometry3d.h"
+
+#include "lsmlib/lsmlib_config.h"
+#include "lsmlib/lsm_geometry3d.h"
 
 /* MACROS */
 #define  LSM_GEOM_3D_ABS(x)       ( ((x) > 0) ? (x) : -(x) )
