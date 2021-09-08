@@ -18,17 +18,6 @@ configure_file(lsm_calculus_toolbox2d_local.f.in
 configure_file(lsm_calculus_toolbox3d.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_calculus_toolbox3d.f)
 
-configure_file(lsm_spatial_derivatives1d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives1d.f)
-configure_file(lsm_spatial_derivatives2d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives2d.f)
-configure_file(lsm_spatial_derivatives2d_local.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives2d_local.f)
-configure_file(lsm_spatial_derivatives3d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d.f)
-configure_file(lsm_spatial_derivatives3d_local.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d_local.f)
-
 configure_file(lsm_level_set_evolution1d.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_level_set_evolution1d.f)
 configure_file(lsm_level_set_evolution2d.f.in
@@ -40,16 +29,32 @@ configure_file(lsm_level_set_evolution3d.f.in
 configure_file(lsm_level_set_evolution3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_level_set_evolution3d_local.f)
 
-configure_file(lsm_utilities1d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_utilities1d.f)
-configure_file(lsm_utilities2d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_utilities2d.f)
-configure_file(lsm_utilities2d_local.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_utilities2d_local.f)
-configure_file(lsm_utilities3d.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_utilities3d.f)
-configure_file(lsm_utilities3d_local.f.in
-               ${CMAKE_CURRENT_BINARY_DIR}/lsm_utilities3d_local.f)
+configure_file(lsm_math_utils1d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_math_utils1d.f)
+configure_file(lsm_math_utils2d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_math_utils2d.f)
+configure_file(lsm_math_utils2d_local.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_math_utils2d_local.f)
+configure_file(lsm_math_utils3d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_math_utils3d.f)
+configure_file(lsm_math_utils3d_local.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_math_utils3d_local.f)
+
+configure_file(lsm_spatial_derivatives1d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives1d.f)
+configure_file(lsm_spatial_derivatives2d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives2d.f)
+configure_file(lsm_spatial_derivatives2d_local.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives2d_local.f)
+configure_file(lsm_spatial_derivatives3d.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d.f)
+configure_file(lsm_spatial_derivatives3d_local.f.in
+               ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d_local.f)
+
+# --------------------------------------------------------------
+# Build parameters
+# --------------------------------------------------------------
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/toolbox PARENT_SCOPE)
 
 # --------------------------------------------------------------
 # Build targets
@@ -57,7 +62,6 @@ configure_file(lsm_utilities3d_local.f.in
 
 # Source files
 file(GLOB LSM_TOOLBOX_SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
      ${CMAKE_CURRENT_SOURCE_DIR}/*.c
      ${CMAKE_CURRENT_SOURCE_DIR}/*.f
      ${CMAKE_CURRENT_BINARY_DIR}/*.f)
@@ -70,7 +74,7 @@ set(LSM_TOOLBOX_SOURCE_FILES
 
 # Header files
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_INCLUDE_DIR})
+install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_INCLUDE_DIR}/toolbox)
 
 # --------------------------------------------------------------
 # Build preparations
