@@ -849,7 +849,7 @@ c***********************************************************************
 
 c***********************************************************************
 c
-c  lsm3dCentralGradOrder4LOCAL() computes the second-order, central, 
+c  lsm3dCentralGradOrder4LOCAL() computes the fourth-order, central,
 c  finite difference approximation to the gradient of phi.
 c  The routine loops only over local (narrow band) points.
 c

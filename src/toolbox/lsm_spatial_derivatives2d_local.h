@@ -450,7 +450,7 @@ void LSM2D_CENTRAL_GRAD_ORDER2_LOCAL(
 
 /*!  
 *
-*  LSM2D_CENTRAL_GRAD_ORDER4_LOCAL() computes the second-order, central, 
+*  LSM2D_CENTRAL_GRAD_ORDER4_LOCAL() computes the fourth-order, central,
 *  finite difference approximation to the gradient of phi.
 *  The routine loops only over local (narrow band) points.
 *
