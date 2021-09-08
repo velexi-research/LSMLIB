@@ -4,7 +4,7 @@
  * provided by lsm_FMM_eikonal.c.
  */
 
-#include "lsm_fast_marching_method.h"
+#include "lsmlib/lsm_fast_marching_method.h"
 
 
 /* Define required macros */
@@ -18,4 +18,4 @@
 
 
 /* Include "templated" implementation of Eikonal equation solver. */
-#include "lsm_FMM_eikonal.h"
+#include "lsmlib/lsm_FMM_eikonal.h"

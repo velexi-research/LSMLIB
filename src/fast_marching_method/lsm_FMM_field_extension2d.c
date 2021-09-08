@@ -4,7 +4,7 @@
  * functions and extension fields provided by lsm_FMM_field_extension.c.
  */
 
-#include "lsm_fast_marching_method.h"
+#include "lsmlib/lsm_fast_marching_method.h"
 
 
 /* Define required macros */
@@ -23,4 +23,4 @@
 
 /* Include "templated" implementation of Fast Marching Method */
 /* signed distance functions and extension fields.            */
-#include "lsm_FMM_field_extension.h"
+#include "lsmlib/lsm_FMM_field_extension.h"
