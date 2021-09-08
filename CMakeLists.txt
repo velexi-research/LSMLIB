@@ -60,8 +60,7 @@ execute_process(
 if (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
     message(FATAL_ERROR "Unable to root directory for installed header files")
 endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
-#string(STRIP include/${get_project_name_lower_out} INSTALL_INCLUDE_DIR)
-set(INSTALL_INCLUDE_DIR include)
+string(STRIP include/${get_project_name_lower_out} INSTALL_INCLUDE_DIR)
 
 # Set root directory (relative) for installed library files
 set(INSTALL_LIB_DIR lib)
@@ -110,10 +109,10 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 enable_testing()
 
 # Add googletest to build
-add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
+add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
 
 # Add tests to build
-add_subdirectory(tests)
+add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 # ----------------------------------------------------------------------
 # Installation
@@ -122,6 +121,11 @@ add_subdirectory(tests)
 # Note: installation of header files, library files, and executables
 #       should be handled by the CMakeLists.txt files included by the
 #       add_subdirectory() command.
+
+# --- Header files
+
+install(FILES ${BINARY_INCLUDE_DIR}/lsmlib_config.h
+        DESTINATION ${INSTALL_INCLUDE_DIR})
 
 # --- Add `uninstall` target
 
