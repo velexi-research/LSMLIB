@@ -1,15 +1,15 @@
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # CMake initialization
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.10)
 project(LSMLIB
         LANGUAGES C CXX Fortran
         VERSION 2.0.0)
 
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Configuration options
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Build shared libraries
 # TODO: fix shared library build
@@ -26,48 +26,9 @@ endif (USE_SINGLE_PRECISION)
 # CMake build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
 
-# ----------------------------------------------------------------------
-# Build parameters
-# ----------------------------------------------------------------------
-
-# Compiler flags
-set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
-
-# Set path variables
-set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-set(EXT_PROJECTS_DIR ext)
-
-# Set search paths for header files
-include_directories(${BINARY_INCLUDE_DIR})
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-# ----------------------------------------------------------------------
-# Install parameters
-# ----------------------------------------------------------------------
-
-# Set root directory (relative) for installed header files
-execute_process(
-    COMMAND "echo" ${CMAKE_PROJECT_NAME}
-    COMMAND "tr" '[:upper:]' '[:lower:]'
-    OUTPUT_VARIABLE get_project_name_lower_out
-    RESULT_VARIABLE get_project_name_lower_result_var
-    )
-
-if (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
-    message(FATAL_ERROR "Unable to root directory for installed header files")
-endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
-string(STRIP include/${get_project_name_lower_out} INSTALL_INCLUDE_DIR)
-
-# Set root directory (relative) for installed library files
-set(INSTALL_LIB_DIR lib)
-
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Build requirements
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # --- Compiler requirements
 
@@ -91,9 +52,58 @@ else (IWYU)
             "Analysis of #includes will be skipped.")
 endif (IWYU)
 
-# ----------------------------------------------------------------------
-# Build targets
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Parameters (Build)
+# -----------------------------------------------------------------------------
+
+# Construct name to use for package-specific directories (e.g., header files)
+execute_process(
+    COMMAND "echo" ${CMAKE_PROJECT_NAME}
+    COMMAND "tr" '[:upper:]' '[:lower:]'
+    OUTPUT_VARIABLE get_project_name_lower_out
+    RESULT_VARIABLE get_project_name_lower_result_var
+    )
+if (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
+    message(FATAL_ERROR "Error constructing directory name for package")
+endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
+string(STRIP ${get_project_name_lower_out} PKG_DIR_NAME)
+
+# Set path variables
+set(BINARY_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
+set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+set(BINARY_LIB_DIR ${CMAKE_BINARY_DIR}/lib)
+
+set(HEADER_OUTPUT_PATH ${CMAKE_BINARY_DIR}/include/${PKG_DIR_NAME})
+set(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${BINARY_BIN_DIR})
+
+set(EXT_PROJECTS_DIR ext)
+
+# Compiler flags
+set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
+
+# Set search paths for header files
+include_directories(${BINARY_INCLUDE_DIR})
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# -----------------------------------------------------------------------------
+# Parameters (Install)
+# -----------------------------------------------------------------------------
+
+# Set directory (relative) for installed executables
+set(INSTALL_BIN_PATH bin)
+
+# Set directory (relative) for installed header files
+set(INSTALL_HEADER_PATH include/${PKG_DIR_NAME})
+
+# Set directory (relative) for installed library files
+set(INSTALL_LIB_PATH lib)
+
+# -----------------------------------------------------------------------------
+# Targets (Build)
+# -----------------------------------------------------------------------------
 
 # library
 add_subdirectory(src)
@@ -101,31 +111,18 @@ add_subdirectory(src)
 # examples
 add_subdirectory(examples EXCLUDE_FROM_ALL)
 
-# ----------------------------------------------------------------------
-# Testing
-# ----------------------------------------------------------------------
-
-# Enable CMake testing
-enable_testing()
-
-# Add googletest to build
-add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
-
-# Add tests to build
-add_subdirectory(tests EXCLUDE_FROM_ALL)
-
-# ----------------------------------------------------------------------
-# Installation
-# ----------------------------------------------------------------------
-
-# Note: installation of header files, library files, and executables
-#       should be handled by the CMakeLists.txt files included by the
-#       add_subdirectory() command.
+# -----------------------------------------------------------------------------
+# Targets (Install)
+# -----------------------------------------------------------------------------
 
 # --- Header files
 
-install(FILES ${BINARY_INCLUDE_DIR}/lsmlib_config.h
-        DESTINATION ${INSTALL_INCLUDE_DIR})
+# Note: installation of non-configuration header files, library files, and
+#       executables should be handled by the CMakeLists.txt files included by
+#       the add_subdirectory() command.
+
+install(FILES ${HEADER_OUTPUT_PATH}/lsmlib_config.h
+        DESTINATION ${INSTALL_HEADER_PATH})
 
 # --- Add `uninstall` target
 
@@ -141,9 +138,22 @@ add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
 )
 
-# ----------------------------------------------------------------------
-# Source code distribution
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Targets (Testing)
+# -----------------------------------------------------------------------------
+
+# Enable CMake testing
+enable_testing()
+
+# Add googletest to build
+add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
+
+# Add tests to build
+add_subdirectory(tests EXCLUDE_FROM_ALL)
+
+# -----------------------------------------------------------------------------
+# Targets (Distribution)
+# -----------------------------------------------------------------------------
 
 if (GIT_FOUND)
     # Add target to build source code distribution
@@ -184,9 +194,9 @@ fi"
     endif (UNIX)
 endif (GIT_FOUND)
 
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Build preparations
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # --- Create build directories
 
@@ -249,4 +259,4 @@ endif (USE_SINGLE_PRECISION)
 
 # Generate configuration header files
 configure_file(include/lsmlib_config.h.in
-               ${BINARY_INCLUDE_DIR}/lsmlib_config.h)
+               ${HEADER_OUTPUT_PATH}/lsmlib_config.h)
