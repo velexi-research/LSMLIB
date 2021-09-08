@@ -1,14 +1,3 @@
-/*
- * File:        lsm_FMM_field_extension.c
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
- * Description: Implementation of Fast Marching Method for computing
- *              signed distance functions and extension fields
- */
-
 /*! \file lsm_FMM_field_extension.c
  *
  * \brief
@@ -57,8 +46,8 @@
  *
  */
 
-#ifndef included_lsm_FMM_field_extension_c
-#define included_lsm_FMM_field_extension_c
+#ifndef _LSM_FMM_FIELD_EXTENSION_H_
+#define _LSM_FMM_FIELD_EXTENSION_H_
 
 #include <stddef.h>
 #include <stdio.h>

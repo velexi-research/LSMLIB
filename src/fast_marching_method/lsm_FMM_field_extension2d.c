@@ -1,16 +1,4 @@
 /*
- * File:        lsm_FMM_field_extension2d.c
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
- * Description: Implementation of 2D Fast Marching Method for computing
- *              signed distance functions and extension fields
- */
- 
-
-/*
  * lsm_FMM_field_extension2d.c makes use of the generic implementation 
  * of the Fast Marching Method algorithm for computing signed distance
  * functions and extension fields provided by lsm_FMM_field_extension.c.
@@ -35,4 +23,4 @@
 
 /* Include "templated" implementation of Fast Marching Method */
 /* signed distance functions and extension fields.            */
-#include "lsm_FMM_field_extension.c"
+#include "lsm_FMM_field_extension.h"

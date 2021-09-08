@@ -52,11 +52,6 @@ configure_file(lsm_spatial_derivatives3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_spatial_derivatives3d_local.f)
 
 # --------------------------------------------------------------
-# Build parameters
-# --------------------------------------------------------------
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/toolbox PARENT_SCOPE)
-
-# --------------------------------------------------------------
 # Build targets
 # --------------------------------------------------------------
 
@@ -74,7 +69,8 @@ set(LSM_TOOLBOX_SOURCE_FILES
 
 # Header files
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_INCLUDE_DIR}/toolbox)
+install(FILES ${HEADER_FILES}
+        DESTINATION ${INSTALL_INCLUDE_DIR}/toolbox)
 
 # --------------------------------------------------------------
 # Build preparations

@@ -1,14 +1,3 @@
-/*
- * File:        lsm_FMM_eikonal3d.c
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
- * Description: Implementation of 3D Fast Marching Method for Eikonal equation
- */
-
-
 /* 
  * lsm_FMM_eikonal3d.c makes use of the generic implementation of
  * the Eikonal equation solver based on the Fast Marching Method
@@ -29,4 +18,4 @@
 
 
 /* Include "templated" implementation of Eikonal equation solver. */
-#include "lsm_FMM_eikonal.c"
+#include "lsm_FMM_eikonal.h"

@@ -1,14 +1,4 @@
-/*
- * File:        lsm_FMM_eikonal.c
- * Copyrights:  (c) 2005 The Trustees of Princeton University and Board of
- *                  Regents of the University of Texas.  All rights reserved.
- *              (c) 2009 Kevin T. Chu.  All rights reserved.
- * Revision:    $Revision$
- * Modified:    $Date$
- * Description: Implementation of Fast Marching Method for Eikonal equation
- */
-
-/*! \file lsm_FMM_eikonal.c
+/*! \file lsm_FMM_eikonal.h
  *
  * \brief
  * @ref lsm_FMM_eikonal.c provides "generic" implementations of 
@@ -43,8 +33,8 @@
  *
  */
 
-#ifndef included_lsm_FMM_eikonal_c
-#define included_lsm_FMM_eikonal_c
+#ifndef _LSM_FMM_EIKONAL_H_
+#define _LSM_FMM_EIKONAL_H_
  
 #include <stdio.h>
 #include <stdlib.h>

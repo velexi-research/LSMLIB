@@ -24,6 +24,21 @@ else (SINGLE_PRECISION)
 endif (SINGLE_PRECISION)
 
 # --------------------------------------------------------------
+# Build parameters
+# --------------------------------------------------------------
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/boundary_conditions
+                    ${CMAKE_CURRENT_SOURCE_DIR}/fast_marching_method
+                    ${CMAKE_CURRENT_SOURCE_DIR}/fast_marching_method/core
+                    ${CMAKE_CURRENT_SOURCE_DIR}/field_extension
+                    ${CMAKE_CURRENT_SOURCE_DIR}/geometry
+                    ${CMAKE_CURRENT_SOURCE_DIR}/localization
+                    ${CMAKE_CURRENT_SOURCE_DIR}/reinitialization
+                    ${CMAKE_CURRENT_SOURCE_DIR}/toolbox
+                    ${CMAKE_CURRENT_SOURCE_DIR}/utils)
+
+
+# --------------------------------------------------------------
 # Build targets
 # --------------------------------------------------------------
 
@@ -48,6 +63,9 @@ add_subdirectory(reinitialization)
 # toolbox
 add_subdirectory(toolbox)
 
+# utilities
+add_subdirectory(utils)
+
 add_library(lsm
             ${LSM_BOUNDARY_CONDITIONS_SOURCE_FILES}
             ${LSM_FAST_MARCHING_METHOD_SOURCE_FILES}
@@ -55,7 +73,8 @@ add_library(lsm
             ${LSM_GEOMETRY_SOURCE_FILES}
             ${LSM_LOCALIZATION_SOURCE_FILES}
             ${LSM_REINITIALIZATION_SOURCE_FILES}
-            ${LSM_TOOLBOX_SOURCE_FILES})
+            ${LSM_TOOLBOX_SOURCE_FILES}
+            ${LSM_UTILS_SOURCE_FILES})
 
 # --------------------------------------------------------------
 # Installation
