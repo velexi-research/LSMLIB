@@ -39,7 +39,7 @@ set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
 set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
+set(EXT_PROJECTS_DIR ext)
 
 # Set search paths for header files
 include_directories(${BINARY_INCLUDE_DIR})
@@ -96,11 +96,8 @@ endif (IWYU)
 # Build targets
 # ----------------------------------------------------------------------
 
-# lsm_toolbox
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/toolbox)
-
-# lsm_serial
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/serial)
+# library
+add_subdirectory(src)
 
 # examples
 add_subdirectory(examples EXCLUDE_FROM_ALL)
@@ -112,11 +109,11 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 # Enable CMake testing
 enable_testing()
 
-# Add googletest directory to build
+# Add googletest to build
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest)
 
-# Add test directory to build
-add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+# Add tests to build
+add_subdirectory(tests)
 
 # ----------------------------------------------------------------------
 # Installation
@@ -247,5 +244,5 @@ else (USE_SINGLE_PRECISION)
 endif (USE_SINGLE_PRECISION)
 
 # Generate configuration header files
-configure_file(config/lsmlib_config.h.in
+configure_file(include/lsmlib_config.h.in
                ${BINARY_INCLUDE_DIR}/lsmlib_config.h)
