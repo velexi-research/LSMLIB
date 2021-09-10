@@ -69,7 +69,7 @@ install(TARGETS lsm DESTINATION ${INSTALL_LIB_DIR})
 # Build preparations
 # -----------------------------------------------------------------------------
 
-# --- Create build output directories
+# --- Create build directories
 
 file(MAKE_DIRECTORY ${HEADER_OUTPUT_PATH})
 file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
