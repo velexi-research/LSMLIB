@@ -25,11 +25,11 @@ endforeach (file)
 
 # Remove header file directory
 if (UNIX)
-    if (NOT "@INSTALL_INCLUDE_DIR@" STREQUAL "include")
-        set(INSTALL_INCLUDE_DIR $ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@/@INSTALL_INCLUDE_DIR@)
-        if (EXISTS "${INSTALL_INCLUDE_DIR}")
+    if (NOT "@INSTALL_HEADER_PATH@" STREQUAL "include")
+        set(INSTALL_HEADER_PATH $ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@/@INSTALL_HEADER_PATH@)
+        if (EXISTS "${INSTALL_HEADER_PATH}")
             exec_program(
-                "@CMAKE_COMMAND@" ARGS "-E remove_directory ${INSTALL_INCLUDE_DIR}")
-        endif (EXISTS "${INSTALL_INCLUDE_DIR}")
-    endif (NOT "@INSTALL_INCLUDE_DIR@" STREQUAL "include")
+                "@CMAKE_COMMAND@" ARGS "-E remove_directory ${INSTALL_HEADER_PATH}")
+        endif (EXISTS "${INSTALL_HEADER_PATH}")
+    endif (NOT "@INSTALL_HEADER_PATH@" STREQUAL "include")
 endif (UNIX)
