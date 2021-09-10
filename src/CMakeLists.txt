@@ -29,6 +29,8 @@ endif (SINGLE_PRECISION)
 # Targets (Build)
 # -----------------------------------------------------------------------------
 
+# --- Subdirectories
+
 # boundary conditions
 add_subdirectory(boundary_conditions)
 
@@ -50,20 +52,37 @@ add_subdirectory(toolbox)
 # utilities
 add_subdirectory(utils)
 
+# --- Header files and libraries
+
+set(HEADER_FILES
+    ${LSM_BOUNDARY_CONDITIONS_HEADER_FILES}
+    ${LSM_FMM_HEADER_FILES}
+    ${LSM_FIELD_EXTENSION_HEADER_FILES}
+    ${LSM_GEOMETRY_HEADER_FILES}
+    ${LSM_REINITIALIZATION_HEADER_FILES}
+    ${LSM_TOOLBOX_HEADER_FILES}
+    ${LSM_UTILS_HEADER_FILES})
+add_custom_target(lsm-header-files
+    COMMAND ${CMAKE_COMMAND} -E
+        copy_if_different ${HEADER_FILES} ${HEADER_OUTPUT_PATH})
+add_dependencies(lsm-header-files make-header-dir)
+
 add_library(lsm
             ${LSM_BOUNDARY_CONDITIONS_SOURCE_FILES}
-            ${LSM_FAST_MARCHING_METHOD_SOURCE_FILES}
+            ${LSM_FMM_SOURCE_FILES}
             ${LSM_FIELD_EXTENSION_SOURCE_FILES}
             ${LSM_GEOMETRY_SOURCE_FILES}
             ${LSM_REINITIALIZATION_SOURCE_FILES}
             ${LSM_TOOLBOX_SOURCE_FILES}
             ${LSM_UTILS_SOURCE_FILES})
-add_dependencies(lsm make-header-dir)
-add_dependencies(lsm make-lib-dir)
+add_dependencies(lsm make-lib-dir lsm-header-files)
 
 # -----------------------------------------------------------------------------
 # Targets (Install)
 # -----------------------------------------------------------------------------
+
+# Header files
+install(DIRECTORY ${HEADER_OUTPUT_PATH}/ DESTINATION ${INSTALL_HEADER_PATH})
 
 # Library files
 install(TARGETS lsm DESTINATION ${INSTALL_LIB_DIR})

@@ -4,16 +4,16 @@
 
 # Build requirements: No customizations
 # Parameters (Install): No customizations
+# Targets (Build): No customizations
+# Targets (Install): No customizations
 
 # -----------------------------------------------------------------------------
 # Parameters (Build)
 # -----------------------------------------------------------------------------
 
-file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-
-# -----------------------------------------------------------------------------
-# Targets (Build)
-# -----------------------------------------------------------------------------
+# Header files
+file(GLOB LSM_GEOMETRY_HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+set(LSM_GEOMETRY_HEADER_FILES ${LSM_GEOMETRY_HEADER_FILES} PARENT_SCOPE)
 
 # Source files
 file(GLOB LSM_GEOMETRY_SOURCE_FILES
@@ -21,13 +21,6 @@ file(GLOB LSM_GEOMETRY_SOURCE_FILES
      ${CMAKE_CURRENT_SOURCE_DIR}/*.f
      ${CMAKE_CURRENT_BINARY_DIR}/*.f)
 set(LSM_GEOMETRY_SOURCE_FILES ${LSM_GEOMETRY_SOURCE_FILES} PARENT_SCOPE)
-
-# -----------------------------------------------------------------------------
-# Targets (Install)
-# -----------------------------------------------------------------------------
-
-# Header files
-install(FILES ${HEADER_FILES} DESTINATION ${INSTALL_HEADER_PATH})
 
 # -----------------------------------------------------------------------------
 # Build preparations
@@ -53,7 +46,3 @@ configure_file(lsm_curvature3d.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_curvature3d.f)
 configure_file(lsm_curvature3d_local.f.in
                ${CMAKE_CURRENT_BINARY_DIR}/lsm_curvature3d_local.f)
-
-# --- Copy header files to binary folder
-
-file(COPY ${HEADER_FILES} DESTINATION ${HEADER_OUTPUT_PATH})
