@@ -31,7 +31,7 @@ foreach(test_program ${TEST_PROGRAMS})
         ${test_program}
         ${test_program}.cc
     )
-    add_dependencies(${test_program} lsm googletest)
+    add_dependencies(${test_program} make-bin-dir lsm googletest)
     target_link_libraries(
         ${test_program}
         lsm
@@ -43,10 +43,6 @@ endforeach()
 # -----------------------------------------------------------------------------
 # Build preparations
 # -----------------------------------------------------------------------------
-
-# --- Create build directories
-
-file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 
 # --- Set up test to run via GoogleTest
 

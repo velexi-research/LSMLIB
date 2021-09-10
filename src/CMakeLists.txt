@@ -4,6 +4,7 @@
 
 # Build requirements: No customizations
 # Parameters (Install): No customizations
+# Build preparations: No customizations
 
 # -----------------------------------------------------------------------------
 # Parameters (Build)
@@ -57,6 +58,8 @@ add_library(lsm
             ${LSM_REINITIALIZATION_SOURCE_FILES}
             ${LSM_TOOLBOX_SOURCE_FILES}
             ${LSM_UTILS_SOURCE_FILES})
+add_dependencies(lsm make-header-dir)
+add_dependencies(lsm make-lib-dir)
 
 # -----------------------------------------------------------------------------
 # Targets (Install)
@@ -64,12 +67,3 @@ add_library(lsm
 
 # Library files
 install(TARGETS lsm DESTINATION ${INSTALL_LIB_DIR})
-
-# -----------------------------------------------------------------------------
-# Build preparations
-# -----------------------------------------------------------------------------
-
-# --- Create build directories
-
-file(MAKE_DIRECTORY ${HEADER_OUTPUT_PATH})
-file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
