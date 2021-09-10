@@ -113,7 +113,7 @@ add_custom_target(make-header-dir
 add_custom_target(make-lib-dir
     COMMAND ${CMAKE_COMMAND} -E make_directory ${LIBRARY_OUTPUT_PATH})
 
-# Library
+# Libraries
 add_subdirectory(src)
 
 # Examples
