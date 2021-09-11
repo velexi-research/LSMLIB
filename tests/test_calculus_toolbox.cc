@@ -17,8 +17,8 @@
 
 #include <gtest/gtest.h>
 
-#include "lsmlib/lsmlib_config.h"
-#include "lsmlib/lsm_calculus_toolbox.h"
+#include "lsmlib_config.h"
+#include "lsm_calculus_toolbox.h"
 
 /*
  * Test fixtures
