@@ -23,13 +23,21 @@ foreach (file ${files})
 
 endforeach (file)
 
-# Remove header file directory
+# Remove package-specific directories
 if (UNIX)
-    if (NOT "@INSTALL_HEADER_PATH@" STREQUAL "include")
-        set(INSTALL_HEADER_PATH $ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@/@INSTALL_HEADER_PATH@)
-        if (EXISTS "${INSTALL_HEADER_PATH}")
+    # Remove package-specific header directory
+    if (NOT "@INSTALL_INCLUDEDIR@" STREQUAL "include" AND NOT "@INSTALL_INCLUDEDIR@" STREQUAL "")
+        set(INSTALL_INCLUDEDIR $ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@/@INSTALL_INCLUDEDIR@)
+        if (EXISTS "${INSTALL_INCLUDEDIR}")
             exec_program(
-                "@CMAKE_COMMAND@" ARGS "-E remove_directory ${INSTALL_HEADER_PATH}")
-        endif (EXISTS "${INSTALL_HEADER_PATH}")
-    endif (NOT "@INSTALL_HEADER_PATH@" STREQUAL "include")
+                "@CMAKE_COMMAND@" ARGS "-E remove_directory ${INSTALL_INCLUDEDIR}")
+        endif (EXISTS "${INSTALL_INCLUDEDIR}")
+    endif (NOT "@INSTALL_INCLUDEDIR@" STREQUAL "include" AND NOT "@INSTALL_INCLUDEDIR@" STREQUAL "")
+
+    # Remove package-specific cmake directory
+    set(INSTALL_CMAKE_DIR $ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake/@CMAKE_PROJECT_NAME@)
+    if (EXISTS "${INSTALL_CMAKE_DIR}")
+        exec_program(
+            "@CMAKE_COMMAND@" ARGS "-E remove_directory ${INSTALL_CMAKE_DIR}")
+    endif (EXISTS "${INSTALL_CMAKE_DIR}")
 endif (UNIX)
