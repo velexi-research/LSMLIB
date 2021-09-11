@@ -76,6 +76,8 @@ add_library(lsm
             ${LSM_TOOLBOX_SOURCE_FILES}
             ${LSM_UTILS_SOURCE_FILES})
 add_dependencies(lsm make-lib-dir lsm-header-files)
+target_include_directories(lsm
+                           PUBLIC ${BINARY_INCLUDE_DIR})
 
 # -----------------------------------------------------------------------------
 # Targets (Install)
