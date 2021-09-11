@@ -81,7 +81,6 @@ set(EXT_PROJECTS_DIR ext)
 
 # Compiler flags
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
 
 # Set search paths for header files
