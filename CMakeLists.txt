@@ -163,6 +163,11 @@ endif (USE_SINGLE_PRECISION)
 # Generate configuration header files
 configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)
 
+# Copy CMake configuration files
+file(COPY ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
+     DESTINATION ${CMAKE_BINARY_DIR}/cmake
+)
+
 # --- Targets
 
 # Libraries
@@ -170,6 +175,13 @@ add_subdirectory(src)
 
 # Examples
 add_subdirectory(examples EXCLUDE_FROM_ALL)
+
+# CMake configuration files
+add_custom_target(cmake-config-files ALL
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
+        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigExtras.cmake
+)
 
 # -----------------------------------------------------------------------------
 # Test
@@ -262,7 +274,7 @@ install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
 install(FILES
         ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfig.cmake
         ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake
-        ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
+        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigExtras.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 # --- `uninstall`
