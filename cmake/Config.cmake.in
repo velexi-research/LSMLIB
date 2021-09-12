@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/LSMLIBTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/LSMLIBConfigExtras.cmake")
+
+check_required_components(LSMLIB)

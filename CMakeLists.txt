@@ -3,31 +3,54 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# CMake initialization
+# CMake Configuration
 # -----------------------------------------------------------------------------
+
+# --- Initialization
 
 cmake_minimum_required(VERSION 3.10)
 project(LSMLIB
         LANGUAGES C CXX Fortran
         VERSION 2.0.0)
 
-# -----------------------------------------------------------------------------
-# CMake configuration
-# -----------------------------------------------------------------------------
+# --- Configuration parameters
 
-# CMake build type
+# Build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
 
 # Compiler requirements
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# -----------------------------------------------------------------------------
+# Build Options
+# -----------------------------------------------------------------------------
+
+# Build shared libraries
+# TODO: fix shared library build
+#option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
+# Floating-point precision
+option(USE_SINGLE_PRECISION "Build single-precision libraries" OFF)
+if (USE_SINGLE_PRECISION)
+    message("-- Setting floating-point precision to 'single'")
+else (USE_SINGLE_PRECISION)
+    message("-- Setting floating-point precision to 'double'")
+endif (USE_SINGLE_PRECISION)
+
+# -----------------------------------------------------------------------------
+# Imported Modules
+# -----------------------------------------------------------------------------
+
+# --- CMake modules
+
+# Packaging
+include(CMakePackageConfigHelpers)
+
 # Make cache variables for install destinations
 include(GNUInstallDirs)
 
-# -----------------------------------------------------------------------------
-# External modules
-# -----------------------------------------------------------------------------
+# --- External CMake-compatible packages
 
 find_package(Threads REQUIRED)
 find_package(Git)
@@ -43,22 +66,6 @@ else (IWYU)
     message("-- Could not find include-what-you-use.  "
             "Analysis of #includes will be skipped.")
 endif (IWYU)
-
-# -----------------------------------------------------------------------------
-# Build options
-# -----------------------------------------------------------------------------
-
-# Build shared libraries
-# TODO: fix shared library build
-#option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
-# Floating-point precision
-option(USE_SINGLE_PRECISION "Build single-precision libraries" OFF)
-if (USE_SINGLE_PRECISION)
-    message("-- Setting floating-point precision to 'single'")
-else (USE_SINGLE_PRECISION)
-    message("-- Setting floating-point precision to 'double'")
-endif (USE_SINGLE_PRECISION)
 
 # -----------------------------------------------------------------------------
 # Parameters
@@ -127,10 +134,36 @@ endif (NOT USE_SINGLE_PRECISION)
 set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${PKG_DIR_NAME})
 
 # -----------------------------------------------------------------------------
-# Targets
+# Build
 # -----------------------------------------------------------------------------
 
-# --- Build targets
+# --- Process template files
+
+# Floating-point precision
+if (USE_SINGLE_PRECISION)
+
+    set(LSMLIB_REAL "float")
+    set(LSMLIB_ZERO_TOL 1.e-5)
+    set(LSMLIB_REAL_MAX "FLT_MAX")
+    set(LSMLIB_REAL_MIN "FLT_MIN")
+    set(LSMLIB_REAL_EPSILON "FLT_EPSILON")
+
+else (USE_SINGLE_PRECISION)
+
+    set(LSMLIB_DOUBLE_PRECISION ON)
+
+    set(LSMLIB_REAL "double")
+    set(LSMLIB_ZERO_TOL 1.e-11)
+    set(LSMLIB_REAL_MAX "DBL_MAX")
+    set(LSMLIB_REAL_MIN "DBL_MIN")
+    set(LSMLIB_REAL_EPSILON "DBL_EPSILON")
+
+endif (USE_SINGLE_PRECISION)
+
+# Generate configuration header files
+configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)
+
+# --- Targets
 
 # Libraries
 add_subdirectory(src)
@@ -138,34 +171,8 @@ add_subdirectory(src)
 # Examples
 add_subdirectory(examples EXCLUDE_FROM_ALL)
 
-# --- Install targets
-
-# Configuration header file
-install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
-        DESTINATION ${INSTALL_INCLUDEDIR})
-
-# CMake packaging files
-install(FILES
-        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake
-        ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfig.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
-
-# --- `uninstall` target
-
-# Generate cmake_uninstall.cmake file
-configure_file(
-    "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY
-)
-
-# Define `uninstall` target
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
-)
-
 # -----------------------------------------------------------------------------
-# Testing
+# Test
 # -----------------------------------------------------------------------------
 
 # Enable CMake testing
@@ -178,12 +185,18 @@ add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 # -----------------------------------------------------------------------------
-# Packaging
+# Package
 # -----------------------------------------------------------------------------
 
+# Create package configuration file
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/LSMLIBConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/LSMLIB
+)
+
 # Create package version file
-include(CMakePackageConfigHelpers)
-set_property(TARGET lsm PROPERTY VERSION ${version})
+set_property(TARGET lsm PROPERTY VERSION ${LSMLIB_VERSION})
 set_property(TARGET lsm PROPERTY
     INTERFACE_LSMLIB_MAJOR_VERSION ${LSMLIB_VERSION_MAJOR})
 set_property(TARGET lsm APPEND PROPERTY
@@ -236,31 +249,32 @@ fi"
 endif (GIT_FOUND)
 
 # -----------------------------------------------------------------------------
-# Build preparations
+# Install
 # -----------------------------------------------------------------------------
 
-# --- Process template files
+# --- Files
 
-# Floating-point precision
-if (USE_SINGLE_PRECISION)
+# Configuration header file
+install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
+        DESTINATION ${INSTALL_INCLUDEDIR})
 
-    set(LSMLIB_REAL "float")
-    set(LSMLIB_ZERO_TOL 1.e-5)
-    set(LSMLIB_REAL_MAX "FLT_MAX")
-    set(LSMLIB_REAL_MIN "FLT_MIN")
-    set(LSMLIB_REAL_EPSILON "FLT_EPSILON")
+# CMake packaging files
+install(FILES
+        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfig.cmake
+        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake
+        ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
-else (USE_SINGLE_PRECISION)
+# --- `uninstall`
 
-    set(LSMLIB_DOUBLE_PRECISION ON)
+# Generate cmake_uninstall.cmake file
+configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY
+)
 
-    set(LSMLIB_REAL "double")
-    set(LSMLIB_ZERO_TOL 1.e-11)
-    set(LSMLIB_REAL_MAX "DBL_MAX")
-    set(LSMLIB_REAL_MIN "DBL_MIN")
-    set(LSMLIB_REAL_EPSILON "DBL_EPSILON")
-
-endif (USE_SINGLE_PRECISION)
-
-# Generate configuration header files
-configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)
+# Define `uninstall` target
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
+)

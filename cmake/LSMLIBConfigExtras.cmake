@@ -1,8 +1,8 @@
-# LSMLIBConfig.cmake
+# =============================================================================
+# LSMLIBConfigExtras.cmake
+# =============================================================================
 
-include(${CMAKE_CURRENT_LIST_DIR}/LSMLIBConfigVersion.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/LSMLIBTargets.cmake)
-
+# Set "exported" package variables
 get_property(LSMLIB_INCLUDE_DIRS
              TARGET LSMLIB::lsm
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
