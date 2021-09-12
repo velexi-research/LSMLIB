@@ -147,8 +147,8 @@ install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
 
 # CMake packaging files
 install(FILES
-        "${BINARY_CMAKE_DIR}/LSMLIBConfigVersion.cmake"
-        LSMLIBConfig.cmake
+        ${BINARY_CMAKE_DIR}/LSMLIBConfigVersion.cmake
+        ${BINARY_SOURCE_DIR}/LSMLIBConfig.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 # --- `uninstall` target
