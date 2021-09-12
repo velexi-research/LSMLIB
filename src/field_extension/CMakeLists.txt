@@ -1,26 +1,37 @@
-# -----------------------------------------------------------------------------
-# Customizations for field extension components
-# -----------------------------------------------------------------------------
-
-# Build requirements: No customizations
-# Parameters (Install): No customizations
-# Targets (Build): No customizations
-# Targets (Install): No customizations
-# Build preparations: No customization
+# =============================================================================
+# field extension components
+# =============================================================================
 
 # -----------------------------------------------------------------------------
-# Parameters (Build)
+# Target parameters
 # -----------------------------------------------------------------------------
 
-# Header files
-file(GLOB LSM_FIELD_EXTENSION_HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-set(LSM_FIELD_EXTENSION_HEADER_FILES ${LSM_FIELD_EXTENSION_HEADER_FILES}
-    PARENT_SCOPE)
+# --- Build targets
 
 # Source files
-file(GLOB LSM_FIELD_EXTENSION_SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.f
-     ${CMAKE_CURRENT_BINARY_DIR}/*.f)
-set(LSM_FIELD_EXTENSION_SOURCE_FILES ${LSM_FIELD_EXTENSION_SOURCE_FILES}
-    PARENT_SCOPE)
+set(LSM_FIELD_EXTENSION_SOURCE_FILES)
+foreach(FILE IN ITEMS
+        lsm_field_extension1d.f
+        lsm_field_extension2d.f
+        lsm_field_extension3d.f
+       )
+    list(APPEND LSM_FIELD_EXTENSION_SOURCE_FILES
+         "field_extension/${FILE}")
+endforeach()
+set(LSM_FIELD_EXTENSION_SOURCE_FILES
+    ${LSM_FIELD_EXTENSION_SOURCE_FILES} PARENT_SCOPE)
+
+# --- Install targets
+
+# Header files
+set(LSM_FIELD_EXTENSION_HEADER_FILES)
+foreach(FILE IN ITEMS
+        lsm_field_extension1d.h
+        lsm_field_extension2d.h
+        lsm_field_extension3d.h
+       )
+    list(APPEND LSM_FIELD_EXTENSION_HEADER_FILES
+         "field_extension/${FILE}")
+endforeach()
+set(LSM_FIELD_EXTENSION_HEADER_FILES
+    ${LSM_FIELD_EXTENSION_HEADER_FILES} PARENT_SCOPE)

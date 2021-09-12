@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <float.h>
 
-#include "lsmlib/lsmlib_config.h"
-#include "lsmlib/FMM_Heap.h"
-#include "lsmlib/FMM_Core.h"
+#include "lsmlib_config.h"
+#include "FMM_Heap.h"
+#include "FMM_Core.h"
 
 /*======================= FMM_Core Constants =========================*/
 #define FMM_CORE_TRUE                   (1)

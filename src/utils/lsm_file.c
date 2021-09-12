@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lsmlib/lsmlib_config.h"
-#include "lsmlib/lsm_file.h"
+#include "lsmlib_config.h"
+#include "lsm_file.h"
 
 
 void checkUnzipFile(char *file_name,int *pzip_status, char **pfile_base)

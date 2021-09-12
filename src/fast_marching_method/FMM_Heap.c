@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <float.h>
 
-#include "lsmlib/lsmlib_config.h"
-#include "lsmlib/FMM_Heap.h"
+#include "lsmlib_config.h"
+#include "FMM_Heap.h"
 
 /*
  * FMM_Heap Constants

@@ -12,8 +12,8 @@
 #include <float.h>
 #include <stdlib.h>
 
-#include "lsmlib/lsm_macros.h"
-#include "lsmlib/lsm_initialization3d.h"
+#include "lsm_macros.h"
+#include "lsm_initialization3d.h"
 
 
 void createPlane(

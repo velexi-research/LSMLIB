@@ -1,3 +1,7 @@
+# =============================================================================
+# Main CMakeLists.txt
+# =============================================================================
+
 # -----------------------------------------------------------------------------
 # CMake initialization
 # -----------------------------------------------------------------------------
@@ -8,34 +12,22 @@ project(LSMLIB
         VERSION 2.0.0)
 
 # -----------------------------------------------------------------------------
-# Configuration options
+# CMake configuration
 # -----------------------------------------------------------------------------
-
-# Build shared libraries
-# TODO: fix shared library build
-#option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
-# Floating-point precision
-option(USE_SINGLE_PRECISION "Build single-precision libraries" OFF)
-if (USE_SINGLE_PRECISION)
-    message("-- Setting floating-point precision to 'single'")
-else (USE_SINGLE_PRECISION)
-    message("-- Setting floating-point precision to 'double'")
-endif (USE_SINGLE_PRECISION)
 
 # CMake build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
 
-# -----------------------------------------------------------------------------
-# Build requirements
-# -----------------------------------------------------------------------------
-
-# --- Compiler requirements
-
+# Compiler requirements
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# --- Software with pre-defined CMake package modules
+# Make cache variables for install destinations
+include(GNUInstallDirs)
+
+# -----------------------------------------------------------------------------
+# External modules
+# -----------------------------------------------------------------------------
 
 find_package(Threads REQUIRED)
 find_package(Git)
@@ -53,8 +45,26 @@ else (IWYU)
 endif (IWYU)
 
 # -----------------------------------------------------------------------------
-# Parameters (Build)
+# Build options
 # -----------------------------------------------------------------------------
+
+# Build shared libraries
+# TODO: fix shared library build
+#option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
+# Floating-point precision
+option(USE_SINGLE_PRECISION "Build single-precision libraries" OFF)
+if (USE_SINGLE_PRECISION)
+    message("-- Setting floating-point precision to 'single'")
+else (USE_SINGLE_PRECISION)
+    message("-- Setting floating-point precision to 'double'")
+endif (USE_SINGLE_PRECISION)
+
+# -----------------------------------------------------------------------------
+# Parameters
+# -----------------------------------------------------------------------------
+
+# --- Build parameters
 
 # Construct name to use for package-specific directories (e.g., header files)
 execute_process(
@@ -69,47 +79,58 @@ endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
 string(STRIP ${get_project_name_lower_out} PKG_DIR_NAME)
 
 # Set path variables
-set(BINARY_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
-set(BINARY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
-set(BINARY_LIB_DIR ${CMAKE_BINARY_DIR}/lib)
-
-set(HEADER_OUTPUT_PATH ${CMAKE_BINARY_DIR}/include/${PKG_DIR_NAME})
-set(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
-set(EXECUTABLE_OUTPUT_PATH ${BINARY_BIN_DIR})
-
+set(BINARY_INCLUDEDIR include)
+set(LIBRARY_OUTPUT_PATH lib)
+set(EXECUTABLE_OUTPUT_PATH bin)
 set(EXT_PROJECTS_DIR ext)
 
 # Compiler flags
-set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
 set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
+if (NOT USE_SINGLE_PRECISION)
 
-# Set search paths for header files
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+    # Set Fortran compiler flags
+    get_filename_component(Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
+    message("-- Fortran compiler: " ${CMAKE_Fortran_COMPILER})
 
-# -----------------------------------------------------------------------------
-# Parameters (Install)
-# -----------------------------------------------------------------------------
+    if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
-# Set directory (relative) for installed executables
-set(INSTALL_BIN_PATH bin)
+        # gfortran
+        set(CMAKE_Fortran_FLAGS
+            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
+
+    elseif (Fortran_COMPILER_NAME MATCHES "g77.*")
+
+        # g77
+        set(CMAKE_Fortran_FLAGS
+            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
+
+    elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
+
+        # ifort
+        set(CMAKE_Fortran_FLAGS "-r8 ${CMAKE_Fortran_FLAG}")
+
+    else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+
+        # Unknown fortran compiler
+        message("Trying GNU Fortran flags.")
+
+        set(CMAKE_Fortran_FLAGS
+            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
+
+    endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+
+endif (NOT USE_SINGLE_PRECISION)
+
+# --- Install parameters
 
 # Set directory (relative) for installed header files
-set(INSTALL_HEADER_PATH include/${PKG_DIR_NAME})
-
-# Set directory (relative) for installed library files
-set(INSTALL_LIB_PATH lib)
+set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${PKG_DIR_NAME})
 
 # -----------------------------------------------------------------------------
-# Targets (Build)
+# Targets
 # -----------------------------------------------------------------------------
 
-# Build directories
-add_custom_target(make-bin-dir
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${EXECUTABLE_OUTPUT_PATH})
-add_custom_target(make-header-dir
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${HEADER_OUTPUT_PATH})
-add_custom_target(make-lib-dir
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${LIBRARY_OUTPUT_PATH})
+# --- Build targets
 
 # Libraries
 add_subdirectory(src)
@@ -117,20 +138,13 @@ add_subdirectory(src)
 # Examples
 add_subdirectory(examples EXCLUDE_FROM_ALL)
 
-# -----------------------------------------------------------------------------
-# Targets (Install)
-# -----------------------------------------------------------------------------
+# --- Install targets
 
-# --- Header files
+# Configuration header file
+install(FILES ${CMAKE_BINARY_DIR}/${BINARY_INCLUDEDIR}/lsmlib_config.h
+        DESTINATION ${INSTALL_INCLUDEDIR})
 
-# Note: installation of non-configuration header files, library files, and
-#       executables should be handled by the CMakeLists.txt files included by
-#       the add_subdirectory() command.
-
-install(FILES ${HEADER_OUTPUT_PATH}/lsmlib_config.h
-        DESTINATION ${INSTALL_HEADER_PATH})
-
-# --- Add `uninstall` target
+# --- `uninstall` target
 
 # Generate cmake_uninstall.cmake file
 configure_file(
@@ -145,22 +159,37 @@ add_custom_target(uninstall
 )
 
 # -----------------------------------------------------------------------------
-# Targets (Testing)
+# Testing
 # -----------------------------------------------------------------------------
 
 # Enable CMake testing
 enable_testing()
 
-# Add googletest to build
+# GoogleTest
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
 
-# Add tests to build
+# Unit tests
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 # -----------------------------------------------------------------------------
-# Targets (Distribution)
+# Packaging
 # -----------------------------------------------------------------------------
 
+# Create package version file
+include(CMakePackageConfigHelpers)
+set_property(TARGET lsm PROPERTY VERSION ${version})
+set_property(TARGET lsm PROPERTY
+    INTERFACE_LSMLIB_MAJOR_VERSION ${LSMLIB_VERSION_MAJOR})
+set_property(TARGET lsm APPEND PROPERTY
+    COMPATIBLE_INTERFACE_STRING LSMLIB_MAJOR_VERSION
+)
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake"
+    VERSION "${version}"
+    COMPATIBILITY AnyNewerVersion
+)
+
+# Create source code distribution
 if (GIT_FOUND)
     # Add target to build source code distribution
     set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
@@ -225,40 +254,7 @@ else (USE_SINGLE_PRECISION)
     set(LSMLIB_REAL_MIN "DBL_MIN")
     set(LSMLIB_REAL_EPSILON "DBL_EPSILON")
 
-    # Set Fortran compiler flags
-    get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER}
-                            NAME)
-    message ("-- Fortran compiler: " ${CMAKE_Fortran_COMPILER})
-
-    if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-
-        # gfortran
-        set(CMAKE_Fortran_FLAGS
-            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
-
-    elseif (Fortran_COMPILER_NAME MATCHES "g77.*")
-
-        # g77
-        set(CMAKE_Fortran_FLAGS
-            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
-
-    elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
-
-        # ifort
-        set(CMAKE_Fortran_FLAGS "-r8 ${CMAKE_Fortran_FLAG}")
-
-    else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-
-        # Unknown fortran compiler
-        message ("Trying GNU Fortran flags.")
-
-        set(CMAKE_Fortran_FLAGS
-            "-fdefault-real-8 -fdefault-double-8 ${CMAKE_Fortran_FLAG}")
-
-    endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-
 endif (USE_SINGLE_PRECISION)
 
 # Generate configuration header files
-configure_file(include/lsmlib_config.h.in
-               ${HEADER_OUTPUT_PATH}/lsmlib_config.h)
+configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)

@@ -14,9 +14,9 @@
 #include <math.h>
 #include <string.h>
 
-#include "lsmlib/lsmlib_config.h"
-#include "lsmlib/lsm_file.h"
-#include "lsmlib/lsm_grid.h"
+#include "lsmlib_config.h"
+#include "lsm_file.h"
+#include "lsm_grid.h"
 
 /*======== Helper Functions for Grid structure manipulation ========*/
 

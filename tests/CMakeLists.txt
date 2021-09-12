@@ -7,7 +7,11 @@
 # -----------------------------------------------------------------------------
 
 # LSMLIB
-include(${CMAKE_BINARY_DIR}/cmake/LSMLIB.cmake)
+add_library(LSMLIB::lsm STATIC IMPORTED)
+set_target_properties(LSMLIB::lsm PROPERTIES
+  IMPORTED_LOCATION
+    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib/liblsm.a>"
+)
 
 # -----------------------------------------------------------------------------
 # Targets
