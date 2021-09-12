@@ -7,11 +7,7 @@
 # -----------------------------------------------------------------------------
 
 # LSMLIB
-add_library(LSMLIB::lsm STATIC IMPORTED)
-set_target_properties(LSMLIB::lsm PROPERTIES
-  IMPORTED_LOCATION
-    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib/liblsm.a>"
-)
+find_package(LSMLIB REQUIRED)
 
 # GoogleTest
 include(googletest)
@@ -34,15 +30,12 @@ function(add_test_target TEST_PROGRAM SOURCE_FILES)
 endfunction()
 
 # -----------------------------------------------------------------------------
-# Targets
+# Build targets
 # -----------------------------------------------------------------------------
 
-# --- Sub-directories
-
+# Component tests
 add_subdirectory(boundary_conditions)
 add_subdirectory(toolbox)
-
-# --- Build targets
 
 # Custom `tests` target to build test programs
 add_custom_target(tests DEPENDS
