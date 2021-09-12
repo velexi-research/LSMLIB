@@ -1,5 +1,5 @@
-v1.0.1 2009/05/03)
-------------------
+v1.0.1 (2009/05/03)
+-------------------
 * BUG FIXES:
   - Fixed minor typo in INSTALL file. 
   - Fixed function declaration bug in lsm_geometry2d.h.
