@@ -164,7 +164,8 @@ else (USE_SINGLE_PRECISION)
 endif (USE_SINGLE_PRECISION)
 
 # Generate configuration header files
-configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)
+configure_file(include/lsmlib_config.h.in
+               ${BINARY_INCLUDEDIR}/lsmlib_config.h)
 
 # Copy CMake configuration files
 file(COPY ${CMAKE_SOURCE_DIR}/cmake/${PKG_NAME}ConfigExtras.cmake
@@ -207,7 +208,7 @@ add_subdirectory(tests EXCLUDE_FROM_ALL)
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PKG_NAME}Config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/LSMLIB
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PKG_NAME}
 )
 
 # Create package version file
