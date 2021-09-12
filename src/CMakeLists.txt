@@ -73,7 +73,7 @@ target_link_directories(lsm PUBLIC
 
 # Library files
 install(TARGETS lsm
-        EXPORT LSMLIBTargets
+    EXPORT ${PKG_NAME}Targets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -89,10 +89,10 @@ install(FILES
 )
 
 # CMake files
-install(EXPORT LSMLIBTargets
-        FILE LSMLIBTargets.cmake
-        NAMESPACE LSMLIB::
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
+install(EXPORT ${PKG_NAME}Targets
+        FILE ${PKG_NAME}Targets.cmake
+        NAMESPACE ${PKG_NAME}::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PKG_NAME}
 )
 
 # -----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ install(EXPORT LSMLIBTargets
 # -----------------------------------------------------------------------------
 
 # Create CMake script to support exporting from the build tree
-export(EXPORT LSMLIBTargets
-       FILE "${CMAKE_BINARY_DIR}/cmake/LSMLIBTargets.cmake"
-       NAMESPACE LSMLIB::
+export(EXPORT ${PKG_NAME}Targets
+       FILE "${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}Targets.cmake"
+       NAMESPACE ${PKG_NAME}::
 )

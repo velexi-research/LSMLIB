@@ -1,6 +1,8 @@
+message("-- Looking for @PKG_NAME@")
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/LSMLIBTargets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/LSMLIBConfigExtras.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/@PKG_NAME@Targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/@PKG_NAME@ConfigExtras.cmake")
 
-check_required_components(LSMLIB)
+check_required_components(@PKG_NAME@)
+message("-- Looking for @PKG_NAME@ - found")

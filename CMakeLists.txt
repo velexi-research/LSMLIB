@@ -73,9 +73,12 @@ endif (IWYU)
 
 # --- Build parameters
 
+# Package name
+set(PKG_NAME ${CMAKE_PROJECT_NAME})
+
 # Construct name to use for package-specific directories (e.g., header files)
 execute_process(
-    COMMAND "echo" ${CMAKE_PROJECT_NAME}
+    COMMAND "echo" ${PKG_NAME}
     COMMAND "tr" '[:upper:]' '[:lower:]'
     OUTPUT_VARIABLE get_project_name_lower_out
     RESULT_VARIABLE get_project_name_lower_result_var
@@ -164,7 +167,7 @@ endif (USE_SINGLE_PRECISION)
 configure_file(include/lsmlib_config.h.in include/lsmlib_config.h)
 
 # Copy CMake configuration files
-file(COPY ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
+file(COPY ${CMAKE_SOURCE_DIR}/cmake/${PKG_NAME}ConfigExtras.cmake
      DESTINATION ${CMAKE_BINARY_DIR}/cmake
 )
 
@@ -179,8 +182,8 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 # CMake configuration files
 add_custom_target(cmake-config-files ALL
     COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/cmake/LSMLIBConfigExtras.cmake
-        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigExtras.cmake
+    ${CMAKE_SOURCE_DIR}/cmake/${PKG_NAME}ConfigExtras.cmake
+    ${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}ConfigExtras.cmake
 )
 
 # -----------------------------------------------------------------------------
@@ -203,19 +206,19 @@ add_subdirectory(tests EXCLUDE_FROM_ALL)
 # Create package configuration file
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/cmake/LSMLIBConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PKG_NAME}Config.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/LSMLIB
 )
 
 # Create package version file
 set_property(TARGET lsm PROPERTY VERSION ${LSMLIB_VERSION})
 set_property(TARGET lsm PROPERTY
-    INTERFACE_LSMLIB_MAJOR_VERSION ${LSMLIB_VERSION_MAJOR})
+             INTERFACE_LSMLIB_MAJOR_VERSION ${LSMLIB_VERSION_MAJOR})
 set_property(TARGET lsm APPEND PROPERTY
     COMPATIBLE_INTERFACE_STRING LSMLIB_MAJOR_VERSION
 )
 write_basic_package_version_file(
-    ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake
+    ${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}ConfigVersion.cmake
     VERSION "${version}"
     COMPATIBILITY AnyNewerVersion
 )
@@ -223,7 +226,7 @@ write_basic_package_version_file(
 # Create source code distribution
 if (GIT_FOUND)
     # Add target to build source code distribution
-    set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
+    set(ARCHIVE_NAME ${PKG_NAME}-${PROJECT_VERSION})
     set(ARCHIVE_TARBALL ${ARCHIVE_NAME}.tar.gz)
     add_custom_target(dist
         COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD |
@@ -272,10 +275,10 @@ install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
 
 # CMake packaging files
 install(FILES
-        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfig.cmake
-        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake
-        ${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigExtras.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+        ${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}Config.cmake
+        ${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}ConfigVersion.cmake
+        ${CMAKE_BINARY_DIR}/cmake/${PKG_NAME}ConfigExtras.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PKG_NAME})
 
 # --- `uninstall`
 
