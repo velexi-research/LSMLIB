@@ -3,10 +3,10 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Build targets
+# Test
 # -----------------------------------------------------------------------------
 
-# --- Build targets
+# --- Targets
 
 # Add custom target for tests
 set(TEST_PROGRAMS
@@ -18,12 +18,9 @@ foreach(TEST_PROGRAM ${TEST_PROGRAMS})
     add_test_target(${TEST_PROGRAM} ${TEST_PROGRAM}.cc)
 endforeach()
 
-# -----------------------------------------------------------------------------
-# Build preparations
-# -----------------------------------------------------------------------------
+# --- GoogleTest configuration
 
-# --- Set up test to run via GoogleTest
-
+# Set up tests to run via GoogleTest
 foreach(TEST_PROGRAM ${TEST_PROGRAMS})
     gtest_discover_tests(${TEST_PROGRAM})
 endforeach()

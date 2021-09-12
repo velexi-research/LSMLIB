@@ -3,10 +3,10 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Target parameters
+# Parameters
 # -----------------------------------------------------------------------------
 
-# --- Build targets
+# --- Build parameters
 
 # Source files
 set(LSM_REINITIALIZATION_SOURCE_FILES)
@@ -23,7 +23,7 @@ endforeach()
 set(LSM_REINITIALIZATION_SOURCE_FILES ${LSM_REINITIALIZATION_SOURCE_FILES}
     PARENT_SCOPE)
 
-# --- Install targets
+# --- Install parameters
 
 # Header files
 set(LSM_REINITIALIZATION_HEADER_FILES)
@@ -40,7 +40,7 @@ set(LSM_REINITIALIZATION_HEADER_FILES ${LSM_REINITIALIZATION_HEADER_FILES}
     PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build preparations
+# Build
 # -----------------------------------------------------------------------------
 
 # --- Process template files

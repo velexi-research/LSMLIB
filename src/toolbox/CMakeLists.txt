@@ -3,10 +3,10 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Target parameters
+# Parameters
 # -----------------------------------------------------------------------------
 
-# --- Build targets
+# --- Build parameters
 
 # Source files
 set(LSM_TOOLBOX_SOURCE_FILES)
@@ -50,7 +50,7 @@ foreach(FILE IN ITEMS
 endforeach()
 set(LSM_TOOLBOX_SOURCE_FILES ${LSM_TOOLBOX_SOURCE_FILES} PARENT_SCOPE)
 
-# --- Install targets
+# --- Install parameters
 
 # Header files
 set(LSM_TOOLBOX_HEADER_FILES)
@@ -89,7 +89,7 @@ endforeach()
 set(LSM_TOOLBOX_HEADER_FILES ${LSM_TOOLBOX_HEADER_FILES} PARENT_SCOPE)
 
 # -----------------------------------------------------------------------------
-# Build preparations
+# Build
 # -----------------------------------------------------------------------------
 
 # --- Process template files

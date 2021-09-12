@@ -197,7 +197,7 @@ enable_testing()
 # GoogleTest
 add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
 
-# Unit tests
+# Tests
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 # -----------------------------------------------------------------------------

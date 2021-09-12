@@ -3,10 +3,10 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Target parameters
+# Parameters
 # -----------------------------------------------------------------------------
 
-# --- Build targets
+# --- Build parameters
 
 # Source files
 set(LSM_BOUNDARY_CONDITIONS_SOURCE_FILES)
@@ -22,7 +22,7 @@ endforeach()
 set(LSM_BOUNDARY_CONDITIONS_SOURCE_FILES
     ${LSM_BOUNDARY_CONDITIONS_SOURCE_FILES} PARENT_SCOPE)
 
-# --- Install targets
+# --- Install parameters
 
 # Header files
 set(LSM_BOUNDARY_CONDITIONS_HEADER_FILES)

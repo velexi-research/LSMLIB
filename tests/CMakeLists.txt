@@ -33,7 +33,7 @@ function(add_test_target TEST_PROGRAM SOURCE_FILES)
 endfunction()
 
 # -----------------------------------------------------------------------------
-# Build targets
+# Test
 # -----------------------------------------------------------------------------
 
 # Component tests

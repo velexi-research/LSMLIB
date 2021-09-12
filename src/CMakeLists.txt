@@ -20,7 +20,7 @@ else (USE_SINGLE_PRECISION)
 endif (USE_SINGLE_PRECISION)
 
 # -----------------------------------------------------------------------------
-# Targets
+# Build
 # -----------------------------------------------------------------------------
 
 # --- Subdirectories
@@ -46,7 +46,7 @@ add_subdirectory(toolbox)
 # utilities
 add_subdirectory(utils)
 
-# --- Build targets
+# --- Targets
 
 add_library(lsm
             ${LSM_BOUNDARY_CONDITIONS_SOURCE_FILES}
@@ -69,7 +69,9 @@ target_link_directories(lsm PUBLIC
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib>
 )
 
-# --- Install targets
+# -----------------------------------------------------------------------------
+# Install
+# -----------------------------------------------------------------------------
 
 # Library files
 install(TARGETS lsm
@@ -96,7 +98,7 @@ install(EXPORT ${PKG_NAME}Targets
 )
 
 # -----------------------------------------------------------------------------
-# Miscellaneous
+# Exports
 # -----------------------------------------------------------------------------
 
 # Create CMake script to support exporting from the build tree
