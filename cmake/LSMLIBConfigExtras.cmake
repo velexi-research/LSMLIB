@@ -2,7 +2,7 @@
 # LSMLIBConfigExtras.cmake
 # =============================================================================
 
-# Set "exported" package variables
+# Set CMake-available package variables
 get_property(LSMLIB_INCLUDE_DIRS
              TARGET LSMLIB::lsm
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
