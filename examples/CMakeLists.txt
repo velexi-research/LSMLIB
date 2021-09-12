@@ -12,9 +12,6 @@
 
 # --- Individual examples
 
-# toolbox
-add_subdirectory(toolbox)
-
 # curvature-driven motion
 add_subdirectory(curvature_driven_motion)
 
