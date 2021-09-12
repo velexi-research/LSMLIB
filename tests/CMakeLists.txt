@@ -39,9 +39,12 @@ endfunction()
 
 # --- Sub-directories
 
+add_subdirectory(boundary_conditions)
 add_subdirectory(toolbox)
 
 # --- Build targets
 
 # Custom `tests` target to build test programs
-add_custom_target(tests DEPENDS toolbox-tests)
+add_custom_target(tests DEPENDS
+                  boundary-condition-tests
+                  toolbox-tests)
