@@ -22,23 +22,23 @@
  * Test fixtures
  */
 class LSMCalculusToolboxTest : public ::testing::Test {
-    protected:
-        // Data members
-        LSMLIB_REAL x[20];
-        LSMLIB_REAL d_phi;
-        LSMLIB_REAL eps;
+  protected:
+    // Data members
+    LSMLIB_REAL x[20];
+    LSMLIB_REAL d_phi;
+    LSMLIB_REAL eps;
 
 
-        // Constructor
-        LSMCalculusToolboxTest(){
-            // Set d_phi and eps (smoothing width)
-            d_phi = 0.1;
-            eps = 3.0 * d_phi;
+    // Constructor
+    LSMCalculusToolboxTest(){
+        // Set d_phi and eps (smoothing width)
+        d_phi = 0.1;
+        eps = 3.0 * d_phi;
 
-            // Set grid values
-            for (int i = 0; i < 20; i++) {
-                x[i] = -1.0 + i * d_phi;
-            }
+        // Set grid values
+        for (int i = 0; i < 20; i++) {
+            x[i] = -1.0 + i * d_phi;
+        }
     }
 };
 
