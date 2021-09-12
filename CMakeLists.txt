@@ -80,6 +80,7 @@ string(STRIP ${get_project_name_lower_out} PKG_DIR_NAME)
 
 # Set path variables
 set(BINARY_INCLUDEDIR ${CMAKE_BINARY_DIR}/include)
+set(BINARY_CMAKE_DIR ${CMAKE_BINARY_DIR}/cmake)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(EXT_PROJECTS_DIR ext)
@@ -143,7 +144,11 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 # Configuration header file
 install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
         DESTINATION ${INSTALL_INCLUDEDIR})
-install(FILES "${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake"
+
+# CMake packaging files
+install(FILES
+        "${BINARY_CMAKE_DIR}/LSMLIBConfigVersion.cmake"
+        LSMLIBConfig.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 # --- `uninstall` target
@@ -186,7 +191,7 @@ set_property(TARGET lsm APPEND PROPERTY
     COMPATIBLE_INTERFACE_STRING LSMLIB_MAJOR_VERSION
 )
 write_basic_package_version_file(
-    "${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake"
+    "${BINARY_CMAKE_DIR}/LSMLIBConfigVersion.cmake"
     VERSION "${version}"
     COMPATIBILITY AnyNewerVersion
 )

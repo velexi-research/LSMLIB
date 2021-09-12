@@ -58,21 +58,25 @@ add_library(lsm
             ${LSM_UTILS_SOURCE_FILES}
 )
 target_include_directories(lsm PUBLIC
-    "$<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/toolbox>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>"
+)
+target_link_directories(lsm PUBLIC
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}>"
+    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib>"
 )
 
 # --- Install targets
 
 # Library files
 install(TARGETS lsm
-        EXPORT LSMLIB
+        EXPORT LSMLIBTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${INSTALL_INCLUDEDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # Header files
@@ -83,8 +87,8 @@ install(FILES
 )
 
 # CMake files
-install(EXPORT LSMLIB
-        FILE LSMLIB.cmake
+install(EXPORT LSMLIBTargets
+        FILE LSMLIBTargets.cmake
         NAMESPACE LSMLIB::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
 )
@@ -94,7 +98,7 @@ install(EXPORT LSMLIB
 # -----------------------------------------------------------------------------
 
 # Create CMake script to support exporting from the build tree
-export(EXPORT LSMLIB
-       FILE "${CMAKE_BINARY_DIR}/cmake/LSMLIB.cmake"
+export(EXPORT LSMLIBTargets
+       FILE "${BINARY_CMAKE_DIR}/LSMLIBTargets.cmake"
        NAMESPACE LSMLIB::
 )
