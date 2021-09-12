@@ -101,6 +101,6 @@ install(EXPORT LSMLIBTargets
 
 # Create CMake script to support exporting from the build tree
 export(EXPORT LSMLIBTargets
-       FILE "$CMAKE_BINARY_DIR}/cmake/LSMLIBTargets.cmake"
+       FILE "${CMAKE_BINARY_DIR}/cmake/LSMLIBTargets.cmake"
        NAMESPACE LSMLIB::
 )
