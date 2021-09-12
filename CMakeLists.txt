@@ -143,6 +143,8 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 # Configuration header file
 install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
         DESTINATION ${INSTALL_INCLUDEDIR})
+install(FILES "${CMAKE_BINARY_DIR}/cmake/LSMLIBConfigVersion.cmake"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 # --- `uninstall` target
 
