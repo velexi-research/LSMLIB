@@ -1,6 +1,4 @@
 /*
- * test_calculus_toolbox.cc
- *
  * Test program for delta and heaviside functions
  *
  * ---------------------------------------------------------------------
