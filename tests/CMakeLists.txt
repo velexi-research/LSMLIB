@@ -13,43 +13,35 @@ set_target_properties(LSMLIB::lsm PROPERTIES
     "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib/liblsm.a>"
 )
 
+# GoogleTest
+include(googletest)
+
 # -----------------------------------------------------------------------------
-# Targets
+# Functions
 # -----------------------------------------------------------------------------
 
-# --- Build targets
-
-# Construct list of test programs
-set(TEST_PROGRAMS
-    #test_FMM_Heap
-    test_calculus_toolbox)
-
-# Custom `tests` target to build test programs
-add_custom_target(tests DEPENDS ${TEST_PROGRAMS})
-
-# Set up build target for each test program
-foreach(PROGRAM ${TEST_PROGRAMS})
-    add_executable(
-        ${PROGRAM}
-        ${PROGRAM}.cc)
-    add_dependencies(${PROGRAM} LSMLIB::lsm googletest)
-    target_include_directories(${PROGRAM} PUBLIC ${GTEST_INCLUDE_DIRS})
-    target_link_directories(${PROGRAM} PUBLIC ${GTEST_LIB_DIRS})
+function(add_test_target TEST_PROGRAM SOURCE_FILES)
+    add_executable(${TEST_PROGRAM} ${SOURCE_FILES})
+    add_dependencies(${TEST_PROGRAM} LSMLIB::lsm googletest)
+    target_include_directories(${TEST_PROGRAM} PUBLIC ${GTEST_INCLUDE_DIRS})
+    target_link_directories(${TEST_PROGRAM} PUBLIC ${GTEST_LIB_DIRS})
     target_link_libraries(
-        ${PROGRAM}
+        ${TEST_PROGRAM}
         PRIVATE lsm
         gtest
         gtest_main
     )
-endforeach()
+endfunction()
 
 # -----------------------------------------------------------------------------
-# Build preparations
+# Targets
 # -----------------------------------------------------------------------------
 
-# --- Set up test to run via GoogleTest
+# --- Sub-directories
 
-include(googletest)
-foreach(PROGRAM ${TEST_PROGRAMS})
-    gtest_discover_tests(${PROGRAM})
-endforeach()
+add_subdirectory(toolbox)
+
+# --- Build targets
+
+# Custom `tests` target to build test programs
+add_custom_target(tests DEPENDS toolbox-tests)
