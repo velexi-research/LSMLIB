@@ -79,9 +79,9 @@ endif (NOT "${get_project_name_lower_result_var}" STREQUAL 0)
 string(STRIP ${get_project_name_lower_out} PKG_DIR_NAME)
 
 # Set path variables
-set(BINARY_INCLUDEDIR include)
-set(LIBRARY_OUTPUT_PATH lib)
-set(EXECUTABLE_OUTPUT_PATH bin)
+set(BINARY_INCLUDEDIR ${CMAKE_BINARY_DIR}/include)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(EXT_PROJECTS_DIR ext)
 
 # Compiler flags
@@ -141,7 +141,7 @@ add_subdirectory(examples EXCLUDE_FROM_ALL)
 # --- Install targets
 
 # Configuration header file
-install(FILES ${CMAKE_BINARY_DIR}/${BINARY_INCLUDEDIR}/lsmlib_config.h
+install(FILES ${BINARY_INCLUDEDIR}/lsmlib_config.h
         DESTINATION ${INSTALL_INCLUDEDIR})
 
 # --- `uninstall` target
