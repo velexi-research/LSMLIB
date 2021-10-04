@@ -1,5 +1,5 @@
 /*
- * Test program 1D homogeneous Neumann BCs using ENO1 discretization
+ * Unit tests for 1D homogeneous Neumann boundary condition functions.
  *
  * ---------------------------------------------------------------------
  * COPYRIGHT/LICENSE. This file is part of the LSMLIB package. It is
