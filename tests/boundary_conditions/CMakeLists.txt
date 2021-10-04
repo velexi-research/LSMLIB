@@ -11,7 +11,7 @@
 # Add custom target for tests
 set(TEST_PROGRAMS
     test_neumann_bc_1d
-    #test_neumann_bc_ENO1_2d
+    test_neumann_bc_2d
     #test_neumann_bc_ENO1_3d
     #test_neumann_bc_ENO2_2d
     #test_neumann_bc_ENO2_3d
