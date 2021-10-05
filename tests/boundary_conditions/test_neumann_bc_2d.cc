@@ -111,7 +111,7 @@ TEST_F(LSMBoundaryConditions2DTest, ENO1) {
     int bdry_location_idx;
 
     // allocate memory for divided differences
-    D1 = new LSMLIB_REAL[ghostbox_dims[0]];
+    D1 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
 
     // impose homogeneous Neumann boundary conditions
     bdry_location_idx = 0;
@@ -233,6 +233,429 @@ TEST_F(LSMBoundaryConditions2DTest, ENO1) {
     for (i = 0; i < box_dims[0]; i++) {
         int idx = (i+ghostcell_width)
                 + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_upper = fabs(phi_y_plus[idx]);
+        EXPECT_NEAR(err_y_upper, 0, 1e-6);
+    }
+}
+
+
+TEST_F(LSMBoundaryConditions2DTest, ENO2) {
+    // variable declarations
+    int i, j;
+    int bdry_location_idx;
+
+    // allocate memory for divided differences
+    D1 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+    D2 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+
+    // impose homogeneous Neumann boundary conditions
+    bdry_location_idx = 0;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO2(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 1;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO2(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 2;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO2(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 3;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO2(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    // compute spatial derivatives using ENO2
+    LSM2D_HJ_ENO2(
+    phi_x_plus, phi_y_plus,
+    &ghostbox_lower[0],
+    &ghostbox_upper[0],
+    &ghostbox_lower[1],
+    &ghostbox_upper[1],
+    phi_x_minus, phi_y_minus,
+    &ghostbox_lower[0],
+    &ghostbox_upper[0],
+    &ghostbox_lower[1],
+    &ghostbox_upper[1],
+    phi,
+    &ghostbox_lower[0],
+    &ghostbox_upper[0],
+    &ghostbox_lower[1],
+    &ghostbox_upper[1],
+    D1,
+    &ghostbox_lower[0],
+    &ghostbox_upper[0],
+    &ghostbox_lower[1],
+    &ghostbox_upper[1],
+    D2,
+    &ghostbox_lower[0],
+    &ghostbox_upper[0],
+    &ghostbox_lower[1],
+    &ghostbox_upper[1],
+    &box_lower[0],
+    &box_upper[0],
+    &box_lower[1],
+    &box_upper[1],
+    &dx, &dy);
+
+    /*
+     * check that derivatives normal to faces of computational domain are 0.
+     */
+
+    // x-lower
+    i = box_lower[0];
+    for (j = 0; j < box_dims[1]; j++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_lower = fabs(phi_x_minus[idx]);
+        EXPECT_NEAR(err_x_lower, 0, 1e-6);
+    }
+
+    // x-upper
+    i = box_upper[0];
+    for (j = 0; j < box_dims[1]; j++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_upper = fabs(phi_x_plus[idx]);
+        EXPECT_NEAR(err_x_upper, 0, 1e-6);
+    }
+
+    // y-lower
+    j = box_lower[1];
+    for (i = 0; i < box_dims[0]; i++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_lower = fabs(phi_y_minus[idx]);
+        EXPECT_NEAR(err_y_lower, 0, 1e-6);
+    }
+
+    // y-upper
+    j = box_upper[1];
+    for (i = 0; i < box_dims[0]; i++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_upper = fabs(phi_y_plus[idx]);
+        EXPECT_NEAR(err_y_upper, 0, 1e-6);
+    }
+}
+
+
+TEST_F(LSMBoundaryConditions2DTest, ENO3) {
+    // variable declarations
+    int i, j;
+    int bdry_location_idx;
+
+    // allocate memory for divided differences
+    D1 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+    D2 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+    D3 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+
+    // impose homogeneous Neumann boundary conditions
+    bdry_location_idx = 0;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO3(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 1;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO3(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 2;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO3(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 3;
+    LSM2D_HOMOGENEOUS_NEUMANN_ENO3(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    // compute spatial derivatives using ENO3
+    LSM2D_HJ_ENO3(
+        phi_x_plus, phi_y_plus,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        phi_x_minus, phi_y_minus,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        D1,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        D2,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        D3,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &dx, &dy);
+
+    /*
+     * check that derivatives normal to faces of computational domain are 0.
+     */
+
+    // x-lower
+    i = box_lower[0];
+    for (j = 0; j < box_dims[1]; j++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_lower = fabs(phi_x_minus[idx]);
+        EXPECT_NEAR(err_x_lower, 0, 1e-6);
+    }
+
+    // x-upper
+    i = box_upper[0];
+    for (j = 0; j < box_dims[1]; j++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_upper = fabs(phi_x_plus[idx]);
+        EXPECT_NEAR(err_x_upper, 0, 1e-6);
+    }
+
+    // y-lower
+    j = box_lower[1];
+    for (i = 0; i < box_dims[0]; i++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_lower = fabs(phi_y_minus[idx]);
+        EXPECT_NEAR(err_y_lower, 0, 1e-6);
+    }
+
+    // y-upper
+    j = box_upper[1];
+    for (i = 0; i < box_dims[0]; i++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_upper = fabs(phi_y_plus[idx]);
+        EXPECT_NEAR(err_y_upper, 0, 1e-6);
+    }
+}
+
+
+TEST_F(LSMBoundaryConditions2DTest, WENO5) {
+    // variable declarations
+    int i, j;
+    int bdry_location_idx;
+
+    // allocate memory for divided differences
+    D1 = new LSMLIB_REAL[ghostbox_dims[0] * ghostbox_dims[1]];
+
+    // impose homogeneous Neumann boundary conditions
+    bdry_location_idx = 0;
+    LSM2D_HOMOGENEOUS_NEUMANN_WENO5(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 1;
+    LSM2D_HOMOGENEOUS_NEUMANN_WENO5(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 2;
+    LSM2D_HOMOGENEOUS_NEUMANN_WENO5(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    bdry_location_idx = 3;
+    LSM2D_HOMOGENEOUS_NEUMANN_WENO5(
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &bdry_location_idx);
+
+    // compute spatial derivatives using WENO5
+    LSM2D_HJ_WENO5(
+        phi_x_plus, phi_y_plus,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        phi_x_minus, phi_y_minus,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        phi,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        D1,
+        &ghostbox_lower[0],
+        &ghostbox_upper[0],
+        &ghostbox_lower[1],
+        &ghostbox_upper[1],
+        &box_lower[0],
+        &box_upper[0],
+        &box_lower[1],
+        &box_upper[1],
+        &dx, &dy);
+
+    /*
+     * check that derivatives normal to faces of computational domain are 0.
+     */
+
+    // x-lower
+    i = box_lower[0];
+    for (j = 0; j < box_dims[1]; j++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_lower = fabs(phi_x_minus[idx]);
+        EXPECT_NEAR(err_x_lower, 0, 1e-6);
+    }
+
+    // x-upper
+    i = box_upper[0];
+    for (j = 0; j < box_dims[1]; j++) {
+    int idx = (i+ghostcell_width)
+            + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_x_upper = fabs(phi_x_plus[idx]);
+        EXPECT_NEAR(err_x_upper, 0, 1e-6);
+    }
+
+    // y-lower
+    j = box_lower[1];
+    for (i = 0; i < box_dims[0]; i++) {
+        int idx = (i+ghostcell_width)
+                + (j+ghostcell_width)*ghostbox_dims[0];
+
+        LSMLIB_REAL err_y_lower = fabs(phi_y_minus[idx]);
+        EXPECT_NEAR(err_y_lower, 0, 1e-6);
+    }
+
+    // y-upper
+    j = box_upper[1];
+    for (i = 0; i < box_dims[0]; i++) {
+       int idx = (i+ghostcell_width)
+               + (j+ghostcell_width)*ghostbox_dims[0];
 
         LSMLIB_REAL err_y_upper = fabs(phi_y_plus[idx]);
         EXPECT_NEAR(err_y_upper, 0, 1e-6);
