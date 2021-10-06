@@ -18,12 +18,6 @@
 #include "lsm_spatial_derivatives1d.h"
 
 
-/************************************************************************
- * Helper function declarations
- ************************************************************************/
-
-#define DIM (1)
-
 /*
  * Test fixtures
  */
@@ -36,12 +30,12 @@ class LSMBoundaryConditions1DTest : public ::testing::Test {
     LSMLIB_REAL *phi_x_minus;
     LSMLIB_REAL *D1 = NULL, *D2 = NULL, *D3 = NULL;
     int ghostcell_width = 3;
-    int box_lower[DIM];
-    int box_upper[DIM];
-    int box_dims[DIM];
-    int ghostbox_lower[DIM];
-    int ghostbox_upper[DIM];
-    int ghostbox_dims[DIM];
+    int box_lower[1];
+    int box_upper[1];
+    int box_dims[1];
+    int ghostbox_lower[1];
+    int ghostbox_upper[1];
+    int ghostbox_dims[1];
     LSMLIB_REAL dx;
 
     // Constructor
@@ -87,6 +81,7 @@ class LSMBoundaryConditions1DTest : public ::testing::Test {
         }
     }
 };
+
 
 /*
  * Tests

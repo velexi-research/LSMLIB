@@ -18,12 +18,6 @@
 #include "lsm_spatial_derivatives2d.h"
 
 
-/************************************************************************
- * Helper function declarations
- ************************************************************************/
-
-#define DIM (2)
-
 /*
  * Test fixtures
  */
@@ -36,12 +30,12 @@ class LSMBoundaryConditions2DTest : public ::testing::Test {
     LSMLIB_REAL *phi_x_minus, *phi_y_minus;
     LSMLIB_REAL *D1 = NULL, *D2 = NULL, *D3 = NULL;
     int ghostcell_width = 3;
-    int box_lower[DIM];
-    int box_upper[DIM];
-    int box_dims[DIM];
-    int ghostbox_lower[DIM];
-    int ghostbox_upper[DIM];
-    int ghostbox_dims[DIM];
+    int box_lower[2];
+    int box_upper[2];
+    int box_dims[2];
+    int ghostbox_lower[2];
+    int ghostbox_upper[2];
+    int ghostbox_dims[2];
     LSMLIB_REAL dx, dy;
 
     // Constructor
@@ -49,8 +43,10 @@ class LSMBoundaryConditions2DTest : public ::testing::Test {
         // set index space extents
         box_dims[0] = 25;
         box_dims[1] = 20;
-        box_lower[0] = 0; box_lower[1] = 0;
-        box_upper[0] = box_dims[0]-1; box_upper[1] = box_dims[1]-1;
+        box_lower[0] = 0;
+        box_lower[1] = 0;
+        box_upper[0] = box_dims[0]-1;
+        box_upper[1] = box_dims[1]-1;
         ghostbox_lower[0] = box_lower[0] - ghostcell_width;
         ghostbox_lower[1] = box_lower[1] - ghostcell_width;
         ghostbox_upper[0] = box_upper[0] + ghostcell_width;
@@ -101,6 +97,7 @@ class LSMBoundaryConditions2DTest : public ::testing::Test {
         }
     }
 };
+
 
 /*
  * Tests
