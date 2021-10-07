@@ -13,9 +13,6 @@ set(TEST_PROGRAMS
     test_neumann_bc_1d
     test_neumann_bc_2d
     test_neumann_bc_3d
-    #test_neumann_bc_ENO2_3d
-    #test_neumann_bc_ENO3_3d
-    #test_neumann_bc_WENO5_3d
 )
 add_custom_target(boundary-condition-tests DEPENDS ${TEST_PROGRAMS})
 
