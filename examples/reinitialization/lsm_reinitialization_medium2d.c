@@ -15,7 +15,7 @@
 /* Headers for LSM evolution eqns */
 #include "lsm_level_set_evolution2d.h"
 #include "lsm_spatial_derivatives2d.h"
-#include "lsm_utilities2d.h"
+#include "lsm_math_utils2d.h"
 #include "lsm_tvd_runge_kutta2d.h"
 #include "lsm_reinitialization2d.h"
 #include "lsm_geometry2d.h"
