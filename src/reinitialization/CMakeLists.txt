@@ -34,7 +34,7 @@ foreach(FILE IN ITEMS
         lsm_reinitialization3d.h
         lsm_reinitialization3d_local.h
        )
-    list(APPEND LSM_REINITIALIZATION_HEADER_FILES "toolbox/${FILE}")
+    list(APPEND LSM_REINITIALIZATION_HEADER_FILES "reinitialization/${FILE}")
 endforeach()
 set(LSM_REINITIALIZATION_HEADER_FILES ${LSM_REINITIALIZATION_HEADER_FILES}
     PARENT_SCOPE)
