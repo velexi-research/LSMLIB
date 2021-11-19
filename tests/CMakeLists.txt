@@ -38,9 +38,11 @@ endfunction()
 
 # Component tests
 add_subdirectory(boundary_conditions)
+add_subdirectory(geometry)
 add_subdirectory(toolbox)
 
 # Custom `tests` target to build test programs
 add_custom_target(tests DEPENDS
                   boundary-condition-tests
+                  geometry-tests
                   toolbox-tests)
