@@ -10,7 +10,6 @@
 
 # Add custom target for tests
 set(TEST_PROGRAMS
-    # test_find_line_in_tetrahedron_1
     test_find_line_in_tetrahedron
     )
 add_custom_target(geometry-tests DEPENDS ${TEST_PROGRAMS})
