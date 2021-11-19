@@ -44,7 +44,7 @@ int main(void)
   printf("==============================================================\n");
 
   writeGridToBinaryFile(g_original,"grid_2d_demo.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("grid_2d_demo.binary");
+  g_from_binary_file = readGridFromBinaryFile("grid_2d_demo.binary.gz");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");
@@ -73,7 +73,7 @@ int main(void)
   printf("==============================================================\n");
 
   writeGridToBinaryFile(g_original,"grid_3d_demo.binary",GZIP);
-  g_from_binary_file = readGridFromBinaryFile("grid_3d_demo.binary");
+  g_from_binary_file = readGridFromBinaryFile("grid_3d_demo.binary.gz");
   printf("=================== Grid From Binary File ====================\n");
   printGrid(g_from_binary_file,stdout);
   printf("==============================================================\n");
