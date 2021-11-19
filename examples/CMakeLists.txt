@@ -27,5 +27,5 @@ add_subdirectory(reinitialization)
 # --- All lsm_serial examples
 
 add_custom_target(examples
-                  DEPENDS toolbox curvature_driven_motion fast_marching_method
+                  DEPENDS curvature_driven_motion fast_marching_method
                           grid_management reinitialization)

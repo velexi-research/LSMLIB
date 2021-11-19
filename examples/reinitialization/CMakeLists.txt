@@ -1,26 +1,34 @@
-# --------------------------------------------------------------
-# Customizations for serial reinitialization example
-# --------------------------------------------------------------
+# =============================================================================
+# LSMLIB Example: reinitialization example
+# =============================================================================
 
-# CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# LSMLIB
+add_library(LSMLIB::lsm STATIC IMPORTED)
+set_property(TARGET LSMLIB::lsm PROPERTY
+             IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
+)
 
-# Source files
-file(GLOB SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+# -----------------------------------------------------------------------------
+# Programs
+# -----------------------------------------------------------------------------
 
-# Add executable
-add_executable(reinitialization ${SOURCE_FILES})
+add_executable(example-reinitialization
+               lsm_options.c
+               lsm_options.h
+               lsm_reinitialize.c
+               lsm_reinitialization_medium2d.c
+               lsm_reinitialization_medium2d.h
+               )
+add_dependencies(example-reinitialization LSMLIB::lsm)
+target_link_libraries(example-reinitialization PRIVATE lsm)
 
-# Search path for header files
-target_include_directories(reinitialization
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-
-target_link_libraries(reinitialization lsm_serial lsm_toolbox)
+# -----------------------------------------------------------------------------
+# Custom Targets
+# -----------------------------------------------------------------------------
+add_custom_target(clean-reinit
+    COMMAND rm -f data_init.gz data_final.gz grid.gz out_file
+)

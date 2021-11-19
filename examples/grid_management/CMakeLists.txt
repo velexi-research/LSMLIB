@@ -1,26 +1,31 @@
-# --------------------------------------------------------------
-# Customizations for serial grid management example
-# --------------------------------------------------------------
+# =============================================================================
+# LSMLIB Example: grid management example
+# =============================================================================
 
-# CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# LSMLIB
+add_library(LSMLIB::lsm STATIC IMPORTED)
+set_property(TARGET LSMLIB::lsm PROPERTY
+             IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
+)
 
-# Source files
-file(GLOB SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+# -----------------------------------------------------------------------------
+# Programs
+# -----------------------------------------------------------------------------
 
-# Add executable
-add_executable(grid_management ${SOURCE_FILES})
+add_executable(example-grid_management grid_management.c)
+add_dependencies(example-grid_management LSMLIB::lsm)
+target_link_libraries(example-grid_management PRIVATE lsm)
 
-# Search path for header files
-target_include_directories(grid_management
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-
-target_link_libraries(grid_management lsm_serial lsm_toolbox)
+# -----------------------------------------------------------------------------
+# Custom Targets
+# -----------------------------------------------------------------------------
+add_custom_target(clean-grid
+    COMMAND rm -f grid_2d_demo.*
+    COMMAND rm -f grid_2d_demo.binary.*
+    COMMAND rm -f grid_3d_demo.*
+    COMMAND rm -f grid_3d_demo.binary.*
+)

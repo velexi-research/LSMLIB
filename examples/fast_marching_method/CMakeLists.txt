@@ -1,39 +1,47 @@
-# --------------------------------------------------------------
-# Customizations for serial fast marching method examples
-# --------------------------------------------------------------
+# =============================================================================
+# LSMLIB Example: fast-marching method
+# =============================================================================
 
-# CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# LSMLIB
+add_library(LSMLIB::lsm STATIC IMPORTED)
+set_property(TARGET LSMLIB::lsm PROPERTY
+             IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
+)
 
-# Add 'computeDistanceFunction2d' executable
-add_executable(computeDistanceFunction2d computeDistanceFunction2d.c)
-target_include_directories(computeDistanceFunction2d
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-target_link_libraries(computeDistanceFunction2d lsm_serial lsm_toolbox)
+# -----------------------------------------------------------------------------
+# Programs
+# -----------------------------------------------------------------------------
 
-# Add 'computeExtensionFields2d' executable
-add_executable(computeExtensionFields2d computeExtensionFields2d.c)
-target_include_directories(computeExtensionFields2d
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-target_link_libraries(computeExtensionFields2d lsm_serial lsm_toolbox)
+# computeDistanceFunction2d
+add_executable(example-computeDistanceFunction2d computeDistanceFunction2d.c)
+add_dependencies(example-computeDistanceFunction2d LSMLIB::lsm)
+target_link_libraries(example-computeDistanceFunction2d PRIVATE lsm)
 
-# Add 'solveEikonalEquation2d' executable
-add_executable(solveEikonalEquation2d solveEikonalEquation2d.c)
-target_include_directories(solveEikonalEquation2d
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-target_link_libraries(solveEikonalEquation2d lsm_serial lsm_toolbox)
+# computeDistanceFunction3d
+add_executable(example-computeDistanceFunction3d computeDistanceFunction3d.c)
+add_dependencies(example-computeDistanceFunction3d LSMLIB::lsm)
+target_link_libraries(example-computeDistanceFunction3d PRIVATE lsm)
 
-# Add 'computeDistanceFunction3d' executable
-add_executable(computeDistanceFunction3d computeDistanceFunction3d.c)
-target_include_directories(computeDistanceFunction3d
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/toolbox
-    PUBLIC ${CMAKE_SOURCE_DIR}/src/serial)
-target_link_libraries(computeDistanceFunction3d lsm_serial lsm_toolbox)
+# computeExtensionFields2d
+add_executable(example-computeExtensionFields2d computeExtensionFields2d.c)
+add_dependencies(example-computeExtensionFields2d LSMLIB::lsm)
+target_link_libraries(example-computeExtensionFields2d PRIVATE lsm)
+
+# solveEikonalEquation2d
+add_executable(example-solveEikonalEquation2d solveEikonalEquation2d.c)
+add_dependencies(example-solveEikonalEquation2d LSMLIB::lsm)
+target_link_libraries(example-solveEikonalEquation2d PRIVATE lsm)
+
+# -----------------------------------------------------------------------------
+# Custom Targets
+# -----------------------------------------------------------------------------
+add_custom_target(clean-fmm
+    COMMAND rm -f computeDistanceFunction2d.dat
+    COMMAND rm -f computeDistanceFunction3d.dat
+    COMMAND rm -f computeExtensionFields2d.dat
+    COMMAND rm -f solveEikonalEquation2d.dat
+)
