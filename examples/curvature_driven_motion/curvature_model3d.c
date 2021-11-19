@@ -16,9 +16,9 @@
 
 /* LSMLIB headers */
 #include "lsmlib_config.h"
+#include "lsm_math_utils3d.h"
 #include "lsm_level_set_evolution3d.h"
 #include "lsm_spatial_derivatives3d.h"
-#include "lsm_utilities3d.h"
 #include "lsm_tvd_runge_kutta3d.h"
 #include "lsm_reinitialization3d.h"
 #include "lsm_initialization3d.h"

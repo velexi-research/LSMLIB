@@ -1,24 +1,36 @@
-# --------------------------------------------------------------
-# Customizations for serial curvature-driven motion example
-# --------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
-# CMake initialization: No customizations
-# Build parameters: No customizations
-# Build requirements: No customizations
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Build targets
-# --------------------------------------------------------------
+# LSMLIB
+add_library(LSMLIB::lsm STATIC IMPORTED)
+set_property(TARGET LSMLIB::lsm PROPERTY
+             IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
+)
 
-# Set header and library search paths
-include_directories(${CMAKE_SOURCE_DIR}/src/toolbox
-                    ${CMAKE_SOURCE_DIR}/src/serial)
+# -----------------------------------------------------------------------------
+# Programs
+# -----------------------------------------------------------------------------
 
-# Source files
-file(GLOB SOURCE_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-     ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+set(PROGRAM curvature_driven_motion)
+add_executable(
+    ${PROGRAM}
+    curvature_model.c
+    curvature_model_top.c
+    curvature_model3d.c
+    curvature_model3d_local.c
+    lsm_options.c
+)
+add_dependencies(${PROGRAM} LSMLIB::lsm)
+target_link_libraries(${PROGRAM} PRIVATE lsm)
 
-# Add executable
-add_executable(curvature_driven_motion ${SOURCE_FILES})
-target_link_libraries(curvature_driven_motion lsm_serial lsm_toolbox)
+# -----------------------------------------------------------------------------
+# Custom Targets
+# -----------------------------------------------------------------------------
+add_custom_target(spotless
+    COMMAND rm -f data_final* data_init* grid* mask* out_file*
+)
