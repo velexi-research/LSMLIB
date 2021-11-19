@@ -19,6 +19,8 @@ project(LSMLIB
 set(CMAKE_BUILD_TYPE Release CACHE STRING "CMake build type")
 
 # Compiler requirements
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
