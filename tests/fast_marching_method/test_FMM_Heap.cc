@@ -11,7 +11,12 @@
  * ---------------------------------------------------------------------
  */
 
-#include "gtest/gtest.h"
+#include <stdlib.h>                 // for rand, NULL, srand, RAND_MAX
+#include <time.h>                   // for time
+
+#include "gtest/gtest-message.h"    // for Message
+#include "gtest/gtest-test-part.h"  // for TestPartResult
+#include "gtest/gtest_pred_impl.h"  // for Test, ASSERT_EQ, ASSERT_LE, ...
 
 #include "lsmlib_config.h"
 #include "FMM_Heap.h"
@@ -120,7 +125,6 @@ TEST(FMMHeapTest, FMMHeap)
     }
 
     // update some nodes
-    printf("\nUpdating value of some nodes...\n");
     for (i = 0; i<N; i++) {
         LSMLIB_REAL value = i+1;
         FMM_HeapNode node = FMM_Heap_getNode(fmm_heap,i);
