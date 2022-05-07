@@ -1,7 +1,7 @@
 Level Set Method Library (LSMLIB)
 =================================
 
--------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
 Table of Contents
 -----------------
@@ -28,7 +28,7 @@ Table of Contents
 
 4. [Acknowledgments][#4]
 
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
 ## 1. Overview
 
@@ -94,7 +94,7 @@ In addition, LSMLIB provides several utility functions for
 
 See the LICENSE file for copyright and license information.
 
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
 ## 2. Installation
 
@@ -169,7 +169,7 @@ See the LICENSE file for copyright and license information.
   $ make uninstall
   ```
 
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
 ## 3. Known Issues
 
@@ -188,7 +188,7 @@ See the LICENSE file for copyright and license information.
 
 * We do not officially support Windows at this time.
 
--------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
 ## 4. Acknowledgments
 
@@ -220,9 +220,9 @@ We would also like to thank the following individuals:
 * Our humblest apologies if we have accidentally left anybody off of this list. Please let
   us know and we will remedy the situation immediately.
 
--------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
-[-----------------------------INTERNAL LINKS-----------------------------]: #
+[------------------------------------INTERNAL LINKS------------------------------------]: #
 
 [#1]: #1-overview
 [#1.1]: #11-package-contents
@@ -239,4 +239,4 @@ We would also like to thank the following individuals:
 
 [#4]: #4-acknowledgments
 
-[-----------------------------EXTERNAL LINKS-----------------------------]: #
+[------------------------------------EXTERNAL LINKS------------------------------------]: #
