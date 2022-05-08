@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  ubuntu-build:
+  ubuntu-build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,7 @@ jobs:
         sudo apt-get install -y iwyu
 
     - name: Configure CMake
-      run: cmake -S src -B build
+      run: cmake -S . -B build
 
     - name: Build and test
-      run: cmake --build-and-test ./src ./build
+      run: cmake --build-and-test . ./build
