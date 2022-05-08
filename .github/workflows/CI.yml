@@ -35,16 +35,22 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/build
 
     - name: Install Packages (ubuntu)
-      if: |
-        github.ref_name == 'main' && runner.os == 'Linux'
+      if: runner.os == 'Linux'
 
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y cmake
         sudo apt-get install -y iwyu
         sudo apt-get install -y libgtest-dev
 
     - name: Install Packages (macOS)
+      if: runner.os == 'macOS'
+
+      run: |
+        brew install include-what-you-use
+        brew install googletest
+
+    - name: Install Packages (Windows)
+
       run: |
         echo ${{ runner.os }}
         echo ${{ github.ref_name }}
