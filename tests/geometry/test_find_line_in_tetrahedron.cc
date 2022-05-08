@@ -37,7 +37,7 @@
  * for all possible cases of intersection of a line with a tetrahedron.
  */
 
-#include <map>                      // for std::max
+#include <algorithm>                // for std::max
 #include <math.h>                   // for fabs
 #include <stdio.h>                  // for printf
 
