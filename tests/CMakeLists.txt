@@ -12,16 +12,13 @@ set_property(TARGET LSMLIB::lsm PROPERTY
              IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
 )
 
-# GoogleTest
-include(googletest)
-
 # -----------------------------------------------------------------------------
 # Functions
 # -----------------------------------------------------------------------------
 
 function(add_test_target TEST_PROGRAM SOURCE_FILES)
     add_executable(${TEST_PROGRAM} ${SOURCE_FILES})
-    add_dependencies(${TEST_PROGRAM} LSMLIB::lsm googletest)
+    add_dependencies(${TEST_PROGRAM} LSMLIB::lsm)
     target_include_directories(${TEST_PROGRAM} PUBLIC ${GTEST_INCLUDE_DIRS})
     target_link_directories(${TEST_PROGRAM} PUBLIC ${GTEST_LIB_DIRS})
     target_link_libraries(
@@ -29,6 +26,7 @@ function(add_test_target TEST_PROGRAM SOURCE_FILES)
         PRIVATE lsm
         gtest
         gtest_main
+        ${CMAKE_THREAD_LIBS_INIT}
     )
 endfunction()
 
