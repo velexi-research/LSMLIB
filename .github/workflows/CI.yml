@@ -17,8 +17,15 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  ubuntu-build-and-test:
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        arch: [x64, x86]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
@@ -27,18 +34,25 @@ jobs:
     - name: Create Build Directory
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Install Packages
+    - name: Install Packages (ubuntu)
+      if: runner.os == 'Linux'
+
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y cmake
         sudo apt-get install -y iwyu
         sudo apt-get install -y libgtest-dev
 
+    - name: Install Packages (macOS)
+      if: runner.os == 'macOS'
+
+      run: |
+        brew reinstall gcc
+        brew install include-what-you-use
+        brew install googletest
+
     - name: Configure CMake
       run: |
-        cmake --version
         cmake -S . -B build
-        ls build
 
     - name: Build library and tests
       run: cmake --build build --target tests

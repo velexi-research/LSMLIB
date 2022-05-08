@@ -11,8 +11,8 @@
  * ---------------------------------------------------------------------
  */
 
-#include "gtest/gtest-message.h"    // for Message
-#include "gtest/gtest-test-part.h"  // for TestPartResult
+#include <gtest/gtest-message.h>    // for Message
+#include <gtest/gtest-test-part.h>  // for TestPartResult
 #include "gtest/gtest_pred_impl.h"  // for SuiteApiResolver, EXPECT_NEAR
 
 #include "lsmlib_config.h"

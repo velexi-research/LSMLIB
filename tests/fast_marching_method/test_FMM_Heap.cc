@@ -14,9 +14,9 @@
 #include <stdlib.h>                 // for rand, NULL, srand, RAND_MAX
 #include <time.h>                   // for time
 
-#include "gtest/gtest-message.h"    // for Message
-#include "gtest/gtest-test-part.h"  // for TestPartResult
-#include "gtest/gtest_pred_impl.h"  // for Test, ASSERT_EQ, ASSERT_LE, ...
+#include <gtest/gtest-message.h>    // for Message
+#include <gtest/gtest-test-part.h>  // for TestPartResult
+#include <gtest/gtest_pred_impl.h>  // for Test, ASSERT_EQ, ASSERT_LE, ...
 
 #include "lsmlib_config.h"
 #include "FMM_Heap.h"

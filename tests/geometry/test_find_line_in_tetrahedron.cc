@@ -39,9 +39,11 @@
 
 #include <math.h>                   // for fabs
 #include <stdio.h>                  // for printf
-#include "gtest/gtest-message.h"    // for Message
-#include "gtest/gtest-test-part.h"  // for TestPartResult
-#include "gtest/gtest_pred_impl.h"  // for CmpHelperGT, SuiteApiResolver
+
+#include <gtest/gtest-message.h>    // for Message
+#include <gtest/gtest-test-part.h>  // for TestPartResult
+#include <gtest/gtest_pred_impl.h>  // for CmpHelperGT, SuiteApiResolver
+
 #include "lsm_geometry3d.h"         // for LSM3D_findLineInTetrahedron
 #include "lsmlib_config.h"          // for LSMLIB_ZERO_TOL, LSMLIB_REAL
 
