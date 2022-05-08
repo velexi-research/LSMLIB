@@ -18,12 +18,13 @@ concurrency:
 
 jobs:
   build-and-test:
-    name: ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: ${{ matrix.os }} - ${{ matrix.arch }} - GTest ${{ gtest }} - ${{ github.event_name }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
         arch: [x64, x86]
+        gtest: [system, local]
 
     runs-on: ${{ matrix.os }}
 
@@ -34,8 +35,8 @@ jobs:
     - name: Create Build Directory
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Install Packages (ubuntu)
-      if: runner.os == 'Linux'
+    - name: Install Packages (ubuntu, GoogleTest installed system-wide)
+      if: runner.os == 'Linux' && gtest == 'system'
 
       run: |
         sudo apt-get update -qq
@@ -43,14 +44,14 @@ jobs:
 
     - name: Install Packages (macOS)
       if: runner.os == 'macOS'
+      run: brew reinstall gcc
 
-      run: |
-        brew reinstall gcc
-        brew install googletest
+    - name: Install Packages (macOS, GoogleTest installed system-wide)
+      if: runner.os == 'macOS' && gtest == 'system'
+      run: brew install googletest
 
     - name: Configure CMake
-      run: |
-        cmake -S . -B build
+      run: cmake -S . -B build
 
     - name: Build library and tests
       run: cmake --build build --target tests
