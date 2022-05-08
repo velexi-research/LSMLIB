@@ -17,8 +17,15 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  ubuntu-build-and-test:
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: ${{ matrix.os }} - ${{ github.event_name }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        arch: [x64, x86]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
