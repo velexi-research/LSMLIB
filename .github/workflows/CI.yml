@@ -45,7 +45,8 @@ jobs:
     - name: Install Packages (ubuntu, GoogleTest installed locally)
       if: runner.os == 'Linux' && matrix.gtest == 'local'
 
-      run:
+      run: |
+        sudo apt-get update -qq
 
     - name: Install Packages (macOS, GoogleTest installed system-wide)
       if: runner.os == 'macOS' && matrix.gtest == 'system'
