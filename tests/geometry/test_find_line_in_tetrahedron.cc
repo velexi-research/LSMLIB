@@ -37,12 +37,14 @@
  * for all possible cases of intersection of a line with a tetrahedron.
  */
 
-#include <algorithm>
-
-#include "gtest/gtest.h"
-
-#include "lsmlib_config.h"
-#include "lsm_geometry3d.h"
+#include <__algorithm/max.h>        // for max
+#include <math.h>                   // for fabs
+#include <stdio.h>                  // for printf
+#include "gtest/gtest-message.h"    // for Message
+#include "gtest/gtest-test-part.h"  // for TestPartResult
+#include "gtest/gtest_pred_impl.h"  // for CmpHelperGT, SuiteApiResolver
+#include "lsm_geometry3d.h"         // for LSM3D_findLineInTetrahedron
+#include "lsmlib_config.h"          // for LSMLIB_ZERO_TOL, LSMLIB_REAL
 
 /*
  * Helper function declarations

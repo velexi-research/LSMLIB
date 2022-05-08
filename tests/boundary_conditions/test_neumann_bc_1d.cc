@@ -11,12 +11,14 @@
  * ---------------------------------------------------------------------
  */
 
-#include "gtest/gtest.h"
-
-#include "lsmlib_config.h"
-#include "lsm_boundary_conditions1d.h"
-#include "lsm_spatial_derivatives1d.h"
-
+#include <math.h>                       // for fabs
+#include <stddef.h>                     // for NULL
+#include "gtest/gtest-message.h"        // for Message
+#include "gtest/gtest-test-part.h"      // for TestPartResult
+#include "gtest/gtest_pred_impl.h"      // for EXPECT_NEAR, SuiteApiResolver
+#include "lsm_boundary_conditions1d.h"  // for LSM1D_HOMOGENEOUS_NEUMANN_ENO1
+#include "lsm_spatial_derivatives1d.h"  // for LSM1D_HJ_ENO1, LSM1D_HJ_ENO2
+#include "lsmlib_config.h"              // for LSMLIB_REAL
 
 /*
  * Test fixtures
