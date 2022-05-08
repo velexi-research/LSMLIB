@@ -35,6 +35,7 @@ jobs:
 
     - name: Configure CMake
       run: |
+        cmake --version
         cmake -S . -B build
         ls build
 
