@@ -37,7 +37,6 @@
  * for all possible cases of intersection of a line with a tetrahedron.
  */
 
-#include <__algorithm/max.h>        // for max
 #include <math.h>                   // for fabs
 #include <stdio.h>                  // for printf
 #include "gtest/gtest-message.h"    // for Message
