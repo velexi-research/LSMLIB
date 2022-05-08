@@ -40,5 +40,8 @@ jobs:
         cmake -S . -B build
         ls build
 
-    - name: Build and test
-      run: cmake --build-and-test . ./build
+    - name: Build library and tests
+      run: cmake --build build --target tests
+
+    - name: Run tests
+      run: cmake --build build --target test
