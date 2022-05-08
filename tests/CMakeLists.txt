@@ -26,6 +26,7 @@ function(add_test_target TEST_PROGRAM SOURCE_FILES)
         PRIVATE lsm
         gtest
         gtest_main
+        ${CMAKE_THREAD_LIBS_INIT}
     )
 endfunction()
 
