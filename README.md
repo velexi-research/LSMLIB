@@ -9,6 +9,17 @@ Level Set Method Library (LSMLIB)
 
 -------------------------------------------------------------------------------------------
 
+## Announcement
+
+* (May 2022) LSMLIB v2.0.0 is intended to be a stable version of LSMLIB that can serve as
+  a foundation for specialized applications and packages. The library has been refactored
+  and only includes support for serial computations implemented in C/C++ (the parallel
+  LSMLIB and Python interfaces have been moved to their own separate codebases and
+  repositories). There are currently no plans to further develop LSMLIB parallel LSMLIB,
+  or the Python interface.
+
+-------------------------------------------------------------------------------------------
+
 Table of Contents
 -----------------
 
