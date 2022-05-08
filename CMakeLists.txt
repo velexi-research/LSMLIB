@@ -94,7 +94,6 @@ string(STRIP ${get_project_name_lower_out} PKG_DIR_NAME)
 set(BINARY_INCLUDEDIR ${CMAKE_BINARY_DIR}/include)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-set(EXT_PROJECTS_DIR ext)
 
 # Compiler flags
 set(CMAKE_Fortran_FLAGS "${FFLAGS} ${CMAKE_Fortran_FLAGS}")
@@ -197,7 +196,14 @@ add_custom_target(cmake-config-files ALL
 enable_testing()
 
 # GoogleTest
-add_subdirectory(${EXT_PROJECTS_DIR}/googletest EXCLUDE_FROM_ALL)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.tar.gz
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 # Tests
 add_subdirectory(tests EXCLUDE_FROM_ALL)

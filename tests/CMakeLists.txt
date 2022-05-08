@@ -21,7 +21,7 @@ include(googletest)
 
 function(add_test_target TEST_PROGRAM SOURCE_FILES)
     add_executable(${TEST_PROGRAM} ${SOURCE_FILES})
-    add_dependencies(${TEST_PROGRAM} LSMLIB::lsm googletest)
+    add_dependencies(${TEST_PROGRAM} LSMLIB::lsm)
     target_include_directories(${TEST_PROGRAM} PUBLIC ${GTEST_INCLUDE_DIRS})
     target_link_directories(${TEST_PROGRAM} PUBLIC ${GTEST_LIB_DIRS})
     target_link_libraries(
