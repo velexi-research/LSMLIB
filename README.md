@@ -1,6 +1,12 @@
 Level Set Method Library (LSMLIB)
 =================================
 
+[------------------------------------ BADGES: BEGIN ------------------------------------]: #
+
+[![Build Status](https://github.com/velexi-research/LSMLIB/actions/workflows/CI.yml/badge.svg)](https://github.com/velexi-research/LSMLIB/actions/workflows/CI.yml)
+
+[------------------------------------- BADGES: END -------------------------------------]: #
+
 -------------------------------------------------------------------------------------------
 
 Table of Contents
