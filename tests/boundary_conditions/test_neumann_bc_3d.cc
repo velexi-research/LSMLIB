@@ -13,9 +13,11 @@
 
 #include <math.h>                       // for fabs
 #include <stddef.h>                     // for NULL
-#include "gtest/gtest-message.h"        // for Message
-#include "gtest/gtest-test-part.h"      // for TestPartResult
-#include "gtest/gtest_pred_impl.h"      // for EXPECT_NEAR, SuiteApiResolver
+
+#include <gtest/gtest-message.h>        // for Message
+#include <gtest/gtest-test-part.h>      // for TestPartResult
+#include <gtest/gtest_pred_impl.h>      // for EXPECT_NEAR, SuiteApiResolver
+
 #include "lsm_boundary_conditions3d.h"  // for LSM3D_HOMOGENEOUS_NEUMANN_ENO1
 #include "lsm_spatial_derivatives3d.h"  // for LSM3D_HJ_ENO1, LSM3D_HJ_ENO2
 #include "lsmlib_config.h"              // for LSMLIB_REAL
