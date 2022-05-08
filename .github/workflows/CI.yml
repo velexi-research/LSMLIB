@@ -1,14 +1,39 @@
-name: C/C++ CI
+name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags: '*'
+
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   ubuntu-build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.0.0
-    - name: Build project
-      uses: nicledomaS/cmake_build_action@v1.4
-      with:
-        run_tests: ON
+      uses: actions/checkout@v2
+
+    - name: Create Build Directory
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Install Packages
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y iwyu
+
+    - name: Configure CMake
+      run: cmake -S . -B build
+
+    - name: Build and test
+      run: cmake --build-and-test ./src ./build
