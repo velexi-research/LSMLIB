@@ -35,7 +35,8 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/build
 
     - name: Install Packages (ubuntu)
-      if: github.ref_name == 'main' && runner.os == 'Linux'
+      if: |
+        github.ref_name == 'main' && runner.os == 'Linux'
 
       run: |
         sudo apt-get update -qq
@@ -46,6 +47,7 @@ jobs:
     - name: Install Packages (macOS)
       run: |
         echo ${{ runner.os }}
+        echo ${{ github.ref_name }}
 
     - name: Configure CMake
       run: |
