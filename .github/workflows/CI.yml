@@ -36,7 +36,7 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/build
 
     - name: Install Packages (ubuntu, GoogleTest installed system-wide)
-      if: runner.os == 'Linux' && gtest == 'system'
+      if: runner.os == 'Linux' && matrix.gtest == 'system'
 
       run: |
         sudo apt-get update -qq
@@ -47,7 +47,7 @@ jobs:
       run: brew reinstall gcc
 
     - name: Install Packages (macOS, GoogleTest installed system-wide)
-      if: runner.os == 'macOS' && gtest == 'system'
+      if: runner.os == 'macOS' && matrix.gtest == 'system'
       run: brew install googletest
 
     - name: Configure CMake
