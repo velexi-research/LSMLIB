@@ -13,6 +13,7 @@ set_property(TARGET LSMLIB::lsm PROPERTY
 )
 
 # GoogleTest
+FetchContent_MakeAvailable(googletest)
 include(googletest)
 
 # -----------------------------------------------------------------------------
