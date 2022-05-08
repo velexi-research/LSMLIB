@@ -52,9 +52,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake --version
         cmake -S . -B build
-        ls build
 
     - name: Build library and tests
       run: cmake --build build --target tests
