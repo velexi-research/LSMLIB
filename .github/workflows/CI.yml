@@ -34,12 +34,18 @@ jobs:
     - name: Create Build Directory
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Install Packages
+    - name: Install Packages (ubuntu)
+      if: github.ref_name == 'main' && runner.os == 'Linux'
+
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y cmake
         sudo apt-get install -y iwyu
         sudo apt-get install -y libgtest-dev
+
+    - name: Install Packages (macOS)
+      run: |
+        echo ${{ runner.os }}
 
     - name: Configure CMake
       run: |
