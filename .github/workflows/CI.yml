@@ -42,13 +42,23 @@ jobs:
         sudo apt-get update -qq
         sudo apt-get install -y libgtest-dev
 
-    - name: Install Packages (macOS)
-      if: runner.os == 'macOS'
-      run: brew reinstall gcc
+    - name: Install Packages (ubuntu, GoogleTest installed locally)
+      if: runner.os == 'Linux' && matrix.gtest == 'local'
+
+      run:
 
     - name: Install Packages (macOS, GoogleTest installed system-wide)
       if: runner.os == 'macOS' && matrix.gtest == 'system'
-      run: brew install googletest
+
+      run: |
+        brew reinstall gcc
+        brew install googletest
+
+    - name: Install Packages (macOS, GoogleTest installed locally)
+      if: runner.os == 'macOS'
+
+      run: |
+        brew reinstall gcc
 
     - name: Configure CMake
       run: cmake -S . -B build
