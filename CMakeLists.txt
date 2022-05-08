@@ -8,7 +8,7 @@
 
 # --- Initialization
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 project(LSMLIB
         LANGUAGES C CXX Fortran
         VERSION 2.0.0)
@@ -76,7 +76,7 @@ endif (IWYU)
 
 find_package(GTest)
 if (NOT GTest_FOUND)
-    message("-- Attempting to download GTest...")
+    message("-- Attempting to fetch GTest from GitHub...")
     FetchContent_Declare(
       GTest
       URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.tar.gz
@@ -84,6 +84,10 @@ if (NOT GTest_FOUND)
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(GTest)
+    set(GTest_LOCAL True)
+    set(GTEST_INCLUDE_DIRS ${gtest_SOURCE_DIR}/googletest/include/)
+    set(GTEST_LIBRARIES GTest::gtest)
+    set(GTEST_MAIN_LIBRARIES GTest::gtest_main)
 endif (NOT GTest_FOUND)
 
 # ------------------------------------------------------------------------------------------

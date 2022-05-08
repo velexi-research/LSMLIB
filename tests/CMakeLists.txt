@@ -18,7 +18,12 @@ set_property(TARGET LSMLIB::lsm PROPERTY
 
 function(add_test_target TEST_PROGRAM SOURCE_FILES)
     add_executable(${TEST_PROGRAM} ${SOURCE_FILES})
+
     add_dependencies(${TEST_PROGRAM} LSMLIB::lsm)
+    if (GTest_LOCAL)
+        add_dependencies(${TEST_PROGRAM} ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES})
+    endif (GTest_LOCAL)
+
     target_include_directories(${TEST_PROGRAM} PUBLIC ${GTEST_INCLUDE_DIRS})
     target_link_libraries(
         ${TEST_PROGRAM}

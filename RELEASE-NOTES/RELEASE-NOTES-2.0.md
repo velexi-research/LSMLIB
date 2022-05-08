@@ -2,6 +2,19 @@ Release Notes: LSMLIB v2.0
 ==========================
 
 --------------------------------------------------------------------------------------------
+v2.0.1 (2022-05-08)
+===================
+
+## Enhancements
+
+* Improve robustness of GoogleTest integration.
+* Improve coverage and efficiency of CI GitHub Actions workflow.
+
+## Bug Fixes
+
+* Fix header bugs in unit tests.
+
+--------------------------------------------------------------------------------------------
 v2.0.0 (2022-05-08)
 ===================
 
