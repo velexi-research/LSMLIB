@@ -46,7 +46,7 @@ jobs:
       if: runner.os == 'macOS'
 
       run: |
-        brew install gcc
+        brew reinstall gcc
         brew install include-what-you-use
         brew install googletest
 
