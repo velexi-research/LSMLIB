@@ -12,6 +12,9 @@ set_property(TARGET LSMLIB::lsm PROPERTY
              IMPORTED_LOCATION "${LIBRARY_OUTPUT_PATH}/liblsm.a"
 )
 
+# GoogleTest
+include(googletest)
+
 # -----------------------------------------------------------------------------
 # Functions
 # -----------------------------------------------------------------------------
