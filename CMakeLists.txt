@@ -75,16 +75,16 @@ endif (IWYU)
 # --- GoogleTest
 
 find_package(GTest)
-if (GTest-NOTFOUND)
-    message("-- GTest: not found. Attempting to download...")
+if (NOT GTest_FOUND)
+    message("-- Attempting to download GTest...")
     FetchContent_Declare(
-      googletest
+      GTest
       URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.tar.gz
     )
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
-endif (GTest-NOTFOUND)
+    FetchContent_MakeAvailable(GTest)
+endif (NOT GTest_FOUND)
 
 # ------------------------------------------------------------------------------------------
 # Parameters
