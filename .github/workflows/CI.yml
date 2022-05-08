@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-and-test:
-    name: ${{ matrix.os }} - ${{ matrix.arch }} - GTest ${{ gtest }} - ${{ github.event_name }}
+    name: ${{ matrix.os }} - ${{ matrix.arch }} - GTest ${{ matrix.gtest }} - ${{ github.event_name }}
 
     strategy:
       matrix:
