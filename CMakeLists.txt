@@ -75,9 +75,9 @@ endif (IWYU)
 # --- GoogleTest
 
 find_package(GTest)
-if (GTEST)
+if (GTest)
     message("-- Found GoogleTest: ${GTest}")
-else (GTEST)
+else (GTest)
     message("-- GoogleTest not found. Attempting to download...")
     FetchContent_Declare(
       googletest
@@ -86,7 +86,7 @@ else (GTEST)
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
-endif (GTEST)
+endif (GTest)
 
 # ------------------------------------------------------------------------------------------
 # Parameters
