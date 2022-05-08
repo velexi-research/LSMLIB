@@ -15,7 +15,7 @@ Level Set Method Library (LSMLIB)
   a foundation for specialized applications and packages. The library has been refactored
   and only includes support for serial computations implemented in C/C++ (the parallel
   LSMLIB and Python interfaces have been moved to their own separate codebases and
-  repositories). There are currently no plans to further develop LSMLIB parallel LSMLIB,
+  repositories). There are currently no plans to further develop LSMLIB parallel LSMLIB
   or the Python interface.
 
 -------------------------------------------------------------------------------------------
